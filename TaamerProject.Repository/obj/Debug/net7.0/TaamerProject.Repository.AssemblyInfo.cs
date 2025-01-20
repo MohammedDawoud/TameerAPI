@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TaamerProject.Repository")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bc22e723d3e59f2d3891d368007f656a0bc9e91d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+34b5e38371c1d9d16730a820fd65a31a6c206bf5")]
 [assembly: System.Reflection.AssemblyProductAttribute("TaamerProject.Repository")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TaamerProject.Repository")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
