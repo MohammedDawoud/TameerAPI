@@ -17,14 +17,14 @@ namespace TaamerProject.API.Controllers
         private readonly IPro_filesReasonsService _Pro_filesReasonsService;
         private readonly IPro_DestinationTypesService _Pro_DestinationTypesService;
         private readonly IPro_DestinationDepartmentsService _Pro_DestinationDepartmentsService;
-
+        private readonly IOrganizationsService _organizationsservice;
         private readonly IPro_DestinationsService _Pro_DestinationsService;
 
         public GlobalShared _globalshared;
 
         public DestinationsController(IPro_filesReasonsService pro_filesReasonsService,
             IPro_DestinationTypesService pro_DestinationTypesService, IPro_DestinationDepartmentsService pro_DestinationDepartmentsService,
-            IPro_DestinationsService pro_DestinationsService)
+            IPro_DestinationsService pro_DestinationsService, IOrganizationsService organizationsService)
         {
             _Pro_filesReasonsService = pro_filesReasonsService;
             _Pro_DestinationTypesService = pro_DestinationTypesService;
@@ -32,6 +32,7 @@ namespace TaamerProject.API.Controllers
             _Pro_DestinationsService = pro_DestinationsService;
 
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            _organizationsservice = organizationsService;
         }
         [HttpGet("GetAllDestinations")]
 
@@ -73,7 +74,11 @@ namespace TaamerProject.API.Controllers
         {
 
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            var result = _Pro_DestinationsService.SaveDestination(Destination, _globalshared.UserId_G, _globalshared.BranchId_G);
+            var url = Path.Combine("Email/MailStamp.html");
+            var org = _organizationsservice.GetOrganizationDataLogin(_globalshared.Lang_G).Result;
+            string resultLogoUrl = org.LogoUrl.Remove(0, 1);
+            var file = Path.Combine(resultLogoUrl);
+            var result = _Pro_DestinationsService.SaveDestination(Destination, _globalshared.UserId_G, _globalshared.BranchId_G, org, url, file);
             return Ok(result);
         }
         [HttpPost("SaveDestinationReplay")]
@@ -81,8 +86,13 @@ namespace TaamerProject.API.Controllers
         public IActionResult SaveDestinationReplay(Pro_Destinations Destination)
         {
 
+
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            var result = _Pro_DestinationsService.SaveDestinationReplay(Destination, _globalshared.UserId_G, _globalshared.BranchId_G);
+            var url = Path.Combine("Email/MailStamp.html");
+            var org = _organizationsservice.GetOrganizationDataLogin(_globalshared.Lang_G).Result;
+            string resultLogoUrl = org.LogoUrl.Remove(0, 1);
+            var file = Path.Combine(resultLogoUrl);
+            var result = _Pro_DestinationsService.SaveDestinationReplay(Destination, _globalshared.UserId_G, _globalshared.BranchId_G, org, url, file);
             return Ok(result);
         }
         [HttpPost("DeleteDestination")]

@@ -12,6 +12,9 @@ using TaamerProject.Repository.Interfaces;
 using TaamerProject.Service.IGeneric;
 using TaamerProject.Service.Interfaces;
 using TaamerProject.Service.LocalResources;
+using System.Net.Mail;
+using System.Net.Mime;
+using TaamerProject.Repository.Repositories;
 
 namespace TaamerProject.Service.Services
 {
@@ -20,11 +23,17 @@ namespace TaamerProject.Service.Services
         private readonly TaamerProjectContext _TaamerProContext;
         private readonly ISystemAction _SystemAction;
         private readonly IPro_DestinationsRepository _Pro_DestinationsRepository;
+        private readonly IEmailSettingRepository _EmailSettingRepository;
+        private readonly IUsersRepository _IUsersRepository;
+        private readonly INotificationService _notificationService;
         public Pro_DestinationsService(IPro_DestinationsRepository pro_DestinationsRepository
-            , TaamerProjectContext dataContext, ISystemAction systemAction)
+            , TaamerProjectContext dataContext, ISystemAction systemAction, IEmailSettingRepository emailSettingRepository, IUsersRepository iUsersRepository, INotificationService notificationService)
         {
             _TaamerProContext = dataContext; _SystemAction = systemAction;
             _Pro_DestinationsRepository = pro_DestinationsRepository;
+            _EmailSettingRepository = emailSettingRepository;
+            _IUsersRepository = iUsersRepository;
+            _notificationService = notificationService;
         }
 
         public Task<IEnumerable<Pro_DestinationsVM>> GetAllDestinations()
@@ -42,7 +51,7 @@ namespace TaamerProject.Service.Services
             var Destinations = _Pro_DestinationsRepository.GetDestinationByProjectIdToReplay(projectId);
             return Destinations;
         }
-        public GeneralMessage SaveDestination(Pro_Destinations Destination, int UserId, int BranchId)
+        public GeneralMessage SaveDestination(Pro_Destinations Destination, int UserId, int BranchId, OrganizationsVM Organization, string Url, string ImgUrl)
         {
             try
             {
@@ -79,6 +88,69 @@ namespace TaamerProject.Service.Services
                         Project.DestinationsUpload = Destination.DestinationId;
                     }
                     _TaamerProContext.SaveChanges();
+
+                    #region  sending email and notifications
+                    var strbody = "";
+                    var distinationtype = _TaamerProContext.Pro_DestinationTypes.Where(x => x.DestinationTypeId == Destination.DestinationTypeId).FirstOrDefault();
+
+                    var headertxt = "تم رفع المشروع الي  " + distinationtype.NameAr;
+                    var subject = "رفع مشروع الي " + distinationtype.NameAr;
+                    var customer = _TaamerProContext.Customer.Where(x => x.CustomerId == Project.CustomerId).FirstOrDefault();
+                    var Manager = _TaamerProContext.Users.Where(x => x.UserId == Project.MangerId).FirstOrDefault();
+                    var branch = _TaamerProContext.Branch.Where(x => x.BranchId == Project.BranchId).FirstOrDefault();
+
+                    var notitxt = "تم رفع مشروع رقم " + Project.ProjectNo + "الي " + distinationtype.NameAr;
+                    //var listusers = new List<int>();
+                    var listusers = _TaamerProContext.ProjectWorkers.Where(x => x.IsDeleted == false && x.ProjectId == Project.ProjectId).ToList().Select(x => x.UserId).Distinct().ToList();
+
+                    strbody = @"<!DOCTYPE html><html lang = '' ><head>
+                                                <style>
+                                                .square {
+                                                    height: 35px;width: 35px;background-color: #ffffff;border: ridge;
+                                                    text-align: center;align-content: center;font-size: 28px;}
+                                                </style>
+                                                </ head >
+                            <body>                  
+                            <h3 style = 'text-align:center;' > " + headertxt + @"</h3>
+                     
+                            <table align = 'center' border = '1' ><tr> <td>  رقم المشروع</td><td>" + Project.ProjectNo + @"</td> </tr> <tr> <td> اسم العميل  </td> <td>" + customer.CustomerNameAr + @"</td>
+                             </tr>  <tr> <td> الفرع</td> <td>" + branch.NameAr + @"</td></tr><tr> <td> مدير المشروع</td> <td>" + Manager.FullNameAr + @"</td></tr><tr> <td> إسم الجهة الخارجية</td> <td>" + distinationtype.NameAr + @"</td></tr></table> <h7> مع تحيات قسم ادارة المشاريع</h7>                         
+                            </ body ></ html > ";
+                    if (listusers != null && listusers.Count() > 0)
+                    {
+                        foreach (var usr in listusers)
+                        {
+
+
+                            var issent = SendMail_Destination(Organization, branch, UserId, usr.Value, subject, strbody, Url, ImgUrl, 1, true).Result;
+
+                            var ListOfPrivNotify = new List<Notification>();
+                            ListOfPrivNotify.Add(new Notification
+                            {
+                                ReceiveUserId = usr.Value,
+                                Name = subject,
+                                Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
+                                HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
+                                SendUserId = 1,
+                                Type = 1,
+                                Description = notitxt,
+                                AllUsers = false,
+                                SendDate = DateTime.Now,
+                                ProjectId = Project.ProjectId,
+                                TaskId = 0,
+                                AddUser = UserId,
+                                BranchId = branch.BranchId,
+                                AddDate = DateTime.Now,
+                                IsHidden = false,
+                                NextTime = null,
+                            });
+                            _TaamerProContext.Notification.AddRange(ListOfPrivNotify);
+                            _TaamerProContext.SaveChanges();
+                            _notificationService.sendmobilenotification(usr.Value, subject, notitxt);
+
+                        }
+                    }
+                    #endregion
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                     string ActionNote2 = "رفع لجهه حكومية";
@@ -168,7 +240,7 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
-        public GeneralMessage SaveDestinationReplay(Pro_Destinations Destination, int UserId, int BranchId)
+        public GeneralMessage SaveDestinationReplay(Pro_Destinations Destination, int UserId, int BranchId, OrganizationsVM Organization, string Url, string ImgUrl)
         {
             try
             {
@@ -216,10 +288,73 @@ namespace TaamerProject.Service.Services
                         Proj.FirstProjectExpireDate = AccProDate;
                         Proj.DestinationsUpload = null;
                     }
+                    _TaamerProContext.SaveChanges();
+
+                    #region  sending email and notifications
+                    var strbody = "";
+                    var distinationtype = _TaamerProContext.Pro_DestinationTypes.Where(x => x.DestinationTypeId == DestinationsUpdated.DestinationTypeId).FirstOrDefault();
+
+                    var headertxt = "تم رد  " + distinationtype.NameAr;
+                    var subject = "رد" + distinationtype.NameAr + " علي المشروع";
+                    var customer = _TaamerProContext.Customer.Where(x => x.CustomerId == Proj.CustomerId).FirstOrDefault();
+                    var Manager = _TaamerProContext.Users.Where(x => x.UserId == Proj.MangerId).FirstOrDefault();
+                    var branch = _TaamerProContext.Branch.Where(x => x.BranchId == Proj.BranchId).FirstOrDefault();
+                    //var listusers = new List<int>();
+                    var listusers = _TaamerProContext.ProjectWorkers.Where(x => x.IsDeleted == false && x.ProjectId == Proj.ProjectId).ToList().Select(x => x.UserId).Distinct().ToList();
+                    var status = DestinationsUpdated.Status == 2 ? "موافقة" : "رفض";
+                    var notitxt = " تم رد  " + distinationtype.NameAr + "بال " + status + "علي مشروع رقم" + Proj.ProjectNo;
+
+                    strbody = @"<!DOCTYPE html><html lang = '' ><head>
+                                                <style>
+                                                .square {
+                                                    height: 35px;width: 35px;background-color: #ffffff;border: ridge;
+                                                    text-align: center;align-content: center;font-size: 28px;}
+                                                </style>
+                                                </ head >
+                            <body>                  
+                            <h3 style = 'text-align:center;' > " + notitxt + @"</h3>
+                     
+                            <table align = 'center' border = '1' ><tr> <td>  رقم المشروع</td><td>" + Proj.ProjectNo + @"</td> </tr> <tr> <td> اسم العميل  </td> <td>" + customer.CustomerNameAr + @"</td>
+                             </tr>  <tr> <td> الفرع</td> <td>" + branch.NameAr + @"</td></tr><tr> <td> مدير المشروع</td> <td>" + Manager.FullNameAr + @"</td></tr><tr> <td> إسم الجهة الخارجية</td> <td>" + distinationtype.NameAr + @"</td></tr><tr> <td> حالة الرد </td> <td>" + status + @"</td></tr></table> <h7> مع تحيات قسم ادارة المشاريع</h7>                         
+                            </ body ></ html > ";
+                    if (listusers != null && listusers.Count() > 0)
+                    {
+                        foreach (var usr in listusers)
+                        {
+
+
+                            var issent = SendMail_Destination(Organization, branch, UserId, usr.Value, subject, strbody, Url, ImgUrl, 1, true).Result;
+
+                            var ListOfPrivNotify = new List<Notification>();
+                            ListOfPrivNotify.Add(new Notification
+                            {
+                                ReceiveUserId = usr.Value,
+                                Name = subject,
+                                Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
+                                HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
+                                SendUserId = 1,
+                                Type = 1,
+                                Description = notitxt,
+                                AllUsers = false,
+                                SendDate = DateTime.Now,
+                                ProjectId = Proj.ProjectId,
+                                TaskId = 0,
+                                AddUser = UserId,
+                                BranchId = branch.BranchId,
+                                AddDate = DateTime.Now,
+                                IsHidden = false,
+                                NextTime = null,
+                            });
+                            _TaamerProContext.Notification.AddRange(ListOfPrivNotify);
+                            _TaamerProContext.SaveChanges();
+                            _notificationService.sendmobilenotification(usr.Value, subject, notitxt);
+
+                        }
+                    }
+                    #endregion
 
                 }
 
-                _TaamerProContext.SaveChanges();
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = " تعديل ملف لجهه حكومية رقم " + Destination.DestinationId;
@@ -286,5 +421,79 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_DeletedFailed };
             }
         }
+
+
+        public async Task<bool> SendMail_Destination(OrganizationsVM org, Branch branch, int UserId, int ReceivedUser, string Subject, string textBody, string Url, string ImgUrl, int type, bool IsBodyHtml = false)
+        {
+            try
+            {
+                string formattedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                var mail = new MailMessage();
+                var email = _EmailSettingRepository.GetEmailSetting(branch?.OrganizationId ?? 0).Result.SenderEmail;
+                var loginInfo = new NetworkCredential(_EmailSettingRepository.GetEmailSetting(branch?.OrganizationId ?? 0).Result.SenderEmail, _EmailSettingRepository.GetEmailSetting(branch?.OrganizationId ?? 0).Result.Password);
+                // mail.From = new MailAddress(_EmailSettingRepository.GetEmailSetting(branch).SenderEmail);
+                if (_EmailSettingRepository.GetEmailSetting(branch?.OrganizationId ?? 0).Result.DisplayName != null)
+                {
+                    mail.From = new MailAddress(email, _EmailSettingRepository.GetEmailSetting(branch?.OrganizationId ?? 0).Result.DisplayName);
+                }
+                else
+                {
+                    mail.From = new MailAddress(email, "لديك اشعار من نظام تعمير السحابي");
+                }
+                var title = "لقد طلبت رفع ملف لجهة خارجية";
+                var body = "";
+                title = "";
+                body = PopulateBody(textBody, _IUsersRepository.GetUserById(ReceivedUser, "rtl").Result.FullName, title, "مع تمنياتنا لكم بالتوفيق", Url, org.NameAr);
+
+
+                LinkedResource logo = new LinkedResource(ImgUrl);
+                logo.ContentId = "companylogo";
+                AlternateView av1 = AlternateView.CreateAlternateViewFromString(body.Replace("{Header}", title), null, MediaTypeNames.Text.Html);
+                av1.LinkedResources.Add(logo);
+                mail.AlternateViews.Add(av1);
+
+
+                var userReciver = _TaamerProContext.Users.Where(s => s.UserId == ReceivedUser).FirstOrDefault();
+                mail.To.Add(new MailAddress(userReciver?.Email ?? ""));
+
+                mail.Subject = Subject;
+
+                mail.Body = textBody;
+                mail.IsBodyHtml = IsBodyHtml;
+                System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+                var smtpClient = new SmtpClient(_EmailSettingRepository.GetEmailSetting(branch?.OrganizationId ?? 0).Result.Host);
+                smtpClient.EnableSsl = true;
+                smtpClient.UseDefaultCredentials = false;
+                //smtpClient.Port = 587;
+                smtpClient.Port = Convert.ToInt32(_EmailSettingRepository.GetEmailSetting(branch?.OrganizationId ?? 0).Result.Port);
+
+                smtpClient.Credentials = loginInfo;
+                smtpClient.Send(mail);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
+
+        public string PopulateBody(string bodytxt, string fullname, string header, string footer, string url, string orgname)
+        {
+            string body = string.Empty;
+            using (StreamReader reader = new StreamReader(url))
+            {
+                body = reader.ReadToEnd();
+            }
+            body = body.Replace("{FullName}", fullname);
+            body = body.Replace("{Body}", bodytxt);
+            body = body.Replace("{Header}", header);
+            body = body.Replace("{Footer}", footer);
+            body = body.Replace("{orgname}", orgname);
+            return body;
+        }
+
     }
 }

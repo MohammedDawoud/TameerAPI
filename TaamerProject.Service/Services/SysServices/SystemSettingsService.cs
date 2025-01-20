@@ -264,6 +264,7 @@ namespace TaamerProject.Service.Services
                             </ body ></ html > ";
 
                 issent = SendMail_Destination(Organization, Branch, UserId, UserId, subject, strbody, Url, ImgUrl, 1, true).Result;
+                _notificationService.sendmobilenotification(UserId, subject, notitxt);
 
                 if (issent == true)
                 {
