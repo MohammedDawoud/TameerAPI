@@ -1,0 +1,14 @@
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Models\bin\Debug\net7.0\TaamerProject.Models.deps.json
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Models\bin\Debug\net7.0\TaamerProject.Models.runtimeconfig.json
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Models\bin\Debug\net7.0\TaamerProject.Models.dll
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Models\bin\Debug\net7.0\TaamerProject.Models.pdb
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Models\obj\Debug\net7.0\TaamerProject.Models.csproj.AssemblyReference.cache
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Models\obj\Debug\net7.0\TaamerProject.Models.GeneratedMSBuildEditorConfig.editorconfig
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Models\obj\Debug\net7.0\TaamerProject.Models.AssemblyInfoInputs.cache
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Models\obj\Debug\net7.0\TaamerProject.Models.AssemblyInfo.cs
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Models\obj\Debug\net7.0\TaamerProject.Models.csproj.CoreCompileInputs.cache
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Models\obj\Debug\net7.0\TaamerProject.Models.dll
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Models\obj\Debug\net7.0\refint\TaamerProject.Models.dll
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Models\obj\Debug\net7.0\TaamerProject.Models.pdb
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Models\obj\Debug\net7.0\TaamerProject.Models.genruntimeconfig.cache
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Models\obj\Debug\net7.0\ref\TaamerProject.Models.dll

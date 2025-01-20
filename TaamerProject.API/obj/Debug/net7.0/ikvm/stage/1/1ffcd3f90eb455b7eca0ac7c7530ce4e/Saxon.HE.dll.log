@@ -1,0 +1,14 @@
+DEBUG: Executing C:\Users\Sky Hawk\.nuget\packages\ikvm.msbuild.tools.runtime.win7-x64\8.4.5\buildTransitive\netstandard2.0\..\..\ikvmc\netcoreapp3.1\win7-x64\ikvmc.exe "@D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.API\obj\Debug\net7.0\ikvm\stage\1\1ffcd3f90eb455b7eca0ac7c7530ce4e\Saxon.HE.dll.rsp"
+ERROR: ikvmc (8.4.5+Branch.main.Sha.548430396151a2e5cb51fb319e15524bd601ace5)
+ERROR: Copyright c 2023 Jeroen Frijters, Windward Studios, Jerome Haltom, Shad Storhaug
+ERROR: 
+ERROR: warning IKVMC0100: Class "org.apache.xml.resolver.helpers.Debug" not found
+ERROR: warning IKVMC0100: Class "jline.console.completer.FileNameCompleter" not found
+ERROR: warning IKVMC0100: Class "jline.console.completer.StringsCompleter" not found
+ERROR: warning IKVMC0100: Class "org.apache.xml.resolver.CatalogManager" not found
+ERROR: warning IKVMC0117: Emitted java.lang.NoSuchMethodError in "net.sf.saxon.value.AnyURIValue.decode(Ljava.lang.String;)Ljava.lang.String;"
+ERROR:     ("java.nio.ByteBuffer.clear()Ljava.nio.ByteBuffer;")
+ERROR: warning IKVMC0117: Emitted java.lang.NoSuchMethodError in "net.sf.saxon.value.AnyURIValue.decode(Ljava.lang.String;)Ljava.lang.String;"
+ERROR:     ("java.nio.ByteBuffer.flip()Ljava.nio.ByteBuffer;")
+ERROR: warning IKVMC0100: Class "jline.console.ConsoleReader" not found
+ERROR: warning IKVMC0100: Class "jline.console.completer.CandidateListCompletionHandler" not found

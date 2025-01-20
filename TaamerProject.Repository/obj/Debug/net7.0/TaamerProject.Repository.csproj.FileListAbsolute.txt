@@ -1,0 +1,17 @@
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Repository\bin\Debug\net7.0\TaamerProject.Repository.deps.json
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Repository\bin\Debug\net7.0\TaamerProject.Repository.runtimeconfig.json
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Repository\bin\Debug\net7.0\TaamerProject.Repository.dll
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Repository\bin\Debug\net7.0\TaamerProject.Repository.pdb
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Repository\bin\Debug\net7.0\TaamerProject.Models.dll
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Repository\bin\Debug\net7.0\TaamerProject.Models.pdb
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Repository\obj\Debug\net7.0\TaamerProject.Repository.csproj.AssemblyReference.cache
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Repository\obj\Debug\net7.0\TaamerProject.Repository.GeneratedMSBuildEditorConfig.editorconfig
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Repository\obj\Debug\net7.0\TaamerProject.Repository.AssemblyInfoInputs.cache
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Repository\obj\Debug\net7.0\TaamerProject.Repository.AssemblyInfo.cs
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Repository\obj\Debug\net7.0\TaamerProject.Repository.csproj.CoreCompileInputs.cache
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Repository\obj\Debug\net7.0\TaamerPr.C5D9FCAA.Up2Date
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Repository\obj\Debug\net7.0\TaamerProject.Repository.dll
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Repository\obj\Debug\net7.0\refint\TaamerProject.Repository.dll
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Repository\obj\Debug\net7.0\TaamerProject.Repository.pdb
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Repository\obj\Debug\net7.0\TaamerProject.Repository.genruntimeconfig.cache
+D:\Bayanatech\Web Application\APINew\Bayanatech.OnionArchitecture\TaamerProject.Repository\obj\Debug\net7.0\ref\TaamerProject.Repository.dll

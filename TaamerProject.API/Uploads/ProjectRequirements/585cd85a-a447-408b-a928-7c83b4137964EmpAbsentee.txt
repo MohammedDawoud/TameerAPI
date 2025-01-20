@@ -1,0 +1,48 @@
+USE [TameerProDB]
+GO
+
+/****** Object:  View [dbo].[View_EmpAbsentee]    Script Date: 6/22/2023 7:40:54 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+/*LEFT OUTER JOIN
+                 dbo.AbsencesReasonsLU ON Tabel_A.ResonAction = dbo.AbsencesReasonsLU.SER
+select * from Emp_Attendence where RealEmpId=1 
+SELECT        dbo.Emp_Attendence.RealEmpId
+                                                  FROM            dbo.Emp_Attendence RIGHT OUTER JOIN
+                                                                            dbo.Emp_CalendarTbl ON DATEADD(d, 0, DATEDIFF(d, 0, dbo.Emp_Attendence.CheckTime)) = dbo.Emp_CalendarTbl.Mdate
+                                                  WHERE        (dbo.Emp_Attendence.RealEmpId IS NOT NULL) AND ('2023-06-22' = dbo.Emp_CalendarTbl.Mdate) --AND (CAST(dbo.Emp_Attendence.AttendenceDate AS Date) NOT IN*/
+ALTER VIEW [dbo].[View_EmpAbsentee]
+AS
+SELECT        EmpNo, E_RealEmpId, E_FullName, Mdate, StMdate, DayNOfWeek, HjriDate, E_Active, E_Shift, E_EmpIdentity, E_Tel, E_StartYear, E_Gender, E_Address, E_BranchId, BranchName
+FROM            (SELECT        TOP (100) PERCENT E.EmpNo, E.EmpId AS E_RealEmpId, ISNULL(E.NameAr, ' ') AS E_FullName, FORMAT(C.Mdate, 'dd-MM-yyyy') AS StMdate, C.Mdate, C.DayNOfWeek, C.HjriDate, E.Active AS E_Active, 
+                                                    E.DawamId AS E_Shift, E.NationalId AS E_EmpIdentity, E.Address AS E_Address,
+                                                        (SELECT        NameAr
+                                                          FROM            dbo.Sys_Branches
+                                                          WHERE        (BranchId = E.BranchId)) AS BranchName, E.BranchId AS E_BranchId, E.Mobile AS E_Tel, CONVERT(Datetime, E.WorkStartDate, 120) AS E_StartYear, E.Gender AS E_Gender
+                          FROM            dbo.Emp_Employees AS E INNER JOIN
+                                                    dbo.Emp_CalendarTbl AS C ON CAST(CONVERT(Datetime, E.WorkStartDate, 120) AS date) <= CAST(C.Mdate AS date)
+                          WHERE        (E.IsDeleted = 0) AND (E.EndWorkDate IS NULL) AND (E.EmpId NOT IN
+                                                        (SELECT        dbo.Emp_Attendence.RealEmpId
+                                                          FROM            dbo.Emp_Attendence RIGHT OUTER JOIN
+                                                                                    dbo.Emp_CalendarTbl ON DATEADD(d, 0, DATEDIFF(d, 0, dbo.Emp_Attendence.CheckTime)) = dbo.Emp_CalendarTbl.Mdate
+                                                          WHERE        (dbo.Emp_Attendence.RealEmpId IS NOT NULL) AND (C.Mdate = dbo.Emp_CalendarTbl.Mdate) AND (CAST(dbo.Emp_Attendence.AttendenceDate AS Date) NOT IN
+                                                                                        (SELECT        CAST(Mdate AS Date) AS Expr1
+                                                                                          FROM            dbo.fn_GetVacationExtraDays(dbo.Emp_Attendence.RealEmpId) AS fn_GetVacationExtraDays_2)))) OR
+                                                    (E.IsDeleted = 0) AND (E.EmpId NOT IN
+                                                        (SELECT        Emp_Attendence_1.RealEmpId
+                                                          FROM            dbo.Emp_Attendence AS Emp_Attendence_1 RIGHT OUTER JOIN
+                                                                                    dbo.Emp_CalendarTbl AS Emp_CalendarTbl_1 ON DATEADD(d, 0, DATEDIFF(d, 0, Emp_Attendence_1.CheckTime)) = Emp_CalendarTbl_1.Mdate
+                                                          WHERE        (Emp_Attendence_1.RealEmpId IS NOT NULL) AND (C.Mdate = Emp_CalendarTbl_1.Mdate) AND (CAST(Emp_Attendence_1.AttendenceDate AS Date) NOT IN
+                                                                                        (SELECT        CAST(Mdate AS Date) AS Expr1
+                                                                                          FROM            dbo.fn_GetVacationExtraDays(Emp_Attendence_1.RealEmpId) AS fn_GetVacationExtraDays_1)))) AND (CAST(CONVERT(Datetime, E.EndWorkDate, 120) AS date) 
+                                                    >= CAST(C.Mdate AS date))
+                          GROUP BY E.EmpNo, E.EmpId, E.NameAr, C.Mdate, C.DayNOfWeek, C.HjriDate, E.Active, E.DawamId, E.NationalId, E.Address, E.BranchId, E.Mobile, CONVERT(Datetime, E.WorkStartDate, 120), E.Gender
+                          ORDER BY E.EmpNo, C.Mdate) AS Tabel_A
+GO
+
+
