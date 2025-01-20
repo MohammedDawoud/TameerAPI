@@ -61,16 +61,13 @@
 
   <ItemGroup>
     <Reference Include="Interop.zkemkeeper">
-      <HintPath>..\..\..\..\Configuration\dlls\Interop.zkemkeeper.dll</HintPath>
+      <HintPath>..\..\..\..\..\Configuration\dlls\Interop.zkemkeeper.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp">
       <HintPath>..\..\..\..\Configuration\dlls\zatcadllsnew\itextsharp.dll</HintPath>
     </Reference>
-    <Reference Include="itextsharp.pdfa">
-      <HintPath>..\..\..\..\Configuration\dlls\zatcadllsnew\itextsharp.pdfa.dll</HintPath>
-    </Reference>
     <Reference Include="SMSManagerDll">
-      <HintPath>..\..\..\..\Configuration\dlls\SMSManagerDll.dll</HintPath>
+      <HintPath>..\..\..\..\..\Configuration\dlls\SMSManagerDll.dll</HintPath>
     </Reference>
     <Reference Include="Spire.Doc">
       <HintPath>..\..\..\Configuration\dlls\Spire.Doc.dll</HintPath>

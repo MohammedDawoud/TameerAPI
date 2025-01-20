@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\TaamerProject.API.props" />
-</Project>

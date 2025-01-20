@@ -79,12 +79,10 @@
 
   <ItemGroup>
     <Reference Include="itextsharp">
-      <HintPath>../../../../Configuration\dlls\zatcadllsnew\itextsharp.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\..\..\..\Configuration\dlls\zatcadllsnew\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp.pdfa">
-		<HintPath>../../../../Configuration\dlls\zatcadllsnew\itextsharp.pdfa.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\..\..\..\Configuration\dlls\zatcadllsnew\itextsharp.pdfa.dll</HintPath>
     </Reference>
   </ItemGroup>
 

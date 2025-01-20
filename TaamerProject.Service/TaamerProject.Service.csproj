@@ -46,10 +46,10 @@
 
   <ItemGroup>
     <Reference Include="SMSManagerDll">
-      <HintPath>..\..\..\..\Configuration\dlls\SMSManagerDll.dll</HintPath>
+      <HintPath>..\..\..\..\..\Configuration\dlls\SMSManagerDll.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Extensions">
-      <HintPath>..\..\..\..\Configuration\dlls\System.Web.Extensions.dll</HintPath>
+      <HintPath>..\..\..\..\..\Configuration\dlls\System.Web.Extensions.dll</HintPath>
     </Reference>
   </ItemGroup>
 
