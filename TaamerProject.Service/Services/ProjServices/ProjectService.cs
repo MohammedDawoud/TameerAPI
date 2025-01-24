@@ -103,7 +103,7 @@ namespace TaamerProject.Service.Services
 
         public async Task<IEnumerable<ProjectVM>> GetAllProject(string Lang, int BranchId)
         {
-            var projects =await _ProjectRepository.GetAllProject(Lang, BranchId);
+            var projects = await _ProjectRepository.GetAllProject(Lang, BranchId);
             return projects;
         }
         public async Task<IEnumerable<ProjectVM>> GetAllProjectCustomerBranch(string Lang, int BranchId)
@@ -164,7 +164,7 @@ namespace TaamerProject.Service.Services
 
         public async Task<IEnumerable<ProjectVM>> GetAllProjectNumber(string SearchText, int BranchId)
         {
-            var projects =await _ProjectRepository.GetAllProjectNumber(SearchText, BranchId);
+            var projects = await _ProjectRepository.GetAllProjectNumber(SearchText, BranchId);
             return projects;
         }
         public async Task<IEnumerable<ProjectVM>> GetAllArchiveProject(int BranchId)
@@ -181,9 +181,9 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = Resources.General_SavedFailed;
-               _SystemAction.SaveAction("SaveProject", "ProjectService", 1, "Resources.ProjectNumberAlready", "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                _SystemAction.SaveAction("SaveProject", "ProjectService", 1, "Resources.ProjectNumberAlready", "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
-                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.ProjectNumberAlready };
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.ProjectNumberAlready };
             }
             try
             {
@@ -248,7 +248,7 @@ namespace TaamerProject.Service.Services
 
                     var ListOfPrivNotify = new List<Notification>();
                     var branch = _BranchesRepository.GetById(BranchId);
-                    var customer = _CustomerRepository.GetById(project.CustomerId??0);
+                    var customer = _CustomerRepository.GetById(project.CustomerId ?? 0);
                     var UserNotifPriv = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(3252).Result;
                     if (UserNotifPriv.Count() != 0)
                     {
@@ -261,7 +261,7 @@ namespace TaamerProject.Service.Services
                                 ListOfPrivNotify.Add(new Notification
                                 {
                                     ReceiveUserId = userCounter.UserId,
-                                    Name =@Resources.MNAcc_Invoice,
+                                    Name = @Resources.MNAcc_Invoice,
                                     Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
                                     HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
                                     SendUserId = 1,
@@ -283,7 +283,7 @@ namespace TaamerProject.Service.Services
                                 //-----------------------------------------------------------------------------------------------------------------
                                 string ActionDate4 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                                 string ActionNote4 = "فشل في ارسال اشعار لمن لدية صلاحية فاتورة";
-                                 _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate4, UserId, BranchId, ActionNote4, 0);
+                                _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate4, UserId, BranchId, ActionNote4, 0);
                                 //-----------------------------------------------------------------------------------------------------------------
                             }
 
@@ -332,7 +332,7 @@ namespace TaamerProject.Service.Services
                                 //-----------------------------------------------------------------------------------------------------------------
                                 string ActionDate5 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                                 string ActionNote5 = "فشل في ارسال ميل لمن لدية صلاحية فاتورة";
-                                 _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate5, UserId, BranchId, ActionNote5, 0);
+                                _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate5, UserId, BranchId, ActionNote5, 0);
                                 //-----------------------------------------------------------------------------------------------------------------
                             }
 
@@ -346,7 +346,7 @@ namespace TaamerProject.Service.Services
                         {
                             try
                             {
-                                var userObj = _usersRepository.GetById(userCounter.UserId??0);
+                                var userObj = _usersRepository.GetById(userCounter.UserId ?? 0);
                                 var NotStr = " المستخدم " + userCounter.FullName + " تم اصدار فاتورة لمشروع رقم " + project.ProjectNo + " للعميل " + customer.CustomerNameAr + " فرع " + branch.NameAr;
                                 if (userObj.Mobile != null && userObj.Mobile != "")
                                 {
@@ -358,7 +358,7 @@ namespace TaamerProject.Service.Services
                                 //-----------------------------------------------------------------------------------------------------------------
                                 string ActionDate6 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                                 string ActionNote6 = "فشل في ارسال SMS لمن لدية صلاحية فاتورة";
-                                 _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate6, UserId, BranchId, ActionNote6, 0);
+                                _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate6, UserId, BranchId, ActionNote6, 0);
                                 //-----------------------------------------------------------------------------------------------------------------
                             }
 
@@ -384,7 +384,7 @@ namespace TaamerProject.Service.Services
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate7 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                     string ActionNote7 = "فشل في حفظ العاملين علي المشروع";
-                     _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate7, UserId, BranchId, ActionNote7, 0);
+                    _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate7, UserId, BranchId, ActionNote7, 0);
                     //-----------------------------------------------------------------------------------------------------------------
                 }
                 WhichPart = "Part (7)";
@@ -434,7 +434,7 @@ namespace TaamerProject.Service.Services
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate8 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                     string ActionNote8 = "فشل في حفظ مركز تكلفة للمشروع";
-                     _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate8, UserId, BranchId, ActionNote8, 0);
+                    _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate8, UserId, BranchId, ActionNote8, 0);
                     //-----------------------------------------------------------------------------------------------------------------
                 }
                 WhichPart = "Part (9)";
@@ -443,20 +443,20 @@ namespace TaamerProject.Service.Services
                 WhichPart = "Part (10)";
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                string ActionNote = "اضافة مشروع جديد" +"برقم" + project.ProjectNo;
-                 _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                string ActionNote = "اضافة مشروع جديد" + "برقم" + project.ProjectNo;
+                _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully, ReturnedStr = project.ProjectId.ToString() };
             }
             catch (Exception ex)
             {
-                SendMail_ProjectSavedWrong(BranchId, WhichPart +" "+ex.Message + ">>>>" + ex.InnerException, false);
+                SendMail_ProjectSavedWrong(BranchId, WhichPart + " " + ex.Message + ">>>>" + ex.InnerException, false);
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = "فشل في حفظ المشروع";
-                 _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
-                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed,ReturnedStr= WhichPart + " " + ex.Message + ">>>>" + ex.InnerException };
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed, ReturnedStr = WhichPart + " " + ex.Message + ">>>>" + ex.InnerException };
             }
         }
 
@@ -471,10 +471,10 @@ namespace TaamerProject.Service.Services
                 var email = "noreply-tameer@bayanatech.com.sa";
                 var password = "eA4LQkrbQdCm5jqt";
                 var loginInfo = new NetworkCredential(email, password);
-                mail.From = new MailAddress(email, "TAMEER-CLOUD-SYSTEM"); 
+                mail.From = new MailAddress(email, "TAMEER-CLOUD-SYSTEM");
 
                 mail.To.Add(new MailAddress("mohammeddawoud66@gmail.com"));
-                mail.Subject = "فشل حفظ مشروع "+" "+ Org.NameAr;
+                mail.Subject = "فشل حفظ مشروع " + " " + Org.NameAr;
 
                 mail.Body = textBody;
                 mail.IsBodyHtml = IsBodyHtml;
@@ -504,10 +504,10 @@ namespace TaamerProject.Service.Services
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                     string ActionNote2 = "فشل في الترحيل";
-                     _SystemAction.SaveAction("PostProjects", "ProjectService", 1, Resources.choosefinYear, "", "", ActionDate2, Convert.ToInt32(MangerId), BranchId, ActionNote2, 0);
+                    _SystemAction.SaveAction("PostProjects", "ProjectService", 1, Resources.choosefinYear, "", "", ActionDate2, Convert.ToInt32(MangerId), BranchId, ActionNote2, 0);
                     //-----------------------------------------------------------------------------------------------------------------
 
-                    return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.choosefinYear };
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.choosefinYear };
                 }
                 int CountNMora7l = 0;
                 int CountMora7l = 0;
@@ -517,7 +517,7 @@ namespace TaamerProject.Service.Services
                     var postedProject = _ProjectRepository.GetById(Convert.ToInt32(ProjectIds[i]));
 
                     CountNMora7l += 1;
-                    postedProject.MangerId =Convert.ToInt32(MangerId);
+                    postedProject.MangerId = Convert.ToInt32(MangerId);
                     _TaamerProContext.SaveChanges();
                 }
 
@@ -527,7 +527,7 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = "تم الترحيل بنجاح";
-                 _SystemAction.SaveAction("PostProjects", "ProjectService", 2, Message, "", "", ActionDate, Convert.ToInt32(MangerId), BranchId, ActionNote, 1);
+                _SystemAction.SaveAction("PostProjects", "ProjectService", 2, Message, "", "", ActionDate, Convert.ToInt32(MangerId), BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
 
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Message };
@@ -537,10 +537,10 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = "فشل في الترحيل ";
-                 _SystemAction.SaveAction("PostProjects", "ProjectService", 1, "Resources.PostesFailed", "", "", ActionDate, Convert.ToInt32(MangerId), BranchId, ActionNote, 0);
+                _SystemAction.SaveAction("PostProjects", "ProjectService", 1, "Resources.PostesFailed", "", "", ActionDate, Convert.ToInt32(MangerId), BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
 
-                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.PostesFailed };
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.PostesFailed };
             }
         }
 
@@ -556,7 +556,7 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = " حذف المشروع رقم " + projectId;
-                 _SystemAction.SaveAction("DeleteProject", "ProjectService", 3, Resources.General_DeletedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                _SystemAction.SaveAction("DeleteProject", "ProjectService", 3, Resources.General_DeletedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_DeletedSuccessfully };
             }
@@ -565,9 +565,9 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = " فشل في حذف المشروع رقم " + projectId; ;
-                 _SystemAction.SaveAction("DeleteProject", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                _SystemAction.SaveAction("DeleteProject", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
-                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_DeletedFailed };
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_DeletedFailed };
             }
         }
 
@@ -579,11 +579,11 @@ namespace TaamerProject.Service.Services
                 var customerObj = _CustomerRepository.GetById(CustomerId);
                 var projectObj = _ProjectRepository.GetById(ProjectId);
 
-                if (customerObj!=null)
+                if (customerObj != null)
                 {
-                    var Desc = "تم انشاء مشروع رقم"+" "+ projectObj.ProjectNo+" "+"للعميل"+" "+ customerObj.CustomerNameAr;
+                    var Desc = "تم انشاء مشروع رقم" + " " + projectObj.ProjectNo + " " + "للعميل" + " " + customerObj.CustomerNameAr;
                     var Subject = "إشعار بإنشاء المشروع";
-                    if(TypeId==1 || TypeId == 3)
+                    if (TypeId == 1 || TypeId == 3)
                     {
                         if (customerObj.CustomerEmail != null && customerObj.CustomerEmail != "")
                         {
@@ -617,7 +617,7 @@ namespace TaamerProject.Service.Services
                 }
 
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                string ActionNote = "ارسال ايميل و رسالة للعميل" ;
+                string ActionNote = "ارسال ايميل و رسالة للعميل";
                 _SystemAction.SaveAction("DeleteProject", "ProjectService", 3, Resources.Gerneral_send, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.Gerneral_send };
@@ -652,7 +652,7 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = " حذف المشروع رقم " + projectId;
-                 _SystemAction.SaveAction("DeleteProject", "ProjectService", 3, Resources.General_DeletedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                _SystemAction.SaveAction("DeleteProject", "ProjectService", 3, Resources.General_DeletedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_DeletedSuccessfully };
             }
@@ -661,18 +661,19 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = " فشل في حذف المشروع رقم " + projectId; ;
-                 _SystemAction.SaveAction("DeleteProject", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                _SystemAction.SaveAction("DeleteProject", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
-                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_DeletedFailed };
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_DeletedFailed };
             }
         }
-        public GeneralMessage UpdateProjectnoSpaces( int UserId, int BranchId)
+        public GeneralMessage UpdateProjectnoSpaces(int UserId, int BranchId)
         {
             try
             {
                 var AllProjects = _TaamerProContext.Project.Where(s => s.IsDeleted == false).ToList();
 
-                foreach (var Project in AllProjects) {
+                foreach (var Project in AllProjects)
+                {
                     Project.ProjectNo = Project.ProjectNo.Trim();
                 }
                 _TaamerProContext.SaveChanges();
@@ -698,9 +699,9 @@ namespace TaamerProject.Service.Services
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                     string ActionNote = " فشل في حذف المشروع رقم " + projectId; ;
-                     _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                    _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                     //-----------------------------------------------------------------------------------------------------------------
-                    return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_C };
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_C };
                 }
                 else
                 {
@@ -715,9 +716,9 @@ namespace TaamerProject.Service.Services
                             //-----------------------------------------------------------------------------------------------------------------
                             string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                             string ActionNote = " فشل في حذف المشروع رقم " + projectId; ;
-                             _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                            _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                             //-----------------------------------------------------------------------------------------------------------------
-                            return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_P };
+                            return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_P };
 
                         }
 
@@ -729,9 +730,9 @@ namespace TaamerProject.Service.Services
                                 //-----------------------------------------------------------------------------------------------------------------
                                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                                 string ActionNote = " فشل في حذف المشروع رقم " + projectId; ;
-                                 _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                                _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                                 //-----------------------------------------------------------------------------------------------------------------
-                                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_F };
+                                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_F };
                             }
                             else
                             {
@@ -743,9 +744,9 @@ namespace TaamerProject.Service.Services
                                     //-----------------------------------------------------------------------------------------------------------------
                                     string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                                     string ActionNote2 = " فشل في حذف المشروع رقم " + projectId; ;
-                                     _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                                    _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
                                     //-----------------------------------------------------------------------------------------------------------------
-                                    return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_F };
+                                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_F };
                                 }
 
                                 var CostCenterProject = _CostCenterRepository.GetMatching(s => s.IsDeleted == false && s.ProjId == projectId).FirstOrDefault();
@@ -758,9 +759,9 @@ namespace TaamerProject.Service.Services
                                         //-----------------------------------------------------------------------------------------------------------------
                                         string ActionDate4 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                                         string ActionNote4 = " فشل في حذف المشروع رقم " + projectId; ;
-                                         _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate4, UserId, BranchId, ActionNote4, 0);
+                                        _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate4, UserId, BranchId, ActionNote4, 0);
                                         //-----------------------------------------------------------------------------------------------------------------
-                                        return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_F };
+                                        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_F };
                                     }
                                     else
                                     {
@@ -790,7 +791,7 @@ namespace TaamerProject.Service.Services
                                 //-----------------------------------------------------------------------------------------------------------------
                                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                                 string ActionNote = " حذف المشروع رقم " + projectId;
-                                 _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                                _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                                 //-----------------------------------------------------------------------------------------------------------------
                                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_DeletedSuccessfully };
 
@@ -807,9 +808,9 @@ namespace TaamerProject.Service.Services
                                 //-----------------------------------------------------------------------------------------------------------------
                                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                                 string ActionNote = " فشل في حذف المشروع رقم " + projectId; ;
-                                 _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                                _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                                 //-----------------------------------------------------------------------------------------------------------------
-                                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_P };
+                                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_P };
 
 
                             }
@@ -831,7 +832,7 @@ namespace TaamerProject.Service.Services
                                 //-----------------------------------------------------------------------------------------------------------------
                                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                                 string ActionNote = " حذف المشروع رقم " + projectId;
-                                 _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                                _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                                 //-----------------------------------------------------------------------------------------------------------------
                                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_DeletedSuccessfully };
                             }
@@ -846,9 +847,9 @@ namespace TaamerProject.Service.Services
                             //-----------------------------------------------------------------------------------------------------------------
                             string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                             string ActionNote = " فشل في حذف المشروع رقم " + projectId; ;
-                             _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                            _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                             //-----------------------------------------------------------------------------------------------------------------
-                            return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_F };
+                            return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_F };
                         }
                         else
                         {
@@ -862,9 +863,9 @@ namespace TaamerProject.Service.Services
                                     //-----------------------------------------------------------------------------------------------------------------
                                     string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                                     string ActionNote2 = " فشل في حذف المشروع رقم " + projectId; ;
-                                     _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                                    _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
                                     //-----------------------------------------------------------------------------------------------------------------
-                                    return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_F };
+                                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_F };
                                 }
                             }
                             proj.IsDeleted = true;
@@ -883,7 +884,7 @@ namespace TaamerProject.Service.Services
                             //-----------------------------------------------------------------------------------------------------------------
                             string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                             string ActionNote = " حذف المشروع رقم " + projectId;
-                             _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                            _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                             //-----------------------------------------------------------------------------------------------------------------
                             return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_DeletedSuccessfully };
 
@@ -900,9 +901,9 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = " فشل في حذف المشروع رقم " + projectId; ;
-                 _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                _SystemAction.SaveAction("DeleteProjectNEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
-                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_DeletedFailed };
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_DeletedFailed };
             }
         }
 
@@ -916,9 +917,9 @@ namespace TaamerProject.Service.Services
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate1 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                     string ActionNote1 = " فشل في حذف المشروع رقم " + projectId; ;
-                     _SystemAction.SaveAction("DeleteAllProject_NEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate1, UserId, BranchId, ActionNote1, 0);
+                    _SystemAction.SaveAction("DeleteAllProject_NEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate1, UserId, BranchId, ActionNote1, 0);
                     //-----------------------------------------------------------------------------------------------------------------
-                    return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_C };
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_C };
                 }
 
                 int InvoiceCount = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.ProjectId == projectId && s.IsPost == false).Count();
@@ -927,9 +928,9 @@ namespace TaamerProject.Service.Services
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                     string ActionNote2 = " فشل في حذف المشروع رقم " + projectId; ;
-                     _SystemAction.SaveAction("DeleteAllProject_NEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                    _SystemAction.SaveAction("DeleteAllProject_NEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
                     //-----------------------------------------------------------------------------------------------------------------
-                    return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase =Resources.FailedDeletedProject_F };
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_F };
                 }
 
                 int InvoiceCount2 = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.ProjectId == projectId && s.Rad == false).Count();
@@ -938,9 +939,9 @@ namespace TaamerProject.Service.Services
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                     string ActionNote2 = " فشل في حذف المشروع رقم " + projectId; ;
-                     _SystemAction.SaveAction("DeleteAllProject_NEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                    _SystemAction.SaveAction("DeleteAllProject_NEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
                     //-----------------------------------------------------------------------------------------------------------------
-                    return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_F };
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_F };
                 }
 
                 var CostCenterProject = _CostCenterRepository.GetMatching(s => s.IsDeleted == false && s.ProjId == projectId).FirstOrDefault();
@@ -953,9 +954,9 @@ namespace TaamerProject.Service.Services
                         //-----------------------------------------------------------------------------------------------------------------
                         string ActionDate4 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                         string ActionNote4 = " فشل في حذف المشروع رقم " + projectId; ;
-                         _SystemAction.SaveAction("DeleteAllProject_NEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate4, UserId, BranchId, ActionNote4, 0);
+                        _SystemAction.SaveAction("DeleteAllProject_NEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate4, UserId, BranchId, ActionNote4, 0);
                         //-----------------------------------------------------------------------------------------------------------------
-                        return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_F };
+                        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.FailedDeletedProject_F };
                     }
                     else
                     {
@@ -965,7 +966,7 @@ namespace TaamerProject.Service.Services
                     }
                 }
 
-               var tskremov= _TaamerProContext.ProjectPhasesTasks.Where(s => s.ProjectId == projectId);
+                var tskremov = _TaamerProContext.ProjectPhasesTasks.Where(s => s.ProjectId == projectId);
                 _TaamerProContext.ProjectPhasesTasks.RemoveRange(tskremov);
                 proj.IsDeleted = true;
                 proj.DeleteDate = DateTime.Now;
@@ -975,7 +976,7 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = " حذف المشروع رقم " + projectId;
-                 _SystemAction.SaveAction("DeleteAllProject_NEW", "ProjectService", 3, Resources.General_DeletedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                _SystemAction.SaveAction("DeleteAllProject_NEW", "ProjectService", 3, Resources.General_DeletedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_DeletedSuccessfully };
 
@@ -985,9 +986,9 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = " فشل في حذف المشروع رقم " + projectId; ;
-                 _SystemAction.SaveAction("DeleteAllProject_NEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                _SystemAction.SaveAction("DeleteAllProject_NEW", "ProjectService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
-                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_DeletedFailed};
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_DeletedFailed };
             }
         }
         private string DecryptValue(string value)
@@ -1009,7 +1010,7 @@ namespace TaamerProject.Service.Services
         {
             try
             {
-                var UserV=_TaamerProContext.Users.Where(s => s.UserId == UserId && s.IsDeleted == false).FirstOrDefault();
+                var UserV = _TaamerProContext.Users.Where(s => s.UserId == UserId && s.IsDeleted == false).FirstOrDefault();
                 var pass = DecryptValue(UserV!.Password);
                 if (pass != password)
                 {
@@ -1072,8 +1073,8 @@ namespace TaamerProject.Service.Services
                     CostCenterProject.DeleteDate = DateTime.Now;
                     CostCenterProject.DeleteUser = UserId;
                 }
-                var voucherList = _TaamerProContext.VoucherDetails.Where(s => s.IsDeleted == false && s.CostCenterId == CostCenterProject.CostCenterId 
-                && (s.Invoices.Type==5 || s.Invoices.Type == 6 || s.Invoices.Type == 8 ) && s.Invoices.Rad == false).ToList();
+                var voucherList = _TaamerProContext.VoucherDetails.Where(s => s.IsDeleted == false && s.CostCenterId == CostCenterProject.CostCenterId
+                && (s.Invoices.Type == 5 || s.Invoices.Type == 6 || s.Invoices.Type == 8) && s.Invoices.Rad == false).ToList();
                 var invoiceDaily = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.CostCenterId == CostCenterProject.CostCenterId
                 && (s.Type == 8) && s.Rad == false).ToList();
                 var tskremov = _TaamerProContext.ProjectPhasesTasks.Where(s => s.ProjectId == projectId);
@@ -1086,7 +1087,8 @@ namespace TaamerProject.Service.Services
                 foreach (var detaile in voucherList)
                 {
                     var voucher = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.InvoiceId == detaile.InvoiceId).FirstOrDefault();
-                    if (voucher != null) {
+                    if (voucher != null)
+                    {
                         voucher.IsDeleted = true;
                         voucher.DeleteDate = DateTime.Now;
                         voucher.DeleteUser = UserId;
@@ -1169,12 +1171,12 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public GeneralMessage DestinationsUploadProject(int projectId,int status, int UserId, int BranchId)
+        public GeneralMessage DestinationsUploadProject(int projectId, int status, int UserId, int BranchId)
         {
             try
             {
                 Project proj = _ProjectRepository.GetById(projectId);
-                if(proj!=null)
+                if (proj != null)
                 {
                     proj.DestinationsUpload = status;
                     proj.UpdateUser = UserId;
@@ -1208,10 +1210,11 @@ namespace TaamerProject.Service.Services
         {
             try
             {
+                List<int> usersnote = new List<int>();
+
                 Project proj = _ProjectRepository.GetById(projectId);
                 var customer = _CustomerRepository.GetById(proj.CustomerId ?? 0);
 
-                Users user = _usersRepository.GetById(proj.MangerId ?? 0);
                 var branch = _BranchesRepository.GetById(BranchId);
                 proj.StopProjectType = 1;
                 proj.StopProjectDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
@@ -1224,26 +1227,42 @@ namespace TaamerProject.Service.Services
                 {
                     phase.Status = 3;
                     phase.StopCount += 1;
+                    usersnote.Add(phase.UserId.Value);
                 }
                 var ListOfPrivNotify = new List<Notification>();
 
 
                 try
                 {
-                    var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(proj.MangerId ?? 0).Result;
-                    if (UserNotifPriv.Count() != 0)
+                    usersnote.Add(proj.MangerId.Value);
+                    var worker = _TaamerProContext.ProUserPrivileges
+                         .Where(x => x.ProjectID == projectId)
+                         .Select(x => x.UserId)
+                         .Where(id => id.HasValue)  // Filters non-null values if UserId is int?
+                         .Select(id => id.Value)    // Converts int? to int
+                         .ToList();
+
+                    usersnote.AddRange(worker);
+                    //var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(proj.MangerId ?? 0).Result;
+                    if (usersnote.Count() != 0)
                     {
-                        if (UserNotifPriv.Contains(332))
+                        var manager = _usersRepository.GetById(proj.MangerId.Value);
+                        var updatetduse = _usersRepository.GetById(UserId);
+
+                        foreach (var usr in usersnote.Distinct())
                         {
+
+                            Users user = _usersRepository.GetById(usr);
+
                             ListOfPrivNotify.Add(new Notification
                             {
-                                ReceiveUserId = proj.MangerId,
+                                ReceiveUserId = usr,
                                 Name = "Resources.Pro_Projectmanagement",
                                 Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
                                 HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
                                 SendUserId = 1,
                                 Type = 1,
-                                Description = " المستخدم : " + user.FullName + " تم ايقاف مشروع رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + " فرع  " + branch.NameAr + "",
+                                Description = " تم ايقاف مشروع رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + " فرع  " + branch.NameAr + "",
                                 AllUsers = false,
                                 SendDate = DateTime.Now,
                                 ProjectId = projectId,
@@ -1255,14 +1274,13 @@ namespace TaamerProject.Service.Services
                                 NextTime = null,
                             });
                             _TaamerProContext.Notification.AddRange(ListOfPrivNotify);
-                            _notificationService.sendmobilenotification(proj.MangerId??0, "Resources.Pro_Projectmanagement", " المستخدم : " + user.FullName + " تم ايقاف مشروع رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + " فرع  " + branch.NameAr + "");
-
-                        }
-                        var htmlBody = "";
+                            _notificationService.sendmobilenotification(usr, "ايقاف مشروع", "  تم ايقاف مشروع رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + " فرع  " + branch.NameAr + " مدير المشروع  " + manager.FullNameAr + "");
 
 
-                        if (UserNotifPriv.Contains(331))
-                        {
+                            var htmlBody = "";
+
+                            //if (UserNotifPriv.Contains(331))
+                            //{
                             var Desc = "السيد / ة  " + user.FullName + "المحترم  " + "<br/>" + "السلام عليكم ورحمة الله وبركاتة " + "<br/>" + "<h2> نشعركم بايقاف المشروع </h2>" + " رقم المشروع  " + proj.ProjectNo + "<br/>" + " للعميل  " + customer.CustomerNameAr + "<br/>" + "مع تحيات قسم ادارة المشاريع";
 
 
@@ -1274,39 +1292,56 @@ namespace TaamerProject.Service.Services
                                                 <table style=' border: 1px solid black; border-collapse: collapse;' align='center'>
                                                   <tr>
                                                     <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>رقم المشروع</th>
-                                                    <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>اسم العميل</th>
+                                                    <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + proj.ProjectNo + @"</td>
                                                   </tr>
                                                     <tr>
-                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + proj.ProjectNo + @"</td>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>اسم العميل</td>
                                                       <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + customer.CustomerNameAr + @"</td>
+                                              
+                                                    </tr>
+                                                    <tr>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>مدير المشروع </td>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + manager.FullNameAr + @"</td>
+                                              
+                                                    </tr>
+       
+                                                                <tr>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>تاريخ الايقاف  </td>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + DateTime.Now.Date + @"</td>
+                                              
+                                                    </tr>
+                                                                     <tr>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>تم الايقاف بواسطة  </td>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + updatetduse.FullNameAr + @"</td>
                                               
                                                     </tr>
                                                 </table>
                                             </body>
                                             </html>";
                             //SendMailNoti(projectId, Desc, "ايقاف مشروع", BranchId, UserId, proj.MangerId ?? 0);
-                            SendMail_ProjectStamp(BranchId, UserId, proj.MangerId ?? 0, "ايقاف مشروع", htmlBody, Url, ImgUrl, 1, true);
+                            SendMail_ProjectStamp(BranchId, UserId, usr, "ايقاف مشروع", htmlBody, Url, ImgUrl, 1, true);
 
 
-                        }
-                        if (UserNotifPriv.Contains(333))
-                        {
+                            //}
+                            //if (UserNotifPriv.Contains(333))
+                            //{
                             //var userObj = _usersRepository.GetById(proj.MangerId);
                             var NotStr = "Dear : " + user.FullName + " Project No " + proj.ProjectNo + " For Customer " + customer.CustomerNameAr + " has Stopped ";
                             if (user.Mobile != null && user.Mobile != "")
                             {
                                 var result = _userNotificationPrivilegesService.SendSMS(user.Mobile, NotStr, UserId, BranchId);
                             }
+                            //}
                         }
-
                     }
+
                 }
                 catch (Exception)
                 {
 
                     throw;
                 }
-                if(whichClickDesc!=0)
+                if (whichClickDesc != 0)
                 {
                     SendGeneralCustomerEmailandSMS(customer, proj, TypeId, UserId, BranchId, whichClickDesc);
                 }
@@ -1316,7 +1351,7 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = "ايقاف المشروع مؤقتا";
-                 _SystemAction.SaveAction("StopProject", "ProjectService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                _SystemAction.SaveAction("StopProject", "ProjectService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.project_has_been_temporarily_suspended };
             }
@@ -1325,9 +1360,9 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = "فشل في ايقاف المشروع مؤقتا";
-                 _SystemAction.SaveAction("StopProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                _SystemAction.SaveAction("StopProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
-                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.project_has_been_temporarily_suspended };
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.project_has_been_temporarily_suspended };
             }
         }
 
@@ -1359,8 +1394,9 @@ namespace TaamerProject.Service.Services
             {
                 Project proj = _ProjectRepository.GetById(projectId);
                 var customer = _CustomerRepository.GetById(proj.CustomerId ?? 0);
-                Users user = _usersRepository.GetById(proj.MangerId ?? 0);
+                //Users user = _usersRepository.GetById(proj.MangerId ?? 0);
                 var branch = _BranchesRepository.GetById(BranchId);
+                List<int> usersnote = new List<int>();
 
                 proj.StopProjectType = 0;
                 proj.UpdateUser = UserId;
@@ -1408,26 +1444,43 @@ namespace TaamerProject.Service.Services
                 foreach (var phase in phasesTasks)
                 {
                     phase.Status = 2;
+                    usersnote.Add(phase.UserId.Value);
+
                 }
 
                 try
                 {
                     var ListOfPrivNotify = new List<Notification>();
-                    var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(proj.MangerId ?? 0).Result;
-                    if (UserNotifPriv.Count() != 0)
+                    //var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(proj.MangerId ?? 0).Result;
+                    usersnote.Add(proj.MangerId.Value);
+                    var worker = _TaamerProContext.ProUserPrivileges
+                         .Where(x => x.ProjectID == projectId)
+                         .Select(x => x.UserId)
+                         .Where(id => id.HasValue)  // Filters non-null values if UserId is int?
+                         .Select(id => id.Value)    // Converts int? to int
+                         .ToList();
+
+                    usersnote.AddRange(worker);
+                    //var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(proj.MangerId ?? 0).Result;
+                    if (usersnote.Count() != 0)
                     {
-                        if (UserNotifPriv.Contains(342))
+                        var manager = _usersRepository.GetById(proj.MangerId.Value);
+                        var updatetduse = _usersRepository.GetById(UserId);
+
+                        foreach (var usr in usersnote.Distinct())
                         {
+
+                            Users user = _usersRepository.GetById(usr);
 
                             ListOfPrivNotify.Add(new Notification
                             {
-                                ReceiveUserId = proj.MangerId,
+                                ReceiveUserId = usr,
                                 Name = "Resources.Pro_Projectmanagement",
                                 Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
                                 HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
                                 SendUserId = 1,
                                 Type = 1, // notification
-                                Description = " المستخدم : " + user.FullName + " تم تشغيل مشروع رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + " فرع  " + branch.NameAr + "",
+                                Description = " تم تشغيل مشروع رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + " فرع  " + branch.NameAr + "",
                                 AllUsers = false,
                                 SendDate = DateTime.Now,
                                 ProjectId = projectId,
@@ -1440,14 +1493,12 @@ namespace TaamerProject.Service.Services
                             });
 
                             _TaamerProContext.Notification.AddRange(ListOfPrivNotify);
-                            _notificationService.sendmobilenotification(proj.MangerId??0, "Resources.Pro_Projectmanagement", " المستخدم : " + user.FullName + " تم تشغيل مشروع رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + " فرع  " + branch.NameAr + "");
-                        }
-                        var htmlBody = "";
+                            _notificationService.sendmobilenotification(usr, "اعادة تشغيل مشروع", " تم تشغيل مشروع رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + " فرع  " + branch.NameAr + "");
 
-                        if (UserNotifPriv.Contains(341))
-                        {
+                            var htmlBody = "";
 
-                            var Desc = "Dear : " + user.FullName + " Project No " + proj.ProjectNo + " For Customer " + customer.CustomerNameAr + " has working ";
+
+                            //var Desc = "Dear : " + user.FullName + " Project No " + proj.ProjectNo + " For Customer " + customer.CustomerNameAr + " has working ";
 
 
 
@@ -1459,34 +1510,52 @@ namespace TaamerProject.Service.Services
                                                 <table style=' border: 1px solid black; border-collapse: collapse;' align='center'>
                                                   <tr>
                                                     <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>رقم المشروع</th>
-                                                    <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>اسم العميل</th>
+                                                    <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + proj.ProjectNo + @"</td>
                                                   </tr>
                                                     <tr>
-                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + proj.ProjectNo + @"</td>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>اسم العميل</td>
                                                       <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + customer.CustomerNameAr + @"</td>
+                                              
+                                                    </tr>
+                                                    <tr>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>مدير المشروع </td>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + manager.FullNameAr + @"</td>
+                                              
+                                                    </tr>
+       
+                                                                <tr>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>تاريخ التشغيل  </td>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + DateTime.Now.Date + @"</td>
+                                              
+                                                    </tr>
+                                                                     <tr>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>تم التشغيل بواسطة  </td>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + updatetduse.FullNameAr + @"</td>
                                               
                                                     </tr>
                                                 </table>
                                             </body>
                                             </html>";
                             //SendMailNoti(projectId, Desc, "ايقاف مشروع", BranchId, UserId, proj.MangerId ?? 0);
-                            SendMail_ProjectStamp(BranchId, UserId, proj.MangerId ?? 0, "تشغيل مشروع", htmlBody, Url, ImgUrl, 2, true);
+                            SendMail_ProjectStamp(BranchId, UserId, usr, "اعادة تشغيل مشروع", htmlBody, Url, ImgUrl, 2, true);
 
 
 
                             //SendMailNoti(projectId, Desc, "تشغيل مشروع", BranchId, UserId, proj.MangerId ?? 0);
-                        }
-                        if (UserNotifPriv.Contains(343))
-                        {
+                            //}
+                            //if (UserNotifPriv.Contains(343))
+                            //{
                             //var userObj = _usersRepository.GetById(userCounter.UserId);
                             var NotStr = "Dear : " + user.FullName + " Project No " + proj.ProjectNo + " For Customer " + customer.CustomerNameAr + " has working ";
                             if (user.Mobile != null && user.Mobile != "")
                             {
                                 var result = _userNotificationPrivilegesService.SendSMS(user.Mobile, NotStr, UserId, BranchId);
                             }
+                            //}
                         }
-
                     }
+
+
                 }
                 catch (Exception ex)
                 {
@@ -1502,7 +1571,7 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = "تشغيل المشروع ";
-                 _SystemAction.SaveAction("PlayProject", "ProjectService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                _SystemAction.SaveAction("PlayProject", "ProjectService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
             }
@@ -1511,9 +1580,9 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = "فشل في تشغيل المشروع";
-                 _SystemAction.SaveAction("PlayProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                _SystemAction.SaveAction("PlayProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
-                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
 
@@ -1695,7 +1764,7 @@ namespace TaamerProject.Service.Services
             //-----------------------------------------------------------------------------------------------------------------
             string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
             string ActionNote = "حفظ تفاصيل المشروع " + projectUpdated.ProjectNo;
-             _SystemAction.SaveAction("SaveProjectDetails", "ProjectService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+            _SystemAction.SaveAction("SaveProjectDetails", "ProjectService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
             //-----------------------------------------------------------------------------------------------------------------
             return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully, ReturnedParm = projectUpdated.ProjectTypeId };
 
@@ -1727,11 +1796,11 @@ namespace TaamerProject.Service.Services
         }
         public async Task<IEnumerable<ProjectVM>> GetUserProjectsReport(int? UserId, int? CustomerId, int BranchId, string DateFrom, string DateTo)
         {
-            var projects = await _ProjectRepository.GetUserProjectsReport(UserId,CustomerId, BranchId, DateFrom, DateTo);
+            var projects = await _ProjectRepository.GetUserProjectsReport(UserId, CustomerId, BranchId, DateFrom, DateTo);
             return projects;
         }
 
-        public async Task<IEnumerable<ProjectVM>> GetUserProjectsReport(int? UserId, int? CustomerId, int BranchId, string DateFrom, string DateTo,string? Searchtext)
+        public async Task<IEnumerable<ProjectVM>> GetUserProjectsReport(int? UserId, int? CustomerId, int BranchId, string DateFrom, string DateTo, string? Searchtext)
         {
             var projects = await _ProjectRepository.GetUserProjectsReport(UserId, CustomerId, BranchId, DateFrom, DateTo, Searchtext);
             return projects;
@@ -1765,7 +1834,7 @@ namespace TaamerProject.Service.Services
 
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "" };
             }
-            return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "" };
+            return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "" };
 
         }
 
@@ -1824,7 +1893,7 @@ namespace TaamerProject.Service.Services
         {
             try
             {
-                if(Reasontype!=3)
+                if (Reasontype != 3)
                 {
                     var projectContracts = _TaamerProContext.Contracts.Where(s => s.IsDeleted == false && s.ProjectId == projectId);
                     foreach (var item in projectContracts)
@@ -1841,7 +1910,7 @@ namespace TaamerProject.Service.Services
                         }
                     }
 
-                    var InvoiceCount = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.ProjectId == projectId && s.IsPost == false && s.Type==2);
+                    var InvoiceCount = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.ProjectId == projectId && s.IsPost == false && s.Type == 2);
                     if (InvoiceCount.Count() > 0)
                     {
                         //-----------------------------------------------------------------------------------------------------------------
@@ -1904,7 +1973,7 @@ namespace TaamerProject.Service.Services
                         UserNotification.NextTime = null;
                         UserNotification.AddDate = DateTime.Now;
                         _TaamerProContext.Notification.Add(UserNotification);
-                        _notificationService.sendmobilenotification(proj.MangerId??0, Resources.FinishProject, "تم انهاء و تحويل  المشروع رقم  : " + proj.ProjectNo + " من جاري الي الارشيف  ");
+                        _notificationService.sendmobilenotification(proj.MangerId ?? 0, Resources.FinishProject, "تم انهاء و تحويل  المشروع رقم  : " + proj.ProjectNo + " من جاري الي الارشيف  ");
 
                     }
                     var body = "";
@@ -1920,7 +1989,7 @@ namespace TaamerProject.Service.Services
                     }
                     if (UserNotifPriv.Contains(3233))
                     {
-                        var userObj = _usersRepository.GetById(proj.MangerId??0);
+                        var userObj = _usersRepository.GetById(proj.MangerId ?? 0);
                         var NotStr = formattedDate + " بتاريخ " + " من جاري الي الارشيف " + proj.ProjectNo + " انهاء و تحويل المشروع  ";
                         if (userObj.Mobile != null && userObj.Mobile != "")
                         {
@@ -1943,8 +2012,8 @@ namespace TaamerProject.Service.Services
                 _TaamerProContext.SaveChanges();
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                string ActionNote = " انهاء المشروع " + " "+"رقم " +" "+ proj.ProjectNo;
-                 _SystemAction.SaveAction("FinishProject", "ProjectService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                string ActionNote = " انهاء المشروع " + " " + "رقم " + " " + proj.ProjectNo;
+                _SystemAction.SaveAction("FinishProject", "ProjectService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
 
                 ////////////////////////////////
@@ -1967,9 +2036,9 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = "فشل في انهاء المشروع" + projectId;
-                 _SystemAction.SaveAction("FinishProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                _SystemAction.SaveAction("FinishProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
-                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.failedFinishProject};
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.failedFinishProject };
             }
         }
         public async Task<string> GenerateNextProjectNumber(int BranchId)
@@ -2012,7 +2081,7 @@ namespace TaamerProject.Service.Services
 
         public async Task<IEnumerable<ProjectVM>> GetAllHirearchialProject(int BranchId, int UserId)
         {
-            var projects =await _ProjectRepository.GetAllHirearchialProject(BranchId, UserId);
+            var projects = await _ProjectRepository.GetAllHirearchialProject(BranchId, UserId);
             return projects;
         }
 
@@ -2081,7 +2150,7 @@ namespace TaamerProject.Service.Services
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                     string ActionNote = "تحويل المشروع من ارشيف الي جاري";
-                     _SystemAction.SaveAction("UpdateStatusProject", "ProjectService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                    _SystemAction.SaveAction("UpdateStatusProject", "ProjectService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                     //-----------------------------------------------------------------------------------------------------------------
 
 
@@ -2092,7 +2161,7 @@ namespace TaamerProject.Service.Services
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                     string ActionNote = "فشل في تحويل المشروع من ارشيف الي جاري";
-                     _SystemAction.SaveAction("UpdateStatusProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                    _SystemAction.SaveAction("UpdateStatusProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                     //-----------------------------------------------------------------------------------------------------------------
                     return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedFailed };
                 }
@@ -2102,9 +2171,9 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote2 = Resources.General_SavedFailed;
-                 _SystemAction.SaveAction("UpdateStatusProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                _SystemAction.SaveAction("UpdateStatusProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
                 //-----------------------------------------------------------------------------------------------------------------
-                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
 
@@ -2210,7 +2279,7 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = "تحويل المشروع";
-                 _SystemAction.SaveAction("ConvertManagerProjectsSome", "ProjectService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                _SystemAction.SaveAction("ConvertManagerProjectsSome", "ProjectService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
             }
@@ -2219,9 +2288,9 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = "فشل في تحويل المشروع";
-                 _SystemAction.SaveAction("ConvertManagerProjectsSome", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                _SystemAction.SaveAction("ConvertManagerProjectsSome", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
-                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
 
@@ -2339,7 +2408,7 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = "تحويل المشروع";
-                 _SystemAction.SaveAction("ConvertManagerProjectsSome", "ProjectService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                _SystemAction.SaveAction("ConvertManagerProjectsSome", "ProjectService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
             }
@@ -2348,15 +2417,15 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = "فشل في تحويل المشروع";
-                 _SystemAction.SaveAction("ConvertManagerProjectsSome", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                _SystemAction.SaveAction("ConvertManagerProjectsSome", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
-                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
 
         public async Task<IEnumerable<ProjectVM>> GetAllProjByCustId(string lang, int BranchId, int? CustId)
         {
-            var Proj =await _ProjectRepository.GetAllProjByCustId(lang, BranchId, CustId);
+            var Proj = await _ProjectRepository.GetAllProjByCustId(lang, BranchId, CustId);
             return Proj;
         }
         public async Task<IEnumerable<ProjectVM>> GetAllProjByCustIdWithout(string lang, int BranchId, int? CustId)
@@ -2391,7 +2460,7 @@ namespace TaamerProject.Service.Services
             return Proj;
         }
 
-        public async Task<IEnumerable<ProjectVM>> GetAllProjByCustomerIdandbranchHaveTasks(int customerId,int BranchId)
+        public async Task<IEnumerable<ProjectVM>> GetAllProjByCustomerIdandbranchHaveTasks(int customerId, int BranchId)
         {
             var Proj = await _ProjectRepository.GetAllProjByCustomerIdandbranchHaveTasks(customerId, BranchId);
             return Proj;
@@ -2399,7 +2468,7 @@ namespace TaamerProject.Service.Services
 
         public async Task<IEnumerable<ProjectVM>> GetAllProjByFawater(string lang, int BranchId)
         {
-            var AllProjInvoices = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2).Where(w =>!(w.ProjectId == null || w.ProjectId.Equals(""))).Select(s => s.ProjectId).ToList();
+            var AllProjInvoices = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2).Where(w => !(w.ProjectId == null || w.ProjectId.Equals(""))).Select(s => s.ProjectId).ToList();
             var Proj = _ProjectRepository.GetAllProjByFawater(lang, BranchId).Result.Where(w => AllProjInvoices.Contains(w.ProjectId));
             return Proj;
         }
@@ -2559,7 +2628,7 @@ namespace TaamerProject.Service.Services
                         var CustomerNew = _CustomerRepository.GetById((int)project.CustomerId);
 
                         CostCenterProjectNew.NameAr = CustomerNew.CustomerNameAr;
-                        CostCenterProjectNew.NameEn = CustomerNew.CustomerNameEn;  
+                        CostCenterProjectNew.NameEn = CustomerNew.CustomerNameEn;
 
                     }
 
@@ -2627,9 +2696,9 @@ namespace TaamerProject.Service.Services
                                 //-----------------------------------------------------------------------------------------------------------------
                                 string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                                 string ActionNote2 = "فشل في الحفظ .. يوجد مهام قيد التشغيل او متوقفة يجب انهائها اولا";
-                                 _SystemAction.SaveAction("UpdateProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                                _SystemAction.SaveAction("UpdateProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
                                 //-----------------------------------------------------------------------------------------------------------------
-                                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "فشل في الحفظ .. يوجد مهام قيد التشغيل او متوقفة يجب انهائها اولا", ReturnedStr = "-1" };
+                                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "فشل في الحفظ .. يوجد مهام قيد التشغيل او متوقفة يجب انهائها اولا", ReturnedStr = "-1" };
 
 
                             }
@@ -2676,7 +2745,7 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = " تعديل المشروع رقم " + project.ProjectNo;
-                 _SystemAction.SaveAction("UpdateProject", "ProjectService", 2, Resources.General_EditedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                _SystemAction.SaveAction("UpdateProject", "ProjectService", 2, Resources.General_EditedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully, ReturnedStr = ProTemp };
             }
@@ -2686,9 +2755,9 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote2 = Resources.General_SavedFailed;
-                 _SystemAction.SaveAction("UpdateProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                _SystemAction.SaveAction("UpdateProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
                 //-----------------------------------------------------------------------------------------------------------------
-                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed, ReturnedStr = "-1" };
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed, ReturnedStr = "-1" };
             }
         }
 
@@ -2719,9 +2788,9 @@ namespace TaamerProject.Service.Services
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                     string ActionNote2 = "فشل في الحفظ . تاريخ النهاية اصغر من تاريه البداية";
-                     _SystemAction.SaveAction("UpdateProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                    _SystemAction.SaveAction("UpdateProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
                     //-----------------------------------------------------------------------------------------------------------------
-                    return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "فشل في الحفظ . تاريخ النهاية اصغر من تاريه البداية", ReturnedStr = "-1" };
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "فشل في الحفظ . تاريخ النهاية اصغر من تاريه البداية", ReturnedStr = "-1" };
                 }
 
                 totaldays = (resultEnd - resultStart).TotalDays + 1;
@@ -2919,7 +2988,7 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = " تمديد المشروع رقم " + project.ProjectNo;
-                 _SystemAction.SaveAction("UpdateProjectEnddate", "ProjectService", 2, Resources.General_EditedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                _SystemAction.SaveAction("UpdateProjectEnddate", "ProjectService", 2, Resources.General_EditedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully, ReturnedStr = ProTemp };
             }
@@ -2929,24 +2998,24 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote2 = Resources.General_SavedFailed;
-                 _SystemAction.SaveAction("UpdateProjectEnddate", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                _SystemAction.SaveAction("UpdateProjectEnddate", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
                 //-----------------------------------------------------------------------------------------------------------------
-                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed, ReturnedStr = "-1" };
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed, ReturnedStr = "-1" };
             }
         }
         public async Task<IEnumerable<ProjectVM>> GetProjectsStoppedVM()
         {
-            var projects =await _ProjectRepository.GetProjectsStoppedVM();
+            var projects = await _ProjectRepository.GetProjectsStoppedVM();
             return projects;
         }
-        public async Task<List<ProjectVMNewCounting>> GetProjectVMNew( string Lang, string Con, int BranchId)
+        public async Task<List<ProjectVMNewCounting>> GetProjectVMNew(string Lang, string Con, int BranchId)
         {
-            var projects = await _ProjectRepository.GetProjectVMNew( Lang,  Con,  BranchId);
+            var projects = await _ProjectRepository.GetProjectVMNew(Lang, Con, BranchId);
             return projects;
         }
-        public async Task<List<ProjectVMNewStat>> GetProjectVMStatNew(int ProjectId,string Lang, string Con, int BranchId)
+        public async Task<List<ProjectVMNewStat>> GetProjectVMStatNew(int ProjectId, string Lang, string Con, int BranchId)
         {
-            var projects = await _ProjectRepository.GetProjectVMStatNew(ProjectId,Lang, Con, BranchId);
+            var projects = await _ProjectRepository.GetProjectVMStatNew(ProjectId, Lang, Con, BranchId);
             return projects;
         }
         public async Task<List<ProjectVMPhasesDetails>> GetPhasesDetails(string Lang, string Con, int ProjectId)
@@ -2978,14 +3047,14 @@ namespace TaamerProject.Service.Services
         }
         public async Task<IEnumerable<ProjectVM>> GetProjectsWithoutContractVM()
         {
-            var projects =await _ProjectRepository.GetProjectsWithoutContractVM();
+            var projects = await _ProjectRepository.GetProjectsWithoutContractVM();
             return projects;
         }
         public async Task<IEnumerable<ProjectVM>> GetProjectsLateVM()
         {
             string Today = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
 
-            var projects =await _ProjectRepository.GetProjectsLateVM(Today);
+            var projects = await _ProjectRepository.GetProjectsLateVM(Today);
             return projects;
         }
 
@@ -3193,13 +3262,13 @@ namespace TaamerProject.Service.Services
                     mail.To.Add(new MailAddress(Email));
                     mail.Subject = Subject;
 
-                    string Desc = "السد /ة " + _usersRepository.GetById(proj.MangerId??0).FullName + " المحترم ";
+                    string Desc = "السد /ة " + _usersRepository.GetById(proj.MangerId ?? 0).FullName + " المحترم ";
                     Desc = Desc + "<br/>";
                     Desc = Desc + "السلام عليكم ورحمة الله وبركاتة ";
                     Desc = Desc + "<br/>";
                     Desc = Desc + "<h2>تم انهاء المشروع المبين في الجدول ادناة وتم نقلة الي قسم الارشيف </h2>";
 
-                    Desc = Desc + "<table border='1'style='text-align:center;padding:10px;'><tr><th style='border=1px solid #eee'>رقم المشروع  </th><th>اسم العميل  </th><th>التاريخ </th><th>الساعة </th><th>بواسطة </th><th>الفرع </th></tr><tr><td>" + proj.ProjectNo + "</td><td>" + customer.CustomerNameAr + "</td><td>" + DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "</td><td>" + DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture) + "</td><td>" + _usersRepository.GetById(proj.MangerId??0).FullName + "</td><td>" + _BranchesRepository.GetById(BranchId).NameAr + "</td></tr></table>";
+                    Desc = Desc + "<table border='1'style='text-align:center;padding:10px;'><tr><th style='border=1px solid #eee'>رقم المشروع  </th><th>اسم العميل  </th><th>التاريخ </th><th>الساعة </th><th>بواسطة </th><th>الفرع </th></tr><tr><td>" + proj.ProjectNo + "</td><td>" + customer.CustomerNameAr + "</td><td>" + DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "</td><td>" + DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture) + "</td><td>" + _usersRepository.GetById(proj.MangerId ?? 0).FullName + "</td><td>" + _BranchesRepository.GetById(BranchId).NameAr + "</td></tr></table>";
                     Desc = Desc + "<h4>مع تحيات قسم ادارة المشاريع </h4>";
                     Desc = Desc + "<br/>";
                     Desc = Desc + "تم ارسال هذه الرسالة بشكل آلي، الرجاء عدم الرد عليها";
@@ -3257,7 +3326,7 @@ namespace TaamerProject.Service.Services
                 string textBody = Desc;
                 var mail = new MailMessage();
                 //var loginInfo = new NetworkCredential(_EmailSettingRepository.GetEmailSetting(branch).Result.SenderEmail, _EmailSettingRepository.GetEmailSetting(branch).Result.Password);
-                var loginInfo = new NetworkCredential(_TaamerProContext.Organizations.Where(x => x.OrganizationId == branch).FirstOrDefault()?.Email??"", _TaamerProContext.Organizations.Where(x => x.OrganizationId == branch).FirstOrDefault()?.Password??"");
+                var loginInfo = new NetworkCredential(_TaamerProContext.Organizations.Where(x => x.OrganizationId == branch).FirstOrDefault()?.Email ?? "", _TaamerProContext.Organizations.Where(x => x.OrganizationId == branch).FirstOrDefault()?.Password ?? "");
 
                 //if (_EmailSettingRepository.GetEmailSetting(branch).Result.DisplayName != null)
                 //{
@@ -3391,7 +3460,7 @@ namespace TaamerProject.Service.Services
         }
 
 
-        public bool SendGeneralCustomerEmailandSMS(Customer customerObj, Project projectObj, int TypeId, int UserId, int BranchId,int whichClickDesc)
+        public bool SendGeneralCustomerEmailandSMS(Customer customerObj, Project projectObj, int TypeId, int UserId, int BranchId, int whichClickDesc)
         {
             try
             {
@@ -3404,7 +3473,7 @@ namespace TaamerProject.Service.Services
 
                     var Desc = "";
                     var Subject = "";
-                    if(whichClickDesc==1) //انشاء مشروع
+                    if (whichClickDesc == 1) //انشاء مشروع
                     {
                         Desc = "تم انشاء مشروع رقم" + " " + projectObj.ProjectNo + " " + "للعميل" + " " + customerObj.CustomerNameAr;
                         Subject = "إشعار بإنشاء المشروع";
@@ -3483,9 +3552,9 @@ namespace TaamerProject.Service.Services
             return body;
         }
 
-        public  Task<List<ProjectVM>> GetAllProjectsNew(string Con, ProjectVM _project, int? UserId, int AllUserBranchId, int FilterType, int? BranchId)
+        public Task<List<ProjectVM>> GetAllProjectsNew(string Con, ProjectVM _project, int? UserId, int AllUserBranchId, int FilterType, int? BranchId)
         {
-            var projects =  _ProjectRepository.GetAllProjectsNew(Con, _project, UserId, AllUserBranchId,FilterType, BranchId);
+            var projects = _ProjectRepository.GetAllProjectsNew(Con, _project, UserId, AllUserBranchId, FilterType, BranchId);
             return projects;
         }
 
@@ -3497,7 +3566,7 @@ namespace TaamerProject.Service.Services
             return projects;
         }
 
-        public Task<IEnumerable<ProjectVM>> GetprojectNewTasks(int UserId,int BranchId,string Lang)
+        public Task<IEnumerable<ProjectVM>> GetprojectNewTasks(int UserId, int BranchId, string Lang)
         {
             var projects = _ProjectRepository.GetprojectNewTasks(UserId, BranchId, Lang);
             return projects;
@@ -3540,7 +3609,7 @@ namespace TaamerProject.Service.Services
             {
 
                 var project = _TaamerProContext.Project.Where(x => x.ProjectId == locationVM.ProjectId).FirstOrDefault();
-                if(project != null)
+                if (project != null)
                 {
 
                     project.Latitude = locationVM.Latitude;
@@ -3558,7 +3627,7 @@ namespace TaamerProject.Service.Services
                 }
 
 
-                return new GeneralMessage {StatusCode = HttpStatusCode.OK, ReasonPhrase = "تم الحفظ" };
+                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "تم الحفظ" };
 
 
             }
