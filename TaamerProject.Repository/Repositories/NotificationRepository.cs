@@ -259,36 +259,43 @@ namespace TaamerProject.Repository.Repositories
         }
         public async Task<IEnumerable<NotificationVM>> GetNotificationReceived(int UserId)
         {// && s.IsHidden == false
-           //the fintity is not working well check this up
-            var Notifications =await _TaamerProContext.Notification.Where(s => s.IsDeleted == false && ((s.ReceiveUserId == UserId && (s.Type == 1 || s.Type == 11) && s.IsHidden == false) || ((s.Type == 1 || s.Type == 11) && s.AllUsers == true)) && s.IsRead !=true).Select(x => new NotificationVM
+         //the fintity is not working well check this up
+            try
             {
-                
-                NotificationId = x.NotificationId,
-                Name = x.Name,
-                Date = x.Date,
-                HijriDate = x.HijriDate,
-                SendUserId = x.SendUserId,
-                ReceiveUserId = x.ReceiveUserId,
-                Description = x.Description,
-                Done = x.Done,
-                AllUsers = x.AllUsers,
-                ActionUser = x.ActionUser,
-                ActionDate = x.ActionDate,
-                Type = x.Type,
-                IsRead = x.IsRead,
-                SendDate = x.SendDate,
-                ReadingDate = x.ReadingDate,
-                ProjectId = x.ProjectId,
-                taskId = x.TaskId,
-                UserName = x.Users.FullName,
-                ReceivedUserName = x.ReceiveUsers.FullNameAr ?? "SYSNOTIFCATION",
-                SendUserName = x.Users.FullName,
-                AttachmentUrl = x.AttachmentUrl??"",
-                SendUserImgUrl = x.Users.ImgUrl ?? "/distnew/images/userprofile.png",
-                ProjectNo=x.Project.ProjectNo,
-                
-            }).OrderByDescending(m=>m.IsRead).ThenByDescending(x=>x.SendDate).ToListAsync();
-            return Notifications;
+                var Notifications = await _TaamerProContext.Notification.Where(s => s.IsDeleted == false && ((s.ReceiveUserId == UserId && (s.Type == 1 || s.Type == 11) && s.IsHidden == false) || ((s.Type == 1 || s.Type == 11) && s.AllUsers == true)) && s.IsRead != true).Select(x => new NotificationVM
+                {
+
+                    NotificationId = x.NotificationId,
+                    Name = x.Name,
+                    Date = x.Date,
+                    HijriDate = x.HijriDate,
+                    SendUserId = x.SendUserId,
+                    ReceiveUserId = x.ReceiveUserId,
+                    Description = x.Description,
+                    Done = x.Done,
+                    AllUsers = x.AllUsers,
+                    ActionUser = x.ActionUser,
+                    ActionDate = x.ActionDate,
+                    Type = x.Type,
+                    IsRead = x.IsRead,
+                    SendDate = x.SendDate,
+                    ReadingDate = x.ReadingDate,
+                    ProjectId = x.ProjectId,
+                    taskId = x.TaskId,
+                    UserName = x.Users.FullName,
+                    ReceivedUserName = x.ReceiveUsers.FullNameAr ?? "SYSNOTIFCATION",
+                    SendUserName = x.Users.FullName,
+                    AttachmentUrl = x.AttachmentUrl ?? "",
+                    SendUserImgUrl = x.Users.ImgUrl ?? "/distnew/images/userprofile.png",
+                    ProjectNo = x.Project.ProjectNo,
+
+                }).OrderByDescending(m => m.IsRead).ThenByDescending(x => x.SendDate).ToListAsync();
+                return Notifications;
+            }
+            catch (Exception ex)
+            {
+                return new List<NotificationVM>();
+            }
         }
         public async Task<IEnumerable<NotificationVM>> GetNotificationTasksStart(int UserId)
         {

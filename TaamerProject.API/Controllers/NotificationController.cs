@@ -203,12 +203,12 @@ namespace TaamerProject.API.Controllers
             //return Ok(_notificationservice.NotificationsSent2(UserId) );
         }
         [HttpGet("GetNotificationReceived")]
-        public IActionResult GetNotificationReceived()
+        public async Task<IActionResult> GetNotificationReceived()
         {
             //return Ok(_notificationservice.GetNotificationReceived(UserId) );
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
-            var someNoti = _notificationservice.GetNotificationReceived(_globalshared.UserId_G);
+            var someNoti =await _notificationservice.GetNotificationReceived(_globalshared.UserId_G);
             //var serializer = new JavaScriptSerializer();
             //serializer.MaxJsonLength = Int32.MaxValue;
             //var result = new ContentResult

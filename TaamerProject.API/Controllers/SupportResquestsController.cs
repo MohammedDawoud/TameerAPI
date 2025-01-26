@@ -310,9 +310,6 @@ namespace TaamerProject.API.Controllers
 
                     }
 
-
-
-
                 }
             }
             catch (Exception ex)
