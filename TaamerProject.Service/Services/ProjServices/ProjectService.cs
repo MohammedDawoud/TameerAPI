@@ -2679,10 +2679,10 @@ namespace TaamerProject.Service.Services
                 var ProjectIds = _TasksDependencyRepository.GetMatching(s => s.IsDeleted == false && s.ProjectId == project.ProjectId).ToList();
                 var Oldphases = _ProjectPhasesTasksRepository.GetMatching(s => s.IsDeleted == false && s.ProjectId == project.ProjectId).ToList();
 
-                //if (ProjectIds.Count() > 0)
-                //{
-                //    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "مشروع بسير لا يمكنك تعديله بدون سير" };
-                //}
+                if (ProjectIds.Count() > 0)
+                {
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "مشروع بسير لا يمكنك تعديله بدون سير" };
+                }
 
                 if (ProjectIds.Count() > 0)//mshro3 bseeer 
                 {

@@ -2563,7 +2563,6 @@ namespace TaamerProject.Service.Services
                 projectUpdated.ProjectExpireDate = Project.ProjectExpireDate;
                 projectUpdated.ProjectExpireHijriDate = Project.ProjectExpireHijriDate;
                 projectUpdated.BuildingType = Project.BuildingType;
-                projectUpdated.NewSetting = Project.NewSetting;
 
 
                 if (projectUpdated.MangerId != Project.MangerId)
@@ -2660,6 +2659,25 @@ namespace TaamerProject.Service.Services
                 var ProjectIds = _TasksDependencyRepository.GetMatching(s => s.IsDeleted == false && s.ProjectId == Project.ProjectId).ToList();
                 var Oldphases = _ProjectPhasesTasksRepository.GetMatching(s => s.IsDeleted == false && s.ProjectId == Project.ProjectId).ToList();
 
+                if (ProjectIds.Count() > 0)
+                {
+                    if (ProjectIds.FirstOrDefault().ProjSubTypeId != Project.SubProjectTypeId)
+                    {
+                        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكنك تعديل مشروع عليه سير بسير جديد" };
+
+                    }
+                    else
+                    {
+                        if (projectUpdated.NewSetting != Project.NewSetting)
+                        {
+                            return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكنك تعديل مشروع عليه سير بسير جديد" };
+                        }
+                    }
+
+                }
+                projectUpdated.NewSetting = Project.NewSetting;
+
+
                 bool checkMakeSetting = false;
 
                 if (ProjectIds.Count() > 0) //mshro3 da kan bseeer
@@ -2738,8 +2756,16 @@ namespace TaamerProject.Service.Services
                 {
                     if (Oldphases.Count() > 0)
                     {
-                        _TaamerProContext.ProjectPhasesTasks.RemoveRange(Oldphases); //delete without main and without subtypemain
-                        checkMakeSetting = true;
+                        if (ProjectIds.Count() == 0)
+                        {
+                            _TaamerProContext.ProjectPhasesTasks.RemoveRange(Oldphases); //delete without main and without subtypemain
+                            checkMakeSetting = true;
+                        }
+                        else
+                        {
+                            checkMakeSetting = false;
+
+                        }
                     }
                     else
                     {
@@ -2954,7 +2980,6 @@ namespace TaamerProject.Service.Services
                 projectUpdated.ProjectExpireDate = Project.ProjectExpireDate;
                 projectUpdated.ProjectExpireHijriDate = Project.ProjectExpireHijriDate;
                 projectUpdated.BuildingType = Project.BuildingType;
-                projectUpdated.NewSetting = Project.NewSetting; //hna
 
 
                 if (projectUpdated.MangerId != Project.MangerId)
@@ -3051,6 +3076,25 @@ namespace TaamerProject.Service.Services
                 var ProjectIds = _TasksDependencyRepository.GetMatching(s => s.IsDeleted == false && s.ProjectId == Project.ProjectId).ToList();
                 var Oldphases = _ProjectPhasesTasksRepository.GetMatching(s => s.IsDeleted == false && s.ProjectId == Project.ProjectId).ToList();
 
+                if (ProjectIds.Count() > 0)
+                {
+                    if (ProjectIds.FirstOrDefault().ProjSubTypeId != Project.SubProjectTypeId)
+                    {
+                        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكنك تعديل مشروع عليه سير بسير جديد" };
+
+                    }
+                    else
+                    {
+                        if (projectUpdated.NewSetting != Project.NewSetting)
+                        {
+                            return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكنك تعديل مشروع عليه سير بسير جديد" };
+                        }
+                    }
+
+                }
+
+
+                projectUpdated.NewSetting = Project.NewSetting;
 
 
                 bool checkMakeSetting = false;
@@ -3131,8 +3175,16 @@ namespace TaamerProject.Service.Services
                 {
                     if (Oldphases.Count() > 0)
                     {
-                        _TaamerProContext.ProjectPhasesTasks.RemoveRange(Oldphases); //delete without main and without subtypemain
-                        checkMakeSetting = true;
+                        if (ProjectIds.Count() == 0)
+                        {
+                            _TaamerProContext.ProjectPhasesTasks.RemoveRange(Oldphases); //delete without main and without subtypemain
+                            checkMakeSetting = true;
+                        }
+                        else
+                        {
+                            checkMakeSetting = false;
+
+                        }
                     }
                     else
                     {

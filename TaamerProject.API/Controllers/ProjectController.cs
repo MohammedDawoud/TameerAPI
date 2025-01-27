@@ -1750,12 +1750,13 @@ namespace TaamerProject.API.Controllers
         public IActionResult UpdateProject(Project project)
             {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            var result = _projectservice.UpdateProject(project,_globalshared.UserId_G,  _globalshared.BranchId_G);    
+            var result = _projectservice.UpdateProject(project,_globalshared.UserId_G,  _globalshared.BranchId_G);
 
-
-            var projectid = Convert.ToInt32(result.ReturnedStr);
-            var resultMain = _projectPhasesTasksservice.SavefourMainPhases_P(projectid, _globalshared.UserId_G, _globalshared.BranchId_G);
-
+            if (result.StatusCode == HttpStatusCode.OK)
+            {
+                var projectid = Convert.ToInt32(result.ReturnedStr);
+                var resultMain = _projectPhasesTasksservice.SavefourMainPhases_P(projectid, _globalshared.UserId_G, _globalshared.BranchId_G);
+            }
 
             //if (result.ReturnedStr != "-1")
             //    {
