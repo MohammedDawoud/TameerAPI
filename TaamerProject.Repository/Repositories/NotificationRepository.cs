@@ -10,6 +10,7 @@ using TaamerProject.Models.DBContext;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using Microsoft.EntityFrameworkCore;
+using TaamerProject.Models.DomainObjects;
 
 namespace TaamerProject.Repository.Repositories
 {
@@ -294,6 +295,17 @@ namespace TaamerProject.Repository.Repositories
             }
             catch (Exception ex)
             {
+                var exception = new Exceptions
+                {
+                    Exception = ex.Message,
+                    MethodName = "GetNotificationReceived",
+                    DateandTime = DateTime.Now,
+                    Date = DateTime.Now.Date.ToString(),
+                    PageName = "Home",
+                    IsDeleted = false
+                };
+               await _TaamerProContext.AddAsync(exception);
+               await _TaamerProContext.SaveChangesAsync();
                 return new List<NotificationVM>();
             }
         }

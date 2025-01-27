@@ -228,6 +228,7 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
         public virtual DbSet<Emp_LateList> LateLists { get; set; }
         public virtual DbSet<ContactList> ContactLists { get; set; }
         public virtual DbSet<AttendenceLocationSettings> AttendenceLocations { get; set; }
+        public virtual DbSet<Exceptions> Exceptions { get; set; }
 
         public string GetDatabaseName()
         {
@@ -4418,7 +4419,13 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 //modelBuilder.Entity<AttendenceLocationSettings>().HasMany<Employees>(s => s.Employees).WithOne(g => g.AttendenceLocation).HasForeignKey(s => s.AttendenceLocationId);
                 modelBuilder.Entity<AttendenceLocationSettings>().HasMany<EmpLocations>(s => s.EmpLocations).WithOne(g => g.AttendenceLocation).HasForeignKey(s => s.LocationId);
 
-            });  
+            });
+            //--------------------------------END--------------------------------------------------
+            modelBuilder.Entity<Exceptions>(entity =>
+            {
+                entity.HasKey(e => e.ExceptionId);
+                entity.ToTable("App_Exceptions");
+            });
 
             //--------------------------------END--------------------------------------------------
             #endregion
