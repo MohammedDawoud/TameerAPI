@@ -304,8 +304,8 @@ namespace TaamerProject.Repository.Repositories
                     PageName = "Home",
                     IsDeleted = false
                 };
-               await _TaamerProContext.AddAsync(exception);
-               await _TaamerProContext.SaveChangesAsync();
+                await _TaamerProContext.AddAsync(exception);
+                await _TaamerProContext.SaveChangesAsync();
                 return new List<NotificationVM>();
             }
         }
