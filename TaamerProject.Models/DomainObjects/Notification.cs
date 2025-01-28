@@ -7,6 +7,7 @@ namespace TaamerProject.Models
 {
     public class Notification : Auditable
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long NotificationId { get; set; }
         public string? Name { get; set; }
         public string? Date { get; set; }

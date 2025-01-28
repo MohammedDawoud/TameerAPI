@@ -3243,7 +3243,7 @@ namespace TaamerProject.API.Controllers
 
             var objBranch = _BranchesService.GetBranchByBranchId("rtl", Branchid).Result.FirstOrDefault() ;
             var objOrganization = _organizationsservice.GetBranchOrganizationData(objBranch.OrganizationId??1).Result;
-
+            ZatcaKeys zatcakeys = new ZatcaKeys();
             var OrgIsRequired = _systemSettingsService.GetSystemSettingsByBranchId(_globalshared.BranchId_G).Result.OrgDataIsRequired;
             if (OrgIsRequired == true) OrgIsRequired = false; else OrgIsRequired = true;
 
@@ -3269,21 +3269,27 @@ namespace TaamerProject.API.Controllers
                 PostalCodeFinal1 = objOrganization.PostalCodeFinal;
                 ExternalPhone1 = objOrganization.ExternalPhone;
                 TaxCode1 = objOrganization.TaxCode;
-
+                zatcakeys.CSR = objOrganization.CSR;
+                zatcakeys.PrivateKey = objOrganization.PrivateKey;
+                zatcakeys.PublicKey = objOrganization.PublicKey;
+                zatcakeys.SecreteKey = objOrganization.SecreteKey;
             }
             else
             {
-                Address1 = objBranch.Address;
-                BuildingNumber1 = objBranch.BuildingNumber;
-                StreetName1 = objBranch.StreetName;
-                Neighborhood1 = objBranch.Neighborhood;
-                CityName1 = objBranch.CityName;
-                Country1 = objBranch.Country;
-                PostalCode1 = objBranch.PostalCode;
-                PostalCodeFinal1 = objBranch.PostalCodeFinal;
-                ExternalPhone1 = objBranch.ExternalPhone;
-                TaxCode1 = objBranch.TaxCode;
-
+                Address1 = objBranch.Address?? objOrganization.Address;
+                BuildingNumber1 = objBranch.BuildingNumber ?? objOrganization.BuildingNumber;
+                StreetName1 = objBranch.StreetName ?? objOrganization.StreetName;
+                Neighborhood1 = objBranch.Neighborhood ?? objOrganization.Neighborhood;
+                CityName1 = objBranch.CityName ?? objOrganization.CityName;
+                Country1 = objBranch.Country?? objOrganization.Country;
+                PostalCode1 = objBranch.PostalCode ?? objOrganization.PostalCode;
+                PostalCodeFinal1 = objBranch.PostalCodeFinal ?? objOrganization.PostalCodeFinal;
+                ExternalPhone1 = objBranch.ExternalPhone ?? objOrganization.ExternalPhone;
+                TaxCode1 = objBranch.TaxCode?? objOrganization.TaxCode;
+                zatcakeys.CSR = objBranch.CSR?? objOrganization.CSR;
+                zatcakeys.PrivateKey = objBranch.PrivateKey?? objOrganization.PrivateKey;
+                zatcakeys.PublicKey = objBranch.PublicKey?? objOrganization.PublicKey;
+                zatcakeys.SecreteKey = objBranch.SecreteKey?? objOrganization.SecreteKey;
             }
             var invoicetypecode = InvoiceTypeEnums.Standared_Invoice;
             var invoicetypecodeName = InvoiceTypeNameEnums.Standared_Invoice;
@@ -3556,8 +3562,8 @@ namespace TaamerProject.API.Controllers
 
             //inv.cSIDInfo.CertPem = @"MIICoTCCAkegAwIBAgIGAZGd+J7KMAoGCCqGSM49BAMCMBUxEzARBgNVBAMMCmVJbnZvaWNpbmcwHhcNMjQwODI5MTE0OTU3WhcNMjkwODI4MjEwMDAwWjCBljELMAkGA1UEBhMCU0ExIzAhBgNVBAsMGtin2YTZgdix2LkgINin2YTYsdim2YrYs9mJMU8wTQYDVQQKDEbYtNix2YPYqSDYp9io2K/Yp9i5INin2YTYqtmF2YrYsiDZhNmE2KfYs9iq2LTYp9ix2KfYqiDYp9mE2YfZhtiv2LPZitipMREwDwYDVQQDDAhDb21wYW55MTBWMBAGByqGSM49AgEGBSuBBAAKA0IABEHHq9d2AmkGJBm8csZTCKzwpKLtoJS7CrvyEkWDFCQH75FbqY5pSvX34bUA+8X3iL3BvPXnPex/I6Ns4jRWt+ujggECMIH/MAwGA1UdEwEB/wQCMAAwge4GA1UdEQSB5jCB46SB4DCB3TFHMEUGA1UEBAw+MS1UYW1lZXJ8Mi12ZXJzaW9uMi4wLjF8My01ZGQ3Nzk1My0wY2ZjLTQ3NGItOTU3ZS0xNjViNDk4MzEzNTkxHzAdBgoJkiaJk/IsZAEBDA8zMTEzNjg3MTUxMDAwMDMxDTALBgNVBAwMBDExMDAxQTA/BgNVBBoMONin2YTYr9mF2KfZhSAtINi32LHZitmCINin2YTZhdmE2YMg2YHZh9ivIC0g2K3ZiiDYo9it2K8gMR8wHQYDVQQPDBZFbmdpbmVlcmluZyBjb25zdWx0YW50MAoGCCqGSM49BAMCA0gAMEUCIEIkC/sl/Tr7LmtJhBcvn2du9KqXjJUs1kqS81CKcIJ5AiEApIaqOKqdUCBkfwNsiTQBuAk0yNEbINMyd0cg0WxQ2Vo=";
             //inv.cSIDInfo.PrivateKey = @"MHQCAQEEIO2JfpYk9bQmscmEdy41bML3muCylfxsZndFvoncay3GoAcGBSuBBAAKoUQDQgAEQcer13YCaQYkGbxyxlMIrPCkou2glLsKu/ISRYMUJAfvkVupjmlK9ffhtQD7xfeIvcG89ec97H8jo2ziNFa36w==";
-            inv.cSIDInfo.CertPem = objOrganization.PublicKey;
-            inv.cSIDInfo.PrivateKey = objOrganization.PrivateKey;
+            inv.cSIDInfo.CertPem = zatcakeys.PublicKey;
+            inv.cSIDInfo.PrivateKey = zatcakeys.PrivateKey;
 
            // InvoiceTotal CalculateInvoiceTotal = ubl.CalculateInvoiceTotal(inv.InvoiceLines, inv.allowanceCharges);
             bool savexml = true;
@@ -3585,13 +3591,13 @@ namespace TaamerProject.API.Controllers
 
             }
 
-            var resultSend=SendToZatcaAPI(inv, res, objOrganization, result.ReturnedParm??0);
+            var resultSend=SendToZatcaAPI(inv, res, objOrganization, result.ReturnedParm??0, zatcakeys);
             return resultSend;
 
         }
 
         [HttpGet("SendToZatcaAPI")]
-        private GeneralMessage SendToZatcaAPI(Invoice inv, ZatcaIntegrationSDK.Result res, OrganizationsVM org,int InvoiceReqId)
+        private GeneralMessage SendToZatcaAPI(Invoice inv, ZatcaIntegrationSDK.Result res, OrganizationsVM org,int InvoiceReqId,ZatcaKeys zatcakeys)
         {
             if(org.ModeType==2){mode = Mode.Simulation;}
             if (org.ModeType == 3){mode = Mode.Production;}
@@ -3612,7 +3618,7 @@ namespace TaamerProject.API.Controllers
             if (mode == Mode.developer)
             {
                 ComplianceCsrResponse tokenresponse = new ComplianceCsrResponse();
-                string csr = org.CSR ?? "";
+                string csr = zatcakeys.CSR ?? "";
                 tokenresponse = apireqlogic.GetComplianceCSIDAPI("123456", csr);
                 if (String.IsNullOrEmpty(tokenresponse.ErrorMessage))
                 {
@@ -3644,7 +3650,7 @@ namespace TaamerProject.API.Controllers
             }
             else
             {
-                string secretkey = org.SecreteKey;
+                string secretkey = zatcakeys.SecreteKey;
                 if (inv.invoiceTypeCode.Name.Substring(0, 2) == "01")
                 {
                     InvoiceClearanceResponse responsemodel = apireqlogic.CallClearanceAPI(Utility.ToBase64Encode(inv.cSIDInfo.CertPem), secretkey, invrequestbody);
@@ -3750,6 +3756,16 @@ namespace TaamerProject.API.Controllers
     {
         public int Id { get; set; }
         public string Name { get; set; }
+
+    }
+
+    public class ZatcaKeys
+    {
+        public string CSR { get; set; }
+        public string PrivateKey { get; set; }
+        public string PublicKey { get; set; }
+        public string SecreteKey { get; set; }
+
 
     }
 }

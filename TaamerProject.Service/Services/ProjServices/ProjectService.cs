@@ -1253,8 +1253,7 @@ namespace TaamerProject.Service.Services
                         {
 
                             Users user = _usersRepository.GetById(usr);
-
-                            ListOfPrivNotify.Add(new Notification
+                            var UserNotification = new Notification                           
                             {
                                 ReceiveUserId = usr,
                                 Name = "Resources.Pro_Projectmanagement",
@@ -1272,8 +1271,8 @@ namespace TaamerProject.Service.Services
                                 AddDate = DateTime.Now,
                                 IsHidden = false,
                                 NextTime = null,
-                            });
-                            _TaamerProContext.Notification.AddRange(ListOfPrivNotify);
+                            };
+                            _TaamerProContext.Notification.Add(UserNotification);
                             _notificationService.sendmobilenotification(usr, "ايقاف مشروع", "  تم ايقاف مشروع رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + " فرع  " + branch.NameAr + " مدير المشروع  " + manager.FullNameAr + "");
 
 
@@ -1350,10 +1349,10 @@ namespace TaamerProject.Service.Services
                 _TaamerProContext.SaveChanges();
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                string ActionNote = "ايقاف المشروع مؤقتا";
+                string ActionNote = "تم ايقاف المشروع مؤقتا";
                 _SystemAction.SaveAction("StopProject", "ProjectService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
-                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.project_has_been_temporarily_suspended };
+                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = ActionNote };
             }
             catch (Exception ex)
             {
@@ -1362,7 +1361,7 @@ namespace TaamerProject.Service.Services
                 string ActionNote = "فشل في ايقاف المشروع مؤقتا";
                 _SystemAction.SaveAction("StopProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
-                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.project_has_been_temporarily_suspended };
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = ActionNote };
             }
         }
 
@@ -1472,7 +1471,7 @@ namespace TaamerProject.Service.Services
 
                             Users user = _usersRepository.GetById(usr);
 
-                            ListOfPrivNotify.Add(new Notification
+                            var UserNotification = new Notification
                             {
                                 ReceiveUserId = usr,
                                 Name = "Resources.Pro_Projectmanagement",
@@ -1490,9 +1489,8 @@ namespace TaamerProject.Service.Services
                                 AddDate = DateTime.Now,
                                 IsHidden = false,
                                 NextTime = null,
-                            });
-
-                            _TaamerProContext.Notification.AddRange(ListOfPrivNotify);
+                            };
+                            _TaamerProContext.Notification.Add(UserNotification);
                             _notificationService.sendmobilenotification(usr, "اعادة تشغيل مشروع", " تم تشغيل مشروع رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + " فرع  " + branch.NameAr + "");
 
                             var htmlBody = "";
@@ -1570,10 +1568,10 @@ namespace TaamerProject.Service.Services
                 _TaamerProContext.SaveChanges();
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                string ActionNote = "تشغيل المشروع ";
+                string ActionNote = "تم تشغيل المشروع ";
                 _SystemAction.SaveAction("PlayProject", "ProjectService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
-                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
+                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = ActionNote };
             }
             catch (Exception ex)
             {
@@ -1582,7 +1580,7 @@ namespace TaamerProject.Service.Services
                 string ActionNote = "فشل في تشغيل المشروع";
                 _SystemAction.SaveAction("PlayProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
-                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = ActionNote };
             }
         }
 
