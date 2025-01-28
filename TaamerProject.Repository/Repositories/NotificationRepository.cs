@@ -165,7 +165,7 @@ namespace TaamerProject.Repository.Repositories
         }
         public async Task<IEnumerable<NotificationVM>> GetUnReadUserNotification(int UserId)
         {
-            var Notifications = _TaamerProContext.Notification.Where(s => s.IsDeleted == false && (s.ReceiveUserId == UserId || s.AllUsers == true) && (s.IsRead == false || s.IsRead == null)).Select(x => new NotificationVM
+            var Notifications = _TaamerProContext.Notification.Where(s => s.IsDeleted == false && ((s.ReceiveUserId == UserId && (s.Type == 1 || s.Type == 11) && s.IsHidden == false) || ((s.Type == 1 || s.Type == 11) && s.AllUsers == true)) && s.IsRead !=true ).Select(x => new NotificationVM
             {
                 NotificationId = x.NotificationId,
                 Name = x.Name,
@@ -195,8 +195,7 @@ namespace TaamerProject.Repository.Repositories
 
         public async Task<int> GetUnReadUserNotificationcount(int UserId)
         {
-            var Notifications = _TaamerProContext.Notification.Where(s => s.IsDeleted == false &&
-            (s.ReceiveUserId == UserId || s.AllUsers == true) && (s.IsRead == false || s.IsRead == null)).Count();
+            var Notifications = _TaamerProContext.Notification.Where(s => s.IsDeleted == false && ((s.ReceiveUserId == UserId && (s.Type == 1 || s.Type == 11) && s.IsHidden == false) || ((s.Type == 1 || s.Type == 11) && s.AllUsers == true)) && s.IsRead != true).Count();
             return Notifications;
         }
 
@@ -263,7 +262,7 @@ namespace TaamerProject.Repository.Repositories
          //the fintity is not working well check this up
             try
             {
-                var Notifications = await _TaamerProContext.Notification.Where(s => s.IsDeleted == false && ((s.ReceiveUserId == UserId && (s.Type == 1 || s.Type == 11) && s.IsHidden == false) || ((s.Type == 1 || s.Type == 11) && s.AllUsers == true)) && s.IsRead != true).Select(x => new NotificationVM
+                var Notifications = await _TaamerProContext.Notification.Where(s => s.IsDeleted == false && ((s.ReceiveUserId == UserId && (s.Type == 1 || s.Type == 11) && s.IsHidden == false) || ((s.Type == 1 || s.Type == 11) && s.AllUsers == true)) /*&& s.IsRead != true*/).Select(x => new NotificationVM
                 {
 
                     NotificationId = x.NotificationId,
@@ -290,7 +289,7 @@ namespace TaamerProject.Repository.Repositories
                     SendUserImgUrl = x.Users.ImgUrl ?? "/distnew/images/userprofile.png",
                     ProjectNo = x.Project.ProjectNo,
 
-                }).OrderByDescending(m => m.IsRead).ThenByDescending(x => x.SendDate).ToListAsync();
+                }).OrderBy(m => m.IsRead).ThenByDescending(x => x.SendDate).ToListAsync();
                 return Notifications;
             }
             catch (Exception ex)

@@ -99,7 +99,11 @@ namespace TaamerProject.Service.Services
             
             var local = path;
             //Create all the directories.
-
+            //string[] _bakfiles = Directory.GetFiles(path);
+            //foreach (string s in _bakfiles)
+            //{
+            //    File.Delete(s);
+            //}
             var uploadfolder = remote + "Uploads";
             var filefolders = remote + "Files";
             var tempfiles = remote + "TempFiles";
@@ -376,7 +380,11 @@ namespace TaamerProject.Service.Services
 
             var local = path;
             //Create all the directories.
-
+            //string[] _bakfiles = Directory.GetFiles(path,"*");
+            //foreach (string s in _bakfiles)
+            //{
+            //    File.Delete(s);
+            //}
             var uploadfolder = remote + "Uploads";
             var filefolders = remote + "Files";
             var tempfiles = remote + "TempFiles";
