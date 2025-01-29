@@ -9,6 +9,6 @@ namespace TaamerProject.Repository.Interfaces
 {
     public interface IContactListRepository
     {
-        Task<IEnumerable<ContactListVM>> GetContactLists(int Id,int Type);
+        Task<IEnumerable<ContactListVM>> GetContactLists(int Id,int Type, int UserId);
     }
 }

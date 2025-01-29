@@ -4334,7 +4334,7 @@ namespace TaamerProject.Repository.Repositories
                 PlusTime = x.PlusTime,
                 SettingId = x.SettingId,
                 IsConverted = x.IsConverted,
-                ContactLists=x.ContactLists,
+                ContactLists = x.ContactLists.Where(x => x.IsDeleted == false).ToList(),
 
             }).ToList().Select(s => new ProjectPhasesTasksVM()
             {
@@ -4485,7 +4485,7 @@ namespace TaamerProject.Repository.Repositories
                 PlusTime = x.PlusTime,
                 SettingId = x.SettingId,
                 IsConverted = x.IsConverted,
-                ContactLists=x.ContactLists,
+                ContactLists = x.ContactLists.Where(x => x.IsDeleted == false).ToList(),
             }).ToList().Select(s => new ProjectPhasesTasksVM()
             {
                 PhaseTaskId = s.PhaseTaskId,
@@ -4554,7 +4554,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeFrom = s.TaskTimeFrom ?? "",
                 TaskTimeTo = s.TaskTimeTo ?? "",
                 IsConverted = s.IsConverted,
-                ContactLists=s.ContactLists,
+                ContactLists = s.ContactLists.Where(x => x.IsDeleted == false).ToList(),
 
             });
             return projectPhasesTasks.ToList().OrderByDescending(x => x.IsNew).ThenBy(x => x.Status).ThenBy(x => x.OrderNo).ThenByDescending(x => x.PhasePriority).ThenBy(x => x.Remaining);
@@ -5919,7 +5919,7 @@ namespace TaamerProject.Repository.Repositories
                 IsNew = x.IsNew ?? 0,
                 TaskTimeFrom = x.TaskTimeFrom ?? "",
                 TaskTimeTo = x.TaskTimeTo ?? "",
-                ContactLists =x.ContactLists,
+                ContactLists = x.ContactLists.Where(x => x.IsDeleted == false).ToList(),
                 //TimeStr = (DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture) - DateTime.ParseExact(x.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)).TotalDays + "Day",
             }).ToList();//.Where(s => (DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) == DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture) && DateTime.ParseExact(s.EndTime, "h:mm", CultureInfo.InvariantCulture) < DateTime.ParseExact(DateTime.Now.ToString("h:mm"), "h:mm", CultureInfo.InvariantCulture)) || DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) < DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture));
             return projectPhasesTasks;
@@ -6674,7 +6674,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeFrom = x.TaskTimeFrom ?? "",
                 TaskTimeTo = x.TaskTimeTo ?? "",
                 ProjectDescription = x.Project.ProjectDescription ?? "",
-                ContactLists=x.ContactLists,
+                ContactLists=x.ContactLists.Where(x=>x.IsDeleted==false).ToList(),
                 StartDateNew=x.StartDateNew,
                 EndDateNew=x.EndDateNew,
             })
@@ -7726,7 +7726,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskEnd = acc.EndDate != null ? acc.EndDate : acc.ExcpectedEndDate != null ? acc.ExcpectedEndDate : "",
                 StopProjectType = acc.Project!.StopProjectType ?? 0,
                 SettingId = acc.SettingId,
-                TaskLongDesc =_TaamerProContext.ContactLists.Where(x=>x.TaskId.Value == TaskId && x.UserId != UserId).OrderByDescending(x=>x.AddDate).FirstOrDefault().Contacttxt ??"", //acc.TaskLongDesc,
+                TaskLongDesc =_TaamerProContext.ContactLists.Where(x=>x.TaskId.Value == TaskId && x.UserId != UserId && x.IsDeleted==false).OrderByDescending(x=>x.AddDate).FirstOrDefault().Contacttxt ??"", //acc.TaskLongDesc,
                 ProjectGoals = acc.ProjectGoals,
                 ProjectTypeId = acc.Project!.projecttype!.TypeId,
                 AddedTaskName = acc.AddTaskUserId==null?"": Lang =="rtl"? acc.AddTaskUser!.FullNameAr==null? acc.AddTaskUser!.FullName : acc.AddTaskUser!.FullNameAr : acc.AddTaskUser!.FullName==null? acc.AddTaskUser!.FullNameAr : acc.AddTaskUser!.FullName,

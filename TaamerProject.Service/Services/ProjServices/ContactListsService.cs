@@ -33,27 +33,50 @@ namespace TaamerProject.Service.Services.ProjServices
             _contactList = contactList;
 
         }
-        public async Task<IEnumerable<ContactListVM>> GetContactLists(int Id, int Type)
+        public async Task<IEnumerable<ContactListVM>> GetContactLists(int Id, int Type, int UserId)
         {
-            return await _contactList.GetContactLists(Id, Type);
+            return await _contactList.GetContactLists(Id, Type,UserId);
         }
         public GeneralMessage SaveContact(ContactList contact, int UserId, int BranchId)
         {
             try
             {
-                if (contact !=null)
+                if (contact != null)
                 {
-                    contact.AddUser = UserId;
-                    contact.AddDate = DateTime.Now;
-                    contact.UserId = UserId;
-                    contact.ContactDate= DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss:tt", CultureInfo.CreateSpecificCulture("en"));
-                    _TaamerProContext.ContactLists.Add(contact);
-                    //-----------------------------------------------------------------------------------------------------------------
-                    string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                    string ActionNote = "اضافة  تعليق";
-                    _SystemAction.SaveAction("SaveContact", "ContactService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
-                    //-----------------------------------------------------------------------------------------------------------------
-                    return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
+                    if (contact.ContactListId == null || contact.ContactListId == 0)
+                    {
+                        contact.AddUser = UserId;
+                        contact.AddDate = DateTime.Now;
+                        contact.UserId = UserId;
+                        contact.ContactDate = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss:tt", CultureInfo.CreateSpecificCulture("en"));
+                        _TaamerProContext.ContactLists.Add(contact);
+                        //-----------------------------------------------------------------------------------------------------------------
+                        string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                        string ActionNote = "اضافة  تعليق";
+                        _SystemAction.SaveAction("SaveContact", "ContactService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                        //-----------------------------------------------------------------------------------------------------------------
+                        return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
+
+                    }
+                    else
+                    {
+                        var contactupdated = _TaamerProContext.ContactLists.FirstOrDefault(x => x.ContactListId == contact.ContactListId);
+                        if (contactupdated != null)
+                        {
+                            contactupdated.UpdateUser = UserId;
+                            contactupdated.UpdateDate = DateTime.Now;
+                            contactupdated.ContactDate = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss:tt", CultureInfo.CreateSpecificCulture("en"));
+                            contactupdated.Contacttxt = contact.Contacttxt;
+                            _TaamerProContext.SaveChanges() ;
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote = "تعديل  تعليق";
+                            _SystemAction.SaveAction("SaveContact", "ContactService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                            //-----------------------------------------------------------------------------------------------------------------
+                            return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
+                        }
+
+                    }
                 }
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
 
@@ -67,6 +90,45 @@ namespace TaamerProject.Service.Services.ProjServices
                 _SystemAction.SaveAction("SaveContact", "ContactService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
+            }
+        }
+
+        public GeneralMessage DeleteContact(int Id, int UserId, int BranchId)
+        {
+            try
+            {
+                if (Id != null && Id !=0)
+                {
+              
+                        var contactupdated = _TaamerProContext.ContactLists.FirstOrDefault(x => x.ContactListId == Id);
+                        if (contactupdated != null)
+                        {
+                            contactupdated.UpdateUser = UserId;
+                            contactupdated.UpdateDate = DateTime.Now;
+                            contactupdated.IsDeleted = true;
+                            _TaamerProContext.SaveChanges();
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote = "حذف  تعليق";
+                            _SystemAction.SaveAction("DeleteContact", "ContactService", 1, Resources.General_Deleted, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                            //-----------------------------------------------------------------------------------------------------------------
+                            return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_Deleted };
+                        }
+
+                    }
+                
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_DeletedFailed };
+
+
+            }
+            catch (Exception ex)
+            {
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = "فشل في حفظ تعليق";
+                _SystemAction.SaveAction("SaveContact", "ContactService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                //-----------------------------------------------------------------------------------------------------------------
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_DeletedFailed };
             }
         }
     }

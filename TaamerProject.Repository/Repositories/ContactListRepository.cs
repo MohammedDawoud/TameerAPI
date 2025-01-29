@@ -20,7 +20,7 @@ namespace TaamerProject.Repository.Repositories
 
         }
 
-        public async Task<IEnumerable<ContactListVM>> GetContactLists(int Id, int Type)
+        public async Task<IEnumerable<ContactListVM>> GetContactLists(int Id, int Type,int UserId)
         {
             if (Id != 0 && Id > 0)
             {
@@ -36,6 +36,7 @@ namespace TaamerProject.Repository.Repositories
                         ProjectId = x.ProjectId,
                         UserId = x.UserId,
                         UserName = x.Users != null ? x.Users.FullNameAr ?? x.Users.FullName ?? "" : "",
+                        IsSender = x.UserId==UserId ? true : false,
                     }).ToList();
                     return contact;
                 }
@@ -51,6 +52,8 @@ namespace TaamerProject.Repository.Repositories
                         ProjectId = x.ProjectId,
                         UserId = x.UserId,
                         UserName = x.Users!=null? x.Users.FullNameAr ?? x.Users.FullName ?? "":"",
+                        IsSender = x.UserId == UserId ? true : false,
+
                     }).ToList();
                     return contact;
                 }
@@ -66,6 +69,8 @@ namespace TaamerProject.Repository.Repositories
                         ProjectId = x.ProjectId,
                         UserId = x.UserId,
                         UserName = x.Users != null ? x.Users.FullNameAr ?? x.Users.FullName ?? "" : "",
+                        IsSender = x.UserId == UserId ? true : false,
+
                     }).ToList();
                     return contact;
                 }

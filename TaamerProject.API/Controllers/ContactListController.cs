@@ -21,7 +21,9 @@ namespace TaamerProject.API.Controllers
         [HttpGet("GetContactLists")]
         public async Task<IActionResult> GetContactLists(int Id,int Type)
         {
-            return Ok( _contactLists.GetContactLists(Id,Type));
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+
+            return Ok( _contactLists.GetContactLists(Id,Type, _globalshared.UserId_G));
         }
 
 
@@ -30,6 +32,14 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var result = _contactLists.SaveContact(contact, _globalshared.UserId_G, _globalshared.BranchId_G);
+            return Ok(result);
+        }
+
+        [HttpPost("DeleteContact")]
+        public IActionResult DeleteContact(int Id)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var result = _contactLists.DeleteContact(Id, _globalshared.UserId_G, _globalshared.BranchId_G);
             return Ok(result);
         }
     }
