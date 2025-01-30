@@ -42,7 +42,7 @@ namespace TaamerProject.Service.Services
 
         public GeneralMessage SaveInvoicesRequest(int InvoiceReqId, int InvoiceId, string InvoiceHash, string SingedXML, string EncodedInvoice
             , string ZatcaUUID, string QRCode, string PIH, string SingedXMLFileName, int InvoiceNoRequest
-            , bool IsSent,int? StatusCode, string? SendingStatus, string? warningmessage, string? ClearedInvoice, string? errormessage)
+            , bool IsSent,int? StatusCode, string? SendingStatus, string? warningmessage, string? ClearedInvoice, string? errormessage,int BranchId)
         {
             try
             {
@@ -63,6 +63,7 @@ namespace TaamerProject.Service.Services
                 InvoicesRequest.warningmessage = warningmessage;
                 InvoicesRequest.ClearedInvoice = ClearedInvoice;
                 InvoicesRequest.errormessage = errormessage;
+                InvoicesRequest.BranchId = BranchId;
 
 
 

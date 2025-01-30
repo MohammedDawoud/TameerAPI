@@ -337,8 +337,11 @@ namespace TaamerProject.API.Controllers
             else { mode = Mode.developer; }
 
             CSIDGenerator generator = new CSIDGenerator(mode);
-            var path = Directory.GetCurrentDirectory();
-            path = path + "\\" + "cert";
+            //var path = Directory.GetCurrentDirectory();
+            //path = path + "\\" + "cert";
+
+            var path = Path.Combine("cert");
+
             //path = "D:\\Bayanatech\\Web Application\\APINew\\Bayanatech.OnionArchitecture\\TaamerProject.API\\cert";
             //path = System.IO.Path.Combine("cert");
             CertificateResponse response = generator.GenerateCSID(certrequest, inv, path);
@@ -376,13 +379,13 @@ namespace TaamerProject.API.Controllers
 
             CertificateRequest certrequest = new CertificateRequest();
             certrequest.OTP = otp;
-            certrequest.CommonName = "Company1";
-            certrequest.OrganizationName = ORG.NameAr;
-            certrequest.OrganizationUnitName = branch.NameAr; //branch name
+            certrequest.CommonName = branch.NameEn!.Trim() + System.Guid.NewGuid();
+            certrequest.OrganizationName = ORG.NameAr!.Trim();
+            certrequest.OrganizationUnitName = branch.NameEn!.Trim(); //branch name
             certrequest.CountryName = "SA";
-            certrequest.SerialNumber = Serial;
-            certrequest.OrganizationIdentifier = ORG.TaxCode;
-            certrequest.Location = ORG.Address;
+            certrequest.SerialNumber = Serial!.Trim();
+            certrequest.OrganizationIdentifier = ORG.TaxCode!.Trim();
+            certrequest.Location = ORG.Address!.Trim();
             certrequest.BusinessCategory = "Engineering consultant";
             certrequest.InvoiceType = "1100";
             return certrequest;
@@ -406,16 +409,28 @@ namespace TaamerProject.API.Controllers
             string ExternalPhone1 = "";
             string TaxCode1 = "";
 
-            Address1 = objBranch.Address?? objOrganization.Address;
-            BuildingNumber1 = objBranch.BuildingNumber?? objOrganization.BuildingNumber;
-            StreetName1 = objBranch.StreetName ?? objOrganization.StreetName;
-            Neighborhood1 = objBranch.Neighborhood ?? objOrganization.Neighborhood;
-            CityName1 = objBranch.CityName ?? objOrganization.CityName;
-            Country1 = objBranch.Country ?? objOrganization.Country;
-            PostalCode1 = objBranch.PostalCode ?? objOrganization.PostalCode;
-            PostalCodeFinal1 = objBranch.PostalCodeFinal ?? objOrganization.PostalCodeFinal;
-            ExternalPhone1 = objBranch.ExternalPhone ?? objOrganization.ExternalPhone;
-            TaxCode1 = objBranch.TaxCode ?? objOrganization.TaxCode;
+
+            if (objBranch.Address == null || objBranch.Address == "")
+                Address1 = objOrganization.Address!.Trim();
+            if (objBranch.BuildingNumber == null || objBranch.BuildingNumber == "")
+                BuildingNumber1 = objOrganization.BuildingNumber!.Trim();
+            if (objBranch.StreetName == null || objBranch.StreetName == "")
+                StreetName1 = objOrganization.StreetName!.Trim();
+            if (objBranch.Neighborhood == null || objBranch.Neighborhood == "")
+                Neighborhood1 = objOrganization.Neighborhood!.Trim();
+            if (objBranch.CityName == null || objBranch.CityName == "")
+                CityName1 = objOrganization.CityName!.Trim();
+            if (objBranch.Country == null || objBranch.Country == "")
+                Country1 = objOrganization.Country!.Trim();
+            if (objBranch.PostalCode == null || objBranch.PostalCode == "")
+                PostalCode1 = objOrganization.PostalCode!.Trim();
+            if (objBranch.PostalCodeFinal == null || objBranch.PostalCodeFinal == "")
+                PostalCodeFinal1 = objOrganization.PostalCodeFinal!.Trim();
+            if (objBranch.ExternalPhone == null || objBranch.ExternalPhone == "")
+                ExternalPhone1 = objOrganization.ExternalPhone!.Trim();
+            if (objBranch.TaxCode == null || objBranch.TaxCode == "")
+                TaxCode1 = objOrganization.TaxCode!.Trim();
+
 
 
             Invoice inv = new Invoice();
@@ -493,8 +508,9 @@ namespace TaamerProject.API.Controllers
             else if (objOrganization.ModeType == 3) { mode = Mode.Production; }
             else { mode = Mode.developer; }
             CSIDGenerator generator = new CSIDGenerator(mode);
-            var path = Directory.GetCurrentDirectory();
-            path = path + "\\" + "cert";
+            //var path = Directory.GetCurrentDirectory();
+            //path = path + "\\" + "cert";
+            var path = Path.Combine("cert");
             //path = "D:\\Bayanatech\\Web Application\\APINew\\Bayanatech.OnionArchitecture\\TaamerProject.API\\cert";
             //path = System.IO.Path.Combine("cert");
             CertificateResponse response = generator.GenerateCSID(certrequest, inv, path);
@@ -533,13 +549,13 @@ namespace TaamerProject.API.Controllers
 
             CertificateRequest certrequest = new CertificateRequest();
             certrequest.OTP = otp;
-            certrequest.CommonName = "Company1";
-            certrequest.OrganizationName = ORG.NameAr;
-            certrequest.OrganizationUnitName = branch.NameAr; //branch name
+            certrequest.CommonName = branch.NameEn!.Trim() + System.Guid.NewGuid();
+            certrequest.OrganizationName = ORG.NameAr!.Trim();
+            certrequest.OrganizationUnitName = branch.NameEn!.Trim(); //branch name
             certrequest.CountryName = "SA";
-            certrequest.SerialNumber = Serial;
-            certrequest.OrganizationIdentifier = branch.TaxCode?? ORG.TaxCode;
-            certrequest.Location = branch.Address ?? ORG.Address;
+            certrequest.SerialNumber = Serial!.Trim();
+            certrequest.OrganizationIdentifier = (branch.TaxCode?? ORG.TaxCode)!.Trim();
+            certrequest.Location = (branch.Address ?? ORG.Address)!.Trim();
             certrequest.BusinessCategory = "Engineering consultant";
             certrequest.InvoiceType = "1100";
             return certrequest;

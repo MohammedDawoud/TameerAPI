@@ -3259,16 +3259,16 @@ namespace TaamerProject.API.Controllers
             string TaxCode1 = "";
             if (OrgIsRequired == true)
             {
-                Address1 = objOrganization.Address;
-                BuildingNumber1 = objOrganization.BuildingNumber;
-                StreetName1 = objOrganization.StreetName;
-                Neighborhood1 = objOrganization.Neighborhood;
-                CityName1 = objOrganization.CityName;
-                Country1 = objOrganization.Country;
-                PostalCode1 = objOrganization.PostalCode;
-                PostalCodeFinal1 = objOrganization.PostalCodeFinal;
-                ExternalPhone1 = objOrganization.ExternalPhone;
-                TaxCode1 = objOrganization.TaxCode;
+                Address1 = objOrganization.Address!.Trim();
+                BuildingNumber1 = objOrganization.BuildingNumber!.Trim();
+                StreetName1 = objOrganization.StreetName!.Trim();
+                Neighborhood1 = objOrganization.Neighborhood!.Trim();
+                CityName1 = objOrganization.CityName!.Trim();
+                Country1 = objOrganization.Country!.Trim();
+                PostalCode1 = objOrganization.PostalCode!.Trim();
+                PostalCodeFinal1 = objOrganization.PostalCodeFinal!.Trim();
+                ExternalPhone1 = objOrganization.ExternalPhone!.Trim();
+                TaxCode1 = objOrganization.TaxCode!.Trim();
                 zatcakeys.CSR = objOrganization.CSR;
                 zatcakeys.PrivateKey = objOrganization.PrivateKey;
                 zatcakeys.PublicKey = objOrganization.PublicKey;
@@ -3276,20 +3276,60 @@ namespace TaamerProject.API.Controllers
             }
             else
             {
-                Address1 = objBranch.Address?? objOrganization.Address;
-                BuildingNumber1 = objBranch.BuildingNumber ?? objOrganization.BuildingNumber;
-                StreetName1 = objBranch.StreetName ?? objOrganization.StreetName;
-                Neighborhood1 = objBranch.Neighborhood ?? objOrganization.Neighborhood;
-                CityName1 = objBranch.CityName ?? objOrganization.CityName;
-                Country1 = objBranch.Country?? objOrganization.Country;
-                PostalCode1 = objBranch.PostalCode ?? objOrganization.PostalCode;
-                PostalCodeFinal1 = objBranch.PostalCodeFinal ?? objOrganization.PostalCodeFinal;
-                ExternalPhone1 = objBranch.ExternalPhone ?? objOrganization.ExternalPhone;
-                TaxCode1 = objBranch.TaxCode?? objOrganization.TaxCode;
-                zatcakeys.CSR = objBranch.CSR?? objOrganization.CSR;
-                zatcakeys.PrivateKey = objBranch.PrivateKey?? objOrganization.PrivateKey;
-                zatcakeys.PublicKey = objBranch.PublicKey?? objOrganization.PublicKey;
-                zatcakeys.SecreteKey = objBranch.SecreteKey?? objOrganization.SecreteKey;
+
+                Address1 = objBranch.Address!.Trim();
+                BuildingNumber1 = objBranch.BuildingNumber!.Trim();
+                StreetName1 = objBranch.StreetName!.Trim();
+                Neighborhood1 = objBranch.Neighborhood!.Trim();
+                CityName1 = objBranch.CityName!.Trim();
+                Country1 = objBranch.Country!.Trim();
+                PostalCode1 = objBranch.PostalCode!.Trim();
+                PostalCodeFinal1 = objBranch.PostalCodeFinal!.Trim();
+                ExternalPhone1 = objBranch.ExternalPhone!.Trim();
+                TaxCode1 = objBranch.TaxCode!.Trim();
+
+
+                if (objBranch.Address == null || objBranch.Address == "")
+                    Address1= objOrganization.Address!.Trim();
+                if (objBranch.BuildingNumber == null || objBranch.BuildingNumber == "")
+                    BuildingNumber1 = objOrganization.BuildingNumber!.Trim();
+                if (objBranch.StreetName == null || objBranch.StreetName == "")
+                    StreetName1 = objOrganization.StreetName!.Trim();
+                if (objBranch.Neighborhood == null || objBranch.Neighborhood == "")
+                    Neighborhood1 = objOrganization.Neighborhood!.Trim();
+                if (objBranch.CityName == null || objBranch.CityName == "")
+                    CityName1 = objOrganization.CityName!.Trim();
+                if (objBranch.Country == null || objBranch.Country == "")
+                    Country1 = objOrganization.Country!.Trim();
+                if (objBranch.PostalCode == null || objBranch.PostalCode == "")
+                    PostalCode1 = objOrganization.PostalCode!.Trim();
+                if (objBranch.PostalCodeFinal == null || objBranch.PostalCodeFinal == "")
+                    PostalCodeFinal1 = objOrganization.PostalCodeFinal!.Trim();
+                if (objBranch.ExternalPhone == null || objBranch.ExternalPhone == "")
+                    ExternalPhone1 = objOrganization.ExternalPhone!.Trim(); 
+                if (objBranch.TaxCode == null || objBranch.TaxCode == "")
+                    TaxCode1 = objOrganization.TaxCode!.Trim(); 
+                zatcakeys.CSR = objBranch.CSR;
+                zatcakeys.PrivateKey = objBranch.PrivateKey;
+                zatcakeys.PublicKey = objBranch.PublicKey;
+                zatcakeys.SecreteKey = objBranch.SecreteKey;
+                if (objBranch.CSR==null || objBranch.CSR == "")
+                {
+                    zatcakeys.CSR = objOrganization.CSR;
+                }
+                if (objBranch.PrivateKey == null || objBranch.PrivateKey == "")
+                {
+                    zatcakeys.PrivateKey = objOrganization.PrivateKey;
+                }
+                if (objBranch.PublicKey == null || objBranch.PublicKey == "")
+                {
+                    zatcakeys.PublicKey = objOrganization.PublicKey;
+                }
+                if (objBranch.SecreteKey == null || objBranch.SecreteKey == "")
+                {
+                    zatcakeys.SecreteKey = objOrganization.SecreteKey;
+                }
+
             }
             var invoicetypecode = InvoiceTypeEnums.Standared_Invoice;
             var invoicetypecodeName = InvoiceTypeNameEnums.Standared_Invoice;
@@ -3356,16 +3396,17 @@ namespace TaamerProject.API.Controllers
             var prevNum = (zatcaVoucherNumber - 1);
             if (prevNum > 0)
             {
-                var prevInvoice = _TaamerProContext.Acc_InvoicesRequests.Where(s => s.InvoiceNoRequest == prevNum);
+                var prevInvoice = _TaamerProContext.Acc_InvoicesRequests.Where(s => s.InvoiceNoRequest == prevNum && s.BranchId==Branchid);
                 if (prevInvoice.Count()>0)
                 {
-                    PreviousPIH = prevInvoice.FirstOrDefault().PIH;
+                    PreviousPIH = prevInvoice.FirstOrDefault().InvoiceHash;
                 }
                 else
                 {
                     PreviousPIH = "NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ==";
                 }
             }
+            else
             {
                 PreviousPIH = "NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ==";
             }
@@ -3567,12 +3608,13 @@ namespace TaamerProject.API.Controllers
 
            // InvoiceTotal CalculateInvoiceTotal = ubl.CalculateInvoiceTotal(inv.InvoiceLines, inv.allowanceCharges);
             bool savexml = true;
-            res = ubl.GenerateInvoiceXML(inv, Directory.GetCurrentDirectory(), savexml);
+            var path = Path.Combine("Invoices");
+            res = ubl.GenerateInvoiceXML(inv, path, savexml);
             //res = ubl.GenerateInvoiceXML(inv, Directory.GetCurrentDirectory(),true);
             var result = new GeneralMessage();
             if (res.IsValid)
             {
-                result = _invoicesRequestsService.SaveInvoicesRequest(0, invoiceIdV, res.InvoiceHash, res.SingedXML, res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName,zatcaVoucherNumber??0,false,null,null,null,null,null);
+                result = _invoicesRequestsService.SaveInvoicesRequest(0, invoiceIdV, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName,zatcaVoucherNumber??0,false,null,null,null,null,null, Branchid);
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = "GenerateInvoiceXML Valid";
@@ -3591,16 +3633,16 @@ namespace TaamerProject.API.Controllers
 
             }
 
-            var resultSend=SendToZatcaAPI(inv, res, objOrganization, result.ReturnedParm??0, zatcakeys);
+            var resultSend=SendToZatcaAPI(inv, res, objOrganization, result.ReturnedParm??0, zatcakeys, Branchid);
             return resultSend;
 
         }
 
         [HttpGet("SendToZatcaAPI")]
-        private GeneralMessage SendToZatcaAPI(Invoice inv, ZatcaIntegrationSDK.Result res, OrganizationsVM org,int InvoiceReqId,ZatcaKeys zatcakeys)
+        private GeneralMessage SendToZatcaAPI(Invoice inv, ZatcaIntegrationSDK.Result res, OrganizationsVM org,int InvoiceReqId,ZatcaKeys zatcakeys,int BranchId)
         {
             if(org.ModeType==2){mode = Mode.Simulation;}
-            if (org.ModeType == 3){mode = Mode.Production;}
+            else if (org.ModeType == 3){mode = Mode.Production;}
             else{mode = Mode.developer;}
 
             string warningmessage = "";
@@ -3610,7 +3652,8 @@ namespace TaamerProject.API.Controllers
             string QRCode = res.QRCode;
             int statusCode = 0;
             string ClearedInvoice = "";
-            ApiRequestLogic apireqlogic = new ApiRequestLogic(mode,Directory.GetCurrentDirectory(),true);
+            var path = Path.Combine("Invoices");
+            ApiRequestLogic apireqlogic = new ApiRequestLogic(mode,path,true);
             InvoiceReportingRequest invrequestbody = new InvoiceReportingRequest();
             invrequestbody.invoice = res.EncodedInvoice;
             invrequestbody.invoiceHash = res.InvoiceHash;
@@ -3632,19 +3675,19 @@ namespace TaamerProject.API.Controllers
                         {
                             warningmessage = responsemodel.WarningMessage;
                         }
-                        var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, res.SingedXML, res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, warningmessage,null, null);
+                        var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, warningmessage,null, null, BranchId);
                         return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = responsemodel.ReportingStatus + responsemodel.ClearanceStatus };
                     }
                     else
                     {
                         errormessage = responsemodel.ErrorMessage;
-                        var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, res.SingedXML, res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, null, null, errormessage);
+                        var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, null, null, errormessage, BranchId);
                         return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = responsemodel.ErrorMessage };
                     }
                 }
                 else
                 {
-                    var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, res.SingedXML, res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, null, null, tokenresponse.ErrorMessage);
+                    var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, null, null, tokenresponse.ErrorMessage, BranchId);
                     return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = tokenresponse.ErrorMessage };
                 }
             }
@@ -3665,13 +3708,13 @@ namespace TaamerProject.API.Controllers
                         }
                         QRCode = responsemodel.QRCode;
                         ClearedInvoice = responsemodel.ClearedInvoice;
-                        var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, res.SingedXML, res.EncodedInvoice, res.UUID, QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, warningmessage, ClearedInvoice, null);
+                        var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, warningmessage, ClearedInvoice, null, BranchId);
                         return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = responsemodel.ClearanceStatus };
                     }
                     else
                     {
                         errormessage = responsemodel.ErrorMessage;
-                        var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, res.SingedXML, res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, null, null, errormessage);
+                        var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, null, null, errormessage, BranchId);
                         return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = responsemodel.ErrorMessage };
                     }
                 }
@@ -3687,13 +3730,13 @@ namespace TaamerProject.API.Controllers
                         {
                             warningmessage = responsemodel.WarningMessage;
                         }
-                        var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, res.SingedXML, res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, warningmessage, null, null);
+                        var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, warningmessage, null, null, BranchId);
                         return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = responsemodel.ReportingStatus };
                     }
                     else
                     {
                         errormessage = responsemodel.ErrorMessage;
-                        var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, res.SingedXML, res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, null, null, errormessage);
+                        var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, null, null, errormessage, BranchId);
                         return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = responsemodel.ErrorMessage };
                     }
                 }
