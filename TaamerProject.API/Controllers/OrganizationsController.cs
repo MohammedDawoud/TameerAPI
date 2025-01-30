@@ -333,7 +333,7 @@ namespace TaamerProject.API.Controllers
             CertificateRequest certrequest = GetCSRRequest(OTP, objOrganization, objBranch);
 
             if (objOrganization.ModeType == 2) { mode = Mode.Simulation; }
-            if (objOrganization.ModeType == 3) { mode = Mode.Production; }
+            else if (objOrganization.ModeType == 3) { mode = Mode.Production; }
             else { mode = Mode.developer; }
 
             CSIDGenerator generator = new CSIDGenerator(mode);
@@ -489,7 +489,7 @@ namespace TaamerProject.API.Controllers
             CertificateRequest certrequest = GetCSRRequest_Branch(OTP, objOrganization, objBranch);
 
             if (objOrganization.ModeType == 2) { mode = Mode.Simulation; }
-            if (objOrganization.ModeType == 3) { mode = Mode.Production; }
+            else if (objOrganization.ModeType == 3) { mode = Mode.Production; }
             else { mode = Mode.developer; }
             CSIDGenerator generator = new CSIDGenerator(mode);
             var path = Directory.GetCurrentDirectory();
