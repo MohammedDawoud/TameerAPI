@@ -456,6 +456,21 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
+        public GeneralMessage SaveErrorMessageCSIDOrganizations(int OrganizationId, string ErrorMessage, int UserId, int BranchId)
+        {
+            try
+            {
+                var BranchOrganization = _OrganizationsRepository.GetById(OrganizationId);
+
+                BranchOrganization.CSR = ErrorMessage;
+                _TaamerProContext.SaveChanges();
+                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
+            }
+        }
 
         public GeneralMessage DeleteOrganizations(int OrganizationId, int UserId, int BranchId)
         {

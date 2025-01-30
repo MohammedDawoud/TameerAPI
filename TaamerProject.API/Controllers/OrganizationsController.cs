@@ -360,6 +360,7 @@ namespace TaamerProject.API.Controllers
             }
             else
             {
+                var result = _organizationsservice.SaveErrorMessageCSIDOrganizations(OrganizationId, response.ErrorMessage, _globalshared.UserId_G, _globalshared.BranchId_G);
                 return Ok(response.ErrorMessage);
             }
         }
