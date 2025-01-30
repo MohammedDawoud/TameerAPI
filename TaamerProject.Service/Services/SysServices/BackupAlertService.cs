@@ -48,7 +48,7 @@ namespace TaamerProject.Service.Services
                     string nextdayalert = "";
                     if (item.AlertTimeType == 1)
                     {
-                        Alert_NextDate = Alert_NextDate.AddDays(2);
+                        Alert_NextDate = Alert_NextDate.AddDays(1);
                     }
                     else if (item.AlertTimeType == 2)
                     {
