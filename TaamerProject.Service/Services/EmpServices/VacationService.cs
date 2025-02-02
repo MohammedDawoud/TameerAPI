@@ -1447,8 +1447,8 @@ namespace TaamerProject.Service.Services
                     try
                     { 
                     //Notification
-                    if (UserNotifPriv.Result.Count() != 0 && UserNotifPriv.Result.Contains(132))
-                    {
+                    //if (UserNotifPriv.Result.Count() != 0 && UserNotifPriv.Result.Contains(132))
+                    //{
                         var UserNotification = new Notification();
                         UserNotification.ReceiveUserId = emp.UserId??0;
                         UserNotification.Name = Subject;
@@ -1469,12 +1469,13 @@ namespace TaamerProject.Service.Services
                             managernot = UserNotification;
                             managernot.ReceiveUserId = directmanager.UserId.Value;
                             _TaamerProContext.Notification.Add(managernot);
+                        _TaamerProContext.SaveChanges();
 
 
-                            _notificationService.sendmobilenotification(emp.UserId.Value, Subject, NotStr);
+                        _notificationService.sendmobilenotification(emp.UserId.Value, Subject, NotStr);
                         _notificationService.sendmobilenotification(directmanager.UserId.Value, Subject, NotStr);
 
-                        }
+                        //}
 
                         if ((Type == 2 || Type == 3))
                     {   //mail

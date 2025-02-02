@@ -1592,7 +1592,33 @@ namespace TaamerProject.Service.Services
 
             }
             string NotStr = "تم انضمام الموظف " + EmployeeUpdated.EmployeeNameAr + " إلى فريق " + OrgName + ", الوظيفة: " + job.JobNameAr + " قسم : " + DepartmentNameAr + " فرع: " + NameAr;
-
+            Notification UserNotification = new Notification();
+            UserNotification.ReceiveUserId = EmployeeUpdated.UserId.Value;
+            UserNotification.Name = Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar"));
+            UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+            UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
+            UserNotification.SendUserId = 1;
+            UserNotification.Type = 1; // notification
+            UserNotification.Description = NotStr;
+            UserNotification.AllUsers = false;
+            UserNotification.SendDate = DateTime.Now;
+            UserNotification.ProjectId = 0;
+            UserNotification.TaskId = 0;
+            UserNotification.IsHidden = false;
+            UserNotification.AddUser = EmployeeUpdated.UserId.Value;
+            UserNotification.AddDate = DateTime.Now;
+            UserNotification.IsRead = false;
+            _TaamerProContext.Notification.Add(UserNotification);
+            _TaamerProContext.SaveChanges();
+            if (directmanager != null)
+            {
+                var Not_directmanager = new Notification();
+                Not_directmanager = UserNotification;
+                Not_directmanager.ReceiveUserId = directmanager.UserId.Value;
+                Not_directmanager.NotificationId = 0;
+                _TaamerProContext.Notification.Add(Not_directmanager);
+                _TaamerProContext.SaveChanges();
+            }
             _notificationService.sendmobilenotification(EmployeeUpdated.UserId.Value, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), NotStr);
             if (directmanager != null)
             {
@@ -1651,12 +1677,23 @@ namespace TaamerProject.Service.Services
 
             if (EmployeeUpdated.Email != null && EmployeeUpdated.Email != "")
             {
-                IsSent = _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, 0, title, htmlBody, true, EmployeeUpdated.Email);
-            }
-            if (directmanager != null)
-            {
-                _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, 0, title, htmlBody, true, directmanager?.Email);
+                try
+                {
+                    IsSent = _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, EmployeeUpdated.UserId.Value, EmployeeUpdated.UserId.Value, title, htmlBody, true, EmployeeUpdated.Email);
+                }catch(Exception ex)
+                {
 
+                }
+                }
+            if (directmanager != null && directmanager.Email !=null)
+            {
+                try { 
+                _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, directmanager.UserId.Value, directmanager.UserId.Value, title, htmlBody, true, directmanager?.Email);
+                }
+                catch (Exception ex)
+                {
+
+                }
             }
          
             string NotStr = "تم نقل الموظف  " + EmployeeUpdated.EmployeeNameAr+ " " + label1_not + " "+ value+" " + label2_not + " "+ value2  ;
@@ -1678,12 +1715,16 @@ namespace TaamerProject.Service.Services
             UserNotification.AddDate = DateTime.Now;
             UserNotification.IsRead = false;
             _TaamerProContext.Notification.Add(UserNotification);
-
-            var Not_directmanager = new Notification();
-            Not_directmanager = UserNotification;
-            Not_directmanager.ReceiveUserId = directmanager.UserId.Value;
-            _TaamerProContext.Notification.Add(Not_directmanager);
             _TaamerProContext.SaveChanges();
+            if (directmanager != null)
+            {
+                var Not_directmanager = new Notification();
+                Not_directmanager = UserNotification;
+                Not_directmanager.ReceiveUserId = directmanager.UserId.Value;
+                Not_directmanager.NotificationId = 0;
+                _TaamerProContext.Notification.Add(Not_directmanager);
+                _TaamerProContext.SaveChanges();
+            }
 
             _notificationService.sendmobilenotification(EmployeeUpdated.UserId.Value, title, NotStr);
             if (directmanager != null)

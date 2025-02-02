@@ -191,7 +191,7 @@ namespace TaamerProject.Service.Services
                                 //if (UserNotifPriv.Count() != 0 && UserNotifPriv.Contains(162))
                                 //{
                                     UserNotification.ReceiveUserId = user;
-                                    UserNotification.Name = Resources.ResourceManager.GetString("Notice_CustodyFinish", CultureInfo.CreateSpecificCulture("en"));
+                                    UserNotification.Name = Resources.ResourceManager.GetString("Notice_CustodyFinish", CultureInfo.CreateSpecificCulture("ar"));
                                     UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
                                     UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
                                     UserNotification.SendUserId = 1;
@@ -205,13 +205,19 @@ namespace TaamerProject.Service.Services
                                     UserNotification.AddUser = UserId;
                                     UserNotification.AddDate = DateTime.Now;
                                     _TaamerProContext.Notification.Add(UserNotification);
+                            _TaamerProContext.SaveChanges();
 
+                            if (direectmanager != null)
+                            {
                                 var Not_directmanager = new Notification();
                                 Not_directmanager = UserNotification;
                                 Not_directmanager.ReceiveUserId = direectmanager.UserId;
+                                Not_directmanager.NotificationId = 0;
                                 _TaamerProContext.Notification.Add(Not_directmanager);
                                 _TaamerProContext.SaveChanges();
-                                _notificationService.sendmobilenotification(user,"فك العهدة", NotStr);
+
+                            }
+                            _notificationService.sendmobilenotification(user,"فك العهدة", NotStr);
                                 _notificationService.sendmobilenotification(direectmanager.UserId.Value, "فك العهدة", NotStr);
                             
                         }
@@ -443,14 +449,14 @@ namespace TaamerProject.Service.Services
                         var direectmanager = _TaamerProContext.Employees.Where(x => x.EmployeeId == Emp.DirectManager).FirstOrDefault();
 
                         htmlBody = @"<!DOCTYPE html><html lang = ''><head><meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'><meta http-equiv='X-UA-Compatible' content='IE=edge'>
-<meta charset = 'utf-8><meta name = 'description' content = ''><meta name = 'keywords' content = ''><meta name = 'csrf-token' content = ''><title></title><link rel = 'icon' type = 'image/x-icon' href = ''></head>
-<body style = 'background:#f9f9f9;direction:rtl'><div class='container' style='max-width:630px;padding-right: var(--bs-gutter-x, .75rem); padding-left: var(--bs-gutter-x, .75rem); margin-right: auto;  margin-left: auto;'>
-<style> .bordered {width: 550px; height: 700px; padding: 20px;border: 3px solid yellowgreen; background-color:lightgray;} </style>
-<div class= 'row' style = 'font-family: Cairo, sans-serif'>  <div class= 'card' style = 'padding: 2rem;background:#fff'> <div style = 'width: 550px; height: 700px; padding: 20px; border: 3px solid yellowgreen; background-color: lightgray;'> <p style='text-align:center'></p>
-<h4> عزيزي الموظف " + Emp.EmployeeNameAr + "</h4> <h4> السلام عليكم ورحمة الله وبركاتة</h4> <h3 style = 'text-align:center;' > تم استلام العهدة المبين تفاصيلها في الجدول التالي</h3><table align = 'center' border = '1' ><tr> <td>  الموظف</td><td>" + Emp.EmployeeNameAr + @"</td> </tr> <tr> <td> العهدة </td> <td>" + CustodyTypeName + @"</td>
- </tr> <tr> <td>  الكمية</td> <td>" + custody.Quantity + @"</td> </tr><tr> <td>   السعر</td> <td>" + CustodyPrice + @"</td> </tr><tr> <td>   ميعاد استلام العهدة</td> <td>" + custody.Date + @"</td> </tr> </table> <p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
+                                    <meta charset = 'utf-8><meta name = 'description' content = ''><meta name = 'keywords' content = ''><meta name = 'csrf-token' content = ''><title></title><link rel = 'icon' type = 'image/x-icon' href = ''></head>
+                                    <body style = 'background:#f9f9f9;direction:rtl'><div class='container' style='max-width:630px;padding-right: var(--bs-gutter-x, .75rem); padding-left: var(--bs-gutter-x, .75rem); margin-right: auto;  margin-left: auto;'>
+                                    <style> .bordered {width: 550px; height: 700px; padding: 20px;border: 3px solid yellowgreen; background-color:lightgray;} </style>
+                                    <div class= 'row' style = 'font-family: Cairo, sans-serif'>  <div class= 'card' style = 'padding: 2rem;background:#fff'> <div style = 'width: 550px; height: 700px; padding: 20px; border: 3px solid yellowgreen; background-color: lightgray;'> <p style='text-align:center'></p>
+                                    <h4> عزيزي الموظف " + Emp.EmployeeNameAr + "</h4> <h4> السلام عليكم ورحمة الله وبركاتة</h4> <h3 style = 'text-align:center;' > تم استلام العهدة المبين تفاصيلها في الجدول التالي</h3><table align = 'center' border = '1' ><tr> <td>  الموظف</td><td>" + Emp.EmployeeNameAr + @"</td> </tr> <tr> <td> العهدة </td> <td>" + CustodyTypeName + @"</td>
+                                     </tr> <tr> <td>  الكمية</td> <td>" + custody.Quantity + @"</td> </tr><tr> <td>   السعر</td> <td>" + CustodyPrice + @"</td> </tr><tr> <td>   ميعاد استلام العهدة</td> <td>" + custody.Date + @"</td> </tr> </table> <p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
 
-</div> </div></div></div></body></html> "
+                                    </div> </div></div></div></body></html> "
                         ;
 
 
@@ -473,7 +479,7 @@ namespace TaamerProject.Service.Services
                                 //    if (UserNotifPriv.Count() != 0 && UserNotifPriv.Contains(152))
                                 //    {
                                         UserNotification.ReceiveUserId = user;
-                                        UserNotification.Name = Resources.ResourceManager.GetString("Emp_ReceiveCustody", CultureInfo.CreateSpecificCulture("en"));
+                                        UserNotification.Name = Resources.ResourceManager.GetString("Emp_ReceiveCustody", CultureInfo.CreateSpecificCulture("ar"));
                                         UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
                                         UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
                                         UserNotification.SendUserId = 1;
@@ -487,17 +493,24 @@ namespace TaamerProject.Service.Services
                                         UserNotification.AddUser = UserId;
                                         UserNotification.AddDate = DateTime.Now;
                                         _TaamerProContext.Notification.Add(UserNotification);
+                            _TaamerProContext.SaveChanges();
+
                             if (direectmanager != null)
                             {
                                 var Not_directmanager = new Notification();
                                 Not_directmanager = UserNotification;
                                 Not_directmanager.ReceiveUserId = direectmanager.UserId;
+                                Not_directmanager.AddDate = DateTime.Now.AddMinutes(1);
+                                Not_directmanager.NotificationId = 0;
                                 _TaamerProContext.Notification.Add(Not_directmanager);
+                                _TaamerProContext.SaveChanges();
+
                             }
-                                        _notificationService.sendmobilenotification(user, Resources.ResourceManager.GetString("Emp_ReceiveCustody", CultureInfo.CreateSpecificCulture("en")), NotStr);
+                            _TaamerProContext.SaveChanges();
+                                        _notificationService.sendmobilenotification(user, Resources.ResourceManager.GetString("Emp_ReceiveCustody", CultureInfo.CreateSpecificCulture("ar")), NotStr);
                             if (direectmanager != null)
                             {
-                                _notificationService.sendmobilenotification(direectmanager.UserId.Value, Resources.ResourceManager.GetString("Emp_ReceiveCustody", CultureInfo.CreateSpecificCulture("en")), NotStr);
+                                _notificationService.sendmobilenotification(direectmanager.UserId.Value, Resources.ResourceManager.GetString("Emp_ReceiveCustody", CultureInfo.CreateSpecificCulture("ar")), NotStr);
                             }
 
                                 }
