@@ -1020,6 +1020,7 @@ namespace TaamerProject.Service.Services
                     UserNotification.AddUser = UserId;
                     UserNotification.AddDate = DateTime.Now;
                     _TaamerProContext.Notification.Add(UserNotification);
+                    _TaamerProContext.SaveChanges();
                     _notificationService.sendmobilenotification(ResponSibleUser, Subject, NotStr);
 
                     //mail

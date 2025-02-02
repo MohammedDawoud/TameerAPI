@@ -1278,6 +1278,7 @@ namespace TaamerProject.Service.Services
                     UserNotification.AddDate = DateTime.Now;
 
                     _TaamerProContext.Notification.Add(UserNotification);
+                    _TaamerProContext.SaveChanges();
                     _notificationService.sendmobilenotification((int)loan.UserId.Value, Subject, NotStr);
 
                     string DepartmentNameAr = "";

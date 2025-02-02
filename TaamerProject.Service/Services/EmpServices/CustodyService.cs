@@ -188,8 +188,8 @@ namespace TaamerProject.Service.Services
 
                             try
                             {
-                                if (UserNotifPriv.Count() != 0 && UserNotifPriv.Contains(162))
-                                {
+                                //if (UserNotifPriv.Count() != 0 && UserNotifPriv.Contains(162))
+                                //{
                                     UserNotification.ReceiveUserId = user;
                                     UserNotification.Name = Resources.ResourceManager.GetString("Notice_CustodyFinish", CultureInfo.CreateSpecificCulture("en"));
                                     UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
@@ -213,7 +213,7 @@ namespace TaamerProject.Service.Services
                                 _TaamerProContext.SaveChanges();
                                 _notificationService.sendmobilenotification(user,"فك العهدة", NotStr);
                                 _notificationService.sendmobilenotification(direectmanager.UserId.Value, "فك العهدة", NotStr);
-                            }
+                            
                         }
                             catch (Exception ex)
                             {

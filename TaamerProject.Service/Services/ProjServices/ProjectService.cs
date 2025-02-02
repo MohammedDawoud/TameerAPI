@@ -1273,6 +1273,8 @@ namespace TaamerProject.Service.Services
                                 NextTime = null,
                             };
                             _TaamerProContext.Notification.Add(UserNotification);
+                            _TaamerProContext.SaveChanges();
+
                             _notificationService.sendmobilenotification(usr, "ايقاف مشروع", "  تم ايقاف مشروع رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + " فرع  " + branch.NameAr + " مدير المشروع  " + manager.FullNameAr + "");
 
 
@@ -1491,6 +1493,8 @@ namespace TaamerProject.Service.Services
                                 NextTime = null,
                             };
                             _TaamerProContext.Notification.Add(UserNotification);
+                            _TaamerProContext.SaveChanges();
+
                             _notificationService.sendmobilenotification(usr, "اعادة تشغيل مشروع", " تم تشغيل مشروع رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + " فرع  " + branch.NameAr + "");
 
                             var htmlBody = "";

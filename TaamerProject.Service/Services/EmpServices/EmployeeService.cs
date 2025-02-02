@@ -904,14 +904,26 @@ namespace TaamerProject.Service.Services
 
                             var oldbranch = _TaamerProContext.Branch.Where(x => x.BranchId == empUpdated.BranchId).FirstOrDefault();
                             empUpdated.BranchId = emp.BranchId;
-                            sendemployeemailNotification(empUpdated, 1, oldbranch?.NameAr);
+                            try
+                            {
+                                sendemployeemailNotification(empUpdated, 1, oldbranch?.NameAr);
+                            }catch(Exception ex)
+                            {
+
+                            }
                         }
                         if (empUpdated.JobId != emp.JobId)
                         {
                             var oldjob = _TaamerProContext.Job.Where(x => x.JobId == empUpdated.JobId).FirstOrDefault();
                             empUpdated.JobId = emp.JobId;
-
+                            try
+                            { 
                             sendemployeemailNotification(empUpdated, 2, oldjob?.JobNameAr);
+                            }
+                            catch (Exception ex)
+                            {
+
+                            }
                         }
                         //if (empUpdated.ContractEndDate != emp.ContractEndDate || empUpdated.ContractStartDate != emp.ContractStartDate)
                         //{
@@ -1666,12 +1678,13 @@ namespace TaamerProject.Service.Services
             UserNotification.AddDate = DateTime.Now;
             UserNotification.IsRead = false;
             _TaamerProContext.Notification.Add(UserNotification);
-            _TaamerProContext.SaveChanges();
 
             var Not_directmanager = new Notification();
             Not_directmanager = UserNotification;
             Not_directmanager.ReceiveUserId = directmanager.UserId.Value;
             _TaamerProContext.Notification.Add(Not_directmanager);
+            _TaamerProContext.SaveChanges();
+
             _notificationService.sendmobilenotification(EmployeeUpdated.UserId.Value, title, NotStr);
             if (directmanager != null)
             {

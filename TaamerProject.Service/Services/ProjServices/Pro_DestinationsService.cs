@@ -325,29 +325,29 @@ namespace TaamerProject.Service.Services
 
                             var issent = SendMail_Destination(Organization, branch, UserId, usr.Value, subject, strbody, Url, ImgUrl, 1, true).Result;
 
-                            var ListOfPrivNotify = new List<Notification>();
-                            ListOfPrivNotify.Add(new Notification
-                            {
-                                ReceiveUserId = usr.Value,
-                                Name = subject,
-                                Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
-                                HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
-                                SendUserId = 1,
-                                Type = 1,
-                                Description = notitxt,
-                                AllUsers = false,
-                                SendDate = DateTime.Now,
-                                ProjectId = Proj.ProjectId,
-                                TaskId = 0,
-                                AddUser = UserId,
-                                BranchId = branch.BranchId,
-                                AddDate = DateTime.Now,
-                                IsHidden = false,
-                                NextTime = null,
-                            });
-                            _TaamerProContext.Notification.AddRange(ListOfPrivNotify);
-                            _TaamerProContext.SaveChanges();
-                            _notificationService.sendmobilenotification(usr.Value, subject, notitxt);
+                            //var ListOfPrivNotify = new List<Notification>();
+                            //ListOfPrivNotify.Add(new Notification
+                            //{
+                            //    ReceiveUserId = usr.Value,
+                            //    Name = subject,
+                            //    Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
+                            //    HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
+                            //    SendUserId = 1,
+                            //    Type = 1,
+                            //    Description = notitxt,
+                            //    AllUsers = false,
+                            //    SendDate = DateTime.Now,
+                            //    ProjectId = Proj.ProjectId,
+                            //    TaskId = 0,
+                            //    AddUser = UserId,
+                            //    BranchId = branch.BranchId,
+                            //    AddDate = DateTime.Now,
+                            //    IsHidden = false,
+                            //    NextTime = null,
+                            //});
+                            //_TaamerProContext.Notification.AddRange(ListOfPrivNotify);
+                           // _TaamerProContext.SaveChanges();
+                           // _notificationService.sendmobilenotification(usr.Value, subject, notitxt);
 
                         }
                     }
