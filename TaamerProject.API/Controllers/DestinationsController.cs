@@ -38,7 +38,8 @@ namespace TaamerProject.API.Controllers
 
         public IActionResult GetAllDestinations()
         {
-            var result = _Pro_DestinationsService.GetAllDestinations();
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var result = _Pro_DestinationsService.GetAllDestinations(_globalshared.BranchId_G);
             return Ok(result);
         }
         [HttpGet("GetDestinationByProjectId")]
@@ -59,7 +60,8 @@ namespace TaamerProject.API.Controllers
 
         public IActionResult GetAllDestinationsProjects()
         {
-            var result = _Pro_DestinationsService.GetAllDestinations();
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var result = _Pro_DestinationsService.GetAllDestinations(_globalshared.BranchId_G);
             var List=result.Result.Select(s => new
             {
                 ProjectId = s.ProjectId,
@@ -107,7 +109,8 @@ namespace TaamerProject.API.Controllers
 
         public IActionResult FillDestinationsSelect()
         {
-            var act = _Pro_DestinationsService.GetAllDestinations().Result.Select(s => new
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var act = _Pro_DestinationsService.GetAllDestinations(_globalshared.BranchId_G).Result.Select(s => new
             {
                 Id = s.DestinationId,
                 TransactionNumber = s.TransactionNumber,

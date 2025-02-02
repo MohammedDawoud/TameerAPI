@@ -10,7 +10,7 @@ namespace TaamerProject.Service.Interfaces
 {
     public interface IPro_DestinationsService
     {
-        Task<IEnumerable<Pro_DestinationsVM>> GetAllDestinations();
+        Task<IEnumerable<Pro_DestinationsVM>> GetAllDestinations(int BranchId);
         Task<Pro_DestinationsVM> GetDestinationByProjectId(int projectId);
         Task<Pro_DestinationsVM> GetDestinationByProjectIdToReplay(int projectId);
 
