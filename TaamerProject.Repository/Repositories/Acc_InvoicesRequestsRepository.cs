@@ -43,6 +43,8 @@ namespace TaamerProject.Repository.Repositories
                     QRCode = x.QRCode,
                     PIH = x.PIH,
                     SingedXMLFileName = x.SingedXMLFileName,
+                    BranchId = x.BranchId,
+
                 }).FirstOrDefault();
                 return InvRequest;
             }

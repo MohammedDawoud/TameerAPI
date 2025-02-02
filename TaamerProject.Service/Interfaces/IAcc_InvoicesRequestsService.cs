@@ -13,7 +13,7 @@ namespace TaamerProject.Service.Interfaces
         Task<Acc_InvoicesRequestsVM> GetInvoiceReq(int InvoiceId);
         GeneralMessage SaveInvoicesRequest(int InvoiceReqId, int InvoiceId, string InvoiceHash, string SingedXML, string EncodedInvoice
              , string ZatcaUUID, string QRCode, string PIH, string SingedXMLFileName, int InvoiceNoRequest
-             , bool IsSent, int? StatusCode, string? SendingStatus, string? warningmessage, string? ClearedInvoice, string? errormessage);
+             , bool IsSent, int? StatusCode, string? SendingStatus, string? warningmessage, string? ClearedInvoice, string? errormessage,int BranchId);
 
     }
 }

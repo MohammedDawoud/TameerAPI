@@ -7635,7 +7635,7 @@ namespace TaamerProject.Repository.Repositories
         }
         public async Task<int?> GenerateVoucherZatcaNumber( int? YearId, int BranchId)
         {
-            var invoices = _TaamerProContext.Acc_InvoicesRequests;
+            var invoices = _TaamerProContext.Acc_InvoicesRequests.Where(s=>s.BranchId==BranchId);
             if (invoices != null)
             {
                 var lastRow = invoices.OrderByDescending(u => u.InvoiceNoRequest).Take(1).FirstOrDefault();

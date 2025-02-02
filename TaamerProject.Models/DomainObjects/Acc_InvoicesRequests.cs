@@ -24,6 +24,8 @@ namespace TaamerProject.Models
         public string? QRCode { get; set; }
         public string? PIH { get; set; }
         public string? SingedXMLFileName { get; set; }
+        public int? BranchId { get; set; }
+
 
     }
 }

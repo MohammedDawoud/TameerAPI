@@ -19,6 +19,7 @@ namespace TaamerProject.Service.Interfaces
         GeneralMessage SaveOrganizationSettings(Organizations organizations, int UserId, int BranchId);
         GeneralMessage SavepartialOrganizations(Organizations organizations, int UserId, int BranchId, decimal VAT, int VATSet);
         GeneralMessage SaveCSIDOrganizations(int OrganizationId,string CSR,string PrivateKey,string CSID,string SecretKey, int UserId, int BranchId);
+        GeneralMessage SaveErrorMessageCSIDOrganizations(int OrganizationId, string ErrorMessage, int UserId, int BranchId);
 
         GeneralMessage DeleteOrganizations(int OrganizationId, int UserId, int BranchId);
         Task<OrganizationsVM> CheckEmailOrganization(int? OrganizationId);
