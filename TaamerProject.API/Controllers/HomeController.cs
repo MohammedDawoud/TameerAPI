@@ -66,7 +66,7 @@ namespace TaamerProject.API.Controllers
         private IServiceService _serviceService;
         private ISupervisionsService _supervisionsService;
         private IOfficialDocumentsService _officialDocumentsService;
-
+        private readonly ILicencesService _licences;
         public HomeController(IProjectService projectService, IProjectPhasesTasksService projectPhasesTasksService, IWorkOrdersService workOrdersService, IUsersService usersService,
              IHomeService homeService, IBranchesService branchesService, IAccountsService accountsService, INotificationService notificationService, ICustomerService customerService, IExpRevenuExpensesService expRevenuExpensesService, IServiceService serviceService, ISupervisionsService supervisionsService, IOfficialDocumentsService officialDocumentsService, IFiscalyearsService fiscalyearsService,
              IBranchesService branchesService1, IOrganizationsService organizationsService, IEmployeesService employeesService, IEmployeesService employeesService1,
@@ -75,7 +75,8 @@ namespace TaamerProject.API.Controllers
              IInstrumentSourcesService instrumentSourcesService, IProjectPiecesService projectPiecesService, IRegionTypesService regionTypesService,
              ITransactionTypesService transactionTypesService, IBuildTypesService buildTypesService, ICityService cityService, IPro_MunicipalService pro_MunicipalService,
              IPro_SubMunicipalityService pro_SubMunicipalityService, IPro_SuperContractorService pro_SuperContractorService, IProUserPrivilegesService proUserPrivilegesService,
-             ITaskTypeService taskTypeService, IFiscalyearsService fiscalyearsService1, IConfiguration _configuration)
+             ITaskTypeService taskTypeService, IFiscalyearsService fiscalyearsService1, IConfiguration _configuration
+            , ILicencesService licences)
         {
             this._BranchesService = branchesService1;
             this._ProjectService = projectService;
@@ -117,6 +118,7 @@ namespace TaamerProject.API.Controllers
             this._FiscalyearsService = fiscalyearsService1;
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             Configuration = _configuration; Con = this.Configuration.GetConnectionString("DBConnection");
+            _licences = licences;
         }
 
 
@@ -867,6 +869,36 @@ namespace TaamerProject.API.Controllers
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
             return Ok(_globalshared.YearId_G);
+        }
+
+        [HttpGet("GetHostingExpireAlert")]
+        public ActionResult GetHostingExpireAlert()
+        {
+            var items = _licences.GetAllLicences("").Result.ToList();
+            if (items != null) {
+               var meassege= items.Select(item => new
+                 {
+
+                     ExpireDate = item.Support_Expiry_Date,
+                     Message = (DateTime.ParseExact(item.Support_Expiry_Date, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture) - DateTime.UtcNow).TotalDays switch
+                     {
+                         > 0 and < 30 => $"الاشتراك سينتهي خلال ( {(int)((DateTime.ParseExact(item.Support_Expiry_Date, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)) - DateTime.UtcNow).TotalDays}   )  بتاريخ {item.Support_Expiry_Date}",
+                         _ => ""
+                     }
+                 }).FirstOrDefault();
+                if (meassege.Message == "")
+                {
+                    return Ok(null);
+                }
+                else
+                {
+                    return Ok(meassege);
+                }
+            }
+            else
+            {
+                return Ok(null);
+            }
         }
 
 
