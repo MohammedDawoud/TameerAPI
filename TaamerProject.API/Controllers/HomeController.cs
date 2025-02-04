@@ -882,7 +882,7 @@ namespace TaamerProject.API.Controllers
                      ExpireDate = item.Support_Expiry_Date,
                      Message = (DateTime.ParseExact(item.Support_Expiry_Date, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture) - DateTime.UtcNow).TotalDays switch
                      {
-                         > 0 and < 30 => $"الاشتراك سينتهي خلال ( {(int)((DateTime.ParseExact(item.Support_Expiry_Date, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)) - DateTime.UtcNow).TotalDays}   )  بتاريخ {item.Support_Expiry_Date}",
+                         > 0 and < 30 => $"الاشتراك سينتهي خلال ( {(int)((DateTime.ParseExact(item.Support_Expiry_Date, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)) - DateTime.UtcNow).TotalDays}   يوم)  فيٍ {item.Support_Expiry_Date}",
                          _ => ""
                      }
                  }).FirstOrDefault();
