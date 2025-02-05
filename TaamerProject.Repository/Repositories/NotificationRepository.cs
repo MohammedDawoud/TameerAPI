@@ -262,7 +262,7 @@ namespace TaamerProject.Repository.Repositories
          //the fintity is not working well check this up
             try
             {
-                var Notifications = await _TaamerProContext.Notification.Where(s => s.IsDeleted == false && ((s.ReceiveUserId == UserId && (s.Type == 1 || s.Type == 11) && s.IsHidden == false) || ((s.Type == 1 || s.Type == 11) && s.AllUsers == true)) /*&& s.IsRead != true*/).Select(x => new NotificationVM
+                var Notifications = await _TaamerProContext.Notification.Where(s => s.IsDeleted == false && ((s.ReceiveUserId == UserId && (s.Type == 1 || s.Type == 11) && s.IsHidden != true) || ((s.Type == 1 || s.Type == 11) && s.AllUsers == true)) /*&& s.IsRead != true*/).Select(x => new NotificationVM
                 {
 
                     NotificationId = x.NotificationId,
@@ -277,7 +277,7 @@ namespace TaamerProject.Repository.Repositories
                     ActionUser = x.ActionUser,
                     ActionDate = x.ActionDate,
                     Type = x.Type,
-                    IsRead = x.IsRead,
+                    IsRead = x.IsRead ?? false,
                     SendDate = x.SendDate,
                     ReadingDate = x.ReadingDate,
                     ProjectId = x.ProjectId,

@@ -4132,11 +4132,11 @@ namespace TaamerProject.Service.Services
                         {
                             if (ProjectPhasesTasks.UserId != 0 && ProjectPhasesTasks.UserId != null)
                             {
-                                var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(ProjectPhasesTasks.UserId ?? 0).Result;
-                                if (UserNotifPriv.Count() != 0)
-                                {
-                                    if (UserNotifPriv.Contains(352))
-                                    {
+                                //var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(ProjectPhasesTasks.UserId ?? 0).Result;
+                                //if (UserNotifPriv.Count() != 0)
+                                //{
+                                //    if (UserNotifPriv.Contains(352))
+                                //    {
                                         var UserNotification = new Notification();
                                         UserNotification.ReceiveUserId = ProjectPhasesTasks.UserId;
                                         UserNotification.Name = Resources.General_Newtasks;
@@ -4156,11 +4156,11 @@ namespace TaamerProject.Service.Services
                                         UserNotification.NextTime = null;
                                         _TaamerProContext.Notification.Add(UserNotification);
                                         _notificationService.sendmobilenotification(ProjectPhasesTasks.UserId ?? 0, Resources.General_Newtasks, "لديك مهمه جديدة : " + ProjectPhasesTasks.DescriptionAr + " علي مشروع رقم " + project.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + " فرع " + branch.NameAr + "");
-                                    }
+                                   // }
 
 
-                                    if (UserNotifPriv.Contains(353))
-                                    {
+                                    //if (UserNotifPriv.Contains(353))
+                                    //{
                                         var userObj = _UsersRepository.GetById(ProjectPhasesTasks.UserId ?? 0);
 
                                         //var NotStr = customer.CustomerNameAr + " للعميل  " + project.ProjectNo + " علي مشروع رقم " + ProjectPhasesTasks.DescriptionAr + " لديك مهمه جديدة  ";
@@ -4169,18 +4169,18 @@ namespace TaamerProject.Service.Services
                                         {
                                             var result = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
                                         }
-                                    }
+                                    //}
 
 
-                                    if (UserNotifPriv.Contains(351))
-                                    {
+                                    //if (UserNotifPriv.Contains(351))
+                                    //{
 
-                                        //SendMailNoti(ProTaskUpdated.Project.ProjectId, Desc, "اضافة مهمة جديدة", BranchId, UserId, ProjectPhasesTasks.UserId ?? 0);
-                                        // SendMailFinishTask2(ProjectPhasesTasks, " مهمة جديدة", BranchId, UserId, Url, ImgUrl, 6,0);
+                                    //    //SendMailNoti(ProTaskUpdated.Project.ProjectId, Desc, "اضافة مهمة جديدة", BranchId, UserId, ProjectPhasesTasks.UserId ?? 0);
+                                    //    // SendMailFinishTask2(ProjectPhasesTasks, " مهمة جديدة", BranchId, UserId, Url, ImgUrl, 6,0);
 
-                                    }
+                                    //}
                                 }
-                            }
+                            //}
 
                         }
                         catch (Exception ex)
@@ -5727,12 +5727,12 @@ namespace TaamerProject.Service.Services
                         {
                             //var cust = _CustomerRepository.GetById((int)projectData.CustomerId);
 
-                            var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(projectData.MangerId ?? 0).Result;
+                            //var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(projectData.MangerId ?? 0).Result;
 
-                            if (UserNotifPriv.Count() != 0)
-                            {
-                                if (UserNotifPriv.Contains(3192))
-                                {
+                            //if (UserNotifPriv.Count() != 0)
+                            //{
+                            //    if (UserNotifPriv.Contains(3192))
+                            //    {
                                     var UserNotification = new Notification();
                                     UserNotification.ReceiveUserId = projectData.MangerId;
                                     UserNotification.Name = "تمديد مهمة";
@@ -5750,18 +5750,27 @@ namespace TaamerProject.Service.Services
                                     UserNotification.NextTime = null;
                                     UserNotification.AddDate = DateTime.Now;
                                     _TaamerProContext.Notification.Add(UserNotification);
+                            _TaamerProContext.SaveChanges();
+                            //if(projectData !=null && projectData.MangerId !=null && projectData.MangerId != 0)
+                            //{
+                            //    var managernot = new Notification();
+                            //    managernot = UserNotification;
+                            //    managernot.ReceiveUserId = 
+
+                            //}
+
                                     _notificationService.sendmobilenotification(projectData.MangerId??0, Resources.General_Newtasks, "طلب تمديد المهمة : " + ProTaskUpdated.DescriptionAr + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName);
-                                }
-                                if (UserNotifPriv.Contains(3191))
-                                {
-                                    var Desc = formattedDate + " بتاريخ " + ProTaskUpdated.DescriptionAr + " طلب تمديد المهمة ";
+                                //}
+                                //if (UserNotifPriv.Contains(3191))
+                                //{
+                                //    var Desc = formattedDate + " بتاريخ " + ProTaskUpdated.DescriptionAr + " طلب تمديد المهمة ";
 
 
                                     SendMailFinishTask2(ProTaskUpdated, "لديك طلب تمديد المهمة", BranchId, UserId, Url, ImgUrl, 2, 0, projectData.CustomerName??"", projectData.ProjectNo ?? "", projectData.MangerId ?? 0, projectData.ProjectMangerName ?? "");
 
-                                }
-                                if (UserNotifPriv.Contains(3193))
-                                {
+                                //}
+                                //if (UserNotifPriv.Contains(3193))
+                                //{
                                     var userObj = _UsersRepository.GetById(projectData.MangerId ?? 0);
                                     var NotStr = formattedDate + " بتاريخ " + ProTaskUpdated.DescriptionAr + " طلب تمديد المهمة ";
                                     if (userObj.Mobile != null && userObj.Mobile != "")
@@ -5769,8 +5778,8 @@ namespace TaamerProject.Service.Services
                                         var result = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
                                     }
 
-                                }
-                            }
+                                //}
+                        //    }
                         }
                         }
                 }

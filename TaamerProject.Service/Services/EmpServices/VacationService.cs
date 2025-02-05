@@ -1465,11 +1465,16 @@ namespace TaamerProject.Service.Services
                         UserNotification.AddUser = UserId;
                         UserNotification.AddDate = DateTime.Now;
                         _TaamerProContext.Notification.Add(UserNotification);
+                        _TaamerProContext.SaveChanges();
+                        if (directmanager.UserId.Value != null && directmanager.UserId.Value != 0)
+                        {
                             var managernot = new Notification();
                             managernot = UserNotification;
                             managernot.ReceiveUserId = directmanager.UserId.Value;
+                            managernot.NotificationId = 0;
                             _TaamerProContext.Notification.Add(managernot);
-                        _TaamerProContext.SaveChanges();
+                            _TaamerProContext.SaveChanges();
+                        }
 
 
                         _notificationService.sendmobilenotification(emp.UserId.Value, Subject, NotStr);

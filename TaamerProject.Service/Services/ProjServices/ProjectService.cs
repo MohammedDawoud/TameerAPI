@@ -249,18 +249,17 @@ namespace TaamerProject.Service.Services
                     var ListOfPrivNotify = new List<Notification>();
                     var branch = _BranchesRepository.GetById(BranchId);
                     var customer = _CustomerRepository.GetById(project.CustomerId ?? 0);
-                    var UserNotifPriv = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(3252).Result;
-                    if (UserNotifPriv.Count() != 0)
-                    {
-                        //_userPrivilegesRepository.GetMatching(s => s.IsDeleted == false && s.PrivilegeId == 131001).Where(w => w.Users.IsDeleted == false)
-                        foreach (var userCounter in UserNotifPriv)
-                        {
+                    //var UserNotifPriv = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(3252).Result;
+                    //if (UserNotifPriv.Count() != 0)
+                    //{
+                        //foreach (var userCounter in UserNotifPriv)
+                        //{
 
                             try
                             {
                                 ListOfPrivNotify.Add(new Notification
                                 {
-                                    ReceiveUserId = userCounter.UserId,
+                                    ReceiveUserId = project.MangerId,
                                     Name = @Resources.MNAcc_Invoice,
                                     Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
                                     HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
@@ -275,7 +274,9 @@ namespace TaamerProject.Service.Services
                                     AddDate = DateTime.Now,
                                     IsHidden = false
                                 });
-                                _notificationService.sendmobilenotification((int)userCounter.UserId, "أضافة فاتورة علي مشروع", " يوجد فاتورة جديدة علي مشروع رقم   : " + project.ProjectNo + " للعميل " + customer.CustomerNameAr + " فرع " + branch.NameAr + "");
+                        _TaamerProContext.Notification.AddRange(ListOfPrivNotify);
+
+                        _notificationService.sendmobilenotification((int)project.MangerId, "أضافة فاتورة علي مشروع", " يوجد فاتورة جديدة علي مشروع رقم   : " + project.ProjectNo + " للعميل " + customer.CustomerNameAr + " فرع " + branch.NameAr + "");
 
                             }
                             catch (Exception ex)
@@ -287,19 +288,20 @@ namespace TaamerProject.Service.Services
                                 //-----------------------------------------------------------------------------------------------------------------
                             }
 
-                        }
-                        _TaamerProContext.Notification.AddRange(ListOfPrivNotify);
-                    }
+                    //}
+                    //}
 
-                    var UserNotifPriv_email = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(3251).Result;
-                    if (UserNotifPriv_email.Count() != 0)
+                    //var UserNotifPriv_email = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(3251).Result;
+                    //if (UserNotifPriv_email.Count() != 0)
+                    //{
+                    //foreach (var userCounter in UserNotifPriv_email)
+                    //{
+                    var manager = _TaamerProContext.Users.Where(x => x.UserId == project.MangerId).FirstOrDefault();
+
+                    try
                     {
-                        foreach (var userCounter in UserNotifPriv_email)
-                        {
-                            try
-                            {
                                 var htmlBody = "";
-                                var Desc = " السيد /ة " + userCounter.FullName + "المحترم " + "<br/>" + "السلام عليكم ورحمة الله وبركاتة " + "<br/>" + "<h2> تم اصدار فاتورة أثناء انشاء المشروع</h2>" + "<br/>" + " للعميل " + customer.CustomerNameAr + "<br/>" + " تابع لفرع " + branch.NameAr + "<br/>" + "مع تحيات قسم ادارة المشاريع ";
+                                var Desc = " السيد /ة " + manager.FullNameAr + "المحترم " + "<br/>" + "السلام عليكم ورحمة الله وبركاتة " + "<br/>" + "<h2> تم اصدار فاتورة أثناء انشاء المشروع</h2>" + "<br/>" + " للعميل " + customer.CustomerNameAr + "<br/>" + " تابع لفرع " + branch.NameAr + "<br/>" + "مع تحيات قسم ادارة المشاريع ";
 
 
                                 htmlBody = @"<!DOCTYPE html>
@@ -322,7 +324,7 @@ namespace TaamerProject.Service.Services
                                             </body>
                                             </html>";
                                 //SendMailNoti(projectId, Desc, "ايقاف مشروع", BranchId, UserId, proj.MangerId ?? 0);
-                                SendMail_ProjectStamp(BranchId, UserId, userCounter.UserId ?? 0, "صدور فاتورة جديدة علي مشروع", htmlBody, Url, ImgUrl, 6, true);
+                                SendMail_ProjectStamp(BranchId, UserId, project.MangerId ?? 0, "صدور فاتورة جديدة علي مشروع", htmlBody, Url, ImgUrl, 6, true);
 
 
                                 // SendMailNoti(0, Desc, "صدور فاتورة جديدة علي مشروع", BranchId, UserId, userCounter.UserId ?? 0);
@@ -336,22 +338,24 @@ namespace TaamerProject.Service.Services
                                 //-----------------------------------------------------------------------------------------------------------------
                             }
 
-                        }
-                    }
+                        //}
+                    //}
 
-                    var UserNotifPriv_Mobile = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(3253).Result;
-                    if (UserNotifPriv_Mobile.Count() != 0)
-                    {
-                        foreach (var userCounter in UserNotifPriv_Mobile)
-                        {
+                    //var UserNotifPriv_Mobile = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(3253).Result;
+                    //if (UserNotifPriv_Mobile.Count() != 0)
+                    //{
+                    //    foreach (var userCounter in UserNotifPriv_Mobile)
+                    //    {
                             try
                             {
-                                var userObj = _usersRepository.GetById(userCounter.UserId ?? 0);
-                                var NotStr = " المستخدم " + userCounter.FullName + " تم اصدار فاتورة لمشروع رقم " + project.ProjectNo + " للعميل " + customer.CustomerNameAr + " فرع " + branch.NameAr;
-                                if (userObj.Mobile != null && userObj.Mobile != "")
-                                {
-                                    var result = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
-                                }
+                        if (project.MangerId != null) {
+                                    var userObj = _usersRepository.GetById(project.MangerId ?? 0);
+                            var NotStr = " المستخدم " + manager.FullNameAr + " تم اصدار فاتورة لمشروع رقم " + project.ProjectNo + " للعميل " + customer.CustomerNameAr + " فرع " + branch.NameAr;
+                            if (userObj.Mobile != null && userObj.Mobile != "")
+                            {
+                                var result = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
+                            }
+                        }
                             }
                             catch (Exception ex)
                             {
@@ -362,8 +366,8 @@ namespace TaamerProject.Service.Services
                                 //-----------------------------------------------------------------------------------------------------------------
                             }
 
-                        }
-                    }
+                    //    }
+                    //}
                 }
                 // add project workers 
                 WhichPart = "Part (6)";
