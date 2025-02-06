@@ -1004,14 +1004,16 @@ namespace TaamerProject.API.Controllers
         }
         [HttpPost("GetTrailBalanceDGV")]
 
-        public IActionResult GetTrailBalanceDGV([FromForm]string? FromDate, [FromForm] string? ToDate, [FromForm] string? CostCenter, [FromForm] int? ZeroCheck, [FromForm] string? AccountCode, [FromForm] string LVL, [FromForm] int FilteringType, [FromForm] string? FilteringTypeStr, [FromForm] string AccountIds)
+        public IActionResult GetTrailBalanceDGV([FromForm]string? FromDate, [FromForm] string? ToDate, [FromForm] string? CostCenter, [FromForm] bool? isCheckedYear, [FromForm] int? ZeroCheck, [FromForm] string? AccountCode, [FromForm] string LVL, [FromForm] int FilteringType, [FromForm] string? FilteringTypeStr, [FromForm] string AccountIds)
         {
             
              
             int costID = Convert.ToInt32(CostCenter??"0");
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            int YearIDCheck = _globalshared.YearId_G;
+            if (isCheckedYear == true) YearIDCheck = 0;
 
-            var result = _accountsService.GetTrailBalanceDGVNew(FromDate??"", ToDate??"", costID, _globalshared.BranchId_G,_globalshared.Lang_G, Con, _globalshared.YearId_G, ZeroCheck??0, AccountCode ?? "", LVL, FilteringType, FilteringTypeStr??"", AccountIds);
+            var result = _accountsService.GetTrailBalanceDGVNew(FromDate??"", ToDate??"", costID, _globalshared.BranchId_G,_globalshared.Lang_G, Con, YearIDCheck, ZeroCheck??0, AccountCode ?? "", LVL, FilteringType, FilteringTypeStr??"", AccountIds);
             return Ok(result );
         }
         [HttpGet("GetTrailBalanceDGV2")]
@@ -1027,13 +1029,14 @@ namespace TaamerProject.API.Controllers
         }
         [HttpGet("GetDetailsMonitor")]
 
-        public IActionResult GetDetailsMonitor(string? FromDate, string? ToDate, string? CostCenter, int FilteringType, string FilteringTypeStr, int AccountId, int Type, int Type2)
+        public IActionResult GetDetailsMonitor(string? FromDate, string? ToDate, string? CostCenter, bool? isCheckedYear, int FilteringType, string FilteringTypeStr, int AccountId, int Type, int Type2)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-
+            int YearIDCheck = _globalshared.YearId_G;
+            if (isCheckedYear == true) YearIDCheck = 0;
             int? costID = string.IsNullOrEmpty(CostCenter) ? (int?)null : Convert.ToInt32(CostCenter);
 
-            var result = _accountsService.GetDetailsMonitor(FromDate??"", ToDate??"", costID??0, _globalshared.BranchId_G,_globalshared.Lang_G, Con, _globalshared.YearId_G, FilteringType, FilteringTypeStr, AccountId, Type, Type2);
+            var result = _accountsService.GetDetailsMonitor(FromDate??"", ToDate??"", costID??0, _globalshared.BranchId_G,_globalshared.Lang_G, Con, YearIDCheck, FilteringType, FilteringTypeStr, AccountId, Type, Type2);
             return Ok(result );
         }
         [HttpGet("GetIncomeStatmentDGV")]
@@ -1271,9 +1274,11 @@ namespace TaamerProject.API.Controllers
         }
         [HttpPost("GetCustomerFinancialDetailsNew")]
 
-        public ActionResult GetCustomerFinancialDetailsNew([FromForm] string? CustomerId, [FromForm] string? FromDate, [FromForm] string? ToDate, [FromForm] int ZeroCheck)
+        public ActionResult GetCustomerFinancialDetailsNew([FromForm] string? CustomerId, [FromForm] string? FromDate, [FromForm] string? ToDate, [FromForm] int ZeroCheck, [FromForm] bool? isCheckedYear)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            int YearIDCheck = _globalshared.YearId_G;
+            if (isCheckedYear == true) YearIDCheck = 0;
             var LVL = "10"; var costID = 0; var FilteringType = 4; var AccountIds = ""; var AccountCode = "0";
             var FilteringTypeStr = _globalshared.BranchId_G.ToString(); 
             int? CustId = string.IsNullOrEmpty(CustomerId) ? (int?)null : Convert.ToInt32(CustomerId);
@@ -1282,18 +1287,20 @@ namespace TaamerProject.API.Controllers
                 var MainCustomerAccount = _BranchesRepository.GetById(_globalshared.BranchId_G).CustomersAccId;
                 if (MainCustomerAccount != null){AccountIds = MainCustomerAccount.ToString();}
                 else{return Ok(new List<TrainBalanceVM>());}
-            }
+            }   
             else
             {
                 AccountIds = _customerservice.GetCustomersByCustomerId(CustId ?? 0, _globalshared.Lang_G).Result.AccountId.ToString();
             }
-            var result = _accountsService.GetTrailBalanceDGVNew(FromDate ?? "", ToDate ?? "", costID, _globalshared.BranchId_G, _globalshared.Lang_G, Con, _globalshared.YearId_G, ZeroCheck, AccountCode ?? "", LVL, FilteringType, FilteringTypeStr ?? "", AccountIds);
+            var result = _accountsService.GetTrailBalanceDGVNew(FromDate ?? "", ToDate ?? "", costID, _globalshared.BranchId_G, _globalshared.Lang_G, Con, YearIDCheck, ZeroCheck, AccountCode ?? "", LVL, FilteringType, FilteringTypeStr ?? "", AccountIds);
             return Ok(result);
         }
         [HttpPost("PrintCustomerFinancialDetailsNew")]
-        public IActionResult PrintVoucher([FromForm] string? CustomerId, [FromForm] string? FromDate, [FromForm] string? ToDate, [FromForm] int ZeroCheck)
+        public IActionResult PrintVoucher([FromForm] string? CustomerId, [FromForm] string? FromDate, [FromForm] string? ToDate, [FromForm] int ZeroCheck, [FromForm] bool? isCheckedYear)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            int YearIDCheck = _globalshared.YearId_G;
+            if (isCheckedYear == true) YearIDCheck = 0;
             CustomerFinancialPrintVM _customerFinancialPrintVM = new CustomerFinancialPrintVM();
 
             var LVL = "10"; var costID = 0; var FilteringType = 4; var AccountIds = ""; var AccountCode = "0";
@@ -1309,7 +1316,7 @@ namespace TaamerProject.API.Controllers
             {
                 AccountIds = _customerservice.GetCustomersByCustomerId(CustId ?? 0, _globalshared.Lang_G).Result.AccountId.ToString();
             }
-            var result = _accountsService.GetTrailBalanceDGVNew(FromDate ?? "", ToDate ?? "", costID, _globalshared.BranchId_G, _globalshared.Lang_G, Con, _globalshared.YearId_G, ZeroCheck, AccountCode ?? "", LVL, FilteringType, FilteringTypeStr ?? "", AccountIds).Result.ToList();
+            var result = _accountsService.GetTrailBalanceDGVNew(FromDate ?? "", ToDate ?? "", costID, _globalshared.BranchId_G, _globalshared.Lang_G, Con, YearIDCheck, ZeroCheck, AccountCode ?? "", LVL, FilteringType, FilteringTypeStr ?? "", AccountIds).Result.ToList();
 
             int orgId = _branchesService.GetOrganizationId(_globalshared.BranchId_G).Result;
             var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId).Result;
@@ -2083,14 +2090,16 @@ namespace TaamerProject.API.Controllers
         }
         [HttpPost("ChangeTrialBalance_PDF")]
 
-        public IActionResult ChangeTrialBalance_PDF([FromForm]string? FromDate, [FromForm] string? ToDate, [FromForm] string? CCID, [FromForm] string? Zerocheck, [FromForm] string? AccountCode, [FromForm] string? LVL, [FromForm] string? typeOfReport, [FromForm] int? FilteringType, [FromForm] string? FilteringTypeStr, [FromForm] string? AccountIds)
+        public IActionResult ChangeTrialBalance_PDF([FromForm]string? FromDate, [FromForm] string? ToDate, [FromForm] string? CCID, [FromForm] bool? isCheckedYear, [FromForm] string? Zerocheck, [FromForm] string? AccountCode, [FromForm] string? LVL, [FromForm] string? typeOfReport, [FromForm] int? FilteringType, [FromForm] string? FilteringTypeStr, [FromForm] string? AccountIds)
         {
 
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            int YearIDCheck = _globalshared.YearId_G;
+            if (isCheckedYear == true) YearIDCheck = 0;
             TrialBalance_PDFVM _trialBalance_PDFVM = new TrialBalance_PDFVM();
             int costID = Convert.ToInt32(CCID == "" ? "0" : CCID);
             int ZerocheckValue = Convert.ToInt32(Zerocheck == "" ? "0" : Zerocheck);
-            var result = _accountsService.GetTrailBalanceDGVNew(FromDate??"", ToDate??"", costID, _globalshared.BranchId_G, _globalshared.Lang_G, Con, _globalshared.YearId_G, ZerocheckValue, AccountCode ?? "", LVL??"", FilteringType??0, FilteringTypeStr??"", AccountIds??"").Result.ToList();
+            var result = _accountsService.GetTrailBalanceDGVNew(FromDate??"", ToDate??"", costID,_globalshared.BranchId_G, _globalshared.Lang_G, Con, YearIDCheck, ZerocheckValue, AccountCode ?? "", LVL??"", FilteringType??0, FilteringTypeStr??"", AccountIds??"").Result.ToList();
             int orgId = _branchesService.GetOrganizationId(_globalshared.BranchId_G).Result;
             var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId).Result;
             string[] infoDoneTasksReport = { _globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
