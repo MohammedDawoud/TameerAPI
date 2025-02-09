@@ -81,6 +81,11 @@ namespace TaamerProject.Models
         public virtual Department? department { get; set; }
         public virtual List<ContactList>? ContactLists { get; set; }
 
+        public string? PlusTimeReason { get; set; }
+        public string? convertReason { get; set; }
+        public string? PlusTimeReason_admin { get; set; }
+        public string? convertReason_admin { get; set; }
+
 
     }
 }

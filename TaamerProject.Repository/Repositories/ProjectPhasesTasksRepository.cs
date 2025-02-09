@@ -7751,6 +7751,11 @@ namespace TaamerProject.Repository.Repositories
             EndDateNew=acc.EndDateNew,
             Managerapproval=acc.Managerapproval,
             ReasonsIdText=acc.tasksReasons!=null?acc.tasksReasons.NameAr??"":"",
+            PlusTimeReason=acc.PlusTimeReason,
+            convertReason =acc.convertReason,
+            PlusTimeReason_admin =acc.PlusTimeReason_admin,
+            convertReason_admin =acc.convertReason_admin,
+            
             }).ToList().Select(s => new ProjectPhasesTasksVM()
             {
                 PhaseTaskId = s.PhaseTaskId,
@@ -7824,6 +7829,10 @@ namespace TaamerProject.Repository.Repositories
                 EndDateNew = s.EndDateNew,
                 Managerapproval = s.Managerapproval,
                 ReasonsIdText = s.ReasonsIdText,
+                PlusTimeReason =s.PlusTimeReason,
+                PlusTimeReason_admin =s.PlusTimeReason_admin,
+                convertReason=s.convertReason,
+                convertReason_admin =s.convertReason_admin,
             }).FirstOrDefault()!;
 
         }

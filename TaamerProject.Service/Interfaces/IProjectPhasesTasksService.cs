@@ -122,7 +122,8 @@ namespace TaamerProject.Service.Interfaces
 
         //GeneralMessage PlustimeTask(ProjectPhasesTasks ProjectPhasesTasks, int UserId, int BranchId);
         GeneralMessage PlustimeTask(ProjectPhasesTasks ProjectPhasesTasks, int UserId, int BranchId, string Url, string ImgUrl);
-        GeneralMessage RefusePlustimeTask(ProjectPhasesTasks ProjectPhasesTasks, int UserId, int BranchId);
+        GeneralMessage RefusePlustimeTask(ProjectPhasesTasks ProjectPhasesTasks, int UserId, int BranchId, string Url, string ImgUrl);
+        GeneralMessage RefuseConvertTask(ProjectPhasesTasks ProjectPhasesTasks, int UserId, int BranchId, string Url, string ImgUrl);
 
         Task<ProjectPhasesTasksVM> GetTaskById(int TaskId, string Lang,int? UserId);
         int? GetProjectNoById(int? TaskId, string Lang);

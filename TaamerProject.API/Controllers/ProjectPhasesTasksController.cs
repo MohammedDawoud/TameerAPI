@@ -1243,10 +1243,29 @@ namespace TaamerProject.API.Controllers
         public IActionResult RefusePlustimeTask(ProjectPhasesTasks ProjectPhasesTasks)
             {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            var result = _projectPhasesTasksservice.RefusePlustimeTask(ProjectPhasesTasks, _globalshared.UserId_G, _globalshared.BranchId_G);
+            var url = Path.Combine("Email/End Task.html");
+            // var file = Server.MapPath("~/dist/assets/images/logo.png");
+            var org = _organizationsservice.GetOrganizationDataLogin(_globalshared.Lang_G).Result;
+            string resultLogoUrl = org.LogoUrl.Remove(0, 1);
+            var file = Path.Combine(resultLogoUrl); var result = _projectPhasesTasksservice.RefusePlustimeTask(ProjectPhasesTasks, _globalshared.UserId_G, _globalshared.BranchId_G, url, file);
 
                 return Ok(result);
             }
+
+
+        [HttpPost("RefuseConvertTask")]
+        public IActionResult RefuseConvertTask(ProjectPhasesTasks ProjectPhasesTasks)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var url = Path.Combine("Email/End Task.html");
+            // var file = Server.MapPath("~/dist/assets/images/logo.png");
+            var org = _organizationsservice.GetOrganizationDataLogin(_globalshared.Lang_G).Result;
+            string resultLogoUrl = org.LogoUrl.Remove(0, 1);
+            var file = Path.Combine(resultLogoUrl); 
+            var result = _projectPhasesTasksservice.RefuseConvertTask(ProjectPhasesTasks, _globalshared.UserId_G, _globalshared.BranchId_G, url, file);
+
+            return Ok(result);
+        }
 
         [HttpPost("AskForMoreDetails")]
         public IActionResult AskForMoreDetails(int projectphaseid, int askdetail)
