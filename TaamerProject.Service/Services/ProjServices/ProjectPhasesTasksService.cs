@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -1525,7 +1526,11 @@ namespace TaamerProject.Service.Services
         }
         public GeneralMessage SaveProjectPhasesTasksNew(Project Project, int UserId, int BranchId, string Url, string ImgUrl)
         {
+            Stopwatch sw;
+            sw = Stopwatch.StartNew();
+
             var WhichPart = "Part Phase(1)";
+            Console.WriteLine("Part Phase(1)   --  " +sw.ElapsedMilliseconds);
 
             var projSubTypeSett2 = _TaamerProContext.SettingsNew.Where(s => s.IsDeleted == false && s.ProjSubTypeId == Project.SubProjectTypeId).ToList();
             if (projSubTypeSett2.Count() != 0)
@@ -1553,6 +1558,7 @@ namespace TaamerProject.Service.Services
                 }
             }
             WhichPart = "Part Phase(2)";
+            Console.WriteLine("Part Phase(2)   --  " + sw.ElapsedMilliseconds);
             var Privs = Project.ProUserPrivileges;
             Project.ProUserPrivileges = new List<ProUserPrivileges>();
             try
@@ -1587,6 +1593,8 @@ namespace TaamerProject.Service.Services
                         return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.EndProjectDate };
                     }
                     WhichPart = "Part Phase(3)";
+                    Console.WriteLine("Part Phase(3)   --  " + sw.ElapsedMilliseconds);
+
                     Project.NoOfDays = Convert.ToInt32(totaldays);
                     Project.FirstProjectDate = Project.ProjectDate;
                     Project.FirstProjectExpireDate = Project.ProjectExpireDate;
@@ -1597,8 +1605,12 @@ namespace TaamerProject.Service.Services
                     Project.AddDate = DateTime.Now;
                     _TaamerProContext.Project.Add(Project);
                     WhichPart = "Part Phase(4)";
+                    Console.WriteLine("Part Phase(4)   --  " + sw.ElapsedMilliseconds);
+
                     _TaamerProContext.SaveChanges();
                     WhichPart = "Part Phase(5)";
+                    Console.WriteLine("Part Phase(5)   --  " + sw.ElapsedMilliseconds);
+
                     Project.ProUserPrivileges = Privs;
 
 
@@ -1630,6 +1642,8 @@ namespace TaamerProject.Service.Services
 
 
                     WhichPart = "Part Phase(6)";
+                    Console.WriteLine("Part Phase(6)   --  " + sw.ElapsedMilliseconds);
+
                     /////add projectno to offerprice
                     if (Project.OffersPricesId != null)
                     {
@@ -1644,6 +1658,8 @@ namespace TaamerProject.Service.Services
                         }
                     }
                     WhichPart = "Part Phase(7)";
+                    Console.WriteLine("Part Phase(7)   --  " + sw.ElapsedMilliseconds);
+
                     //var Customer = _CustomerRepository.GetById(Project.CustomerId ?? 0);
                     //// add cost center
                     ///
@@ -1674,8 +1690,12 @@ namespace TaamerProject.Service.Services
                         //-----------------------------------------------------------------------------------------------------------------
                     }
                     WhichPart = "Part Phase(8)";
+                    Console.WriteLine("Part Phase(8)   --  " + sw.ElapsedMilliseconds);
+
                     _TaamerProContext.SaveChanges();
                     WhichPart = "Part Phase(9)";
+                    Console.WriteLine("Part Phase(9)   --  " + sw.ElapsedMilliseconds);
+
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     //////////////////////////////////////////// project tasks and phases ///////////////////////////////////////////////////////////////////////
                     //var projSubTypeSett = _TaamerProContext.SettingsNew.Where(s => s.IsDeleted == false && s.ProjSubTypeId == Project.SubProjectTypeId).ToList();
@@ -1787,6 +1807,8 @@ namespace TaamerProject.Service.Services
                     }
                     //update parentId
                     WhichPart = "Part Phase(10)";
+                    Console.WriteLine("Part Phase(10)   --  " + sw.ElapsedMilliseconds);
+
                     //var LastAddedPhasesTask = _ProjectPhasesTasksRepository.GetMatching(s => s.IsDeleted == false && s.ProjSubTypeId == Project.SubProjectTypeId && s.ProjectId == Project.ProjectId).ToList();
                     //foreach (var item in LastAddedPhasesTask)
                     //{
@@ -1805,6 +1827,8 @@ namespace TaamerProject.Service.Services
                     //    }
                     //}
                     WhichPart = "Part Phase(11)";
+                    Console.WriteLine("Part Phase(11)   --  " + sw.ElapsedMilliseconds);
+
                     // save pro dependency  from setting dependency
                     var projSubTypeDependencySett = _TaamerProContext.DependencySettingsNew.Where(s => s.IsDeleted == false && s.ProjSubTypeId == Project.SubProjectTypeId).ToList();
 
@@ -1838,6 +1862,8 @@ namespace TaamerProject.Service.Services
                         }
                     }
                     WhichPart = "Part Phase(12)";
+                    Console.WriteLine("Part Phase(12)   --  " + sw.ElapsedMilliseconds);
+
                     //////////////////////////////////////// tasks notifications //////////////////////////////////////////////////////////////////////////
                     ///
                     var branch = _BranchesRepository.GetById(BranchId);
@@ -1913,6 +1939,8 @@ namespace TaamerProject.Service.Services
 
                     _TaamerProContext.Notification.AddRange(ListOfTaskNotify);   /// add notifications
                     WhichPart = "Part Phase(13)";
+                    Console.WriteLine("Part Phase(13)   --  " + sw.ElapsedMilliseconds);
+
                     if (Project.TransactionTypeId == 1)
                     {
                         Project.MotionProject = 1;
@@ -2044,7 +2072,7 @@ namespace TaamerProject.Service.Services
 
 
                     }
-
+                    Console.WriteLine("Part Phase(14)   --  " + sw.ElapsedMilliseconds);
                     WhichPart = "Part Phase(14)";
                     //////////////////////////////////////// project workers ///////////////////////////////////////////////////////////////////////////////
                     var projectusers = projSubTypeSett.Where(s => s.UserId != UserId && s.Type == 3).Select(s => s.UserId).Distinct();
@@ -2059,6 +2087,8 @@ namespace TaamerProject.Service.Services
                         AddDate = DateTime.Now,
                     });
                     WhichPart = "Part Phase(15)";
+                    Console.WriteLine("Part Phase(15)   --  " + sw.ElapsedMilliseconds);
+
                     /////////////// priv
                     projectWorkersPriv.Add(new UserPrivileges
                     {
@@ -2068,6 +2098,8 @@ namespace TaamerProject.Service.Services
                         AddDate = DateTime.Now,
                     });
                     WhichPart = "Part Phase(16)";
+                    Console.WriteLine("Part Phase(16)   --  " + sw.ElapsedMilliseconds);
+
                     if (Project.ProUserPrivileges != null && Project.ProUserPrivileges.Count > 0)
                     {
                         try
@@ -2185,15 +2217,23 @@ namespace TaamerProject.Service.Services
                     }
                     _TaamerProContext.ProjectWorkers.AddRange(projectWorkers); // add project users
                     _TaamerProContext.UserPrivileges.AddRange(projectWorkersPriv);
+                    Console.WriteLine("Part Phase(17)   --  " + sw.ElapsedMilliseconds);
+
                     WhichPart = "Part Phase(17)";
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 }
                 WhichPart = "Part Phase(18)";
+                Console.WriteLine("Part Phase(18)   --  " + sw.ElapsedMilliseconds);
+
                 _TaamerProContext.SaveChanges();
                 WhichPart = "Part Phase(19)";
+                Console.WriteLine("Part Phase(19)   --  " + sw.ElapsedMilliseconds);
+
 
                 SetExpectedDateNew(Project.ProjectId, Project.ProjectDate,true);
                 WhichPart = "Part Phase(20)";
+                Console.WriteLine("Part Phase(20)   --  " + sw.ElapsedMilliseconds);
+
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = "اضافة مشروع جديد" + "برقم" + Project.ProjectNo;
