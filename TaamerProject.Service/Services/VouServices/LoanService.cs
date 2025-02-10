@@ -902,12 +902,15 @@ namespace TaamerProject.Service.Services
                                 UserNotification.NextTime = null;
 
                                 _TaamerProContext.Notification.Add(UserNotification);
+                            _TaamerProContext.SaveChanges();
                             if (directmanager != null)
                             {
                                 var notdirectmanager = new Notification();
                                 notdirectmanager = UserNotification;
                                 notdirectmanager.ReceiveUserId = directmanager.UserId ?? 0;
+                                notdirectmanager.NotificationId = 0;
                                 _TaamerProContext.Notification.Add(notdirectmanager);
+                                _TaamerProContext.SaveChanges();
                             }
 
 

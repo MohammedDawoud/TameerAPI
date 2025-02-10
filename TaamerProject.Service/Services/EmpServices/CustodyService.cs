@@ -151,84 +151,75 @@ namespace TaamerProject.Service.Services
                         NotStr = NotStr + string.Format(" الكمية {0}, السعر {1}, ميعاد استلام العهدة {2}", CustodyUpdated.Quantity, CustodyPrice, CustodyUpdated.Date);
                       
                         var UserNotification = new Notification();
-                      
-                        var user = Emp.UserId.Value;
+                        if (Emp.UserId != null && Emp.UserId > 0)
+                        {
+                            var user = Emp.UserId.Value;
                             string htmlBody = "";
                             var userObj = _usersRepository.GetById(user);
+                            //mail
+                            string OrgName = _OrganizationsRepository.GetBranchOrganization().Result.NameAr;
+                            var direectmanager = _TaamerProContext.Employees.Where(x => x.EmployeeId == Emp.DirectManager).FirstOrDefault();
 
+                            htmlBody = @"<!DOCTYPE html><html lang = ''><head><meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'><meta http-equiv='X-UA-Compatible' content='IE=edge'>
+                                    <meta charset = 'utf-8><meta name = 'description' content = ''><meta name = 'keywords' content = ''><meta name = 'csrf-token' content = ''><title></title><link rel = 'icon' type = 'image/x-icon' href = ''></head>
+                                    <body style = 'background:#f9f9f9;direction:rtl'><div class='container' style='max-width:630px;padding-right: var(--bs-gutter-x, .75rem); padding-left: var(--bs-gutter-x, .75rem); margin-right: auto;  margin-left: auto;'>
+                                    <style> .bordered {width: 550px; height: 700px; padding: 20px;border: 3px solid yellowgreen; background-color:lightgray;} </style>
+                                    <div class= 'row' style = 'font-family: Cairo, sans-serif'>  <div class= 'card' style = 'padding: 2rem;background:#fff'> <div style = 'width: 550px; height: 700px; padding: 20px; border: 3px solid yellowgreen; background-color: lightgray;'> <p style='text-align:center'></p>
+                                    <h4> عزيزي الموظف " + Emp.EmployeeNameAr + "</h4> <h4> السلام عليكم ورحمة الله وبركاتة</h4> <h3 style = 'text-align:center;' > تم فك العهدة المبين تفاصيلها في الجدول التالي</h3><table align = 'center' border = '1' ><tr> <td>  الموظف</td><td>" + Emp.EmployeeNameAr + @"</td> </tr> <tr> <td> العهدة </td> <td>" + CustodyTypeName + @"</td>
+                                     </tr> <tr> <td>  الكمية</td> <td>" + CustodyUpdated.Quantity + @"</td> </tr><tr> <td>   السعر</td> <td>" + CustodyPrice + @"</td> </tr><tr> <td>   ميعاد استلام العهدة</td> <td>" + CustodyUpdated.Date + @"</td> </tr> </table> <p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
 
-                        //mail
+                                    </div> </div></div></div></body></html> ";
 
-                        string OrgName = _OrganizationsRepository.GetBranchOrganization().Result.NameAr;
-                        var direectmanager = _TaamerProContext.Employees.Where(x => x.EmployeeId == Emp.DirectManager).FirstOrDefault();
-
-                        htmlBody = @"<!DOCTYPE html><html lang = ''><head><meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'><meta http-equiv='X-UA-Compatible' content='IE=edge'>
-<meta charset = 'utf-8><meta name = 'description' content = ''><meta name = 'keywords' content = ''><meta name = 'csrf-token' content = ''><title></title><link rel = 'icon' type = 'image/x-icon' href = ''></head>
-<body style = 'background:#f9f9f9;direction:rtl'><div class='container' style='max-width:630px;padding-right: var(--bs-gutter-x, .75rem); padding-left: var(--bs-gutter-x, .75rem); margin-right: auto;  margin-left: auto;'>
-<style> .bordered {width: 550px; height: 700px; padding: 20px;border: 3px solid yellowgreen; background-color:lightgray;} </style>
-<div class= 'row' style = 'font-family: Cairo, sans-serif'>  <div class= 'card' style = 'padding: 2rem;background:#fff'> <div style = 'width: 550px; height: 700px; padding: 20px; border: 3px solid yellowgreen; background-color: lightgray;'> <p style='text-align:center'></p>
-<h4> عزيزي الموظف " + Emp.EmployeeNameAr + "</h4> <h4> السلام عليكم ورحمة الله وبركاتة</h4> <h3 style = 'text-align:center;' > تم فك العهدة المبين تفاصيلها في الجدول التالي</h3><table align = 'center' border = '1' ><tr> <td>  الموظف</td><td>" + Emp.EmployeeNameAr + @"</td> </tr> <tr> <td> العهدة </td> <td>" + CustodyTypeName + @"</td>
- </tr> <tr> <td>  الكمية</td> <td>" + CustodyUpdated.Quantity + @"</td> </tr><tr> <td>   السعر</td> <td>" + CustodyPrice + @"</td> </tr><tr> <td>   ميعاد استلام العهدة</td> <td>" + CustodyUpdated.Date + @"</td> </tr> </table> <p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
-
-</div> </div></div></div></body></html> "
-                        ;
-
-
-                        if (Emp.Email != null)
-                        {
-                            _customerMailService.SendMail_SysNotification((int)Emp.BranchId, 0, 0,"فك العهدة" , htmlBody, true, Emp.Email);
-                        }
-
-                        if (direectmanager.Email != null)
-                        {
-                            _customerMailService.SendMail_SysNotification((int)direectmanager.BranchId, 0, 0, "فك العهده", htmlBody, true, direectmanager.Email);
-                        }
-                        var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(user).Result;
+                            if (Emp.Email != null)
+                            {
+                                _customerMailService.SendMail_SysNotification((int)Emp.BranchId, 0, 0, "فك العهدة", htmlBody, true, Emp.Email);
+                            }
+                            if (direectmanager.Email != null)
+                            {
+                                _customerMailService.SendMail_SysNotification((int)direectmanager.BranchId, 0, 0, "فك العهده", htmlBody, true, direectmanager.Email);
+                            }
+                            var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(user).Result;
                             //Notification
-
                             try
                             {
                                 //if (UserNotifPriv.Count() != 0 && UserNotifPriv.Contains(162))
                                 //{
-                                    UserNotification.ReceiveUserId = user;
-                                    UserNotification.Name = Resources.ResourceManager.GetString("Notice_CustodyFinish", CultureInfo.CreateSpecificCulture("ar"));
-                                    UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
-                                    UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
-                                    UserNotification.SendUserId = 1;
-                                    UserNotification.Type = 1; // notification
-                                    UserNotification.Description = NotStr;
-                                    UserNotification.AllUsers = false;
-                                    UserNotification.SendDate = DateTime.Now;
-                                    UserNotification.ProjectId = 0;
-                                    UserNotification.TaskId = 0;
-                                    UserNotification.IsHidden = false;
-                                    UserNotification.AddUser = UserId;
-                                    UserNotification.AddDate = DateTime.Now;
-                                    _TaamerProContext.Notification.Add(UserNotification);
-                            _TaamerProContext.SaveChanges();
-
-                            if (direectmanager != null)
-                            {
-                                var Not_directmanager = new Notification();
-                                Not_directmanager = UserNotification;
-                                Not_directmanager.ReceiveUserId = direectmanager.UserId;
-                                Not_directmanager.NotificationId = 0;
-                                _TaamerProContext.Notification.Add(Not_directmanager);
+                                UserNotification.ReceiveUserId = user;
+                                UserNotification.Name = Resources.ResourceManager.GetString("Notice_CustodyFinish", CultureInfo.CreateSpecificCulture("ar"));
+                                UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                                UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
+                                UserNotification.SendUserId = 1;
+                                UserNotification.Type = 1; // notification
+                                UserNotification.Description = NotStr;
+                                UserNotification.AllUsers = false;
+                                UserNotification.SendDate = DateTime.Now;
+                                UserNotification.ProjectId = 0;
+                                UserNotification.TaskId = 0;
+                                UserNotification.IsHidden = false;
+                                UserNotification.AddUser = UserId;
+                                UserNotification.AddDate = DateTime.Now;
+                                _TaamerProContext.Notification.Add(UserNotification);
                                 _TaamerProContext.SaveChanges();
 
-                            }
-                            _notificationService.sendmobilenotification(user,"فك العهدة", NotStr);
+                                if (direectmanager != null)
+                                {
+                                    var Not_directmanager = new Notification();
+                                    Not_directmanager = UserNotification;
+                                    Not_directmanager.ReceiveUserId = direectmanager.UserId;
+                                    Not_directmanager.NotificationId = 0;
+                                    _TaamerProContext.Notification.Add(Not_directmanager);
+                                    _TaamerProContext.SaveChanges();
+
+                                }
+                                _notificationService.sendmobilenotification(user, "فك العهدة", NotStr);
                                 _notificationService.sendmobilenotification(direectmanager.UserId.Value, "فك العهدة", NotStr);
-                            
-                        }
+
+                            }
                             catch (Exception ex)
                             {
 
                             }
-
                             //mail
-                            
-
                             //SMS
                             try
                             {
@@ -241,6 +232,7 @@ namespace TaamerProject.Service.Services
                             {
 
                             }
+                        }
 
                         }
                     //}
@@ -256,7 +248,7 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
