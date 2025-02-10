@@ -1005,9 +1005,7 @@ namespace TaamerProject.API.Controllers
         [HttpPost("GetTrailBalanceDGV")]
 
         public IActionResult GetTrailBalanceDGV([FromForm]string? FromDate, [FromForm] string? ToDate, [FromForm] string? CostCenter, [FromForm] bool? isCheckedYear, [FromForm] int? ZeroCheck, [FromForm] string? AccountCode, [FromForm] string LVL, [FromForm] int FilteringType, [FromForm] string? FilteringTypeStr, [FromForm] string AccountIds)
-        {
-            
-             
+        {                     
             int costID = Convert.ToInt32(CostCenter??"0");
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             int YearIDCheck = _globalshared.YearId_G;
