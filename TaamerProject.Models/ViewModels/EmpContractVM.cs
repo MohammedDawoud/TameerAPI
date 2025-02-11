@@ -57,6 +57,7 @@ namespace TaamerProject.Models
         public decimal? DailyEmpCost { get; set; }
         public string? employeeno { get; set; }
         public int? ContractSource { get; set; }
+        public decimal? EmpHourlyCost { get; set; }
         public List<EmpContractDetailVM>? EmpContractDetails { get; set; }
 
 

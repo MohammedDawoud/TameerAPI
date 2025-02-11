@@ -173,5 +173,8 @@ namespace TaamerProject.Models
         public string? AttendenceLocationName { get; set; }
         public bool? allowoutsidesite { get; set; }
         public bool? allowallsite { get; set; }
+
+        public decimal? EmpHourlyCost { get; set; }
+        public decimal? DailyWorkinghours { get; set; }
     }
 }

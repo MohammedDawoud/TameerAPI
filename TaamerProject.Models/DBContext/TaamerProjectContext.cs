@@ -1562,6 +1562,8 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
 
                 entity.Property(t => t.IsRememberResident).HasColumnName("IsRememberResident");
                 entity.Property(t => t.RememberDateResident).HasColumnName("RememberDateResident");
+                entity.Property(t => t.EmpHourlyCost).HasColumnName("EmpHourlyCost");
+                entity.Property(t => t.DailyWorkinghours).HasColumnName("DailyWorkinghours");
 
                 modelBuilder.Entity<Employees>().HasOne(s => s.NodeLocations).WithMany().HasForeignKey(e => e.LocationId);
                 modelBuilder.Entity<Employees>().HasMany<Allowance>(s => s.Allowance).WithOne(g => g.Employees).HasForeignKey(s => s.EmployeeId);

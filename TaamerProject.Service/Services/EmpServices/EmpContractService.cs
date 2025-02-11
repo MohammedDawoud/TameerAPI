@@ -205,6 +205,7 @@ namespace TaamerProject.Service.Services
                     data.BranchId =Convert.ToInt32( branchid);
                     data.NationalityId = Convert.ToInt32(NationalityId);
                     data.OrgId =  Convert.ToInt32(orgId);
+                    data.EmpHourlyCost =(data.DailyEmpCost / data.Dailyworkinghours);
                     _TaamerProContext.EmpContract.Add(data);
                     //-----------------------------------------------------
                     // var EmployeeUpdated = _EmpRepository.GetById(data.EmpId);
@@ -214,6 +215,8 @@ namespace TaamerProject.Service.Services
                     EmployeeUpdated.ContractStartDate = data.StartDatetxt;
                     EmployeeUpdated.ContractEndDate = data.EndDatetxt;
                     EmployeeUpdated.Salary = data.FreelanceAmount;
+                    EmployeeUpdated.DailyWorkinghours = data.Dailyworkinghours;
+                    EmployeeUpdated.EmpHourlyCost =data.DailyEmpCost ;
                     //EmployeeUpdated.VacationsCount = data.Durationofannualleave;
                     //-------------------------------------------------------
                     try {
@@ -288,6 +291,7 @@ namespace TaamerProject.Service.Services
                         Updated.Workingdaysperweek = data.Workingdaysperweek;
                         Updated.Workinghoursperweek = data.Workinghoursperweek;
                         Updated.DailyEmpCost = data.DailyEmpCost;
+                        data.EmpHourlyCost = (data.DailyEmpCost / data.Dailyworkinghours);
 
                         Updated.UpdateDate = DateTime.Now;
                         Updated.UpdateUser = UserId;
@@ -311,6 +315,8 @@ namespace TaamerProject.Service.Services
                         EmployeeUpdated.ContractStartDate = data.StartDatetxt;
                         EmployeeUpdated.ContractEndDate = data.EndDatetxt;
                         EmployeeUpdated.Salary = data.FreelanceAmount;
+                        EmployeeUpdated.DailyWorkinghours = data.Dailyworkinghours;
+                        EmployeeUpdated.EmpHourlyCost = data.DailyEmpCost;
                         //EmployeeUpdated.VacationsCount = data.Durationofannualleave;
                     }
 

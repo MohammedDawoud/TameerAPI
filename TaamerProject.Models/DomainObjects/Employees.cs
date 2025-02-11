@@ -144,6 +144,9 @@ namespace TaamerProject.Models
         public int? IsRememberResident { get; set; }
         public string? RememberDateResident { get; set; }
 
+        public decimal? EmpHourlyCost { get; set; }
+        public decimal? DailyWorkinghours { get; set; }
+
         //public AttendenceLocationSettings? AttendenceLocation { get; set; }
         public virtual List<EmpLocations>? EmployeeLocations { get; set; }
 

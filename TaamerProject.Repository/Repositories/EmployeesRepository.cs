@@ -192,6 +192,8 @@ namespace TaamerProject.Repository.Repositories
                     //AttendenceLocationId =x.AttendenceLocationId,
                     allowoutsidesite=x.allowoutsidesite??false,
                     allowallsite = x.allowallsite ?? false,
+                    EmpHourlyCost =x.EmpHourlyCost ??0,
+                    DailyWorkinghours =x.DailyWorkinghours??0,
                 }).ToList();
                 return employees;
             }catch(Exception ex)
@@ -222,7 +224,8 @@ namespace TaamerProject.Repository.Repositories
                     //AttendenceLocationName = x.AttendenceLocation != null ? x.AttendenceLocation.Name : "",
                     allowoutsidesite = x.allowoutsidesite ?? false,
                     allowallsite = x.allowallsite ?? false,
-
+                    EmpHourlyCost = x.EmpHourlyCost ?? 0,
+                    DailyWorkinghours = x.DailyWorkinghours ?? 0,
                 }).ToList();
                 return employees;
             }
@@ -350,6 +353,8 @@ namespace TaamerProject.Repository.Repositories
                                 + (x.DiscountRewards.Where(s => s.IsDeleted == false).Sum(s => s.Amount) ?? 0),
                 TotalDayAbs = x.AttAbsentDays.Where(w => w.EmpId == x.EmployeeId && w.Year == DateTime.Now.Year && w.Month == DateTime.Now.Month).Select(s => s.AbsDays).FirstOrDefault(),
                 //VacationsCount = x.VacationsCount - x.VacationEndCount,
+                EmpHourlyCost = x.EmpHourlyCost ?? 0,
+                DailyWorkinghours = x.DailyWorkinghours ?? 0,
             }).ToList();
             return employees;
 
@@ -699,6 +704,8 @@ namespace TaamerProject.Repository.Repositories
                 TotalySalaries = ((x.Salary ?? 0) + (x.Bonus ?? 0) + (x.Allowance.Where(s => s.IsDeleted == false && s.IsFixed == true).Sum(s => s.AllowanceAmount) ?? 0) + (x.Loans.Where(s => s.IsDeleted == false).Sum(s => s.Amount) ?? 0))- (((x.Salary ?? 0) / 30) * (x.AttAbsentDays.Where(w => w.EmpId == x.EmployeeId && w.Year == DateTime.Now.Year && w.Month == DateTime.Now.Month).Select(s => s.AbsDays).FirstOrDefault()))
                                 + (x.DiscountRewards.Where(s => s.IsDeleted == false).Sum(s => s.Amount) ?? 0),
                  TotalDayAbs=x.AttAbsentDays.Where(w=>w.EmpId==x.EmployeeId && w.Year==DateTime.Now.Year && w.Month== DateTime.Now.Month).Select(s=>s.AbsDays).FirstOrDefault(),
+                EmpHourlyCost = x.EmpHourlyCost ?? 0,
+                DailyWorkinghours = x.DailyWorkinghours ?? 0,
             }).ToList();
             return employees;
 
@@ -2468,7 +2475,8 @@ namespace TaamerProject.Repository.Repositories
                 AttendenceLocationId = x.AttendenceLocationId,
                 allowoutsidesite = x.allowoutsidesite ?? false,
                 allowallsite = x.allowallsite ?? false,
-
+                EmpHourlyCost = x.EmpHourlyCost ?? 0,
+                DailyWorkinghours = x.DailyWorkinghours ?? 0,
                 //CommunicationAllawance = (x.Allowance.Where(s => s.IsDeleted == false && s.AllowanceType.IsSalaryPart.Value == true &&
                 //                       s.AllowanceType.NameEn == "Communications").FirstOrDefault()).AllowanceAmount ?? 0,
 
@@ -2631,8 +2639,9 @@ namespace TaamerProject.Repository.Repositories
                                       s.AllowanceType.NameEn == "Housing allowance").FirstOrDefault()).AllowanceAmount ?? 0,
 
                 MonthlyAllowances = x.Allowance.Where(s => s.IsDeleted == false && s.IsFixed == true && s.AllowanceType.IsSalaryPart == false).Sum(s => s.AllowanceAmount) ?? 0,
-                ExtraAllowances = x.Allowance.Where(s => s.IsDeleted == false && !s.IsFixed && s.AllowanceType.IsSalaryPart == false).Sum(s => s.AllowanceAmount) ?? 0
-
+                ExtraAllowances = x.Allowance.Where(s => s.IsDeleted == false && !s.IsFixed && s.AllowanceType.IsSalaryPart == false).Sum(s => s.AllowanceAmount) ?? 0,
+                      EmpHourlyCost = x.EmpHourlyCost ?? 0,
+                DailyWorkinghours = x.DailyWorkinghours ?? 0,
             }).FirstOrDefault();
             return emp;
         }

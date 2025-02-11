@@ -1486,6 +1486,8 @@ namespace TaamerProject.Service.Services
                         SaveOffDoc.AttendenceLocationId = OffDoc.AttendenceLocationId;
                         SaveOffDoc.allowoutsidesite = OffDoc.allowoutsidesite??false;
                         SaveOffDoc.allowallsite = OffDoc.allowallsite??false;
+                        SaveOffDoc.DailyWorkinghours = OffDoc.DailyWorkinghours;
+                        SaveOffDoc.EmpHourlyCost = OffDoc.EmpHourlyCost;
 
                   
                         //SaveOffDoc.WorkEndDate = OffDoc.WorkEndDate;
@@ -1499,6 +1501,12 @@ namespace TaamerProject.Service.Services
                                 Updated.StartDatetxt = SaveOffDoc.ContractStartDate;
                                 Updated.EndDatetxt = SaveOffDoc.ContractEndDate;
                                 Updated.ContractCode = SaveOffDoc.ContractNo;
+                                if (SaveOffDoc.Salary != null)
+                                {
+                                    Updated.FreelanceAmount = SaveOffDoc.Salary;
+                                }
+                                Updated.Dailyworkinghours =Convert.ToInt32(SaveOffDoc.DailyWorkinghours);
+                                Updated.EmpHourlyCost = SaveOffDoc.EmpHourlyCost;
                             }
                             //var employ = _TaamerProContext.Employees.Where(x => x.EmployeeId == SaveOffDoc.EmployeeId).FirstOrDefault();
                             //if (employ != null && employ.Email !=null)

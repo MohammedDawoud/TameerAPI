@@ -3953,6 +3953,8 @@ namespace TaamerProject.Service.Services
                                 ProPhasesTasksUpdated.UpdateDate = DateTime.Now;
                                 //ProPhasesTasksUpdated.EndTime = DateTime.Now.ToString("h:mm");
                                 ProPhasesTasksUpdated.TaskLongDesc = ProjectPhasesTasks.TaskLongDesc;
+                                ProPhasesTasksUpdated.Totalhourstask = ProjectPhasesTasks.Totalhourstask;
+                                ProPhasesTasksUpdated.Totaltaskcost = ProjectPhasesTasks.Totaltaskcost;
                                 if (ProPhasesTasksUpdated.ExcpectedStartDate != ProjectPhasesTasks.ExcpectedStartDate)
                                 {
                                     var dateonly = ProjectPhasesTasks.ExcpectedEndDate;

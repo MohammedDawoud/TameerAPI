@@ -50,6 +50,7 @@ namespace TaamerProject.Models
         public int? NationalityId { get; set; }
         public decimal? DailyEmpCost { get; set; }
         public int? ContractSource { get; set; }
+        public decimal? EmpHourlyCost { get; set; }
         public Branch? BranchName { get; set; }
         public Nationality? NatName { get; set; }
         public virtual Employees? Employees { get; set; }

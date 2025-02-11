@@ -37,7 +37,7 @@ namespace TaamerProject.Service.Services
             return AttTimeDetails;
         }
 
-        public async Task< IEnumerable<AttTimeDetailsVM>> GetAllAttTimeDetails2(int AttTimeId, int branchid)
+        public async Task<IEnumerable<AttTimeDetailsVM>> GetAllAttTimeDetails2(int AttTimeId, int branchid)
         {
             List<AttTimeDetailsVM> attlist = new List<AttTimeDetailsVM>();
             var attid = _usersRepository.GetById(AttTimeId).TimeId;
@@ -50,6 +50,8 @@ namespace TaamerProject.Service.Services
             //}
             if (attid != null)
             {
+                var emp = _TaamerProContext.Employees.Where(x => x.UserId == AttTimeId).FirstOrDefault();
+
                 var AttTimeDetails = _AttTimeDetailsRepository.GetAllAttTimeDetails2((int)attid).Result.OrderBy(x => x.Day);//.GroupBy(x => x._1StFromHour);
 
                 foreach (var item in AttTimeDetails)
@@ -142,8 +144,14 @@ namespace TaamerProject.Service.Services
                             attobj._2ndToHour = item._2ndToHour == "" ? DateTime.ParseExact(item._2ndToHour.ToString(), "yyyy-MM-dd h:mm:ss tt", CultureInfo.CreateSpecificCulture("en")) : DateTime.ParseExact("2023-02-23" + " " + item._2ndToHour, "yyyy-MM-dd h:mm:ss tt", CultureInfo.CreateSpecificCulture("en"));// item._2ndToHour;
                         }
                     }
+                    if (emp != null)
+                    {
+
+                        attobj.EmpHourlyCost = emp.EmpHourlyCost;
+                    }
                     attlist.Add(attobj);
                 }
+           
             }
 
             return attlist;

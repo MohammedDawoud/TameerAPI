@@ -24,6 +24,8 @@ namespace TaamerProject.Models
         public string? _2ndToHour_Time { get; set; }
         public bool? IsWeekDay { get; set; }
         public int? BranchId { get; set; }
-      
+
+        public decimal? EmpHourlyCost { get; set; }
+
     }
 }
