@@ -12,6 +12,7 @@ using TaamerProject.Models.DBContext;
 using TaamerProject.Models.Common;
 using static TaamerProject.Models.ReportGridVM;
 using TaamerProject.Models.Enums;
+using Microsoft.Identity.Client;
 
 namespace TaamerProject.Repository.Repositories
 {
@@ -7613,7 +7614,7 @@ namespace TaamerProject.Repository.Repositories
             }
         }
          public async Task<int?> GenerateNextInvoiceNumber(int Type, int? YearId, int BranchId)
-        {
+         {
             var invoices = _TaamerProContext.Invoices.Where(s => s.Type == Type && s.YearId == YearId  && s.IsDeleted == false);
             if (invoices != null)
             {
@@ -7632,7 +7633,119 @@ namespace TaamerProject.Repository.Repositories
             {
                 return 1;
             }
+         }
+
+
+        public async Task<List<GenerateNextVoucherNumberVM>> GenerateVoucherNumberNewPro(int Type, int? YearId, int BranchId, string codePrefix, bool InvoiceBranchSeparated,string Con)
+        {
+            try
+            {
+                List<GenerateNextVoucherNumberVM> lmd = new List<GenerateNextVoucherNumberVM>();
+                using (SqlConnection con = new SqlConnection(Con))
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.CommandText = "GenerateNextVoucherNumberNew";
+                        command.Connection = con;
+                        command.Parameters.Add(new SqlParameter("@Type", Type));
+                        command.Parameters.Add(new SqlParameter("@YearId", YearId));
+                        if(BranchId == 0)
+                        {
+                            command.Parameters.Add(new SqlParameter("@BranchId", DBNull.Value));
+                        }
+                        else
+                        {
+                            command.Parameters.Add(new SqlParameter("@BranchId", BranchId));
+                        }
+                        con.Open();
+
+                        SqlDataAdapter a = new SqlDataAdapter(command);
+                        DataSet ds = new DataSet();
+                        a.Fill(ds);
+
+                        lmd.Add(new GenerateNextVoucherNumberVM
+                        {
+                            InvoiceNumber = Convert.ToString(ds.Tables[0].Rows[0]["InvoiceNumber"]),
+                            BranchId = Convert.ToInt32(ds.Tables[0].Rows[0]["BranchId"]),
+                            Type = Convert.ToInt32(ds.Tables[0].Rows[0]["Type"]),
+                            YearId = Convert.ToInt32(ds.Tables[0].Rows[0]["YearId"]),
+                            NameAr = Convert.ToString(ds.Tables[0].Rows[0]["NameAr"]),
+                            InvoiceStartCode = Convert.ToString(ds.Tables[0].Rows[0]["InvoiceStartCode"]),
+                            InvoiceBranchSeparated = Convert.ToBoolean(ds.Tables[0].Rows[0]["InvoiceBranchSeparated"]),
+                            Newinvoicenumber = Convert.ToInt32(ds.Tables[0].Rows[0]["Newinvoicenumber"]),
+                        });
+                    }
+                }
+
+                return lmd;
+            }
+            catch (Exception ex)
+            {
+                List<GenerateNextVoucherNumberVM> lmd = new List<GenerateNextVoucherNumberVM>();
+                return lmd;
+            }
         }
+
+
+        public async Task<int?> GenerateNextInvoiceNumberNew(int Type, int? YearId, int BranchId, string codePrefix, bool InvoiceBranchSeparated)
+        {
+            if (_TaamerProContext.Invoices != null)
+            {
+                var lastRow = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == YearId
+                && (s.BranchId == BranchId || BranchId == 0) && s.Type == Type
+                && s.InvoiceNumber!.Contains(codePrefix)).OrderByDescending(u => (u.InvoiceNumber!.Replace(codePrefix, "").Trim())).ToList();
+                if (lastRow != null)
+                {
+                    try
+                    {
+                        var InvoiceNumber = 0;
+                        if(InvoiceBranchSeparated==false && Type==2)
+                        {
+                            var ObjBranchList = _TaamerProContext.Branch.Where(s => s.IsDeleted == false).ToList();
+                            foreach (var item in ObjBranchList)
+                            {
+                                if (item.InvoiceStartCode != null && item.InvoiceStartCode != "")
+                                {
+                                    codePrefix = item.InvoiceStartCode;
+                                    foreach (var item2 in lastRow)
+                                    {
+                                        item2.InvoiceNumber = item2!.InvoiceNumber!.Replace(codePrefix, "").Trim();
+                                    }
+
+                                }
+                            }
+                        }
+
+                        InvoiceNumber = int.Parse(lastRow.Take(1).FirstOrDefault()!.InvoiceNumber!) + 1;
+
+                        //if (codePrefix == "")
+                        //{
+                        //    InvoiceNumber = int.Parse(lastRow!.InvoiceNumber!) + 1;
+                        //}
+                        //else
+                        //{
+                        //    InvoiceNumber = int.Parse(lastRow!.InvoiceNumber!.Replace(codePrefix, "").Trim()) + 1;
+                        //}
+
+                        return InvoiceNumber;
+                    }
+                    catch (Exception)
+                    {
+                        return 1;
+                    }
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+            else
+            {
+                return 1;
+            }
+        }
+
         public async Task<int?> GenerateVoucherZatcaNumber( int? YearId, int BranchId)
         {
             var invoices = _TaamerProContext.Acc_InvoicesRequests.Where(s=>s.BranchId==BranchId);

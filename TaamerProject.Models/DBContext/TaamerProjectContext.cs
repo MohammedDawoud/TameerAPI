@@ -784,6 +784,8 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 entity.Property(t => t.BoxAccId2).HasColumnName("BoxAccId2");
                 entity.Property(t => t.ProjectStartCode).HasColumnName("ProjectStartCode");
                 entity.Property(t => t.OfferStartCode).HasColumnName("OfferStartCode");
+                entity.Property(t => t.InvoiceStartCode).HasColumnName("InvoiceStartCode");
+                entity.Property(t => t.InvoiceBranchSeparated).HasColumnName("InvoiceBranchSeparated");
                 entity.Property(t => t.Engineering_License).HasColumnName("Engineering_License");
                 entity.Property(t => t.Engineering_LicenseDate).HasColumnName("Engineering_LicenseDate");
                 entity.Property(t => t.IsPrintInvoice).HasColumnName("IsPrintInvoice");

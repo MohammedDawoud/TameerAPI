@@ -13,4 +13,17 @@ namespace TaamerProject.Models
         public decimal? Credit { get; set; }
         public decimal? Depit { get; set; }
     }
+
+    public class GenerateNextVoucherNumberVM
+    {
+        public string? InvoiceNumber { get; set; }
+        public int? BranchId { get; set; }
+        public int? Type { get; set; }
+        public int? YearId { get; set; }
+        public string? NameAr { get; set; }
+        public string? InvoiceStartCode { get; set; }
+        public bool? InvoiceBranchSeparated { get; set; }
+        public int? Newinvoicenumber { get; set; }
+
+    }
 }

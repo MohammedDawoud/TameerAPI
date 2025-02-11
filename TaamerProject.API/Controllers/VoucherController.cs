@@ -1732,6 +1732,19 @@ namespace TaamerProject.API.Controllers
             var generatevalue = new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = NewValue };
             return Ok(generatevalue);
         }
+
+
+        [HttpGet("GenerateVoucherNumberNew")]
+
+        public ActionResult GenerateVoucherNumberNew(int Type)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var result = _voucherService.GenerateVoucherNumberNewPro(Type, _globalshared.BranchId_G, _globalshared.YearId_G,Con??"").Result;
+            var generatevalue = new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = result };
+            return Ok(generatevalue);
+        }
+
+
         [HttpGet("GenerateVoucherNumberOpening")]
         public IActionResult GenerateVoucherNumberOpening(int Type)
         {

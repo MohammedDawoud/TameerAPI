@@ -20,7 +20,9 @@ namespace TaamerProject.Service.Interfaces
 
         GeneralMessage SaveBranches(Branch branches, int UserId, string Lang, int BranchId);
         GeneralMessage DeleteBranches(int BranchId, int UserId, string Lang);
+        GeneralMessage SaveBranchesInvoiceCode(Branch branches, int UserId, int BranchId);
         GeneralMessage SaveBrancheAccs(Branch branches, int UserId, int BranchId);
+
         GeneralMessage SaveCSIDBranch(int BranchId, string CSR, string PrivateKey, string CSID, string SecretKey, int UserId, int BranchIdO);
 
         GeneralMessage SaveBranchesAccsBS(Branch branches, int UserId, int BranchId);

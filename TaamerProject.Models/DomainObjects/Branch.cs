@@ -71,7 +71,8 @@ namespace TaamerProject.Models
         public string? PostalCode { get; set; }
         public string? ProjectStartCode { get; set; }
         public string? OfferStartCode { get; set; }
-
+        public string? InvoiceStartCode { get; set; }
+        public bool? InvoiceBranchSeparated { get; set; }
         public string? Engineering_License { get; set; }
         public string? Engineering_LicenseDate { get; set; }
 
