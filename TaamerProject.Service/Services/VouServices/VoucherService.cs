@@ -33,6 +33,7 @@ using RestSharp;
 using static System.Net.WebRequestMethods;
 using Google.Apis.Auth.OAuth2;
 using static Dropbox.Api.TeamLog.LoginMethod;
+using Newtonsoft.Json.Linq;
 
 namespace TaamerProject.Service.Services
 {
@@ -15634,6 +15635,61 @@ namespace TaamerProject.Service.Services
         public async Task<int?> GenerateVoucherNumber(int Type, int BranchId, int? yearid)
         {
             return await _InvoicesRepository.GenerateNextInvoiceNumber(Type, yearid, BranchId);
+        }
+        public async Task<string> GenerateVoucherNumberNewPro(int Type, int BranchId, int? yearid,string Con)
+        {
+            var codePrefix = "";
+            var BranchObj = _BranchesRepository.GetById(BranchId);
+            if (BranchObj.InvoiceBranchSeparated == false)
+            {
+                BranchId = 0;
+            }
+            if (Type == 2)
+            {
+                if (BranchObj.InvoiceStartCode != null && BranchObj.InvoiceStartCode != "")
+                {
+                    codePrefix = BranchObj.InvoiceStartCode;
+                }
+            }
+            var ProList = await _InvoicesRepository.GenerateVoucherNumberNewPro(Type, yearid, BranchId, codePrefix, BranchObj.InvoiceBranchSeparated ?? false, Con);
+            var Value = 0;
+            if (ProList.Count()>0)
+            {
+                Value = ProList.FirstOrDefault()!.Newinvoicenumber??1;
+            }
+            else
+            {
+                Value = 1;
+            }
+            var NewValue = string.Format("{0:000000}", Value);
+            if (codePrefix != "")
+            {
+                NewValue = codePrefix + NewValue;
+            }
+            return (NewValue);
+        }
+        public async Task<string> GenerateVoucherNumberNew(int Type, int BranchId, int? yearid)
+        {
+            var codePrefix = "";
+            var BranchObj = _BranchesRepository.GetById(BranchId);
+            if(BranchObj.InvoiceBranchSeparated==false)
+            {
+                BranchId = 0;
+            }
+            if (Type==2)
+            {
+                if (BranchObj.InvoiceStartCode != null && BranchObj.InvoiceStartCode != "")
+                {
+                    codePrefix = BranchObj.InvoiceStartCode;
+                }
+            }
+            var Value = await _InvoicesRepository.GenerateNextInvoiceNumberNew(Type, yearid, BranchId, codePrefix, BranchObj.InvoiceBranchSeparated??false);
+            var NewValue = string.Format("{0:000000}", Value);
+            if(codePrefix!="")
+            {
+                NewValue = codePrefix + NewValue;
+            }
+            return (NewValue);
         }
         public async Task<int?> GenerateVoucherZatcaNumber( int BranchId, int? yearid)
         {

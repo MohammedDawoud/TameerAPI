@@ -21,16 +21,19 @@ namespace TaamerProject.Service.Services
         private readonly TaamerProjectContext _TaamerProContext;
         private readonly ISystemAction _SystemAction;
         private readonly IBranchesRepository _BranchesRepository;
+        private readonly IOrganizationsRepository _organizationsRepository;
         private readonly IUsersRepository _UsersRepository;
         private readonly IUserBranchesRepository _UserBranchesRepository;
         private readonly IProjectRepository _projectRepository;
 
 
         public BranchesService(TaamerProjectContext dataContext, ISystemAction systemAction, IBranchesRepository branchesRepository,
-            IUsersRepository usersRepository, IUserBranchesRepository userBranchesRepository, IProjectRepository projectRepository)
+            IUsersRepository usersRepository, IUserBranchesRepository userBranchesRepository, IOrganizationsRepository organizationsRepository,
+            IProjectRepository projectRepository)
         {
             _TaamerProContext = dataContext;
             _SystemAction = systemAction;
+            _organizationsRepository = organizationsRepository;
             _BranchesRepository = branchesRepository;
             this._UsersRepository = usersRepository;
             _UserBranchesRepository = userBranchesRepository;
@@ -99,6 +102,7 @@ namespace TaamerProject.Service.Services
         {
             try
             {
+                var Org = _organizationsRepository.GetBranchOrganization().Result;
                 var codeExist = _TaamerProContext.Branch.Where(s => s.IsDeleted == false && s.BranchId != branches.BranchId && s.Code == branches.Code).FirstOrDefault();
                 if (codeExist != null)
                 {
@@ -115,6 +119,14 @@ namespace TaamerProject.Service.Services
                 {
                     branches.IsActive = true; //Edit
                     branches.AddUser = UserId;
+                    if ((branches.TaxCode! ?? "").Trim() == (Org.TaxCode! ?? "").Trim())
+                    {
+                        branches.InvoiceBranchSeparated = false;
+                    }
+                    else
+                    {
+                        branches.InvoiceBranchSeparated = true;
+                    }
                     branches.AddDate = DateTime.Now;
                     _TaamerProContext.Branch.Add(branches);
                     _TaamerProContext.SaveChanges();
@@ -185,7 +197,15 @@ namespace TaamerProject.Service.Services
                         BranchesUpdated.PostalCode = branches.PostalCode;
                         BranchesUpdated.ProjectStartCode = branches.ProjectStartCode;
                         BranchesUpdated.OfferStartCode = branches.OfferStartCode;
-
+                        //BranchesUpdated.InvoiceStartCode = branches.InvoiceStartCode;
+                        if((branches.TaxCode!??"").Trim() == (Org.TaxCode! ?? "").Trim())
+                        {
+                            BranchesUpdated.InvoiceBranchSeparated = false;
+                        }
+                        else
+                        {
+                            BranchesUpdated.InvoiceBranchSeparated = true;
+                        }
                         BranchesUpdated.BankId = branches.BankId;
                         BranchesUpdated.BankId2 = branches.BankId2;
                         BranchesUpdated.IsPrintInvoice = branches.IsPrintInvoice;
@@ -276,6 +296,37 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = message };
             }
         }
+        public GeneralMessage SaveBranchesInvoiceCode(Branch branches, int UserId, int BranchId)
+        {
+            try
+            {
+                var BranchesUpdated = _BranchesRepository.GetById(branches.BranchId);
+                if (BranchesUpdated != null)
+                {
+                    BranchesUpdated.InvoiceStartCode = branches.InvoiceStartCode;
+                    BranchesUpdated.UpdateUser = UserId;
+                    BranchesUpdated.UpdateDate = DateTime.Now;
+                }
+                _TaamerProContext.SaveChanges();
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = " تعدلات بادئة الفاتورة الفرع رقم " + branches.BranchId;
+                _SystemAction.SaveAction("SaveBrancheAccs", "BranchesService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                //-----------------------------------------------------------------------------------------------------------------
+                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
+            }
+            catch (Exception)
+            {
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = " فشل في حفظ بادئة الفاتورة الفرع رقم " + branches.BranchId;
+                _SystemAction.SaveAction("SaveBrancheAccs", "BranchesService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                //-----------------------------------------------------------------------------------------------------------------
+
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
+            }
+        }
+
         public GeneralMessage SaveBrancheAccs(Branch branches, int UserId, int BranchId)
         {
             try

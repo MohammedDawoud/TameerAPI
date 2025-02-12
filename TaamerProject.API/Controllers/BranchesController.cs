@@ -161,6 +161,14 @@ namespace TaamerProject.API.Controllers
             var result = _branchesservice.SaveBranches(branches, _globalshared.UserId_G, _globalshared.Lang_G, _globalshared.BranchId_G);
             return Ok(result);
         }
+        [HttpPost("SaveBranchesInvoiceCode")]
+
+        public IActionResult SaveBranchesInvoiceCode(Branch branches)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var result = _branchesservice.SaveBranchesInvoiceCode(branches, _globalshared.UserId_G, _globalshared.BranchId_G);
+            return Ok(result);
+        }
         [HttpPost("SaveBranchesAccs")]
 
         public IActionResult SaveBranchesAccs(Branch branches)
