@@ -31,6 +31,9 @@ namespace TaamerProject.Models
 
         public int? RequirmentId { get; set; }
 
+        public decimal? Totaltaskcost { get; set; }
+        public decimal? Totalhourstask { get; set; }
+
 
         public Employees? Employees { get; set; }
         public NodeLocations? NodeLocations { get; set; }

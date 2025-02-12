@@ -1067,6 +1067,7 @@ namespace TaamerProject.Service.Services
                                 EndDate = null,
                                 //ExcpectedStartDate = Project.ProjectDate,
                                 //ExcpectedEndDate = TempDate,
+                                
                                 ExcpectedStartDate = null,
                                 ExcpectedEndDate = null,
                                 ParentId = ParentV,
@@ -1083,8 +1084,10 @@ namespace TaamerProject.Service.Services
                                 IsConverted = 0,
                                 IsMerig = item.IsMerig,
                                 EndTime = TempTime,
-                                TaskFullTime = dt_A.ToString("yyyy/MM/dd HH:mm:ss", CultureInfo.InvariantCulture)
-
+                                TaskFullTime = dt_A.ToString("yyyy/MM/dd HH:mm:ss", CultureInfo.InvariantCulture),
+                                Totaltaskcost=item.Totaltaskcost,
+                                Totalhourstask=item.Totalhourstask,
+                                
                             };
                             _TaamerProContext.ProjectPhasesTasks.Add(projectPhasesTaskObj);
                             _TaamerProContext.SaveChanges();  // commit 
@@ -1794,6 +1797,8 @@ namespace TaamerProject.Service.Services
                                 Managerapproval = item.Managerapproval,
                                 StartDateNew = item.StartDate,
                                 EndDateNew = item.EndDate,
+                                Totalhourstask =item.Totalhourstask,
+                                Totaltaskcost=item.Totaltaskcost,
 
                              };
                             _TaamerProContext.ProjectPhasesTasks.Add(projectPhasesTaskObj);

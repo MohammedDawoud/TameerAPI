@@ -34,7 +34,8 @@ namespace TaamerProject.Models
         public int? taskindex { get; set; }
         public Int16? Managerapproval { get; set; }
         public int? ReasonsId { get; set; }
-
+        public decimal? Totaltaskcost { get; set; }
+        public decimal? Totalhourstask { get; set; }
         public Employees? Employees { get; set; }
         public NodeLocations? NodeLocations { get; set; }
         public Users? Users { get; set; }
