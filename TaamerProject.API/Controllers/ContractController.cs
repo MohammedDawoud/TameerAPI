@@ -2109,7 +2109,7 @@ namespace TaamerProject.API.Controllers
             {
                 
                 HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-                var result = _voucherService.Issuing_invoice(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+                var result = _voucherService.Issuing_invoice(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
                 return Ok(result);
             }
         [HttpGet("GetDayName")]

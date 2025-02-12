@@ -727,7 +727,7 @@ namespace TaamerProject.Service.Services
         //    }
 
         //}
-        public GeneralMessage SaveVoucher(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SaveVoucher(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -765,8 +765,9 @@ namespace TaamerProject.Service.Services
                     var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
-                        var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
-                        var NewNextInv = string.Format("{0:000000}", NextInv);
+                        //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
+                        var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+                        //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                         voucher.InvoiceNumber = NewNextInv.ToString();      
                     }
@@ -1141,7 +1142,7 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
-        public GeneralMessage SaveandPostVoucher(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SaveandPostVoucher(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -1179,8 +1180,10 @@ namespace TaamerProject.Service.Services
                     if (vouchercheck.Count() > 0)
                     {
 
-                        var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
-                        var NewNextInv = string.Format("{0:000000}", NextInv);
+                        //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
+                        var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+
+                        //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                         voucher.InvoiceNumber = NewNextInv.ToString();
                     }
@@ -1597,7 +1600,7 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
-        public GeneralMessage SaveVoucherP(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SaveVoucherP(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -1670,8 +1673,10 @@ namespace TaamerProject.Service.Services
                     var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
-                        var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
-                        var NewNextInv = string.Format("{0:000000}", NextInv);
+                        //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
+                        var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+
+                        //var NewNextInv = string.Format("{0:000000}", NextInv);
                         voucher.InvoiceNumber = NewNextInv.ToString();                     
                     }
 
@@ -2178,7 +2183,7 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
-        public GeneralMessage SaveandPostVoucherP(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SaveandPostVoucherP(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -2253,8 +2258,10 @@ namespace TaamerProject.Service.Services
                     var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
-                        var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
-                        var NewNextInv = string.Format("{0:000000}", NextInv);
+                        //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
+                        var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+
+                        //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                         voucher.InvoiceNumber = NewNextInv.ToString();
                     }
@@ -2840,7 +2847,7 @@ namespace TaamerProject.Service.Services
         //    return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
         //}
 
-        public GeneralMessage UpdateVoucherDraft(int InvoiceId, int UserId, int BranchId, int yearid)
+        public GeneralMessage UpdateVoucherDraft(int InvoiceId, int UserId, int BranchId, int yearid, string Con)
         {
 
             var VoucherUpdated = _TaamerProContext.Invoices.Where(s => s.InvoiceId == InvoiceId).FirstOrDefault();
@@ -2849,8 +2856,10 @@ namespace TaamerProject.Service.Services
 
                 VoucherUpdated.Type = 2;
 
-                var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(2, yearid, BranchId).Result;
-                var NewNextInv = string.Format("{0:000000}", NextInv);
+                //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(2, yearid, BranchId).Result;
+                var NewNextInv = GenerateVoucherNumberNewPro(2, BranchId, yearid, 2, Con).Result;
+
+                //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                 VoucherUpdated.InvoiceNumber = NewNextInv.ToString();
                 var TransactionDetailsV = _TaamerProContext.Transactions.Where(s => s.InvoiceId == VoucherUpdated.InvoiceId).ToList();
@@ -3043,7 +3052,7 @@ namespace TaamerProject.Service.Services
 
         }
 
-        public GeneralMessage Issuing_invoice(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage Issuing_invoice(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             { 
@@ -3139,8 +3148,10 @@ namespace TaamerProject.Service.Services
                     var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
-                        var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
-                        var NewNextInv = string.Format("{0:000000}", NextInv);
+                        //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
+                        var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+
+                        //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                         voucher.InvoiceNumber = NewNextInv.ToString();
                     }
@@ -3356,7 +3367,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public GeneralMessage SaveInvoice(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SaveInvoice(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
 
             try
@@ -3445,8 +3456,9 @@ namespace TaamerProject.Service.Services
                     var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
-                        var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
-                        var NewNextInv = string.Format("{0:000000}", NextInv);
+                        //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
+                        var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+                        //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                         voucher.InvoiceNumber = NewNextInv.ToString();
                     }
@@ -3873,7 +3885,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public GeneralMessage SaveInvoiceForServices(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SaveInvoiceForServices(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         { 
             try
             {
@@ -4008,8 +4020,9 @@ namespace TaamerProject.Service.Services
                     var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId==yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
                     if(vouchercheck.Count()>0)
                     {
-                        var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
-                        var NewNextInv = string.Format("{0:000000}", NextInv);
+                        //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
+                        var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+                        //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                         voucher.InvoiceNumber = NewNextInv.ToString();
                     }
@@ -4465,7 +4478,7 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
-        public GeneralMessage SaveInvoiceForServicesDraft(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SaveInvoiceForServicesDraft(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -4600,8 +4613,9 @@ namespace TaamerProject.Service.Services
                     var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
-                        var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
-                        var NewNextInv = string.Format("{0:000000}", NextInv);
+                        //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
+                        var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+                        //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                         voucher.InvoiceNumber = NewNextInv.ToString();
                     }
@@ -5552,7 +5566,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public GeneralMessage SaveInvoiceForServicesNoti(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SaveInvoiceForServicesNoti(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -5700,8 +5714,9 @@ namespace TaamerProject.Service.Services
                         var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
                         if (vouchercheck.Count() > 0)
                         {
-                            var NextInv = _InvoicesRepository.GenerateNextInvoiceNumberNotiCredit(voucher.Type, yearid, BranchId).Result;
-                            var NewNextInv = string.Format("{0:000000}", NextInv);
+                            //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumberNotiCredit(voucher.Type, yearid, BranchId).Result;
+                            var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+                            //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                             voucher.InvoiceNumber = NewNextInv.ToString();
                         }
@@ -6685,7 +6700,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public GeneralMessage SaveInvoiceForServicesNotiDepit(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SaveInvoiceForServicesNotiDepit(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -6832,8 +6847,9 @@ namespace TaamerProject.Service.Services
                         var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
                         if (vouchercheck.Count() > 0)
                         {
-                            var NextInv = _InvoicesRepository.GenerateNextInvoiceNumberNotiDepit(voucher.Type, yearid, BranchId).Result;
-                            var NewNextInv = string.Format("{0:000000}", NextInv);
+                            //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumberNotiDepit(voucher.Type, yearid, BranchId).Result;
+                            var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+                            //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                             voucher.InvoiceNumber = NewNextInv.ToString();
                         }
@@ -7688,7 +7704,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public GeneralMessage SaveandPostInvoiceForServices(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SaveandPostInvoiceForServices(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -7824,8 +7840,9 @@ namespace TaamerProject.Service.Services
                     var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid &&  s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
-                        var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
-                        var NewNextInv = string.Format("{0:000000}", NextInv);
+                        //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
+                        var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+                        //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                         voucher.InvoiceNumber = NewNextInv.ToString();
                     }
@@ -8338,7 +8355,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public GeneralMessage SaveInvoiceForServicesRet(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SaveInvoiceForServicesRet(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -8463,8 +8480,9 @@ namespace TaamerProject.Service.Services
                     //VoucherUpdated.TaxAmount = taxAfter;
                     //VoucherUpdated.TotalValue = TotalAfter;
 
-                    int nextnumber = _InvoicesRepository.GenerateNextInvoiceNumberRet(VoucherUpdated.Type, yearid, BranchId).Result??0;
-                    var NewNextInv = string.Format("{0:000000}", nextnumber);
+                    //int nextnumber = _InvoicesRepository.GenerateNextInvoiceNumberRet(VoucherUpdated.Type, yearid, BranchId).Result??0;
+                    var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+                    //var NewNextInv = string.Format("{0:000000}", nextnumber);
 
                     VoucherUpdated.InvoiceRetId = NewNextInv.ToString();
                     if (voucher.ProjectId != null)
@@ -8975,8 +8993,10 @@ namespace TaamerProject.Service.Services
                         //-----------------------------------------------------------------------------------------------------------------
                         return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = ActionNote33 };
                     }
-                    int nextnumber = _InvoicesRepository.GenerateNextInvoiceNumberRet(VoucherUpdated.Type, yearid, BranchId).Result ?? 0;
-                    var NewNextInv = string.Format("{0:000000}", nextnumber);
+                    //int nextnumber = _InvoicesRepository.GenerateNextInvoiceNumberRet(VoucherUpdated.Type, yearid, BranchId).Result ?? 0;
+                    var NewNextInv = GenerateVoucherNumberNewPro(VoucherUpdated.Type, BranchId, yearid,4,Con).Result ?? "1";
+
+                    //var NewNextInv = string.Format("{0:000000}", nextnumber);
 
                     VoucherUpdated.InvoiceRetId = NewNextInv.ToString();
                     if (voucher.ProjectId != null)
@@ -9250,7 +9270,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public GeneralMessage ReturnNotiCreditBack(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage ReturnNotiCreditBack(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -9299,7 +9319,7 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
-        public GeneralMessage ReturnNotiDepitBack(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage ReturnNotiDepitBack(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -9350,7 +9370,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public GeneralMessage SaveInvoiceForServicesRet_Back(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SaveInvoiceForServicesRet_Back(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -9392,7 +9412,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public GeneralMessage SavePurchaseForServices(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SavePurchaseForServices(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -9526,8 +9546,9 @@ namespace TaamerProject.Service.Services
                     var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
-                        var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
-                        var NewNextInv = string.Format("{0:000000}", NextInv);
+                        //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
+                        var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+                        //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                         voucher.InvoiceNumber = NewNextInv.ToString();
                     }
@@ -9965,7 +9986,7 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
-        public GeneralMessage SavePurchaseForServicesNotiDepit(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SavePurchaseForServicesNotiDepit(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -10112,8 +10133,10 @@ namespace TaamerProject.Service.Services
                         var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
                         if (vouchercheck.Count() > 0)
                         {
-                            var NextInv = _InvoicesRepository.GenerateNextInvoiceNumberPurchaseNotiDepit(voucher.Type, yearid, BranchId).Result;
-                            var NewNextInv = string.Format("{0:000000}", NextInv);
+                            //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumberPurchaseNotiDepit(voucher.Type, yearid, BranchId).Result;
+                            var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+
+                            //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                             voucher.InvoiceNumber = NewNextInv.ToString();
                         }
@@ -10975,7 +10998,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public  GeneralMessage SaveandPostPurchaseForServices(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public  GeneralMessage SaveandPostPurchaseForServices(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -11111,8 +11134,9 @@ namespace TaamerProject.Service.Services
                     var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
-                        var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
-                        var NewNextInv = string.Format("{0:000000}", NextInv);
+                        //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
+                        var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+                        //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                         voucher.InvoiceNumber = NewNextInv.ToString();
                        
@@ -11577,7 +11601,7 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
-        public GeneralMessage SavePurchaseForServicesRet(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SavePurchaseForServicesRet(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -11671,8 +11695,10 @@ namespace TaamerProject.Service.Services
 
                     VoucherUpdated.Rad = true;
 
-                    int nextnumber = _InvoicesRepository.GenerateNextInvoiceNumberRet(VoucherUpdated.Type, yearid, BranchId).Result ?? 0;
-                    var NewNextInv = string.Format("{0:000000}", nextnumber);
+                    //int nextnumber = _InvoicesRepository.GenerateNextInvoiceNumberRet(VoucherUpdated.Type, yearid, BranchId).Result ?? 0;
+                    var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+
+                    //var NewNextInv = string.Format("{0:000000}", nextnumber);
 
                     VoucherUpdated.InvoiceRetId = NewNextInv.ToString();
 
@@ -12155,8 +12181,9 @@ namespace TaamerProject.Service.Services
                         return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = ActionNote33 };
                     }
 
-                    int nextnumber = _InvoicesRepository.GenerateNextInvoiceNumberRet(VoucherUpdated.Type, yearid, BranchId).Result ?? 0;
-                    var NewNextInv = string.Format("{0:000000}", nextnumber);
+                    //int nextnumber = _InvoicesRepository.GenerateNextInvoiceNumberRet(VoucherUpdated.Type, yearid, BranchId).Result ?? 0;
+                    var NewNextInv = GenerateVoucherNumberNewPro(VoucherUpdated.Type, BranchId, yearid, 4, Con).Result;
+                    //var NewNextInv = string.Format("{0:000000}", nextnumber);
 
                     VoucherUpdated.InvoiceRetId = NewNextInv.ToString();
                     if (VoucherUpdated.CostCenterId > 0)
@@ -12312,7 +12339,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public GeneralMessage SavePayVoucherForServicesRet(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SavePayVoucherForServicesRet(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -12611,7 +12638,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public GeneralMessage SaveInvoiceForServices2(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SaveInvoiceForServices2(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -12734,8 +12761,9 @@ namespace TaamerProject.Service.Services
                     var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
-                        var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
-                        var NewNextInv = string.Format("{0:000000}", NextInv);
+                        //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
+                        var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+                        //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                         voucher.InvoiceNumber = NewNextInv.ToString();
                     }
@@ -13210,7 +13238,7 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
-        public GeneralMessage SaveandPostInvoiceForServices2(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SaveandPostInvoiceForServices2(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -13335,8 +13363,9 @@ namespace TaamerProject.Service.Services
                     var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
-                        var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
-                        var NewNextInv = string.Format("{0:000000}", NextInv);
+                        //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
+                        var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+                        //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                         voucher.InvoiceNumber = NewNextInv.ToString();
                     }
@@ -13869,7 +13898,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public GeneralMessage SaveDailyVoucher(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SaveDailyVoucher(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -13906,8 +13935,9 @@ namespace TaamerProject.Service.Services
                     var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
-                        var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
-                        var NewNextInv = string.Format("{0:000000}", NextInv);
+                        //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
+                        var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+                        //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                         voucher.InvoiceNumber = NewNextInv.ToString();
                     }
@@ -14103,7 +14133,7 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
-        public GeneralMessage SaveandPostDailyVoucher(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SaveandPostDailyVoucher(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -14138,8 +14168,9 @@ namespace TaamerProject.Service.Services
                     var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
-                        var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
-                        var NewNextInv = string.Format("{0:000000}", NextInv);
+                        //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
+                        var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+                        //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                         voucher.InvoiceNumber = NewNextInv.ToString();
                     }
@@ -14363,7 +14394,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public GeneralMessage SaveClosingVoucher(Invoices voucher, int UserId, int BranchId, int? VoucherNum, int? yearid)
+        public GeneralMessage SaveClosingVoucher(Invoices voucher, int UserId, int BranchId, int? VoucherNum, int? yearid, string Con)
         {
             try
             {
@@ -14553,7 +14584,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public GeneralMessage SaveEmpVoucher(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SaveEmpVoucher(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -14588,8 +14619,9 @@ namespace TaamerProject.Service.Services
                     var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
-                        var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
-                        var NewNextInv = string.Format("{0:000000}", NextInv);
+                        //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
+                        var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+                        //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                         voucher.InvoiceNumber = NewNextInv.ToString();
                     }
@@ -15224,7 +15256,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public GeneralMessage SaveDailyVoucher2(List<Transactions> voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SaveDailyVoucher2(List<Transactions> voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             var invoiceid = 0;
             var Type = 0;
@@ -15387,7 +15419,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public GeneralMessage SaveConvertVoucher(Invoices voucher, int UserId, int BranchId, int? yearid)
+        public GeneralMessage SaveConvertVoucher(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -15421,8 +15453,9 @@ namespace TaamerProject.Service.Services
                     var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
-                        var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
-                        var NewNextInv = string.Format("{0:000000}", NextInv);
+                        //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
+                        var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+                        //var NewNextInv = string.Format("{0:000000}", NextInv);
 
                         voucher.InvoiceNumber = NewNextInv.ToString();
                     }
@@ -15636,7 +15669,7 @@ namespace TaamerProject.Service.Services
         {
             return await _InvoicesRepository.GenerateNextInvoiceNumber(Type, yearid, BranchId);
         }
-        public async Task<string> GenerateVoucherNumberNewPro(int Type, int BranchId, int? yearid,string Con)
+        public async Task<string> GenerateVoucherNumberNewPro(int Type, int BranchId, int? yearid,int Status, string Con)
         {
             var codePrefix = "";
             var BranchObj = _BranchesRepository.GetById(BranchId);
@@ -15651,7 +15684,7 @@ namespace TaamerProject.Service.Services
                     codePrefix = BranchObj.InvoiceStartCode;
                 }
             }
-            var ProList = await _InvoicesRepository.GenerateVoucherNumberNewPro(Type, yearid, BranchId, codePrefix, BranchObj.InvoiceBranchSeparated ?? false, Con);
+            var ProList = await _InvoicesRepository.GenerateVoucherNumberNewPro(Type, yearid, BranchId, codePrefix, BranchObj.InvoiceBranchSeparated ?? false,Status, Con);
             var Value = 0;
             if (ProList.Count()>0)
             {
@@ -15663,29 +15696,6 @@ namespace TaamerProject.Service.Services
             }
             var NewValue = string.Format("{0:000000}", Value);
             if (codePrefix != "")
-            {
-                NewValue = codePrefix + NewValue;
-            }
-            return (NewValue);
-        }
-        public async Task<string> GenerateVoucherNumberNew(int Type, int BranchId, int? yearid)
-        {
-            var codePrefix = "";
-            var BranchObj = _BranchesRepository.GetById(BranchId);
-            if(BranchObj.InvoiceBranchSeparated==false)
-            {
-                BranchId = 0;
-            }
-            if (Type==2)
-            {
-                if (BranchObj.InvoiceStartCode != null && BranchObj.InvoiceStartCode != "")
-                {
-                    codePrefix = BranchObj.InvoiceStartCode;
-                }
-            }
-            var Value = await _InvoicesRepository.GenerateNextInvoiceNumberNew(Type, yearid, BranchId, codePrefix, BranchObj.InvoiceBranchSeparated??false);
-            var NewValue = string.Format("{0:000000}", Value);
-            if(codePrefix!="")
             {
                 NewValue = codePrefix + NewValue;
             }
@@ -16438,7 +16448,7 @@ namespace TaamerProject.Service.Services
             return new List<InvoicesVM>();
         }
 
-        public GeneralMessage SaveOpeningVoucher(Invoices voucher, int UserId, int BranchId, int? VoucherNum, int? yearid)
+        public GeneralMessage SaveOpeningVoucher(Invoices voucher, int UserId, int BranchId, int? VoucherNum, int? yearid, string Con)
         {
             try
             {
@@ -16639,7 +16649,7 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
-        public  GeneralMessage SaveandPostOpeningVoucher(Invoices voucher, int UserId, int BranchId, int? VoucherNum, int? yearid)
+        public  GeneralMessage SaveandPostOpeningVoucher(Invoices voucher, int UserId, int BranchId, int? VoucherNum, int? yearid, string Con)
         {
             try
             {

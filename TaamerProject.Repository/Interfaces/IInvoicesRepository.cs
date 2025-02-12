@@ -73,9 +73,8 @@ namespace TaamerProject.Repository.Interfaces
         
         Task<IEnumerable<InvoicesVM>> GetProjectManagerRevene(int? ManagerId, string dateFrom, string dateTo, int YearId, int BranchId);
         Task<int?> GenerateNextInvoiceNumber(int Type, int? YearId, int BranchId);
-        Task<List<GenerateNextVoucherNumberVM>> GenerateVoucherNumberNewPro(int Type, int? YearId, int BranchId, string codePrefix, bool InvoiceBranchSeparated, string Con);
+        Task<List<GenerateNextVoucherNumberVM>> GenerateVoucherNumberNewPro(int Type, int? YearId, int BranchId, string codePrefix, bool InvoiceBranchSeparated,int Status, string Con);
 
-        Task<int?> GenerateNextInvoiceNumberNew(int Type, int? YearId, int BranchId,string codePrefix,bool InvoiceBranchSeparated);
 
         Task<int?> GenerateVoucherZatcaNumber(int? YearId, int BranchId);
 

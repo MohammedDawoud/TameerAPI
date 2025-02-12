@@ -62,81 +62,80 @@ namespace TaamerProject.Service.Interfaces
 
         Task<IEnumerable<VoucherDetailsVM>> GetAllTransByLineNo(int LineNo);
         Task<IEnumerable<VoucherDetailsVM>> GetAllTrans(int VouDetailsID);
-        GeneralMessage Issuing_invoice(Invoices voucher, int UserId, int BranchId, int? yearid);
+        GeneralMessage Issuing_invoice(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
 
-        GeneralMessage SaveVoucher(Invoices voucher,int UserId, int BranchId, int? yearid);
-        GeneralMessage SaveandPostVoucher(Invoices voucher, int UserId, int BranchId, int? yearid);
+        GeneralMessage SaveVoucher(Invoices voucher,int UserId, int BranchId, int? yearid, string Con);
+        GeneralMessage SaveandPostVoucher(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
 
-         GeneralMessage SaveVoucherP(Invoices voucher, int UserId, int BranchId, int? yearid);
+         GeneralMessage SaveVoucherP(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
          GeneralMessage  SaveVoucherPUpdateImage(int InvoiceId, int UserId, int BranchId, int? yearid,string FileName,string FileUrl); 
          Task<Invoices> MaxVoucherP(int BranchId, int? yearid);
-        GeneralMessage SaveandPostVoucherP(Invoices voucher, int UserId, int BranchId, int? yearid);
+        GeneralMessage SaveandPostVoucherP(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
 
         GeneralMessage UpdateVoucher(int InvoiceId, int UserId, int BranchId);
         //GeneralMessage UpdateVoucherZatca(int InvoiceId, string InvoiceHash, string SingedXML, string EncodedInvoice, string ZatcaUUID, string QRCode, string PIH, string SingedXMLFileName,int zatcaVoucherNumber, int UserId, int BranchId);
 
-        GeneralMessage UpdateVoucherDraft(int InvoiceId, int UserId, int BranchId, int yearid);
+        GeneralMessage UpdateVoucherDraft(int InvoiceId, int UserId, int BranchId, int yearid, string Con);
 
         GeneralMessage UpdateVoucher_payed(int InvoiceId, int UserId, int BranchId);
         GeneralMessage UpdateVoucher_payed_by(string SupplierInvoiceNo, int UserId, int BranchId, int YearId);
         decimal? VousherRe_Sum(int InvoiceId);
 
-        GeneralMessage SaveConvertVoucher(Invoices voucher, int UserId, int BranchId, int? yearid);
+        GeneralMessage SaveConvertVoucher(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
         Task<int?> GenerateVoucherNumber(int Type, int BranchId, int? yearid);
-        Task<string?> GenerateVoucherNumberNewPro(int Type, int BranchId, int? yearid, string Con);
-        Task<string?> GenerateVoucherNumberNew(int Type, int BranchId, int? yearid);
+        Task<string?> GenerateVoucherNumberNewPro(int Type, int BranchId, int? yearid,int Status, string Con);
 
         Task<int?> GenerateVoucherZatcaNumber( int BranchId, int? yearid);
 
         Task<int?> GenerateVoucherNumberOpening(int Type, int BranchId, int? yearid);
 
         Task<int?> GenerateVoucherNumberClosing(int Type, int BranchId, int? yearid);
-        GeneralMessage SaveDailyVoucher(Invoices voucher, int UserId, int BranchId, int? yearid);
-        GeneralMessage SaveandPostDailyVoucher(Invoices voucher, int UserId, int BranchId, int? yearid);
+        GeneralMessage SaveDailyVoucher(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
+        GeneralMessage SaveandPostDailyVoucher(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
 
-        GeneralMessage SaveClosingVoucher(Invoices voucher, int UserId, int BranchId, int? maxVoucherNo, int? yearid);
+        GeneralMessage SaveClosingVoucher(Invoices voucher, int UserId, int BranchId, int? maxVoucherNo, int? yearid, string Con);
 
-        GeneralMessage SaveEmpVoucher(Invoices voucher, int UserId, int BranchId, int? yearid);
+        GeneralMessage SaveEmpVoucher(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
         GeneralMessage SaveRecycleVoucher(int YearID, int UserId, int BranchId, int? yearid, string Con);
         GeneralMessage SaveRecycleReturnVoucher(int YearID, int UserId, int BranchId, int? yearid, string Con);
 
 
-        GeneralMessage SaveDailyVoucher2(List<Transactions> voucher, int UserId, int BranchId, int? yearid);
-        GeneralMessage SaveOpeningVoucher(Invoices voucher, int UserId, int BranchId,int? maxVoucherNo, int? yearid);
-        GeneralMessage SaveandPostOpeningVoucher(Invoices voucher, int UserId, int BranchId, int? maxVoucherNo, int? yearid);
+        GeneralMessage SaveDailyVoucher2(List<Transactions> voucher, int UserId, int BranchId, int? yearid, string Con);
+        GeneralMessage SaveOpeningVoucher(Invoices voucher, int UserId, int BranchId,int? maxVoucherNo, int? yearid, string Con);
+        GeneralMessage SaveandPostOpeningVoucher(Invoices voucher, int UserId, int BranchId, int? maxVoucherNo, int? yearid, string Con);
 
-        GeneralMessage SaveInvoice(Invoices voucher, int UserId, int BranchId,int? yearid);
-        GeneralMessage SaveInvoiceForServices(Invoices voucher, int UserId, int BranchId, int? yearid);
-        GeneralMessage SaveInvoiceForServicesDraft(Invoices voucher, int UserId, int BranchId, int? yearid);
+        GeneralMessage SaveInvoice(Invoices voucher, int UserId, int BranchId,int? yearid, string Con);
+        GeneralMessage SaveInvoiceForServices(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
+        GeneralMessage SaveInvoiceForServicesDraft(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
 
-        GeneralMessage SaveInvoiceForServicesNoti(Invoices voucher, int UserId, int BranchId, int? yearid);
-        GeneralMessage SaveInvoiceForServicesNotiDepit(Invoices voucher, int UserId, int BranchId, int? yearid);
+        GeneralMessage SaveInvoiceForServicesNoti(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
+        GeneralMessage SaveInvoiceForServicesNotiDepit(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
 
 
-        GeneralMessage SaveandPostInvoiceForServices(Invoices voucher, int UserId, int BranchId, int? yearid);
+        GeneralMessage SaveandPostInvoiceForServices(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
 
-        GeneralMessage SaveInvoiceForServicesRet(Invoices voucher, int UserId, int BranchId, int? yearid);
+        GeneralMessage SaveInvoiceForServicesRet(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
         GeneralMessage SaveInvoiceForServicesRetNEW_func(Invoices voucher, int UserId, int BranchId, int? yearid, string lang, string Con);
 
-        GeneralMessage ReturnNotiCreditBack(Invoices voucher, int UserId, int BranchId, int? yearid);
-        GeneralMessage ReturnNotiDepitBack(Invoices voucher, int UserId, int BranchId, int? yearid);
+        GeneralMessage ReturnNotiCreditBack(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
+        GeneralMessage ReturnNotiDepitBack(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
 
-        GeneralMessage SaveInvoiceForServicesRet_Back(Invoices voucher, int UserId, int BranchId, int? yearid);
+        GeneralMessage SaveInvoiceForServicesRet_Back(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
 
 
-        GeneralMessage SavePurchaseForServices(Invoices voucher, int UserId, int BranchId, int? yearid);
-        GeneralMessage SavePurchaseForServicesNotiDepit(Invoices voucher, int UserId, int BranchId, int? yearid);
+        GeneralMessage SavePurchaseForServices(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
+        GeneralMessage SavePurchaseForServicesNotiDepit(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
 
-        GeneralMessage SaveandPostPurchaseForServices(Invoices voucher, int UserId, int BranchId, int? yearid);
+        GeneralMessage SaveandPostPurchaseForServices(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
 
-        GeneralMessage SavePurchaseForServicesRet(Invoices voucher, int UserId, int BranchId, int? yearid);
+        GeneralMessage SavePurchaseForServicesRet(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
         GeneralMessage SavePurchaseForServicesRetNEW_func(Invoices voucher, int UserId, int BranchId, int? yearid, string lang, string Con);
 
-        GeneralMessage SavePayVoucherForServicesRet(Invoices voucher, int UserId, int BranchId, int? yearid);
+        GeneralMessage SavePayVoucherForServicesRet(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
 
 
-        GeneralMessage SaveInvoiceForServices2(Invoices voucher, int UserId, int BranchId, int? yearid);
-        GeneralMessage SaveandPostInvoiceForServices2(Invoices voucher, int UserId, int BranchId, int? yearid);
+        GeneralMessage SaveInvoiceForServices2(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
+        GeneralMessage SaveandPostInvoiceForServices2(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
 
         Task<IEnumerable<TransactionsVM>> GetAllTransByVoucherId(int? voucherId);
          GeneralMessage PostVouchers(List<Invoices> PostedList, int UserId,int BranchId, int? yearid);
