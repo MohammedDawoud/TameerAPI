@@ -181,6 +181,12 @@ namespace TaamerProject.Service.Services
             return Tasks;
         }
 
+
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasks_Costs(int? UserId, int BranchId, string Lang, string DateFrom, string DateTo)
+        {
+            var Tasks = await _ProjectPhasesTasksRepository.GetAllProjectPhasesTasks_Costs(UserId, BranchId, Lang, DateFrom, DateTo);
+            return Tasks;
+        }
         public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksW(int BranchId, string lang)
         {
             var Tasks = await _ProjectPhasesTasksRepository.GetAllProjectPhasesTasksW(BranchId, lang);

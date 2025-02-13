@@ -330,6 +330,7 @@ namespace TaamerProject.API.Helper
                            new Privilege { Id = 1213213 , ParentId = 121321 , Name = "مهام المستخدم" , Description =  "مهام المستخدم"},
                            new Privilege { Id = 1213214 , ParentId = 121321 , Name = "مهام حسب المشروع" , Description =  "مهام حسب المشروع"},
                            new Privilege { Id = 1213215 , ParentId = 121321 , Name = "تكلفة المشروع" , Description =  "تكلفة المشروع"},
+                           new Privilege { Id = 1213216 , ParentId = 121321 , Name = " تكلفة المهام" , Description =  " تكلفة المهام"},
 
                      new Privilege { Id = 121322 , ParentId = 11 , Name = "مخطط زمني المشاريع" , Description =  "مخطط زمني للمشروع"},
                             new Privilege { Id = 1213221 , ParentId = 121322 , Name = Resources.General_Add , Description =  Resources.General_Add},

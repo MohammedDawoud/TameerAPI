@@ -238,6 +238,9 @@ namespace TaamerProject.API.Controllers
             }
 
 
+
+
+
         [HttpGet("GetAllProjectPhasesTasksS_whithworkorder_paging")]
         public IActionResult GetAllProjectPhasesTasksS_whithworkorder_paging(int? UserId, int? status, string? DateFrom, string? DateTo,string? SearchText, int page = 1, int pageSize = 10)
         {
@@ -1585,72 +1588,83 @@ namespace TaamerProject.API.Controllers
             }
 
 
-            //public IActionResult PrintAllEmpTasksRpt(ProjectPhasesTasksVM Search)
-            //{
-            //HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            //int orgId = _branchesService.GetOrganizationId(_globalshared.BranchId_G);
-            //    var username = "";
-            //    int datetype = 0;
-            //    if (Search.UserId != null && Search.UserId != 0)
-            //    {
-            //        username = _usersservice.GetUserById((int)Search.UserId, _globalshared.Lang_G).FullName;
-            //    }
-            //    if (Search.ProTypeName != null && Search.ProTypeName != "")
-            //    {
-            //        datetype = int.Parse(Search.ProTypeName);
-            //    }
+        //public IActionResult PrintAllEmpTasksRpt(ProjectPhasesTasksVM Search)
+        //{
+        //HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+        //int orgId = _branchesService.GetOrganizationId(_globalshared.BranchId_G);
+        //    var username = "";
+        //    int datetype = 0;
+        //    if (Search.UserId != null && Search.UserId != 0)
+        //    {
+        //        username = _usersservice.GetUserById((int)Search.UserId, _globalshared.Lang_G).FullName;
+        //    }
+        //    if (Search.ProTypeName != null && Search.ProTypeName != "")
+        //    {
+        //        datetype = int.Parse(Search.ProTypeName);
+        //    }
 
-            //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-            //    string[] infoDoneTasksReport = { _globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-            //    //var Users = _usersservice.GetAllUsers();
-            //    //List<RptAllEmpPerformance> allEmpPerformances = new List<RptAllEmpPerformance>();
-            //    //if (Search.UserId == null || Search.UserId == 0)
-            //    //{
-            //    //    foreach (var usr in Users)
-            //    //    {
-            //    //        Search.UserId = usr.UserId;
-            //    //        RptAllEmpPerformance rptAll = new RptAllEmpPerformance();
-            //    //        rptAll = _projectPhasesTasksservice.getempdata(Search, _globalshared.Lang_G, Con);
-            //    //        allEmpPerformances.Add(rptAll);
+        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
+        //    string[] infoDoneTasksReport = { _globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
+        //    //var Users = _usersservice.GetAllUsers();
+        //    //List<RptAllEmpPerformance> allEmpPerformances = new List<RptAllEmpPerformance>();
+        //    //if (Search.UserId == null || Search.UserId == 0)
+        //    //{
+        //    //    foreach (var usr in Users)
+        //    //    {
+        //    //        Search.UserId = usr.UserId;
+        //    //        RptAllEmpPerformance rptAll = new RptAllEmpPerformance();
+        //    //        rptAll = _projectPhasesTasksservice.getempdata(Search, _globalshared.Lang_G, Con);
+        //    //        allEmpPerformances.Add(rptAll);
 
-            //    //    }
-            //    //}
-            //    //else
-            //    //{
-            //    //    RptAllEmpPerformance rptAll1 = new RptAllEmpPerformance();
-            //    //    rptAll1 = _projectPhasesTasksservice.getempdata(Search, _globalshared.Lang_G, Con);
-            //    //    allEmpPerformances.Add(rptAll1);
+        //    //    }
+        //    //}
+        //    //else
+        //    //{
+        //    //    RptAllEmpPerformance rptAll1 = new RptAllEmpPerformance();
+        //    //    rptAll1 = _projectPhasesTasksservice.getempdata(Search, _globalshared.Lang_G, Con);
+        //    //    allEmpPerformances.Add(rptAll1);
 
-            //    //}
+        //    //}
 
-            //    if (Search._globalshared.BranchId_G == null)
-            //    {
-            //        Search._globalshared.BranchId_G = 0;
-            //    }
-            //    if (Search.UserId == null)
-            //    {
-            //        Search.UserId = 0;
-            //    }
-            //    var FullReport = _projectPhasesTasksservice.getempdataNew(Search, _globalshared.Lang_G, Con, _globalshared.BranchId_G);
+        //    if (Search._globalshared.BranchId_G == null)
+        //    {
+        //        Search._globalshared.BranchId_G = 0;
+        //    }
+        //    if (Search.UserId == null)
+        //    {
+        //        Search.UserId = 0;
+        //    }
+        //    var FullReport = _projectPhasesTasksservice.getempdataNew(Search, _globalshared.Lang_G, Con, _globalshared.BranchId_G);
 
-            //    ReportPDF = ProjectsReports.PrintAllEmpPerformancrRpt(FullReport, infoDoneTasksReport, Search.StartDate, Search.EndDate, username, datetype, (int)Search.TimeType);
-            //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
+        //    ReportPDF = ProjectsReports.PrintAllEmpPerformancrRpt(FullReport, infoDoneTasksReport, Search.StartDate, Search.EndDate, username, datetype, (int)Search.TimeType);
+        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
 
-            //    if (!Directory.Exists(existTemp))
-            //    {
-            //        Directory.CreateDirectory(existTemp);
-            //    }
-            //    //File  
-            //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-            //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
+        //    if (!Directory.Exists(existTemp))
+        //    {
+        //        Directory.CreateDirectory(existTemp);
+        //    }
+        //    //File  
+        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
+        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
 
-            //    //create and set PdfReader  
-            //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-            //    //return file 
-            //    string FilePathReturn = @"TempFiles/" + FileName;
-            //    return Content(FilePathReturn);
-            //}
+        //    //create and set PdfReader  
+        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
+        //    //return file 
+        //    string FilePathReturn = @"TempFiles/" + FileName;
+        //    return Content(FilePathReturn);
+        //}
+        [HttpGet("GetAllProjectPhasesTasks_Costs")]
+        public IActionResult GetAllProjectPhasesTasks_Costs(int? UserId, string? DateFrom, string? DateTo)
+        {
+            if (UserId == 0) UserId = null;
 
-        
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+       
+            var AllTasks = _projectPhasesTasksservice.GetAllProjectPhasesTasks_Costs(UserId, _globalshared.BranchId_G, _globalshared.Lang_G, DateFrom, DateTo).Result.ToList();
+
+            return Ok(AllTasks);
+        }
+
+
     }
 }

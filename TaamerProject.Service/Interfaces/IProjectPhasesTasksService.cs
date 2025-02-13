@@ -193,5 +193,6 @@ namespace TaamerProject.Service.Interfaces
         Task<IEnumerable<ProjectPhasesTasksVM>> GetLateTasksByUserIdHomefilterd(int? UserId, string Lang, int? ProjectId, int? CustomerId, string? Searchtext);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetInProgressProjectPhasesTasks_Branches(int BranchId, string Lang, int? CustomerId);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetInProgressProjectPhasesTasks_Branches(int BranchId, string Lang, int? CustomerId, string? SearchText);
+        Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasks_Costs(int? UserId, int BranchId, string Lang, string DateFrom, string DateTo);
     }
 }

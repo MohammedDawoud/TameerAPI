@@ -129,6 +129,7 @@ namespace TaamerProject.Models
         public string? convertReason_admin { get; set; }
 
 
-
+        public decimal? Totalhourstask { get; set; }
+        public decimal? Totaltaskcost { get; set; }
     }
 }

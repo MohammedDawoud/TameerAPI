@@ -10491,5 +10491,192 @@ namespace TaamerProject.Repository.Repositories
             return _TaamerProContext.ProjectPhasesTasks.Where(where).ToList<ProjectPhasesTasks>();
 
         }
+
+
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasks_Costs(int? UserId, int BranchId, string Lang, string DateFrom, string DateTo)
+        {
+            try
+            {
+                var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && s.BranchId == BranchId && s.IsMerig == -1 && s.Status == 4 && s.UserId == UserId).Select(x => new ProjectPhasesTasksVM
+                {
+                    PhaseTaskId = x.PhaseTaskId,
+                    DescriptionAr = x.DescriptionAr,
+                    DescriptionEn = x.DescriptionEn,
+                    ParentId = x.ParentId,
+                    ProjSubTypeId = x.ProjSubTypeId,
+                    Type = x.Type,
+                    UserId = x.UserId,
+                    NumAdded = x.NumAdded ?? 0,
+                    ProjectId = x.ProjectId,
+                    TimeMinutes = x.TimeMinutes,
+                    TimeType = x.TimeType,
+                    Remaining = x.Remaining,
+                    IsUrgent = x.IsUrgent,
+                    IsTemp = x.IsTemp,
+                    TaskType = x.TaskType,
+                    Status = x.Status,
+                    OldStatus = x.OldStatus,
+                    Active = x.Active,
+                    StopCount = x.StopCount,
+                    OrderNo = x.OrderNo,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                    ExcpectedStartDate = x.ExcpectedStartDate,
+                    ExcpectedEndDate = x.ExcpectedEndDate,
+                    EndDateCalc = x.EndDateCalc != null ? x.EndDateCalc : x.EndDate != null ? x.EndDate : x.ExcpectedEndDate ?? "",
+                    ToUserId = x.ToUserId,
+                    Notes = x.Notes ?? "",
+                    BranchId = x.BranchId,
+                    PhasePriority = x.PhasePriority,
+                    ExecPercentage = x.ExecPercentage,
+                    Cost = x.Cost,
+                    MainPhaseName = x.MainPhase!.DescriptionAr,
+                    UserName = x.Users == null ? "" : x.Users!.FullNameAr == null ? x.Users!.FullName : x.Users!.FullNameAr ?? "",
+                    SubPhaseName = x.SubPhase!.DescriptionAr,
+                    ProjectSubTypeName = x.ProjectSubTypes!.NameAr,
+                    ProjectTypeName = x.ProjectSubTypes!.ProjectType!.NameAr,
+                    ClientName_W = x.Project!.customer!.CustomerNameAr,
+                    ClientName = Lang == "ltr" ? x.Project!.customer!.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.Project!.customer!.CustomerNameEn : x.Project!.customer!.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.Project!.customer!.CustomerNameEn : x.Project!.customer!.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.Project!.customer!.CustomerNameEn + "(*)" : x.Project!.customer!.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.Project!.customer!.CustomerNameEn + "(**)" : x.Project!.customer!.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.Project!.customer!.CustomerNameEn + "(***)" : x.Project!.customer!.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.Project!.customer!.CustomerNameEn + "(VIP)" : x.Project!.customer!.CustomerNameAr
+                : x.Project!.customer!.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.Project!.customer!.CustomerNameAr : x.Project!.customer!.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.Project!.customer!.CustomerNameAr : x.Project!.customer!.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.Project!.customer!.CustomerNameAr + "(**)" : x.Project!.customer!.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.Project!.customer!.CustomerNameAr + "(**)" : x.Project!.customer!.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.Project!.customer!.CustomerNameAr + "(***)" : x.Project!.customer!.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.Project!.customer!.CustomerNameAr + "(VIP)" : x.Project!.customer!.CustomerNameAr,
+                    TaskStart = x.StartDate != null ? x.StartDate : x.ExcpectedStartDate != null ? x.ExcpectedStartDate : "",
+                    TaskEnd = x.EndDate != null ? x.EndDate : x.ExcpectedEndDate != null ? x.ExcpectedEndDate : "",
+                    ProjectMangerName = x.Project!.Users!.FullName ?? "",
+                    TaskTypeName = x.TaskTypeModel!.NameAr,//x.TaskType == 1 ? "رفع ملفات" : x.TaskType == 2 ? "تحصيل دفعه" : x.TaskType == 3 ? "طلعة اشراف" : "مهمة خارجية",
+                    ProjectNumber = x.Project!.ProjectNo,
+                    ProjectDescription = x.Project.ProjectDescription,
+                    FirstProjectDate = x.Project!.FirstProjectDate,
+                    TimeStrProject = (x.Project!.NoOfDays) != 0.0 ? (x.Project!.NoOfDays) + " يوم " : "",
+                    TaskLongDesc = x.TaskLongDesc,
+                    StatusName = x.Status == 0 ? "غير معلومة" :
+                             x.Status == 1 ? " لم تبدأ " :
+                             x.Status == 2 ? " قيد التشغيل " :
+                             x.Status == 3 ? " متوقفة " :
+                             x.Status == 4 ? " منتهية " :
+                             x.Status == 5 ? " ملغاة " :
+                             x.Status == 6 ? " محذوفة " : x.Status == 7 ? " متوقفة لشرط إداري " : " تم تحويلها",
+                    PlayingTime = x.TimeMinutes - x.Remaining,
+                    StopProjectType = x.Project.StopProjectType ?? 0,
+                    TaskTimeFrom = x.TaskTimeFrom ?? "",
+                    TaskTimeTo = x.TaskTimeTo ?? "",
+                    PercentComplete = x.PercentComplete,
+                    Totaltaskcost = x.Totaltaskcost ?? (
+                                (x.EndDateNew != null && x.StartDateNew != null) ?
+                                ((decimal)(x.EndDateNew.Value - x.StartDateNew.Value).TotalHours *
+                                 (_TaamerProContext.Employees.Where(e => e.UserId == x.UserId)
+                                                             .Select(e => e.EmpHourlyCost)
+                                                             .FirstOrDefault() ?? 0)) :
+                                ((decimal)(
+                                    x.TimeType == 1 ? x.TimeMinutes :      // Hours
+                                    x.TimeType == 2 ? x.TimeMinutes * 8 : // Days
+                                    x.TimeType == 3 ? x.TimeMinutes * 56 : // Weeks
+                                    x.TimeMinutes * 240 // Months (default)
+                                ) * (_TaamerProContext.Employees.Where(e => e.UserId == x.UserId)
+                                                                 .Select(e => e.EmpHourlyCost)
+                                                                 .FirstOrDefault() ?? 0))
+                            ),
+
+                                                Totalhourstask = x.Totalhourstask ?? (
+                                (x.EndDateNew != null && x.StartDateNew != null) ?
+                                (decimal)(x.EndDateNew.Value - x.StartDateNew.Value).TotalHours :
+                                (decimal)(
+                                    x.TimeType == 1 ? x.TimeMinutes :      // Hours
+                                    x.TimeType == 2 ? x.TimeMinutes * 8 : // Days
+                                    x.TimeType == 3 ? x.TimeMinutes * 56 : // Weeks
+                                    x.TimeMinutes * 240 // Months (default)
+                                )
+                            )
+                }).ToList().Where(m => (string.IsNullOrEmpty(DateFrom) || (!string.IsNullOrEmpty(m.TaskStart) && DateTime.ParseExact(m.TaskStart, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))) && (string.IsNullOrEmpty(DateTo) || string.IsNullOrEmpty(m.EndDateCalc) || DateTime.ParseExact(m.EndDateCalc, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture))).Select(s => new ProjectPhasesTasksVM()
+                {
+                    PhaseTaskId = s.PhaseTaskId,
+                    DescriptionAr = s.DescriptionAr,
+                    DescriptionEn = s.DescriptionEn,
+                    ParentId = s.ParentId,
+                    ProjSubTypeId = s.ProjSubTypeId,
+                    Type = s.Type,
+                    UserId = s.UserId,
+                    NumAdded = s.NumAdded ?? 0,
+                    ProjectId = s.ProjectId,
+                    TimeMinutes = s.TimeMinutes,
+                    TimeType = s.TimeType,
+                    Remaining = s.Remaining,
+                    IsUrgent = s.IsUrgent,
+                    IsTemp = s.IsTemp,
+                    TaskType = s.TaskType,
+                    Status = s.Status,
+                    OldStatus = s.OldStatus,
+                    Active = s.Active,
+                    UserName = s.UserName ?? "",
+                    StopCount = s.StopCount,
+                    Cost = s.Cost,
+                    TaskTypeName = s.TaskTypeName,
+                    OrderNo = s.OrderNo,
+                    TaskStart = s.TaskStart,
+                    TaskEnd = s.EndDate,
+                    ExcpectedStartDate = s.ExcpectedStartDate != null ? s.ExcpectedStartDate : "",
+                    ExcpectedEndDate = s.ExcpectedEndDate != null ? s.ExcpectedEndDate : "",
+                    EndDateCalc = s.EndDateCalc ?? "",
+
+                    PercentComplete = s.PercentComplete,
+                    ToUserId = s.ToUserId,
+                    Notes = s.Notes,
+                    BranchId = s.BranchId,
+                    PhasePriority = s.PhasePriority,
+                    ExecPercentage = s.ExecPercentage,
+                    MainPhaseName = s.MainPhaseName,
+                    SubPhaseName = s.SubPhaseName,
+                    ProjectSubTypeName = s.ProjectSubTypeName,
+                    ProjectTypeName = s.ProjectTypeName,
+                    ClientName = s.ClientName,
+                    ClientName_W = s.ClientName_W,
+
+                    ProjectMangerName = s.ProjectMangerName,
+                    ProjectNumber = s.ProjectNumber,
+                    ProjectDescription = s.ProjectDescription,
+                    FirstProjectDate = s.FirstProjectDate,
+                    TimeStrProject = s.TimeStrProject,
+                    TaskLongDesc = s.TaskLongDesc,
+                    StatusName = s.Status == 0 ? "غير معلومة" :
+                                  s.Status == 1 ? " لم تبدأ " :
+                                  s.Status == 2 ? " قيد التشغيل " :
+                                  s.Status == 3 ? " متوقفة " :
+                                  s.Status == 4 ? " منتهية " :
+                                  s.Status == 5 ? " ملغاة " :
+                                  s.Status == 6 ? " محذوفة " : s.Status == 7 ? " متوقفة لشرط إداري " : " تم تحويلها",
+                    PlayingTime = s.PlayingTime,
+                    //edit
+                    TimeTypeName = s.TimeType == 1 ? "ساعة" : s.TimeType == 2 ? "يوم" : s.TimeType == 3 ? "أسبوع" : "ساعة",
+                    TimeStr = Lang == "ltr" ? s.TimeType == 1 ? (s.TimeMinutes) + " Hour " :
+                                s.TimeType == 2 ? (s.TimeMinutes) + " Day " :
+                                s.TimeType == 3 ? (s.TimeMinutes) + " Week " : (s.TimeMinutes) + " Month " : s.TimeType == 1 ? (s.TimeMinutes) + " ساعه " :
+                                s.TimeType == 2 ? (s.TimeMinutes) + " يوم " :
+                                s.TimeType == 3 ? (s.TimeMinutes) + " أسبوع " : (s.TimeMinutes) + " ساعة ",
+                    StopProjectType = s.StopProjectType,
+                    TaskTimeFrom = s.TaskTimeFrom ?? "",
+                    TaskTimeTo = s.TaskTimeTo ?? "",
+                    Totalhourstask = s.Totalhourstask,
+                    Totaltaskcost = s.Totaltaskcost,
+                });
+
+
+                return projectPhasesTasks;
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+            
+        }
+
+        // Helper Function
+        private decimal GetHoursFromTime(int timeMinutes, int timeType)
+        {
+            return timeType switch
+            {
+                1 => (decimal)timeMinutes,        // Hours
+                2 => (decimal)timeMinutes * 24,   // Days -> Convert to Hours
+                3 => (decimal)timeMinutes * 168,  // Weeks -> Convert to Hours (7 days * 24 hours)
+                _ => (decimal)timeMinutes * 720   // Default: Month -> Convert to Hours (30 days * 24 hours)
+            };
+        }
+
     }
 }
