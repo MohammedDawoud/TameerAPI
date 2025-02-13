@@ -7636,7 +7636,7 @@ namespace TaamerProject.Repository.Repositories
          }
 
 
-        public async Task<List<GenerateNextVoucherNumberVM>> GenerateVoucherNumberNewPro(int Type, int? YearId, int BranchId, string codePrefix, bool InvoiceBranchSeparated,string Con)
+        public async Task<List<GenerateNextVoucherNumberVM>> GenerateVoucherNumberNewPro(int Type, int? YearId, int BranchId, string codePrefix, bool InvoiceBranchSeparated,int Status, string Con)
         {
             try
             {
@@ -7657,6 +7657,14 @@ namespace TaamerProject.Repository.Repositories
                         else
                         {
                             command.Parameters.Add(new SqlParameter("@BranchId", BranchId));
+                        }
+                        if (Status == 0)
+                        {
+                            command.Parameters.Add(new SqlParameter("@Status", DBNull.Value));
+                        }
+                        else
+                        {
+                            command.Parameters.Add(new SqlParameter("@Status", Status));
                         }
                         con.Open();
 
@@ -7684,65 +7692,6 @@ namespace TaamerProject.Repository.Repositories
             {
                 List<GenerateNextVoucherNumberVM> lmd = new List<GenerateNextVoucherNumberVM>();
                 return lmd;
-            }
-        }
-
-
-        public async Task<int?> GenerateNextInvoiceNumberNew(int Type, int? YearId, int BranchId, string codePrefix, bool InvoiceBranchSeparated)
-        {
-            if (_TaamerProContext.Invoices != null)
-            {
-                var lastRow = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == YearId
-                && (s.BranchId == BranchId || BranchId == 0) && s.Type == Type
-                && s.InvoiceNumber!.Contains(codePrefix)).OrderByDescending(u => (u.InvoiceNumber!.Replace(codePrefix, "").Trim())).ToList();
-                if (lastRow != null)
-                {
-                    try
-                    {
-                        var InvoiceNumber = 0;
-                        if(InvoiceBranchSeparated==false && Type==2)
-                        {
-                            var ObjBranchList = _TaamerProContext.Branch.Where(s => s.IsDeleted == false).ToList();
-                            foreach (var item in ObjBranchList)
-                            {
-                                if (item.InvoiceStartCode != null && item.InvoiceStartCode != "")
-                                {
-                                    codePrefix = item.InvoiceStartCode;
-                                    foreach (var item2 in lastRow)
-                                    {
-                                        item2.InvoiceNumber = item2!.InvoiceNumber!.Replace(codePrefix, "").Trim();
-                                    }
-
-                                }
-                            }
-                        }
-
-                        InvoiceNumber = int.Parse(lastRow.Take(1).FirstOrDefault()!.InvoiceNumber!) + 1;
-
-                        //if (codePrefix == "")
-                        //{
-                        //    InvoiceNumber = int.Parse(lastRow!.InvoiceNumber!) + 1;
-                        //}
-                        //else
-                        //{
-                        //    InvoiceNumber = int.Parse(lastRow!.InvoiceNumber!.Replace(codePrefix, "").Trim()) + 1;
-                        //}
-
-                        return InvoiceNumber;
-                    }
-                    catch (Exception)
-                    {
-                        return 1;
-                    }
-                }
-                else
-                {
-                    return 1;
-                }
-            }
-            else
-            {
-                return 1;
             }
         }
 

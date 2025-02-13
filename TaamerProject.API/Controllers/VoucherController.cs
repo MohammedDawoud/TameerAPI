@@ -1135,7 +1135,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SaveVoucher(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveVoucher(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(new { result.StatusCode, result.ReasonPhrase, result.ReturnedParm });
         }
         [HttpPost("SaveandPostVoucher")]
@@ -1149,7 +1149,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SaveandPostVoucher(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveandPostVoucher(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(result);
         }
         [HttpPost("SaveVoucherP")]
@@ -1163,7 +1163,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SaveVoucherP(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveVoucherP(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(new { result.StatusCode, result.ReasonPhrase, result.ReturnedParm });
         }
 
@@ -1241,7 +1241,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SaveandPostVoucherP(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveandPostVoucherP(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(new { result.StatusCode, result.ReasonPhrase, result.ReturnedParm });
         }
         [HttpPost("UpdateVoucher")]
@@ -1255,7 +1255,7 @@ namespace TaamerProject.API.Controllers
         public IActionResult UpdateVoucherDraft(int InvoiceId)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            var result = _voucherService.UpdateVoucherDraft(InvoiceId, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.UpdateVoucherDraft(InvoiceId, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G,Con??"");
             return Ok(result);
         }
 
@@ -1310,7 +1310,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SaveInvoice(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveInvoice(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(result);
         }
         [HttpPost("SaveInvoiceForServices")]
@@ -1323,7 +1323,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SaveInvoiceForServices(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveInvoiceForServices(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             //var syssetting = _systemSettingsService.GetSystemSettingsByBranchId(BranchId);
             //if (syssetting.UploadInvZatca == true)
             //{
@@ -1353,7 +1353,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SaveInvoiceForServicesDraft(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveInvoiceForServicesDraft(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(result);
         }
         [HttpPost("SaveInvoiceForServicesNoti")]
@@ -1369,7 +1369,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SaveInvoiceForServicesNoti(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveInvoiceForServicesNoti(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             //var syssetting = _systemSettingsService.GetSystemSettingsByBranchId(BranchId);
             //if (syssetting.UploadInvZatca == true)
             //{
@@ -1402,7 +1402,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SaveInvoiceForServicesNotiDepit(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveInvoiceForServicesNotiDepit(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             //var syssetting = _systemSettingsService.GetSystemSettingsByBranchId(BranchId);
             //if (syssetting.UploadInvZatca == true)
             //{
@@ -1428,7 +1428,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SaveandPostInvoiceForServices(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveandPostInvoiceForServices(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             //ZatcaInvoiceIntegration(result.ReturnedParm??0);
             //var syssetting = _systemSettingsService.GetSystemSettingsByBranchId(BranchId);
             //if (syssetting.UploadInvZatca == true)
@@ -1454,7 +1454,7 @@ namespace TaamerProject.API.Controllers
 
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
-            var result = _voucherService.SaveInvoiceForServicesRet(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveInvoiceForServicesRet(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(result);
         }
         [HttpPost("SaveInvoiceForServicesRetNEW")]
@@ -1471,7 +1471,7 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
-            var result = _voucherService.ReturnNotiCreditBack(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.ReturnNotiCreditBack(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(result);
         }
         [HttpPost("ReturnNotiDepitBack")]
@@ -1479,7 +1479,7 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
-            var result = _voucherService.ReturnNotiDepitBack(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.ReturnNotiDepitBack(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(result);
         }
         [HttpPost("SaveInvoiceForServicesRet_Back")]
@@ -1487,7 +1487,7 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
-            var result = _voucherService.SaveInvoiceForServicesRet_Back(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveInvoiceForServicesRet_Back(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(result);
         }
         //Start Purchase
@@ -1502,7 +1502,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SavePurchaseForServices(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SavePurchaseForServices(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(new { result.StatusCode, result.ReasonPhrase, result.ReturnedParm });
         }
         [HttpPost("SavePurchaseForServicesNotiDepit")]
@@ -1516,7 +1516,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SavePurchaseForServicesNotiDepit(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SavePurchaseForServicesNotiDepit(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(new { result.StatusCode, result.ReasonPhrase, result.ReturnedParm });
         }
         [HttpPost("SaveandPostPurchaseForServices")]
@@ -1530,7 +1530,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SaveandPostPurchaseForServices(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveandPostPurchaseForServices(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(new { result.StatusCode, result.ReasonPhrase, result.ReturnedParm });
         }
         [HttpPost("SavePurchaseForServicesRet")]
@@ -1538,7 +1538,7 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
-            var result = _voucherService.SavePurchaseForServicesRet(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SavePurchaseForServicesRet(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(result);
         }
         [HttpPost("SavePurchaseForServicesRetNew")]
@@ -1556,7 +1556,7 @@ namespace TaamerProject.API.Controllers
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
 
-            var result = _voucherService.SavePayVoucherForServicesRet(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SavePayVoucherForServicesRet(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(result);
         }
         [HttpPost("SaveInvoiceForServices2")]
@@ -1571,7 +1571,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SaveInvoiceForServices2(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveInvoiceForServices2(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(result);
         }
         [HttpPost("SaveandPostInvoiceForServices2")]
@@ -1586,7 +1586,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SaveandPostInvoiceForServices2(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveandPostInvoiceForServices2(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(result);
         }
         [HttpPost("SaveConvertVoucher")]
@@ -1600,7 +1600,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SaveConvertVoucher(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveConvertVoucher(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(result);
         }
         [HttpPost("SaveDailyVoucher")]
@@ -1614,7 +1614,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SaveDailyVoucher(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveDailyVoucher(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(new { result.StatusCode, result.ReasonPhrase, result.ReturnedParm });
         }
         [HttpPost("SaveandPostDailyVoucher")]
@@ -1628,7 +1628,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SaveandPostDailyVoucher(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveandPostDailyVoucher(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(new { result.StatusCode, result.ReasonPhrase, result.ReturnedParm });
         }
         [HttpPost("SaveClosingVoucher")]
@@ -1644,7 +1644,7 @@ namespace TaamerProject.API.Controllers
             }
             int? dataVoucher = _voucherService.GenerateVoucherNumberClosing(25, _globalshared.BranchId_G, _globalshared.YearId_G).Result;
 
-            var result = _voucherService.SaveClosingVoucher(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, dataVoucher, _globalshared.YearId_G);
+            var result = _voucherService.SaveClosingVoucher(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, dataVoucher, _globalshared.YearId_G, Con ?? "");
             return Ok(result);
         }
         [HttpPost("SaveEmpVoucher")]
@@ -1658,7 +1658,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SaveEmpVoucher(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveEmpVoucher(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(result);
         }
         [HttpPost("SaveRecycleVoucher")]
@@ -1690,7 +1690,7 @@ namespace TaamerProject.API.Controllers
             }
             int? dataVoucher = _voucherService.GenerateVoucherNumberOpening(10, _globalshared.BranchId_G, _globalshared.YearId_G)?.Result??0;
 
-            var result = _voucherService.SaveOpeningVoucher(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, dataVoucher, _globalshared.YearId_G);
+            var result = _voucherService.SaveOpeningVoucher(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, dataVoucher, _globalshared.YearId_G, Con ?? "");
             return Ok(result);
         }
         [HttpPost("SaveandPostOpeningVoucher")]
@@ -1705,7 +1705,7 @@ namespace TaamerProject.API.Controllers
                 return Ok(Msg);
             }
             int? dataVoucher = _voucherService.GenerateVoucherNumberOpening(10, _globalshared.BranchId_G, _globalshared.YearId_G)?.Result??0;
-            var result = _voucherService.SaveandPostOpeningVoucher(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, dataVoucher, _globalshared.YearId_G);
+            var result = _voucherService.SaveandPostOpeningVoucher(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, dataVoucher, _globalshared.YearId_G, Con ?? "");
             return Ok(result);
         }
         [HttpPost("SaveDailyVoucher2")]
@@ -1719,7 +1719,7 @@ namespace TaamerProject.API.Controllers
                 var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
                 return Ok(Msg);
             }
-            var result = _voucherService.SaveDailyVoucher2(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
+            var result = _voucherService.SaveDailyVoucher2(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(result);
         }
         [HttpGet("GenerateVoucherNumber")]
@@ -1739,7 +1739,7 @@ namespace TaamerProject.API.Controllers
         public ActionResult GenerateVoucherNumberNew(int Type)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            var result = _voucherService.GenerateVoucherNumberNewPro(Type, _globalshared.BranchId_G, _globalshared.YearId_G,Con??"").Result;
+            var result = _voucherService.GenerateVoucherNumberNewPro(Type, _globalshared.BranchId_G, _globalshared.YearId_G, Type, Con??"").Result;
             var generatevalue = new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = result };
             return Ok(generatevalue);
         }
