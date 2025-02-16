@@ -434,5 +434,119 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_DeletedFailed };
             }
         }
+
+
+        public decimal CalculateTaskHoursForEmployee(int userId, DateTime taskStart, DateTime taskEnd)
+        {
+            decimal totalTaskHours = 0;
+            const decimal defaultWorkHoursPerDay = 8m; // Standard working hours if no shifts
+
+            // Get Public Holidays
+            var publicHolidays = _TaamerProContext.OfficalHoliday
+                .Where(x => !x.IsDeleted)
+                .ToList();
+
+            // Get Employee
+            var employee = _TaamerProContext.Users
+                .FirstOrDefault(x => !x.IsDeleted && x.UserId == userId);
+
+            if (employee == null)
+            {
+                // No employee found → Return default hours
+                return GetDefaultWorkingHours(taskStart, taskEnd, publicHolidays, defaultWorkHoursPerDay);
+            }
+
+            // Get Dawam List (Work Schedule)
+            var dawamList = _TaamerProContext.AttTimeDetails
+                .Where(x => !x.IsDeleted && x.AttTimeId == employee.TimeId)
+                .ToList();
+
+            if (dawamList == null || !dawamList.Any())
+            {
+                // No Dawam (Work Schedule) → Return default hours
+                return GetDefaultWorkingHours(taskStart, taskEnd, publicHolidays, defaultWorkHoursPerDay);
+            }
+
+            // Iterate through each day, ensuring full duration is counted
+            DateTime currentDate = taskStart.Date;
+            while (currentDate <= taskEnd.Date)
+            {
+                int currentDayNumber = ((int)currentDate.DayOfWeek + 1) % 7 + 1; // Convert Sunday=0 to 7
+
+                // Skip public holidays
+                if (publicHolidays.Any(h => currentDate.Date >= h.FromDate.Date && currentDate.Date <= h.ToDate.Date))
+                {
+                    currentDate = currentDate.AddDays(1);
+                    continue;
+                }
+
+                // Get shift details for this day
+                var dawam = dawamList.FirstOrDefault(d => d.Day == currentDayNumber);
+
+                if (dawam == null)
+                {
+                    // No shift found → Weekend (skip)
+                    currentDate = currentDate.AddDays(1);
+                    continue;
+                }
+
+                // Define working time limits
+                DateTime workStartTime = (currentDate == taskStart.Date) ? taskStart : currentDate.Date;
+                DateTime workEndTime = (currentDate == taskEnd.Date) ? taskEnd : currentDate.Date.AddHours(23).AddMinutes(59);
+
+                // Calculate work hours for both shifts (if available)
+                if (dawam._1StFromHour.HasValue && dawam._1StToHour.HasValue)
+                {
+                    totalTaskHours += GetOverlappingHours(workStartTime, workEndTime, dawam._1StFromHour.Value, dawam._1StToHour.Value);
+                }
+
+                if (dawam._2ndFromHour.HasValue && dawam._2ndToHour.HasValue)
+                {
+                    totalTaskHours += GetOverlappingHours(workStartTime, workEndTime, dawam._2ndFromHour.Value, dawam._2ndToHour.Value);
+                }
+
+                currentDate = currentDate.AddDays(1); // Ensure all days are included
+            }
+
+            return totalTaskHours;
+        }
+
+        // Helper function to calculate overlapping hours
+        private decimal GetOverlappingHours(DateTime taskStart, DateTime taskEnd, DateTime shiftStart, DateTime shiftEnd)
+        {
+            // Extract only the time part
+            TimeSpan taskStartTime = taskStart.TimeOfDay;
+            TimeSpan taskEndTime = taskEnd.TimeOfDay;
+            TimeSpan shiftStartTime = shiftStart.TimeOfDay;
+            TimeSpan shiftEndTime = shiftEnd.TimeOfDay;
+
+            // Find the overlapping period
+            TimeSpan maxStart = taskStartTime > shiftStartTime ? taskStartTime : shiftStartTime;
+            TimeSpan minEnd = taskEndTime < shiftEndTime ? taskEndTime : shiftEndTime;
+
+            return maxStart < minEnd ? (decimal)(minEnd - maxStart).TotalHours : 0;
+        }
+
+
+        //  Helper function to return default working hours (8 hours per working day)
+        private decimal GetDefaultWorkingHours(DateTime taskStart, DateTime taskEnd, List<OfficalHoliday> publicHolidays, decimal workHoursPerDay)
+        {
+            decimal totalHours = 0;
+
+            for (DateTime currentDate = taskStart.Date; currentDate <= taskEnd.Date; currentDate = currentDate.AddDays(1))
+            {
+                // Skip public holidays
+                if (publicHolidays.Any(h => currentDate.Date >= h.FromDate.Date && currentDate.Date <= h.ToDate.Date))
+                {
+                    continue;
+                }
+
+                totalHours += workHoursPerDay;
+            }
+
+            return totalHours;
+        }
+
+
     }
 }

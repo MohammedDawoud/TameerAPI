@@ -18,5 +18,6 @@ namespace TaamerProject.Service.Interfaces
         // IEnumerable<AttTimeDetailsVM> GetAllAttTimeDetails2(int AttTimeId);
         Task<IEnumerable<AttTimeDetailsVM>> GetAllAttTimeDetails2(int AttTimeId, int branchid);
         Task<bool> CheckUserPerDawamUserExist(int UserId, string TimeFrom, string TimeTo, int DayNo);
+        decimal CalculateTaskHoursForEmployee(int userId, DateTime taskStart, DateTime taskEnd);
     }
 }

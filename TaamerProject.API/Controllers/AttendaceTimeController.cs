@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using TaamerProject.API.Helper;
 using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;
@@ -53,6 +54,22 @@ namespace TaamerProject.API.Controllers
         {
             return Ok(_attTimeDetailsservice.CheckUserPerDawamUserExist(UserId, TimeFrom, TimeTo, DayNo));
         }
+
+        [HttpGet("CalculateTaskHoursForEmployee")]
+        public IActionResult CalculateTaskHoursForEmployee(int UserId, DateTime TimeFrom, DateTime TimeTo)
+        {
+            try
+            {
+                DateTime localTimeFrom = TimeFrom.ToLocalTime();
+                DateTime localTimeTo = TimeTo.ToLocalTime();
+                return Ok(_attTimeDetailsservice.CalculateTaskHoursForEmployee(UserId, localTimeFrom, localTimeTo));
+            }
+            catch (FormatException ex)
+            {
+                return BadRequest($"Invalid date format: {ex.Message}. Expected format: 'yyyy-MM-dd h:mm tt'.");
+            }
+        }
+
         [HttpPost("SaveAttendaceTime")]
         public IActionResult SaveAttendaceTime(AttendaceTime attendaceTime)
         {
