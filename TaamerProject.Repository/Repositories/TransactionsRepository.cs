@@ -771,6 +771,7 @@ namespace TaamerProject.Repository.Repositories
                 {
                     x.TransactionId,
                     x.InvoiceId,
+                    InvoiceNumber = x.Invoices!=null?x.Invoices.InvoiceNumber??"":"",
                     x.LineNumber,
                     x.AccountId,
                     AccountCode = x.Accounts != null ? x.Accounts.Code : "",
@@ -797,6 +798,7 @@ namespace TaamerProject.Repository.Repositories
                 {
                     TransactionId = s.TransactionId,
                     InvoiceId = s.InvoiceId,
+                    InvoiceNumber=s.InvoiceNumber,
                     JournalNo = s.JournalNo,
                     LineNumber = s.LineNumber,
                     AccountId = s.AccountId,
@@ -827,6 +829,7 @@ namespace TaamerProject.Repository.Repositories
                     {
                         x.TransactionId,
                         x.InvoiceId,
+                        InvoiceNumber = x.InvoiceNumber,
                         x.LineNumber,
                         x.AccountId,
                         x.AccountCode,
@@ -853,6 +856,7 @@ namespace TaamerProject.Repository.Repositories
                     {
                         TransactionId = s.TransactionId,
                         InvoiceId = s.InvoiceId,
+                        InvoiceNumber=s.InvoiceNumber,
                         LineNumber = s.LineNumber,
                         AccountId = s.AccountId,
                         Amount = (s.Depit > s.Credit) ? s.Depit : s.Credit,
@@ -888,6 +892,7 @@ namespace TaamerProject.Repository.Repositories
                     {
                         x.TransactionId,
                         x.InvoiceId,
+                        InvoiceNumber = x.InvoiceNumber,
                         x.LineNumber,
                         x.AccountId,
                         x.AccountCode,
@@ -913,6 +918,7 @@ namespace TaamerProject.Repository.Repositories
                     {
                         TransactionId = s.TransactionId,
                         InvoiceId = s.InvoiceId,
+                        InvoiceNumber=s.InvoiceNumber,
                         LineNumber = s.LineNumber,
                         AccountId = s.AccountId,
                         Amount = (s.Depit > s.Credit) ? s.Depit : s.Credit,
@@ -949,6 +955,7 @@ namespace TaamerProject.Repository.Repositories
                     {
                         TransactionId = x.TransactionId,
                         InvoiceId = x.InvoiceId,
+                        InvoiceNumber = x.Invoices != null ? x.Invoices.InvoiceNumber ?? "" : "",
                         LineNumber = x.LineNumber,
                         AccountId = x.AccountId,
                         AccountCode = x.Accounts != null ? x.Accounts.Code : "",
@@ -994,6 +1001,7 @@ namespace TaamerProject.Repository.Repositories
                 {
                     x.TransactionId,
                     x.InvoiceId,
+                    InvoiceNumber = x.Invoices != null ? x.Invoices.InvoiceNumber ?? "" : "",
                     x.LineNumber,
                     x.AccountId,
                     AccountCode = x.Accounts != null ? x.Accounts.Code : "",
@@ -1024,6 +1032,7 @@ namespace TaamerProject.Repository.Repositories
                 {
                     TransactionId = s.TransactionId,
                     InvoiceId = s.InvoiceId,
+                    InvoiceNumber=s.InvoiceNumber,
                     JournalNo = s.JournalNo,
                     LineNumber = s.LineNumber,
                     AccountId = s.AccountId,
@@ -1056,6 +1065,7 @@ namespace TaamerProject.Repository.Repositories
                     {
                         x.TransactionId,
                         x.InvoiceId,
+                        x.InvoiceNumber,
                         x.LineNumber,
                         x.AccountId,
                         x.AccountCode,
@@ -1085,6 +1095,7 @@ namespace TaamerProject.Repository.Repositories
                     {
                         TransactionId = s.TransactionId,
                         InvoiceId = s.InvoiceId,
+                        InvoiceNumber=s.InvoiceNumber,
                         LineNumber = s.LineNumber,
                         AccountId = s.AccountId,
                         Amount = (s.Depit > s.Credit) ? s.Depit : s.Credit,
@@ -1122,6 +1133,7 @@ namespace TaamerProject.Repository.Repositories
                     {
                         x.TransactionId,
                         x.InvoiceId,
+                        x.InvoiceNumber,
                         x.LineNumber,
                         x.AccountId,
                         x.AccountCode,
@@ -1149,6 +1161,7 @@ namespace TaamerProject.Repository.Repositories
                     {
                         TransactionId = s.TransactionId,
                         InvoiceId = s.InvoiceId,
+                        InvoiceNumber=s.InvoiceNumber,
                         LineNumber = s.LineNumber,
                         AccountId = s.AccountId,
                         Amount = (s.Depit > s.Credit) ? s.Depit : s.Credit,
@@ -1187,6 +1200,7 @@ namespace TaamerProject.Repository.Repositories
                     {
                         TransactionId = x.TransactionId,
                         InvoiceId = x.InvoiceId,
+                        InvoiceNumber = x.Invoices != null ? x.Invoices.InvoiceNumber ?? "" : "",
                         LineNumber = x.LineNumber,
                         AccountId = x.AccountId,
                         AccountCode = x.Accounts != null ? x.Accounts.Code : "",
