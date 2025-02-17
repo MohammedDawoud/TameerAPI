@@ -4885,7 +4885,7 @@ namespace TaamerProject.Service.Services
                             {
                                 var managernot = new Notification();
                                 managernot = UserNotification;
-                                managernot.ReceiveUserId = projectData.UserId;
+                                managernot.ReceiveUserId = projectData.MangerId;
                                 managernot.NotificationId = 0;
                                 _TaamerProContext.Notification.Add(managernot);
                                 _TaamerProContext.SaveChanges();
@@ -5882,7 +5882,7 @@ namespace TaamerProject.Service.Services
                             {
                                 var managernot = new Notification();
                                 managernot = UserNotification;
-                                managernot.ReceiveUserId = projectData.UserId;
+                                managernot.ReceiveUserId = projectData.MangerId;
                                 managernot.NotificationId = 0;
                                 _TaamerProContext.Notification.Add(managernot);
                                 _TaamerProContext.SaveChanges();
