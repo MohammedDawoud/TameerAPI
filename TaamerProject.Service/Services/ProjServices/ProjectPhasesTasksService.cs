@@ -1533,6 +1533,673 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.ProjectFailed, ReturnedStr = WhichPart + " " + ex.Message + ">>>>" + ex.InnerException };
             }
         }
+        public GeneralMessage SaveProjectPhasesTasksPart1(Project Project, int UserId, int BranchId, string Url, string ImgUrl)
+        {
+            var WhichPart = "Part Phase(1)";
+
+            var projSubTypeSett2 = _TaamerProContext.Settings.Where(s => s.IsDeleted == false && s.ProjSubTypeId == Project.SubProjectTypeId).ToList();
+            if (projSubTypeSett2.Count() != 0)
+            {
+                foreach (var item in projSubTypeSett2)
+                {
+                    if (item.UserId != null)
+                    {
+                        var UserCheck = _TaamerProContext.Users.Where(s => s.UserId == item.UserId).FirstOrDefault();
+                        if (UserCheck.IsDeleted == true)
+                        {
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote = Resources.General_SavedFailed + Project.ProjectNo;
+                            _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.Save_Faild_Check_users, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                            //-----------------------------------------------------------------------------------------------------------------
+                            return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.Save_Faild_Check_users };
+                        }
+                        //var UserVacation = _TaamerProContext.Vacation.Where(s => s.IsDeleted == false && s.UserId == item.UserId && s.VacationStatus != 4 && (s.BackToWorkDate == null || s.BackToWorkDate.Equals(""))).Count();
+                        //if (UserVacation != 0)
+                        //{
+                        //    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.Proj_SaveFailedUserVacationProSetting };
+                        //}
+                    }
+                }
+            }
+            WhichPart = "Part Phase(2)";
+            var Privs = Project.ProUserPrivileges;
+            Project.ProUserPrivileges = new List<ProUserPrivileges>();
+            try
+            {
+                if (Project.ProjectId == 0)
+                {
+                    var totaldays = 0.0;
+                    DateTime resultEnd = DateTime.ParseExact(Project.ProjectExpireDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    DateTime resultStart = DateTime.ParseExact(Project.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    totaldays = (resultEnd - resultStart).TotalDays + 1;
+
+                    ////////////////////////////// project ////////////////////////////////////////////////////////////////////////////////////////////
+                    var codeExist = _ProjectRepository.GetMatching(s => s.IsDeleted == false && s.ProjectId != Project.ProjectId && s.ProjectNo == Project.ProjectNo).FirstOrDefault();
+                    if (codeExist != null)
+                    {
+                        //-----------------------------------------------------------------------------------------------------------------
+                        string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                        string ActionNote2 = "فشل في حفظ المشروع" + Project.ProjectNo;
+                        _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                        //-----------------------------------------------------------------------------------------------------------------
+                        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.ProjectNumberAlready };
+                    }
+                    DateTime VProjectDate = DateTime.ParseExact(Project.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    DateTime VProjectExpireDate = DateTime.ParseExact(Project.ProjectExpireDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    if (VProjectExpireDate.Date <= VProjectDate.Date)
+                    {
+                        //-----------------------------------------------------------------------------------------------------------------
+                        string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                        string ActionNote2 = "فشل في حفظ المشروع" + Project.ProjectNo;
+                        _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                        //-----------------------------------------------------------------------------------------------------------------
+                        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.EndProjectDate };
+                    }
+                    WhichPart = "Part Phase(3)";
+                    Project.NoOfDays = Convert.ToInt32(totaldays);
+                    Project.FirstProjectDate = Project.ProjectDate;
+                    Project.FirstProjectExpireDate = Project.ProjectExpireDate;
+
+                    Project.Status = 0;
+                    Project.BranchId = BranchId;
+                    Project.AddUser = UserId;
+                    Project.AddDate = DateTime.Now;
+                    _TaamerProContext.Project.Add(Project);
+                    WhichPart = "Part Phase(4)";
+                    _TaamerProContext.SaveChanges();
+                    WhichPart = "Part Phase(5)";
+                    Project.ProUserPrivileges = Privs;
+
+
+                    _TaamerProContext.SaveChanges();
+                    var projectWorkers = new List<ProjectWorkers>();
+                    var projectWorkersPriv = new List<UserPrivileges>();
+                    var ListOfTaskNotify = new List<Notification>();
+                    //////////////////////////////////////// project workers ///////////////////////////////////////////////////////////////////////////////
+                    projectWorkers.Add(new ProjectWorkers //// add current user as asenior project
+                    {
+                        ProjectId = Project.ProjectId,
+                        //UserId = UserId,
+                        UserId = Project.MangerId,
+                        BranchId = BranchId,
+                        WorkerType = 1,
+                        IsDeleted = false,
+                        AddDate = DateTime.Now,
+                    });
+                    WhichPart = "Part Phase(15)";
+                    /////////////// priv
+                    projectWorkersPriv.Add(new UserPrivileges
+                    {
+                        UserId = UserId,
+                        PrivilegeId = 111026, // // finish proj
+                        AddUser = UserId,
+                        AddDate = DateTime.Now,
+                    });
+                    WhichPart = "Part Phase(16)";
+                    if (Project.ProUserPrivileges != null && Project.ProUserPrivileges.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (ProUserPrivileges priv in Project.ProUserPrivileges)
+                            {
+                                if (priv.UserPrivId == 0)
+                                {
+
+                                    projectWorkers.Add(new ProjectWorkers
+                                    {
+                                        UserId = priv.UserId,
+                                        ProjectId = Project.ProjectId,
+                                        BranchId = BranchId,
+                                        WorkerType = 2,
+                                        AddUser = UserId,
+                                        AddDate = DateTime.Now,
+                                    });
+                                    //////////////// priv
+                                    projectWorkersPriv.Add(new UserPrivileges
+                                    {
+                                        UserId = priv.UserId,
+                                        PrivilegeId = 111026, // finish proj
+                                        AddUser = UserId,
+                                        AddDate = DateTime.Now,
+                                    });
+
+
+                                    priv.AddUser = UserId;
+                                    priv.AddDate = DateTime.Now;
+                                    _TaamerProContext.ProUserPrivileges.Add(priv);
+                                    var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(priv.UserId ?? 0).Result;
+                                    if (UserNotifPriv.Count() != 0)
+                                    {
+                                        if (UserNotifPriv.Contains(392))
+                                        {
+                                            try
+                                            {
+                                                ListOfTaskNotify.Add(new Notification
+                                                {
+                                                    ReceiveUserId = priv.UserId,
+                                                    Name = "صلاحيات مشروع",
+                                                    Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
+                                                    HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
+                                                    SendUserId = UserId,
+                                                    Type = 1, // notification
+                                                    Description = "  تم اضافتك علي مشروع رقم " + priv.Projectno + " للعميل " + Project.CustomerName,
+                                                    AllUsers = false,
+                                                    SendDate = DateTime.Now,
+                                                    ProjectId = priv.ProjectID,
+                                                    TaskId = 0,
+                                                    AddUser = UserId,
+                                                    AddDate = DateTime.Now,
+                                                    IsHidden = false
+                                                });
+                                                _notificationService.sendmobilenotification(priv.UserId ?? 0, "صلاحيات مشروع", "  تم اضافتك علي مشروع رقم " + priv.Projectno + " للعميل " + Project.CustomerName);
+                                            }
+                                            catch (Exception)
+                                            {
+
+                                            }
+
+
+                                        }
+
+                                        if (UserNotifPriv.Contains(391))
+                                        {
+                                            try
+                                            {
+                                                var Desc = Project.CustomerName + " للعميل " + priv.Projectno + "  تم اضافتك علي مشروع رقم ";
+
+                                                SendMailNoti(Project.ProjectId, Desc, "اضافة علي مشروع", BranchId, UserId, priv.UserId ?? 0);
+
+                                            }
+                                            catch (Exception)
+                                            {
+
+                                            }
+
+                                        }
+
+                                        if (UserNotifPriv.Contains(393))
+                                        {
+                                            try
+                                            {
+                                                var userObj = _UsersRepository.GetById(priv.UserId ?? 0);
+
+                                                var NotStr = Project.CustomerName + " للعميل " + priv.Projectno + "  تم اضافتك علي مشروع رقم ";
+                                                if (userObj.Mobile != null && userObj.Mobile != "")
+                                                {
+                                                    var result = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
+                                                }
+                                            }
+                                            catch (Exception)
+                                            {
+
+                                            }
+
+                                        }
+
+                                    }
+                                }
+                            }
+                            _TaamerProContext.Notification.AddRange(ListOfTaskNotify);
+                        }
+                        catch (Exception ex)
+                        {
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote2 = "فشل في حفظ التعليق";
+                            _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                            //-----------------------------------------------------------------------------------------------------------------
+                            return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
+                        }
+                    }
+                    _TaamerProContext.ProjectWorkers.AddRange(projectWorkers); // add project users
+                    _TaamerProContext.UserPrivileges.AddRange(projectWorkersPriv);
+                    WhichPart = "Part Phase(17)";
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                }
+                WhichPart = "Part Phase(18)";
+                _TaamerProContext.SaveChanges();
+                WhichPart = "Part Phase(19)";
+
+                WhichPart = "Part Phase(20)";
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = "اضافة مشروع جديد" + "برقم" + Project.ProjectNo;
+                _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                //-----------------------------------------------------------------------------------------------------------------
+
+                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.ProjectSaved, ReturnedStr = Project.ProjectId.ToString() };
+            }
+            catch (Exception ex)
+            {
+                SendMail_ProjectSavedWrong(BranchId, WhichPart + " " + ex.Message + ">>>>" + ex.InnerException, false);
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = "فشل في حفظ المشروع";
+                _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                //-----------------------------------------------------------------------------------------------------------------
+
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.ProjectFailed, ReturnedStr = WhichPart + " " + ex.Message + ">>>>" + ex.InnerException };
+            }
+        }
+        public GeneralMessage SaveProjectPhasesTasksPart2(Project Project, int UserId, int BranchId, string Url, string ImgUrl)
+        {
+            var projSubTypeSett = _TaamerProContext.Settings.Where(s => s.IsDeleted == false && s.ProjSubTypeId == Project.SubProjectTypeId).ToList();
+            //var projSubTypeSett = projSubTypeSett2;
+
+            var projectPhasesTaskList = new List<ProjectPhasesTasks>();
+            var projectPhasesTaskObj = new ProjectPhasesTasks();
+
+            var ListOfTaskNotify = new List<Notification>();
+
+            var TempTime = DateTime.Now.ToString("h:mm", CultureInfo.InvariantCulture);
+            var TempDate = Project.ProjectDate;
+            DateTime d = new DateTime();
+            DateTime oDate = DateTime.ParseExact(Project.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            int? tempRemaining = 0;
+            if (projSubTypeSett.Count() != 0)
+            {
+                foreach (var item in projSubTypeSett)
+                {
+                    if (item.TimeType == 1)       //hour
+                    {
+                        TempDate = Project.ProjectDate;
+                        TempTime = DateTime.Now.AddHours(Convert.ToDouble(item.TimeMinutes)).ToString("h:mm");
+                        tempRemaining = item.TimeMinutes * 60;
+                    }
+                    else        //day
+                    {
+                        d = oDate.AddDays(Convert.ToDouble(item.TimeMinutes));
+                        TempDate = d.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+                        TempTime = DateTime.Now.ToString("h:mm", CultureInfo.InvariantCulture);
+                        tempRemaining = item.TimeMinutes * 60 * 24;
+                    }
+                    var dateonly_A = TempDate;//mfroood hna l end
+                    var timeonly_A = DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+                    DateTime dt_A = DateTime.ParseExact(dateonly_A + " " + timeonly_A, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+
+
+
+                    int? ParentV = null;
+                    if (item.ParentId == null)
+                    {
+                        ParentV = null;
+                    }
+                    else
+                    {
+                        //ParentV = _ProjectPhasesTasksRepository.GetMatching(s => s.IsDeleted == false && s.ProjSubTypeId == Project.SubProjectTypeId && s.ProjectId == Project.ProjectId && s.SettingId == item.ParentId).FirstOrDefault()?.PhaseTaskId ?? null;
+                        ParentV = projectPhasesTaskList.Where(s => s.IsDeleted == false && s.ProjSubTypeId == Project.SubProjectTypeId && s.ProjectId == Project.ProjectId && s.SettingId == item.ParentId).FirstOrDefault()?.PhaseTaskId ?? null;
+                    }
+
+                    projectPhasesTaskObj = new ProjectPhasesTasks
+                    {
+                        DescriptionAr = item.DescriptionAr,
+                        DescriptionEn = item.DescriptionEn,
+                        ProjSubTypeId = item.ProjSubTypeId,
+                        Type = item.Type,
+                        TimeMinutes = item.TimeMinutes,
+                        Cost = item.Cost,
+                        //Remaining = item.TimeMinutes,
+                        Remaining = tempRemaining,
+                        Status = (item.Type == 3) ? 1 : 0,
+                        StopCount = 0,
+                        TimeType = item.TimeType,
+                        IsUrgent = item.IsUrgent,
+                        TaskType = item.TaskType,
+                        StartDate = null,
+                        EndDate = null,
+                        //ExcpectedStartDate = Project.ProjectDate,
+                        //ExcpectedEndDate = TempDate,
+
+                        ExcpectedStartDate = null,
+                        ExcpectedEndDate = null,
+                        ParentId = ParentV,
+                        UserId = item.UserId,
+                        SettingId = item.SettingId,
+                        PhasePriority = item.Priority,
+                        ParentSettingId = ParentV,
+                        Notes = item.Notes,
+                        ProjectId = Project.ProjectId,//_ProjectRepository.GetMaxId() + 1;
+                        BranchId = Project.BranchId,   //edit to set task with projectbranch
+                        AddUser = UserId,
+                        AddDate = DateTime.Now,
+                        PlusTime = false,
+                        IsConverted = 0,
+                        IsMerig = item.IsMerig,
+                        EndTime = TempTime,
+                        TaskFullTime = dt_A.ToString("yyyy/MM/dd HH:mm:ss", CultureInfo.InvariantCulture),
+                        Totaltaskcost = item.Totaltaskcost,
+                        Totalhourstask = item.Totalhourstask,
+
+                    };
+                    _TaamerProContext.ProjectPhasesTasks.Add(projectPhasesTaskObj);
+                    _TaamerProContext.SaveChanges();  // commit 
+                    projectPhasesTaskList.Add(projectPhasesTaskObj);
+
+                }
+                //_TaamerProContext.ProjectPhasesTasks.AddRange(projectPhasesTaskList); ///////// project tasks pahses
+                //_TaamerProContext.SaveChanges();  // commit 
+
+            }
+            // save pro dependency  from setting dependency
+            var projSubTypeDependencySett = _TaamerProContext.DependencySettings.Where(s => s.IsDeleted == false && s.ProjSubTypeId == Project.SubProjectTypeId).ToList();
+
+            var projectPhasesCount = _ProjectPhasesTasksRepository.GetAllTasksByProjectIdWithoutBranch(Project.ProjectId, BranchId).Result.Count();
+            if (projectPhasesCount != 0)
+            {
+                foreach (var item in projSubTypeDependencySett)
+                {
+                    var ProDependency = new TasksDependency();
+                    ProDependency.ProjSubTypeId = item.ProjSubTypeId;
+                    var Pre = _ProjectPhasesTasksRepository.GetMatching(s => s.IsDeleted == false && s.ProjSubTypeId == item.ProjSubTypeId && s.SettingId == item.PredecessorId && s.ProjectId == Project.ProjectId && s.Type == 3).FirstOrDefault();
+                    var PreSetting = 0;
+                    if (Pre != null)
+                    {
+                        PreSetting = Pre.PhaseTaskId;
+                    }
+                    ProDependency.PredecessorId = PreSetting;
+                    var Succ = _ProjectPhasesTasksRepository.GetMatching(s => s.IsDeleted == false && s.ProjSubTypeId == item.ProjSubTypeId && s.SettingId == item.SuccessorId && s.ProjectId == Project.ProjectId && s.Type == 3).FirstOrDefault();
+                    var SuccSetting = 0;
+                    if (Succ != null)
+                    {
+                        SuccSetting = Succ.PhaseTaskId;
+                    }
+                    ProDependency.SuccessorId = SuccSetting;
+                    ProDependency.Type = item.Type;
+                    ProDependency.BranchId = BranchId;
+                    ProDependency.AddUser = UserId;
+                    ProDependency.ProjectId = Project.ProjectId;
+                    ProDependency.AddDate = DateTime.Now;
+                    _TaamerProContext.TasksDependency.Add(ProDependency);
+                }
+            }
+            //////////////////////////////////////// tasks notifications //////////////////////////////////////////////////////////////////////////
+            ///
+            var branch = _BranchesRepository.GetById(BranchId);
+            //var customer = _CustomerRepository.GetById((int)Project.CustomerId);
+            foreach (var task in projectPhasesTaskList.Where(s => s.Type == 3))  //add tasks notifications
+            {
+
+                var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(task.UserId ?? 0).Result;
+                if (UserNotifPriv.Count() != 0)
+                {
+                    if (UserNotifPriv.Contains(352))
+                    {
+                        try
+                        {
+                            ListOfTaskNotify.Add(new Notification
+                            {
+                                ReceiveUserId = task.UserId,
+                                Name = Resources.General_Newtasks,
+                                Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
+                                HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
+                                SendUserId = 1,
+                                Type = 1, // notification
+                                Description = " لديك مهمه جديدة : " + task.DescriptionAr + " علي مشروع رقم " + Project.ProjectNo + " للعميل " + Project.CustomerName + " " + "  فرع  " + branch.NameAr + "",
+                                AllUsers = false,
+                                SendDate = DateTime.Now,
+                                ProjectId = task.ProjectId,
+                                TaskId = task.PhaseTaskId,
+                                AddUser = UserId,
+                                AddDate = DateTime.Now,
+                                IsHidden = false
+                            });
+                            _notificationService.sendmobilenotification(task.UserId ?? 0, Resources.General_Newtasks, "");// " لديك مهمه جديدة : " + task.DescriptionAr + " علي مشروع رقم " + Project.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + "  فرع  " + branch.NameAr + "");
+
+                        }
+                        catch (Exception ex)
+                        {
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate4 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote4 = "فشل في ارسال اشعار مهمة";
+                            _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedFailed, "", "", ActionDate4, UserId, BranchId, ActionNote4, 0);
+                            //-----------------------------------------------------------------------------------------------------------------
+                        }
+
+
+                    }
+
+                    if (UserNotifPriv.Contains(353))
+                    {
+                        try
+                        {
+                            var userObj = _UsersRepository.GetById(task.UserId ?? 0);
+
+                            var NotStr = Project.CustomerName + " للعميل  " + Project.ProjectNo + " علي مشروع رقم " + task.DescriptionAr + " لديك مهمه جديدة  ";
+                            if (userObj.Mobile != null && userObj.Mobile != "")
+                            {
+                                var result = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate4 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote4 = "فشل في ارسال SMS مهمة";
+                            _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedFailed, "", "", ActionDate4, UserId, BranchId, ActionNote4, 0);
+                            //-----------------------------------------------------------------------------------------------------------------
+
+                        }
+
+                    }
+                }
+
+            }
+
+            _TaamerProContext.Notification.AddRange(ListOfTaskNotify);   /// add notifications
+
+            _TaamerProContext.SaveChanges();
+            SetExpectedDate(Project.ProjectId, Project.ProjectDate, false);
+
+            return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.ProjectSaved, ReturnedStr = Project.ProjectId.ToString() };
+        }
+        public GeneralMessage SaveProjectPhasesTasksPart3(Project Project, int UserId, int BranchId, string Url, string ImgUrl)
+        {
+            try
+            {
+                if (Project.ProjectRequirementsGoals.Count() > 0)
+                {
+
+                    foreach (var item in Project.ProjectRequirementsGoals.ToList())
+                    {
+                        item.RequirementGoalId = 0;
+                        item.AddDate = DateTime.Now;
+                        item.AddUser = UserId;
+                        item.ProjectId = Project.ProjectId;
+                        _TaamerProContext.ProjectRequirementsGoals.Add(item);
+                        _TaamerProContext.SaveChanges();
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate7 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote7 = "فشل في حفظ أهداف المشروع" + Project.ProjectNo; ;
+                _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate7, UserId, BranchId, ActionNote7, 0);
+                //-----------------------------------------------------------------------------------------------------------------
+            }
+
+
+            if (Project.OffersPricesId != null)
+            {
+                try
+                {
+                    var offer = _offersPricesRepository.GetById(Project.OffersPricesId ?? 0);
+                    offer.ProjectId = Project.ProjectId;
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+
+            try
+            {
+
+                var newcostCenter = new CostCenters();
+                var CostCenterByid = _CostCenterRepository.GetById(Project.CostCenterId ?? 0);
+                newcostCenter.ParentId = Project.CostCenterId;
+                newcostCenter.BranchId = CostCenterByid.BranchId;
+                newcostCenter.Code = Project.ProjectNo;
+                newcostCenter.NameAr = Project.CustomerName;
+                newcostCenter.NameEn = Project.CustomerName;
+                newcostCenter.AddDate = DateTime.Now;
+                newcostCenter.AddUser = UserId;
+                newcostCenter.CustomerId = Project.CustomerId;
+
+                newcostCenter.ProjId = Project.ProjectId;
+                _TaamerProContext.CostCenters.Add(newcostCenter);
+            }
+            catch (Exception ex)
+            {
+
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate8 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote8 = "فشل في حفظ مركز تكلفة للمشروع" + Project.ProjectNo;
+                _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedFailed, "", "", ActionDate8, UserId, BranchId, ActionNote8, 0);
+                //-----------------------------------------------------------------------------------------------------------------
+            }
+
+            if (Project.TransactionTypeId == 1)
+            {
+                var branch = _BranchesRepository.GetById(BranchId);
+
+                Project.MotionProject = 1;
+                Project.MotionProjectDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                Project.MotionProjectNote = "أضافة فاتورة علي مشروع";
+
+                var ListOfPrivNotify = new List<Notification>();
+                var UserNotifPriv = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(3252).Result;
+                if (UserNotifPriv.Count() != 0)
+                {
+                    //_userPrivilegesRepository.GetMatching(s => s.IsDeleted == false && s.PrivilegeId == 131001).Where(w => w.Users.IsDeleted == false)
+                    foreach (var userCounter in UserNotifPriv)
+                    {
+                        try
+                        {
+                            ListOfPrivNotify.Add(new Notification
+                            {
+                                ReceiveUserId = userCounter.UserId,
+                                Name = Resources.MNAcc_Invoice,
+                                Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
+                                HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
+                                SendUserId = UserId,
+                                Type = 1, // notification
+                                Description = " يوجد فاتورة جديدة علي مشروع رقم  : " + Project.ProjectNo + " للعميل " + Project.CustomerName + " " + " فرع  " + branch.NameAr + "",
+                                AllUsers = false,
+                                SendDate = DateTime.Now,
+                                ProjectId = 0,
+                                TaskId = 0,
+                                AddUser = UserId,
+                                AddDate = DateTime.Now,
+                                IsHidden = false
+                            });
+                            _notificationService.sendmobilenotification(userCounter.UserId ?? 0, Resources.MNAcc_Invoice, " يوجد فاتورة جديدة علي مشروع رقم  : " + Project.ProjectNo + " للعميل " + Project.CustomerName + " " + " فرع  " + branch.NameAr + "");
+                        }
+                        catch (Exception ex)
+                        {
+
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate4 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote4 = "فشل في ارسال اشعار لمن لدية صلاحية فاتورة";
+                            _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedFailed, "", "", ActionDate4, UserId, BranchId, ActionNote4, 0);
+                            //-----------------------------------------------------------------------------------------------------------------
+                        }
+
+                    }
+
+                    _TaamerProContext.Notification.AddRange(ListOfPrivNotify);
+
+                }
+
+                var UserNotifPriv_email = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(3251).Result;
+                if (UserNotifPriv_email.Count() != 0)
+                {
+                    foreach (var userCounter in UserNotifPriv_email)
+                    {
+                        try
+                        {
+                            var Desc = " المستخدم " + userCounter.FullName + " تم اصدار فاتورة لمشروع رقم " + Project.ProjectNo + " للعميل " + Project.CustomerName + " فرع " + branch.NameAr;
+
+                            SendMailNoti(0, Desc, "اصدار فاتورة علي مشروع", BranchId, UserId, userCounter.UserId ?? 0);
+
+
+                            var htmlBody = "";
+
+
+                            htmlBody = @"<!DOCTYPE html>
+                                            <html>
+                                             <head></head>
+                                            <body  style='direction: rtl;'>
+                                             
+                                                <table style=' border: 1px solid black; border-collapse: collapse;' align='center'>
+                                                  <tr>
+                                                    <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>رقم المشروع</th>
+                                                    <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>اسم العميل</th>
+                                                    <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>الفرع </th>
+                                                  </tr>
+                                                    <tr>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + Project.ProjectNo + @"</td>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + Project.CustomerName + @"</td>
+                                              <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + branch.NameAr + @"</td>
+                                                    </tr>
+                                                </table>
+                                            </body>
+                                            </html>";
+                            //SendMailNoti(projectId, Desc, "ايقاف مشروع", BranchId, UserId, proj.MangerId ?? 0);
+                            SendMail_ProjectStamp(BranchId, UserId, userCounter.UserId ?? 0, "اصدار فاتورة علي مشروع", htmlBody, Url, ImgUrl, 6, true);
+                        }
+                        catch (Exception ex)
+                        {
+
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate5 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote5 = "فشل في ارسال ميل لمن لدية صلاحية فاتورة";
+                            _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate5, UserId, BranchId, ActionNote5, 0);
+                            //-----------------------------------------------------------------------------------------------------------------
+                        }
+
+
+                    }
+
+                }
+
+                var UserNotifPriv_Mobile = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(3253).Result;
+                if (UserNotifPriv_Mobile.Count() != 0)
+                {
+                    foreach (var userCounter in UserNotifPriv_Mobile)
+                    {
+                        try
+                        {
+                            var userObj = _UsersRepository.GetById(userCounter.UserId ?? 0);
+                            var NotStr = " المستخدم " + userCounter.FullName + " تم اصدار فاتورة لمشروع رقم " + Project.ProjectNo + " للعميل " + Project.CustomerName + " فرع " + branch.NameAr;
+                            if (userObj.Mobile != null && userObj.Mobile != "")
+                            {
+                                var result = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate6 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote6 = "فشل في ارسال SMS لمن لدية صلاحية فاتورة";
+                            _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate6, UserId, BranchId, ActionNote6, 0);
+                            //-----------------------------------------------------------------------------------------------------------------
+                        }
+
+                    }
+                }
+
+
+
+            }
+
+
+            _TaamerProContext.SaveChanges();
+            return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.ProjectSaved, ReturnedStr = Project.ProjectId.ToString() };
+        }
         public GeneralMessage SaveProjectPhasesTasksNew(Project Project, int UserId, int BranchId, string Url, string ImgUrl)
         {
             Stopwatch sw;
@@ -2265,6 +2932,675 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.ProjectFailed, ReturnedStr = WhichPart + " " + ex.Message + ">>>>" + ex.InnerException };
             }
         }
+        public GeneralMessage SaveProjectPhasesTasksNewPart1(Project Project, int UserId, int BranchId, string Url, string ImgUrl)
+        {
+            var WhichPart = "Part Phase(1)";
+            var projSubTypeSett2 = _TaamerProContext.SettingsNew.Where(s => s.IsDeleted == false && s.ProjSubTypeId == Project.SubProjectTypeId).ToList();
+            if (projSubTypeSett2.Count() != 0)
+            {
+                foreach (var item in projSubTypeSett2)
+                {
+                    if (item.UserId != null)
+                    {
+                        var UserCheck = _TaamerProContext.Users.Where(s => s.UserId == item.UserId).FirstOrDefault();
+                        if (UserCheck.IsDeleted == true)
+                        {
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote = Resources.General_SavedFailed + Project.ProjectNo;
+                            _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.Save_Faild_Check_users, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                            //-----------------------------------------------------------------------------------------------------------------
+                            return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.Save_Faild_Check_users };
+                        }
+                        //var UserVacation = _TaamerProContext.Vacation.Where(s => s.IsDeleted == false && s.UserId == item.UserId && s.VacationStatus != 4 && (s.BackToWorkDate == null || s.BackToWorkDate.Equals(""))).Count();
+                        //if (UserVacation != 0)
+                        //{
+                        //    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.Proj_SaveFailedUserVacationProSetting };
+                        //}
+                    }
+                }
+            }
+            WhichPart = "Part Phase(2)";
+            var Privs = Project.ProUserPrivileges;
+            Project.ProUserPrivileges = new List<ProUserPrivileges>();
+            try
+            {
+                if (Project.ProjectId == 0)
+                {
+                    var totaldays = 0.0;
+                    DateTime resultEnd = DateTime.ParseExact(Project.ProjectExpireDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    DateTime resultStart = DateTime.ParseExact(Project.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    totaldays = (resultEnd - resultStart).TotalDays + 1;
+
+                    ////////////////////////////// project ////////////////////////////////////////////////////////////////////////////////////////////
+                    var codeExist = _ProjectRepository.GetMatching(s => s.IsDeleted == false && s.ProjectId != Project.ProjectId && s.ProjectNo == Project.ProjectNo).FirstOrDefault();
+                    if (codeExist != null)
+                    {
+                        //-----------------------------------------------------------------------------------------------------------------
+                        string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                        string ActionNote2 = "فشل في حفظ المشروع" + Project.ProjectNo;
+                        _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                        //-----------------------------------------------------------------------------------------------------------------
+                        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.ProjectNumberAlready };
+                    }
+                    DateTime VProjectDate = DateTime.ParseExact(Project.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    DateTime VProjectExpireDate = DateTime.ParseExact(Project.ProjectExpireDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    if (VProjectExpireDate.Date <= VProjectDate.Date)
+                    {
+                        //-----------------------------------------------------------------------------------------------------------------
+                        string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                        string ActionNote2 = "فشل في حفظ المشروع" + Project.ProjectNo;
+                        _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                        //-----------------------------------------------------------------------------------------------------------------
+                        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.EndProjectDate };
+                    }
+                    Project.NoOfDays = Convert.ToInt32(totaldays);
+                    Project.FirstProjectDate = Project.ProjectDate;
+                    Project.FirstProjectExpireDate = Project.ProjectExpireDate;
+
+                    Project.Status = 0;
+                    Project.BranchId = BranchId;
+                    Project.AddUser = UserId;
+                    Project.AddDate = DateTime.Now;
+                    _TaamerProContext.Project.Add(Project);
+
+                    _TaamerProContext.SaveChanges();
+
+                    Project.ProUserPrivileges = Privs;
+
+                    _TaamerProContext.SaveChanges();
+                    var projectWorkers = new List<ProjectWorkers>();
+                    var projectWorkersPriv = new List<UserPrivileges>();
+                    var ListOfTaskNotify = new List<Notification>();
+
+                    //////////////////////////////////////// project workers ///////////////////////////////////////////////////////////////////////////////
+                    projectWorkers.Add(new ProjectWorkers //// add current user as asenior project
+                    {
+                        ProjectId = Project.ProjectId,
+                        //UserId = UserId,
+                        UserId = Project.MangerId,
+                        BranchId = BranchId,
+                        WorkerType = 1,
+                        IsDeleted = false,
+                        AddDate = DateTime.Now,
+                    });
+                    WhichPart = "Part Phase(15)";
+
+                    /////////////// priv
+                    projectWorkersPriv.Add(new UserPrivileges
+                    {
+                        UserId = UserId,
+                        PrivilegeId = 111026, // // finish proj
+                        AddUser = UserId,
+                        AddDate = DateTime.Now,
+                    });
+                    WhichPart = "Part Phase(16)";
+
+                    if (Project.ProUserPrivileges != null && Project.ProUserPrivileges.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (ProUserPrivileges priv in Project.ProUserPrivileges)
+                            {
+                                if (priv.UserPrivId == 0)
+                                {
+
+                                    projectWorkers.Add(new ProjectWorkers
+                                    {
+                                        UserId = priv.UserId,
+                                        ProjectId = Project.ProjectId,
+                                        BranchId = BranchId,
+                                        WorkerType = 2,
+                                        AddUser = UserId,
+                                        AddDate = DateTime.Now,
+                                    });
+                                    //////////////// priv
+                                    projectWorkersPriv.Add(new UserPrivileges
+                                    {
+                                        UserId = priv.UserId,
+                                        PrivilegeId = 111026, // finish proj
+                                        AddUser = UserId,
+                                        AddDate = DateTime.Now,
+                                    });
+
+
+                                    priv.AddUser = UserId;
+                                    priv.AddDate = DateTime.Now;
+                                    _TaamerProContext.ProUserPrivileges.Add(priv);
+                                    var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(priv.UserId ?? 0).Result;
+                                    if (UserNotifPriv.Count() != 0)
+                                    {
+                                        if (UserNotifPriv.Contains(392))
+                                        {
+                                            try
+                                            {
+                                                ListOfTaskNotify.Add(new Notification
+                                                {
+                                                    ReceiveUserId = priv.UserId,
+                                                    Name = "صلاحيات مشروع",
+                                                    Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
+                                                    HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
+                                                    SendUserId = UserId,
+                                                    Type = 1, // notification
+                                                    Description = "  تم اضافتك علي مشروع رقم " + priv.Projectno + " للعميل " + Project.CustomerName,
+                                                    AllUsers = false,
+                                                    SendDate = DateTime.Now,
+                                                    ProjectId = priv.ProjectID,
+                                                    TaskId = 0,
+                                                    AddUser = UserId,
+                                                    AddDate = DateTime.Now,
+                                                    IsHidden = false
+                                                });
+                                                _notificationService.sendmobilenotification(priv.UserId ?? 0, "صلاحيات مشروع", "  تم اضافتك علي مشروع رقم " + priv.Projectno + " للعميل " + Project.CustomerName);
+                                            }
+                                            catch (Exception)
+                                            {
+
+                                            }
+
+
+                                        }
+
+                                        if (UserNotifPriv.Contains(391))
+                                        {
+                                            try
+                                            {
+                                                var Desc = Project.CustomerName + " للعميل " + priv.Projectno + "  تم اضافتك علي مشروع رقم ";
+
+                                                SendMailNoti(Project.ProjectId, Desc, "اضافة علي مشروع", BranchId, UserId, priv.UserId ?? 0);
+
+                                            }
+                                            catch (Exception)
+                                            {
+
+                                            }
+
+                                        }
+
+                                        if (UserNotifPriv.Contains(393))
+                                        {
+                                            try
+                                            {
+                                                var userObj = _UsersRepository.GetById(priv.UserId ?? 0);
+
+                                                var NotStr = Project.CustomerName + " للعميل " + priv.Projectno + "  تم اضافتك علي مشروع رقم ";
+                                                if (userObj.Mobile != null && userObj.Mobile != "")
+                                                {
+                                                    var result = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
+                                                }
+                                            }
+                                            catch (Exception)
+                                            {
+
+                                            }
+
+                                        }
+
+                                    }
+                                }
+                            }
+                            _TaamerProContext.Notification.AddRange(ListOfTaskNotify);
+                        }
+                        catch (Exception ex)
+                        {
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote2 = "فشل في حفظ التعليق";
+                            _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                            //-----------------------------------------------------------------------------------------------------------------
+                            return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
+                        }
+                    }
+                    _TaamerProContext.ProjectWorkers.AddRange(projectWorkers); // add project users
+                    _TaamerProContext.UserPrivileges.AddRange(projectWorkersPriv);
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                }
+
+                _TaamerProContext.SaveChanges();
+
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = "اضافة مشروع جديد" + "برقم" + Project.ProjectNo;
+                _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                //-----------------------------------------------------------------------------------------------------------------
+
+                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.ProjectSaved, ReturnedStr = Project.ProjectId.ToString() };
+            }
+            catch (Exception ex)
+            {
+                SendMail_ProjectSavedWrong(BranchId, WhichPart + " " + ex.Message + ">>>>" + ex.InnerException, false);
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = "فشل في حفظ المشروع";
+                _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                //-----------------------------------------------------------------------------------------------------------------
+
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.ProjectFailed, ReturnedStr = WhichPart + " " + ex.Message + ">>>>" + ex.InnerException };
+            }
+        }
+        public GeneralMessage SaveProjectPhasesTasksNewPart2(Project Project, int UserId, int BranchId, string Url, string ImgUrl)
+        {
+            var projSubTypeSett = _TaamerProContext.SettingsNew.Where(s => s.IsDeleted == false && s.ProjSubTypeId == Project.SubProjectTypeId).ToList();
+
+            //var projSubTypeSett = projSubTypeSett2;
+
+            var projectPhasesTaskList = new List<ProjectPhasesTasks>();
+            var projectPhasesTaskObj = new ProjectPhasesTasks();
+            var ListOfTaskNotify = new List<Notification>();
+
+
+
+            var TempTime = DateTime.Now.ToString("h:mm", CultureInfo.InvariantCulture);
+            var TempDate = Project.ProjectDate;
+            DateTime d = new DateTime();
+            DateTime oDate = DateTime.ParseExact(Project.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            int? tempRemaining = 0;
+            if (projSubTypeSett.Count() != 0)
+            {
+                foreach (var item in projSubTypeSett)
+                {
+                    var DateDiff = ((item.EndDate ?? new DateTime()) - (item.StartDate ?? new DateTime()));
+                    tempRemaining = Convert.ToInt32(DateDiff.TotalMinutes);
+
+                    if (item.TimeType == 1)       //hour
+                    {
+                        TempDate = Project.ProjectDate;
+                        TempTime = DateTime.Now.AddHours(Convert.ToDouble(item.TimeMinutes)).ToString("h:mm");
+                        //tempRemaining = item.TimeMinutes * 60;
+                    }
+                    else        //day
+                    {
+                        d = oDate.AddDays(Convert.ToDouble(item.TimeMinutes));
+                        TempDate = d.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+                        TempTime = DateTime.Now.ToString("h:mm", CultureInfo.InvariantCulture);
+                        //tempRemaining = item.TimeMinutes * 60 * 24;
+                    }
+                    var dateonly_A = TempDate;//mfroood hna l end
+                    var timeonly_A = DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+                    DateTime dt_A = DateTime.ParseExact(dateonly_A + " " + timeonly_A, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+
+
+
+                    int? ParentV = null;
+                    if (item.ParentId == null)
+                    {
+                        ParentV = null;
+                    }
+                    else
+                    {
+                        //ParentV = _ProjectPhasesTasksRepository.GetMatching(s => s.IsDeleted == false && s.ProjSubTypeId == Project.SubProjectTypeId && s.ProjectId == Project.ProjectId && s.SettingId == item.ParentId).FirstOrDefault()?.PhaseTaskId ?? null;
+                        ParentV = projectPhasesTaskList.Where(s => s.IsDeleted == false && s.ProjSubTypeId == Project.SubProjectTypeId && s.ProjectId == Project.ProjectId && s.SettingId == item.ParentId).FirstOrDefault()?.PhaseTaskId ?? null;
+
+                    }
+
+                    projectPhasesTaskObj = new ProjectPhasesTasks
+                    {
+                        DescriptionAr = item.DescriptionAr,
+                        DescriptionEn = item.DescriptionEn,
+                        ProjSubTypeId = item.ProjSubTypeId,
+                        Type = item.Type,
+                        TimeMinutes = item.TimeMinutes,
+                        Cost = item.Cost,
+                        //Remaining = item.TimeMinutes,
+                        Remaining = tempRemaining,
+                        Status = (item.Type == 3) ? item.IsTemp == true ? 3 : 1 : 0,
+                        StopCount = 0,
+                        TimeType = item.TimeType,
+                        IsUrgent = item.IsUrgent,
+                        TaskType = item.TaskType,
+                        StartDate = null,
+                        EndDate = null,
+                        //ExcpectedStartDate = Project.ProjectDate,
+                        //ExcpectedEndDate = TempDate,
+                        ExcpectedStartDate = null,
+                        ExcpectedEndDate = null,
+                        ParentId = ParentV,
+                        UserId = item.UserId,
+                        SettingId = item.SettingId,
+                        PhasePriority = item.Priority,
+                        ParentSettingId = ParentV,
+                        Notes = item.Notes,
+                        ProjectId = Project.ProjectId,//_ProjectRepository.GetMaxId() + 1;
+                        BranchId = Project.BranchId,   //edit to set task with projectbranch
+                        AddUser = UserId,
+                        AddDate = DateTime.Now,
+                        PlusTime = false,
+                        IsConverted = 0,
+                        IsMerig = item.IsMerig,
+                        EndTime = TempTime,
+                        TaskFullTime = dt_A.ToString("yyyy/MM/dd HH:mm:ss", CultureInfo.InvariantCulture),
+                        indentation = item.indentation,
+                        taskindex = item.taskindex,
+                        ReasonsId = item.ReasonsId,
+                        IsTemp = item.IsTemp,
+                        Managerapproval = item.Managerapproval,
+                        StartDateNew = item.StartDate,
+                        EndDateNew = item.EndDate,
+                        Totalhourstask = item.Totalhourstask,
+                        Totaltaskcost = item.Totaltaskcost,
+
+                    };
+                    _TaamerProContext.ProjectPhasesTasks.Add(projectPhasesTaskObj);
+                    _TaamerProContext.SaveChanges();  // commit 
+                    projectPhasesTaskList.Add(projectPhasesTaskObj);
+
+                }
+                //_TaamerProContext.ProjectPhasesTasks.AddRange(projectPhasesTaskList); ///////// project tasks pahses
+                //_TaamerProContext.SaveChanges();  // commit 
+
+            }
+
+            // save pro dependency  from setting dependency
+            var projSubTypeDependencySett = _TaamerProContext.DependencySettingsNew.Where(s => s.IsDeleted == false && s.ProjSubTypeId == Project.SubProjectTypeId).ToList();
+
+            var projectPhasesCount = _ProjectPhasesTasksRepository.GetAllTasksByProjectIdWithoutBranch(Project.ProjectId, BranchId).Result.Count();
+            if (projectPhasesCount != 0)
+            {
+                foreach (var item in projSubTypeDependencySett)
+                {
+                    var ProDependency = new TasksDependency();
+                    ProDependency.ProjSubTypeId = item.ProjSubTypeId;
+                    var Pre = _ProjectPhasesTasksRepository.GetMatching(s => s.IsDeleted == false && s.ProjSubTypeId == item.ProjSubTypeId && s.SettingId == item.PredecessorId && s.ProjectId == Project.ProjectId && s.Type == 3).FirstOrDefault();
+                    var PreSetting = 0;
+                    if (Pre != null)
+                    {
+                        PreSetting = Pre.PhaseTaskId;
+                    }
+                    ProDependency.PredecessorId = PreSetting;
+                    var Succ = _ProjectPhasesTasksRepository.GetMatching(s => s.IsDeleted == false && s.ProjSubTypeId == item.ProjSubTypeId && s.SettingId == item.SuccessorId && s.ProjectId == Project.ProjectId && s.Type == 3).FirstOrDefault();
+                    var SuccSetting = 0;
+                    if (Succ != null)
+                    {
+                        SuccSetting = Succ.PhaseTaskId;
+                    }
+                    ProDependency.SuccessorId = SuccSetting;
+                    ProDependency.Type = item.Type;
+                    ProDependency.BranchId = BranchId;
+                    ProDependency.AddUser = UserId;
+                    ProDependency.ProjectId = Project.ProjectId;
+                    ProDependency.AddDate = DateTime.Now;
+                    _TaamerProContext.TasksDependency.Add(ProDependency);
+                }
+            }
+
+            foreach (var task in projectPhasesTaskList.Where(s => s.Type == 3))  //add tasks notifications
+            {
+
+                var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(task.UserId ?? 0).Result;
+                if (UserNotifPriv.Count() != 0)
+                {
+                    if (UserNotifPriv.Contains(352))
+                    {
+                        var branch = _BranchesRepository.GetById(BranchId);
+                        try
+                        {
+                            ListOfTaskNotify.Add(new Notification
+                            {
+                                ReceiveUserId = task.UserId,
+                                Name = Resources.General_Newtasks,
+                                Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
+                                HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
+                                SendUserId = 1,
+                                Type = 1, // notification
+                                Description = " لديك مهمه جديدة : " + task.DescriptionAr + " علي مشروع رقم " + Project.ProjectNo + " للعميل " + Project.CustomerName + " " + "  فرع  " + branch.NameAr + "",
+                                AllUsers = false,
+                                SendDate = DateTime.Now,
+                                ProjectId = task.ProjectId,
+                                TaskId = task.PhaseTaskId,
+                                AddUser = UserId,
+                                AddDate = DateTime.Now,
+                                IsHidden = false
+                            });
+                            _notificationService.sendmobilenotification(task.UserId ?? 0, Resources.General_Newtasks, "");// " لديك مهمه جديدة : " + task.DescriptionAr + " علي مشروع رقم " + Project.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + "  فرع  " + branch.NameAr + "");
+
+                        }
+                        catch (Exception ex)
+                        {
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate4 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote4 = "فشل في ارسال اشعار مهمة";
+                            _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedFailed, "", "", ActionDate4, UserId, BranchId, ActionNote4, 0);
+                            //-----------------------------------------------------------------------------------------------------------------
+                        }
+
+
+                    }
+
+                    if (UserNotifPriv.Contains(353))
+                    {
+                        try
+                        {
+                            var userObj = _UsersRepository.GetById(task.UserId ?? 0);
+
+                            var NotStr = Project.CustomerName + " للعميل  " + Project.ProjectNo + " علي مشروع رقم " + task.DescriptionAr + " لديك مهمه جديدة  ";
+                            if (userObj.Mobile != null && userObj.Mobile != "")
+                            {
+                                var result = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate4 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote4 = "فشل في ارسال SMS مهمة";
+                            _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedFailed, "", "", ActionDate4, UserId, BranchId, ActionNote4, 0);
+                            //-----------------------------------------------------------------------------------------------------------------
+
+                        }
+
+                    }
+                }
+
+            }
+
+            _TaamerProContext.Notification.AddRange(ListOfTaskNotify);   /// add notifications
+
+            _TaamerProContext.SaveChanges();
+            SetExpectedDateNew(Project.ProjectId, Project.ProjectDate, true);
+
+            return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.ProjectSaved, ReturnedStr = Project.ProjectId.ToString() };
+        }
+        public GeneralMessage SaveProjectPhasesTasksNewPart3(Project Project, int UserId, int BranchId, string Url, string ImgUrl)
+        {
+            try
+            {
+                if (Project.ProjectRequirementsGoals.Count() > 0)
+                {
+
+                    foreach (var item in Project.ProjectRequirementsGoals.ToList())
+                    {
+                        item.RequirementGoalId = 0;
+                        item.AddDate = DateTime.Now;
+                        item.AddUser = UserId;
+                        item.ProjectId = Project.ProjectId;
+                        _TaamerProContext.ProjectRequirementsGoals.Add(item);
+                        _TaamerProContext.SaveChanges();
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate7 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote7 = "فشل في حفظ أهداف المشروع" + Project.ProjectNo; ;
+                _SystemAction.SaveAction("SaveProject", "SaveProjectPhasesTasksNewPart3", 1, Resources.General_SavedFailed, "", "", ActionDate7, UserId, BranchId, ActionNote7, 0);
+                //-----------------------------------------------------------------------------------------------------------------
+            }
+
+            if (Project.OffersPricesId != null)
+            {
+                try
+                {
+                    var offer = _offersPricesRepository.GetById(Project.OffersPricesId ?? 0);
+                    offer.ProjectId = Project.ProjectId;
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+
+            try
+            {
+
+                var newcostCenter = new CostCenters();
+                var CostCenterByid = _CostCenterRepository.GetById(Project.CostCenterId ?? 0);
+                newcostCenter.ParentId = Project.CostCenterId;
+                newcostCenter.BranchId = CostCenterByid.BranchId;
+                newcostCenter.Code = Project.ProjectNo;
+                newcostCenter.NameAr = Project.CustomerName;
+                newcostCenter.NameEn = Project.CustomerName;
+                newcostCenter.AddDate = DateTime.Now;
+                newcostCenter.AddUser = UserId;
+                newcostCenter.CustomerId = Project.CustomerId;
+
+                newcostCenter.ProjId = Project.ProjectId;
+                _TaamerProContext.CostCenters.Add(newcostCenter);
+            }
+            catch (Exception ex)
+            {
+
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate8 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote8 = "فشل في حفظ مركز تكلفة للمشروع" + Project.ProjectNo;
+                _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedFailed, "", "", ActionDate8, UserId, BranchId, ActionNote8, 0);
+                //-----------------------------------------------------------------------------------------------------------------
+            }
+
+            if (Project.TransactionTypeId == 1)
+            {
+                var branch = _BranchesRepository.GetById(BranchId);
+
+                Project.MotionProject = 1;
+                Project.MotionProjectDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                Project.MotionProjectNote = "أضافة فاتورة علي مشروع";
+
+                var ListOfPrivNotify = new List<Notification>();
+                var UserNotifPriv = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(3252).Result;
+                if (UserNotifPriv.Count() != 0)
+                {
+                    //_userPrivilegesRepository.GetMatching(s => s.IsDeleted == false && s.PrivilegeId == 131001).Where(w => w.Users.IsDeleted == false)
+                    foreach (var userCounter in UserNotifPriv)
+                    {
+                        try
+                        {
+                            ListOfPrivNotify.Add(new Notification
+                            {
+                                ReceiveUserId = userCounter.UserId,
+                                Name = Resources.MNAcc_Invoice,
+                                Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
+                                HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
+                                SendUserId = UserId,
+                                Type = 1, // notification
+                                Description = " يوجد فاتورة جديدة علي مشروع رقم  : " + Project.ProjectNo + " للعميل " + Project.CustomerName + " " + " فرع  " + branch.NameAr + "",
+                                AllUsers = false,
+                                SendDate = DateTime.Now,
+                                ProjectId = 0,
+                                TaskId = 0,
+                                AddUser = UserId,
+                                AddDate = DateTime.Now,
+                                IsHidden = false
+                            });
+                            _notificationService.sendmobilenotification(userCounter.UserId ?? 0, Resources.MNAcc_Invoice, " يوجد فاتورة جديدة علي مشروع رقم  : " + Project.ProjectNo + " للعميل " + Project.CustomerName + " " + " فرع  " + branch.NameAr + "");
+                        }
+                        catch (Exception ex)
+                        {
+
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate4 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote4 = "فشل في ارسال اشعار لمن لدية صلاحية فاتورة";
+                            _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedFailed, "", "", ActionDate4, UserId, BranchId, ActionNote4, 0);
+                            //-----------------------------------------------------------------------------------------------------------------
+                        }
+
+                    }
+
+                    _TaamerProContext.Notification.AddRange(ListOfPrivNotify);
+
+                }
+
+                var UserNotifPriv_email = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(3251).Result;
+                if (UserNotifPriv_email.Count() != 0)
+                {
+                    foreach (var userCounter in UserNotifPriv_email)
+                    {
+                        try
+                        {
+                            var Desc = " المستخدم " + userCounter.FullName + " تم اصدار فاتورة لمشروع رقم " + Project.ProjectNo + " للعميل " + Project.CustomerName + " فرع " + branch.NameAr;
+
+                            SendMailNoti(0, Desc, "اصدار فاتورة علي مشروع", BranchId, UserId, userCounter.UserId ?? 0);
+
+
+                            var htmlBody = "";
+
+
+                            htmlBody = @"<!DOCTYPE html>
+                                            <html>
+                                             <head></head>
+                                            <body  style='direction: rtl;'>
+                                             
+                                                <table style=' border: 1px solid black; border-collapse: collapse;' align='center'>
+                                                  <tr>
+                                                    <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>رقم المشروع</th>
+                                                    <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>اسم العميل</th>
+                                                    <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>الفرع </th>
+                                                  </tr>
+                                                    <tr>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + Project.ProjectNo + @"</td>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + Project.CustomerName + @"</td>
+                                              <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + branch.NameAr + @"</td>
+                                                    </tr>
+                                                </table>
+                                            </body>
+                                            </html>";
+                            //SendMailNoti(projectId, Desc, "ايقاف مشروع", BranchId, UserId, proj.MangerId ?? 0);
+                            SendMail_ProjectStamp(BranchId, UserId, userCounter.UserId ?? 0, "اصدار فاتورة علي مشروع", htmlBody, Url, ImgUrl, 6, true);
+                        }
+                        catch (Exception ex)
+                        {
+
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate5 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote5 = "فشل في ارسال ميل لمن لدية صلاحية فاتورة";
+                            _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate5, UserId, BranchId, ActionNote5, 0);
+                            //-----------------------------------------------------------------------------------------------------------------
+                        }
+
+
+                    }
+
+                }
+
+                var UserNotifPriv_Mobile = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(3253).Result;
+                if (UserNotifPriv_Mobile.Count() != 0)
+                {
+                    foreach (var userCounter in UserNotifPriv_Mobile)
+                    {
+                        try
+                        {
+                            var userObj = _UsersRepository.GetById(userCounter.UserId ?? 0);
+                            var NotStr = " المستخدم " + userCounter.FullName + " تم اصدار فاتورة لمشروع رقم " + Project.ProjectNo + " للعميل " + Project.CustomerName + " فرع " + branch.NameAr;
+                            if (userObj.Mobile != null && userObj.Mobile != "")
+                            {
+                                var result = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate6 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote6 = "فشل في ارسال SMS لمن لدية صلاحية فاتورة";
+                            _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate6, UserId, BranchId, ActionNote6, 0);
+                            //-----------------------------------------------------------------------------------------------------------------
+                        }
+
+                    }
+                }
+            }
+            _TaamerProContext.SaveChanges();
+            return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.ProjectSaved, ReturnedStr = Project.ProjectId.ToString() };
+        }
 
         public bool SendMail_ProjectSavedWrong(int BranchId, string textBody, bool IsBodyHtml = false)
         {
@@ -2274,8 +3610,8 @@ namespace TaamerProject.Service.Services
                 var Org = _OrganizationsRepository.GetById(Organization);
 
                 var mail = new MailMessage();
-                var email = "noreply-tameer@bayanatech.com.sa";
-                var password = "eA4LQkrbQdCm5jqt";
+                var email = "no-reply@tameercloud.com";
+                var password = "gwk2!8Y9n@";
                 var loginInfo = new NetworkCredential(email, password);
                 mail.From = new MailAddress(email, "TAMEER-CLOUD-SYSTEM");
 
@@ -2285,7 +3621,7 @@ namespace TaamerProject.Service.Services
                 mail.Body = textBody;
                 mail.IsBodyHtml = IsBodyHtml;
                 System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                var smtpClient = new SmtpClient("mail.bayanatech.com.sa");
+                var smtpClient = new SmtpClient("smtp.hostinger.com");
                 smtpClient.EnableSsl = true;
                 smtpClient.UseDefaultCredentials = false;
                 smtpClient.Port = 587;
