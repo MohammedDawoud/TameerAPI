@@ -6516,6 +6516,50 @@ namespace TaamerProject.Service.Services
                             return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
                         }
                     }
+                    string formattedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+
+                    if (ProTaskUpdated != null && ProTaskUpdated.ProjectId > 0)
+                    {
+                        var projectData = _ProjectRepository.GetProjectByIdSome("rtl", ProTaskUpdated.ProjectId ?? 0).Result;
+                        if (projectData != null && projectData.CustomerId > 0)
+                        {
+
+                            //var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(projectData.MangerId ?? 0).Result;
+                            //if (UserNotifPriv.Count() != 0)
+                            //{
+                            //    if (UserNotifPriv.Contains(3202))
+                            //    {
+                            var UserNotification = new Notification();
+                            UserNotification.ReceiveUserId = ProTaskUpdated.UserId;
+                            UserNotification.Name = " انهاء مهمة";
+                            UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                            UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")); ;
+                            UserNotification.SendUserId = UserId;
+                            UserNotification.Type = 1; // notification
+                            UserNotification.Description = "تم انهاء المهمة  : " + ProTaskUpdated.DescriptionAr + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName ?? "";
+                            UserNotification.AllUsers = false;
+                            UserNotification.SendDate = DateTime.Now;
+                            UserNotification.ProjectId = ProTaskUpdated.ProjectId;
+                            UserNotification.TaskId = ProTaskUpdated.PhaseTaskId;
+                            UserNotification.AddUser = UserId;
+                            UserNotification.IsHidden = false;
+                            UserNotification.NextTime = null;
+                            UserNotification.AddDate = DateTime.Now;
+                            _TaamerProContext.Notification.Add(UserNotification);
+                   
+                            _notificationService.sendmobilenotification(ProTaskUpdated.UserId ?? 0, " انهاء المهمة ", "  تم انهاء المهمة : " + ProTaskUpdated.DescriptionAr + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + "");
+
+                            //}
+                            //if (UserNotifPriv.Contains(3201))
+                            //{
+                            var Desc = formattedDate + " بتاريخ " + ProTaskUpdated.DescriptionAr + "  انهاء المهمة ";
+
+                            SendMailFinishTask2(ProTaskUpdated, "  انهاء المهمة", BranchId, UserId, URL, ImgUrl, 1, 0, projectData.CustomerName ?? "", projectData.ProjectNo ?? "", projectData.MangerId ?? 0, projectData.ProjectMangerName ?? "");
+
+                          
+                        }
+
+                    }
 
                 }
 

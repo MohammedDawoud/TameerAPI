@@ -1378,7 +1378,7 @@ namespace TaamerProject.API.Controllers
                 // var file = Server.MapPath("~/dist/assets/images/logo.png");
                 var org = _organizationsservice.GetOrganizationDataLogin(_globalshared.Lang_G).Result;
             string resultLogoUrl = org.LogoUrl.Remove(0, 1);
-            var file = Path.Combine(resultLogoUrl);
+           var file = Path.Combine(resultLogoUrl);
 
             var result = _projectPhasesTasksservice.FinishTask(ProjectPhasesTasks, _globalshared.UserId_G, _globalshared.BranchId_G, url, file);
 
