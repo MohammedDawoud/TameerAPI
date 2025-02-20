@@ -909,7 +909,7 @@ namespace TaamerProject.Service.Services
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
                         var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
                         ExistInvoice.FirstOrDefault().IsDeleted = true;
-                        //voucher.IsDeleted = true;
+                        ExistInvoice.FirstOrDefault().DeleteUser = 100000;
                         var VoucDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
                         var TransaDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
                         if (VoucDetails.Count() > 0) _TaamerProContext.VoucherDetails.RemoveRange(VoucDetails);
@@ -1109,13 +1109,13 @@ namespace TaamerProject.Service.Services
                     _TaamerProContext.Transactions.AddRange(voucher.TransactionDetails);
 
                     _TaamerProContext.SaveChanges();
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 6 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.InvoiceValue == voucher.InvoiceValue).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 6 && s.YearId == yearid && s.InvoiceNumber == (VoucherUpdated!.InvoiceNumber ?? "0") && s.InvoiceValue == voucher.InvoiceValue).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
                         var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
                         ExistInvoice.FirstOrDefault().IsDeleted = true;
-                        //voucher.IsDeleted = true;
+                        ExistInvoice.FirstOrDefault().DeleteUser = 100000;
                         var VoucDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
                         var TransaDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
                         if (VoucDetails.Count() > 0) _TaamerProContext.VoucherDetails.RemoveRange(VoucDetails);
@@ -1374,7 +1374,7 @@ namespace TaamerProject.Service.Services
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
                         var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
                         ExistInvoice.FirstOrDefault().IsDeleted = true;
-                        //voucher.IsDeleted = true;
+                        ExistInvoice.FirstOrDefault().DeleteUser = 100000;
                         var VoucDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
                         var TransaDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
                         if (VoucDetails.Count() > 0) _TaamerProContext.VoucherDetails.RemoveRange(VoucDetails);
@@ -1567,13 +1567,13 @@ namespace TaamerProject.Service.Services
                     _TaamerProContext.Transactions.AddRange(voucher.TransactionDetails);
 
                     _TaamerProContext.SaveChanges();
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 6 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.InvoiceValue == voucher.InvoiceValue).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 6 && s.YearId == yearid && s.InvoiceNumber == (VoucherUpdated!.InvoiceNumber ?? "0") && s.InvoiceValue == voucher.InvoiceValue).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
                         var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
                         ExistInvoice.FirstOrDefault().IsDeleted = true;
-                        //voucher.IsDeleted = true;
+                        ExistInvoice.FirstOrDefault().DeleteUser = 100000;
                         var VoucDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
                         var TransaDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
                         if (VoucDetails.Count() > 0) _TaamerProContext.VoucherDetails.RemoveRange(VoucDetails);
@@ -1867,7 +1867,7 @@ namespace TaamerProject.Service.Services
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
                         var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
                         ExistInvoice.FirstOrDefault().IsDeleted = true;
-                        //voucher.IsDeleted = true;
+                        ExistInvoice.FirstOrDefault().DeleteUser = 100000;
                         var VoucDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
                         var TransaDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
                         if (VoucDetails.Count() > 0) _TaamerProContext.VoucherDetails.RemoveRange(VoucDetails);
@@ -2121,14 +2121,14 @@ namespace TaamerProject.Service.Services
                         }
                     }
                     _TaamerProContext.Transactions.AddRange(voucher.TransactionDetails);
-                    _TaamerProContext.SaveChanges();
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == voucher.Type && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue).ToList();
+                    _TaamerProContext.SaveChanges(); 
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == voucher.Type && s.YearId == yearid && s.InvoiceNumber == (VoucherUpdated!.InvoiceNumber ?? "0") && s.TotalValue == voucher.TotalValue).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
                         var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
                         ExistInvoice.FirstOrDefault().IsDeleted = true;
-                        //voucher.IsDeleted = true;
+                        ExistInvoice.FirstOrDefault().DeleteUser = 100000;
                         var VoucDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
                         var TransaDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
                         if (VoucDetails.Count() > 0) _TaamerProContext.VoucherDetails.RemoveRange(VoucDetails);
@@ -2518,7 +2518,7 @@ namespace TaamerProject.Service.Services
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
                         var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
                         ExistInvoice.FirstOrDefault().IsDeleted = true;
-                        //voucher.IsDeleted = true;
+                        ExistInvoice.FirstOrDefault().DeleteUser = 100000;
                         var VoucDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
                         var TransaDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
                         if (VoucDetails.Count() > 0) _TaamerProContext.VoucherDetails.RemoveRange(VoucDetails);
@@ -4443,7 +4443,7 @@ namespace TaamerProject.Service.Services
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
                         var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
                         ExistInvoice.FirstOrDefault().IsDeleted = true;
-                        //voucher.IsDeleted = true;
+                        ExistInvoice.FirstOrDefault().DeleteUser = 100000;
                         var VoucherDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
                         var TransactionDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
                         if(VoucherDetails.Count()>0) _TaamerProContext.VoucherDetails.RemoveRange(VoucherDetails);
@@ -5041,7 +5041,7 @@ namespace TaamerProject.Service.Services
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
                         var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
                         ExistInvoice.FirstOrDefault().IsDeleted = true;
-                        //voucher.IsDeleted = true;
+                        ExistInvoice.FirstOrDefault().DeleteUser = 100000;
                         var VoucherDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
                         var TransactionDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
                         if (VoucherDetails.Count() > 0) _TaamerProContext.VoucherDetails.RemoveRange(VoucherDetails);
@@ -5522,13 +5522,13 @@ namespace TaamerProject.Service.Services
 
                         _TaamerProContext.SaveChanges();
                         VoucherUpdated.QRCodeNum = "200010001000" + voucher.InvoiceId.ToString();
-                        var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue).ToList();
+                        var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == yearid && s.InvoiceNumber == VoucherUpdated.InvoiceNumber && s.TotalValue == voucher.TotalValue).ToList();
                         if (ExistInvoice.Count() > 1)
                         {
                             var invid = ExistInvoice.FirstOrDefault().InvoiceId;
                             var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
                             ExistInvoice.FirstOrDefault().IsDeleted = true;
-                            //voucher.IsDeleted = true;
+                            ExistInvoice.FirstOrDefault().DeleteUser = 100000;
                             var VoucherDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
                             var TransactionDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
                             if (VoucherDetails.Count() > 0) _TaamerProContext.VoucherDetails.RemoveRange(VoucherDetails);
@@ -8267,7 +8267,7 @@ namespace TaamerProject.Service.Services
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
                         var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
                         ExistInvoice.FirstOrDefault().IsDeleted = true;
-                        //voucher.IsDeleted = true;
+                        ExistInvoice.FirstOrDefault().DeleteUser = 100000;
                         var VoucherDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
                         var TransactionDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
                         if (VoucherDetails.Count() > 0) _TaamerProContext.VoucherDetails.RemoveRange(VoucherDetails);
@@ -9954,7 +9954,7 @@ namespace TaamerProject.Service.Services
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
                         ExistInvoice.FirstOrDefault().IsDeleted = true;
                         var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
-                        //voucher.IsDeleted = true;
+                        ExistInvoice.FirstOrDefault().DeleteUser = 100000;
                         var VoucherDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
                         var TransactionDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
                         if (VoucherDetails.Count() > 0) _TaamerProContext.VoucherDetails.RemoveRange(VoucherDetails);
@@ -11529,7 +11529,7 @@ namespace TaamerProject.Service.Services
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
                         var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
                         ExistInvoice.FirstOrDefault().IsDeleted = true;
-                        //voucher.IsDeleted = true;
+                        ExistInvoice.FirstOrDefault().DeleteUser = 100000;
                         var VoucherDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
                         var TransactionDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
                         if (VoucherDetails.Count() > 0) _TaamerProContext.VoucherDetails.RemoveRange(VoucherDetails);
@@ -13202,7 +13202,7 @@ namespace TaamerProject.Service.Services
                         var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
                         if (CustomerPaymentsUpdated != null) CustomerPaymentsUpdated.InvoiceId = invid2;
                         ExistInvoice.FirstOrDefault().IsDeleted = true;
-                        //voucher.IsDeleted = true;
+                        ExistInvoice.FirstOrDefault().DeleteUser = 100000;
                         var VoucherDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
                         var TransactionDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
                         if (VoucherDetails.Count() > 0) _TaamerProContext.VoucherDetails.RemoveRange(VoucherDetails);
@@ -13807,7 +13807,7 @@ namespace TaamerProject.Service.Services
                         var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
                         if (CustomerPaymentsUpdated != null) CustomerPaymentsUpdated.InvoiceId = invid2;
                         ExistInvoice.FirstOrDefault().IsDeleted = true;
-                        //voucher.IsDeleted = true;
+                        ExistInvoice.FirstOrDefault().DeleteUser = 100000;
                         var VoucherDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
                         var TransactionDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
                         if (VoucherDetails.Count() > 0) _TaamerProContext.VoucherDetails.RemoveRange(VoucherDetails);
@@ -14000,7 +14000,7 @@ namespace TaamerProject.Service.Services
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
                         var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
                         ExistInvoice.FirstOrDefault().IsDeleted = true;
-                        //voucher.IsDeleted = true;
+                        ExistInvoice.FirstOrDefault().DeleteUser = 100000;
                         var VoucDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
                         var TransaDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
                         if (VoucDetails.Count() > 0) _TaamerProContext.VoucherDetails.RemoveRange(VoucDetails);
@@ -14100,13 +14100,13 @@ namespace TaamerProject.Service.Services
                     }
 
                     _TaamerProContext.SaveChanges();
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 8 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 8 && s.YearId == yearid && s.InvoiceNumber == (VoucherUpdated!.InvoiceNumber??"0") && s.TotalValue == voucher.TotalValue).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
                         var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
                         ExistInvoice.FirstOrDefault().IsDeleted = true;
-                        //voucher.IsDeleted = true;
+                        ExistInvoice.FirstOrDefault().DeleteUser = 100000;
                         var VoucDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
                         var TransaDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
                         if (VoucDetails.Count() > 0) _TaamerProContext.VoucherDetails.RemoveRange(VoucDetails);
@@ -14278,7 +14278,7 @@ namespace TaamerProject.Service.Services
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
                         var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
                         ExistInvoice.FirstOrDefault().IsDeleted = true;
-                        //voucher.IsDeleted = true;
+                        ExistInvoice.FirstOrDefault().DeleteUser = 100000;
                         var VoucherDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
                         var TransactionDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
                         if (VoucherDetails.Count() > 0) _TaamerProContext.VoucherDetails.RemoveRange(VoucherDetails);

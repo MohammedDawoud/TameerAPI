@@ -1116,8 +1116,16 @@ namespace TaamerProject.Repository.Repositories
             var childList = _TaamerProContext.Accounts.Where(x => x.ParentId == ParentId && !x.IsDeleted).ToList();
             if (childList.Count() == 0)
             {
-                var parentAccountCode = _TaamerProContext.Accounts.Where(x => x.AccountId == ParentId).FirstOrDefault().Code;
-                return parentAccountCode + "01";
+                var parentAccount = _TaamerProContext.Accounts.Where(x => x.AccountId == ParentId).FirstOrDefault()!;
+                var parentAccountCode = parentAccount.Code;
+                var Code = "01";
+                if(parentAccount.Level==1){ Code = "01"; }
+                else if (parentAccount.Level == 2) { Code = "001"; }
+                else if (parentAccount.Level == 3) { Code = "001"; }
+                else if (parentAccount.Level == 4) { Code = "01"; }
+                else if (parentAccount.Level == 5) { Code = "01"; }
+                else { Code = "01"; }
+                return parentAccountCode + Code;
             }
             else
             {

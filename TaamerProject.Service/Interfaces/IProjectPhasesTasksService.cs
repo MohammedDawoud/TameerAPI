@@ -72,7 +72,14 @@ namespace TaamerProject.Service.Interfaces
       Task<IEnumerable<ProjectPhasesTasksVM>>GetProjectSubPhasesByProjectId(int MainPhaseId);
         //GeneralMessage SaveProjectPhasesTasks(Project Project, int UserId, int BranchId);
         GeneralMessage SaveProjectPhasesTasks(Project Project, int UserId, int BranchId, string Url, string ImgUrl);
+        GeneralMessage SaveProjectPhasesTasksPart1(Project Project, int UserId, int BranchId, string Url, string ImgUrl);
+        GeneralMessage SaveProjectPhasesTasksPart2(Project Project, int UserId, int BranchId, string Url, string ImgUrl);
+        GeneralMessage SaveProjectPhasesTasksPart3(Project Project, int UserId, int BranchId, string Url, string ImgUrl);
         GeneralMessage SaveProjectPhasesTasksNew(Project Project, int UserId, int BranchId, string Url, string ImgUrl);
+        GeneralMessage SaveProjectPhasesTasksNewPart1(Project Project, int UserId, int BranchId, string Url, string ImgUrl);
+        GeneralMessage SaveProjectPhasesTasksNewPart2(Project Project, int UserId, int BranchId, string Url, string ImgUrl);
+        GeneralMessage SaveProjectPhasesTasksNewPart3(Project Project, int UserId, int BranchId, string Url, string ImgUrl);
+
         GeneralMessage UpdateProjectPhasesTasks(Project Project, int UserId, int BranchId);
         GeneralMessage UpdateProjectPhasesTasksNew(Project Project, int UserId, int BranchId);
 

@@ -1018,6 +1018,98 @@ namespace TaamerProject.API.Controllers
 
         }
 
+        [HttpPost("SaveProjectPhasesTasksPart1")]
+        public IActionResult SaveProjectPhasesTasksPart1(Project Project)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var org = _organizationsservice.GetOrganizationDataLogin(_globalshared.Lang_G).Result;
+
+            try
+            {
+                var url = Path.Combine("Email/MailStamp.html");
+                //var file = Server.MapPath("~/dist/assets/images/logo.png");
+                string resultLogoUrl = org.LogoUrl.Remove(0, 1);
+                var file = Path.Combine(resultLogoUrl);
+                var result = new GeneralMessage();
+                if (Project.NewSetting == true)
+                {
+                    result = _projectPhasesTasksservice.SaveProjectPhasesTasksNewPart1(Project, _globalshared.UserId_G, Project.BranchId, url, file);
+                }
+                else
+                {
+                    result = _projectPhasesTasksservice.SaveProjectPhasesTasksPart1(Project, _globalshared.UserId_G, Project.BranchId, url, file);
+                }
+
+                if (result.StatusCode == HttpStatusCode.OK)
+                {
+                    List<ProUserPrivileges> NewPrivs = new List<ProUserPrivileges>();
+                    foreach (var pri in Project.ProUserPrivileges)
+                    {
+                        pri.ProjectID = Convert.ToInt32(result.ReturnedStr);
+                        NewPrivs.Add(pri);
+                    }
+
+                    var result2 = _proUserPrivilegesService.SavePrivProList(NewPrivs, _globalshared.UserId_G, Project.BranchId);
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+
+                SendMail_ProjectSavedWrong("Part phase(0)" + " " + ex.Message + ">>>>" + ex.InnerException, false, org);
+                return Ok(new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "فشل في الحفظ", ReturnedStr = "Part (0)" + " " + ex.Message + ">>>>" + ex.InnerException });
+            }
+
+        }
+        [HttpPost("SaveProjectPhasesTasksPart2")]
+        public IActionResult SaveProjectPhasesTasksPart2(Project Project)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            try
+            {
+                var result = new GeneralMessage();
+                if (Project.NewSetting == true)
+                {
+                    result = _projectPhasesTasksservice.SaveProjectPhasesTasksNewPart2(Project, _globalshared.UserId_G, Project.BranchId, "", "");
+                }
+                else
+                {
+                    result = _projectPhasesTasksservice.SaveProjectPhasesTasksPart2(Project, _globalshared.UserId_G, Project.BranchId, "", "");
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "فشل في الحفظ", ReturnedStr = "Part (0)" + " " + ex.Message + ">>>>" + ex.InnerException });
+            }
+
+        }
+        [HttpPost("SaveProjectPhasesTasksPart3")]
+        public IActionResult SaveProjectPhasesTasksPart3(Project Project)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            try
+            {
+                var result = new GeneralMessage();
+                if (Project.NewSetting == true)
+                {
+                    result = _projectPhasesTasksservice.SaveProjectPhasesTasksNewPart3(Project, _globalshared.UserId_G, Project.BranchId, "", "");
+                }
+                else
+                {
+                    result = _projectPhasesTasksservice.SaveProjectPhasesTasksPart3(Project, _globalshared.UserId_G, Project.BranchId, "", "");
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "فشل في الحفظ", ReturnedStr = "Part (0)" + " " + ex.Message + ">>>>" + ex.InnerException });
+            }
+
+        }
+
         [HttpPost("SendMail_ProjectSavedWrong")]
         public bool SendMail_ProjectSavedWrong(string textBody, bool IsBodyHtml, OrganizationsVM Org)
         {
