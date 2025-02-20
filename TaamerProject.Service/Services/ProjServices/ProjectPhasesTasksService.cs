@@ -4353,9 +4353,10 @@ namespace TaamerProject.Service.Services
                                         UserNotification.NextTime = null;
                                         UserNotification.AddDate = DateTime.Now;
                                         _TaamerProContext.Notification.Add(UserNotification);
-                                        _notificationService.sendmobilenotification(ProjectPhasesTasks.UserId ?? 0, "مهمة جديدة", "لديك مهمه جديدة : " + ProTaskUpdated.DescriptionAr + ":" + cust.CustomerNameAr + " بعد تحويلها من " + _UsersRepository.GetById(userFrom ?? 0).FullName + " " + "فرع  " + branch.NameAr + "");
-
                                 _TaamerProContext.SaveChanges();
+
+                                _notificationService.sendmobilenotification(ProjectPhasesTasks.UserId ?? 0, "مهمة جديدة", "لديك مهمه جديدة : " + ProTaskUpdated.DescriptionAr + ":" + cust.CustomerNameAr + " بعد تحويلها من " + _UsersRepository.GetById(userFrom ?? 0).FullName + " " + "فرع  " + branch.NameAr + "");
+
                                 if (projct != null && projct.MangerId != null && projct.MangerId != 0)
                                 {
                                     var managernot = new Notification();

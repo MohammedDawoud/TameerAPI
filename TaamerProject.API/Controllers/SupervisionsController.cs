@@ -215,7 +215,9 @@ namespace TaamerProject.API.Controllers
         public IActionResult ReciveSuper(int SupervisionId)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            var result = _supervisionsservice.ReciveSuper(SupervisionId, _globalshared.UserId_G, _globalshared.BranchId_G);
+            var url = Path.Combine("Email/MailStamp.html");
+            var file = Path.Combine("distnew/images/logo.png");
+            var result = _supervisionsservice.ReciveSuper(SupervisionId, _globalshared.UserId_G, _globalshared.BranchId_G, url, file);
             return Ok(result);
         }
         [HttpPost("OutlineChangeSave")]

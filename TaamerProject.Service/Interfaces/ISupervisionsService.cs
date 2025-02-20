@@ -25,7 +25,7 @@ namespace TaamerProject.Service.Interfaces
 
 
         GeneralMessage ReadSupervision(int SupervisionId, int UserId, int BranchId);
-        GeneralMessage ReciveSuper(int SupervisionId, int UserId, int BranchId);
+        GeneralMessage ReciveSuper(int SupervisionId, int UserId, int BranchId, string Url, string ImgUrl);
         GeneralMessage OutlineChangeSave(int SupervisionId, string OutlineChangetxt1, string OutlineChangetxt2, string OutlineChangetxt3, int UserId, int BranchId);
 
         GeneralMessage PointsNotWrittenSave(int SupervisionId, string PointsNotWrittentxt1, string PointsNotWrittentxt2, string PointsNotWrittentxt3, int UserId, int BranchId);

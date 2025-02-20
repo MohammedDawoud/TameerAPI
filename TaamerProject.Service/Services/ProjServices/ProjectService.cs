@@ -1899,6 +1899,8 @@ namespace TaamerProject.Service.Services
         {
             try
             {
+                List<int> usersnote = new List<int>();
+
                 if (Reasontype != 3)
                 {
                     var projectContracts = _TaamerProContext.Contracts.Where(s => s.IsDeleted == false && s.ProjectId == projectId);
@@ -1956,59 +1958,139 @@ namespace TaamerProject.Service.Services
 
                 ////////////////////////////////////////////////////
                 string formattedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                var resn = _TaamerProContext.Pro_projectsReasons.Where(x => x.ReasonsId == ReasonsId).FirstOrDefault();
+                //var phasesTasks = _ProjectPhasesTasksRepository.GetMatching(s => s.IsDeleted == false && s.ProjectId == projectId && s.Type == 3 && s.IsMerig == -1 && s.Status == 3 && s.Active == true);
 
-                var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(proj.MangerId ?? 0).Result;
-                if (UserNotifPriv.Count() != 0)
+                //foreach (var phase in phasesTasks)
+                //{
+                //    phase.Status = 2;
+                //    usersnote.Add(phase.UserId.Value);
+
+                //}
+
+                try
                 {
-                    if (UserNotifPriv.Contains(3232))
+                    var ListOfPrivNotify = new List<Notification>();
+                    usersnote.Add(proj.MangerId.Value);
+                    var worker = _TaamerProContext.ProUserPrivileges
+                         .Where(x => x.ProjectID == projectId)
+                         .Select(x => x.UserId)
+                         .Where(id => id.HasValue)  // Filters non-null values if UserId is int?
+                         .Select(id => id.Value)    // Converts int? to int
+                         .ToList();
+
+                    usersnote.AddRange(worker);
+                    if (usersnote.Count() != 0)
                     {
-                        var UserNotification = new Notification();
-                        UserNotification.ReceiveUserId = proj.MangerId;
-                        UserNotification.Name = "Resources.FinishProject";
-                        UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
-                        UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")); ;
-                        UserNotification.SendUserId = 1;
-                        UserNotification.Type = 1; // notification
-                        UserNotification.Description = "تم انهاء و تحويل  المشروع رقم  : " + proj.ProjectNo + " من جاري الي الارشيف  ";// /*+ _usersRepository.GetById(userFrom).FullName + " الي  " + _usersRepository.GetById(ToUserId).FullName*/;
-                        UserNotification.AllUsers = false;
-                        UserNotification.SendDate = DateTime.Now;
-                        UserNotification.ProjectId = proj.ProjectId;
-                        UserNotification.TaskId = 0;
-                        UserNotification.AddUser = UserId;
-                        UserNotification.IsHidden = false;
-                        UserNotification.NextTime = null;
-                        UserNotification.AddDate = DateTime.Now;
-                        _TaamerProContext.Notification.Add(UserNotification);
-                        _notificationService.sendmobilenotification(proj.MangerId ?? 0, Resources.FinishProject, "تم انهاء و تحويل  المشروع رقم  : " + proj.ProjectNo + " من جاري الي الارشيف  ");
+                        var manager = _usersRepository.GetById(proj.MangerId.Value);
+                        var updatetduse = _usersRepository.GetById(UserId);
 
-                    }
-                    var body = "";
-                    if (UserNotifPriv.Contains(3231))
-                    {
-                        body = "<table border='1'style='text-align:center;padding:10px;'><tr><th style='border=1px solid #eee'>رقم المشروع  </th><th>اسم العميل  </th><th>التاريخ </th><th>الساعة </th><th>بواسطة </th><th>الفرع </th></tr><tr><td>" + proj.ProjectNo + "</td><td>" + customer.CustomerNameAr + "</td><td>" + DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "</td><td>" + DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture) + "</td><td>" + _usersRepository.GetById((int)proj.MangerId).FullName + "</td><td>" + _BranchesRepository.GetById(BranchId).NameAr + "</td></tr></table>";
-
-
-                        SendMail_ProjectStamp(BranchId, UserId, proj.MangerId ?? 0, "انهاء مشروع", body, Url, ImgUrl, 3, true);
-
-                        //SendMailNoti2(proj.ProjectId, proj, "تم انهاء المشروع وتحويلة الي قسم الارشيف", BranchId, UserId, proj.MangerId ?? 0);
-
-                    }
-                    if (UserNotifPriv.Contains(3233))
-                    {
-                        var userObj = _usersRepository.GetById(proj.MangerId ?? 0);
-                        var NotStr = formattedDate + " بتاريخ " + " من جاري الي الارشيف " + proj.ProjectNo + " انهاء و تحويل المشروع  ";
-                        if (userObj.Mobile != null && userObj.Mobile != "")
+                        foreach (var usr in usersnote.Distinct())
                         {
-                            var result = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
+
+                            Users user = _usersRepository.GetById(usr);
+
+                            var UserNotification = new Notification
+                            {
+                                ReceiveUserId = usr,
+                                Name = "Resources.Pro_Projectmanagement",
+                                Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
+                                HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
+                                SendUserId = 1,
+                                Type = 1, // notification
+                                Description = " تم انهاء المشروع   رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + "وتحويلة من جاري الي الارشيف" +" بسبب " + resn.NameAr,
+                                AllUsers = false,
+                                SendDate = DateTime.Now,
+                                ProjectId = projectId,
+                                TaskId = 0,
+                                BranchId = BranchId,
+                                AddUser = UserId,
+                                AddDate = DateTime.Now,
+                                IsHidden = false,
+                                NextTime = null,
+                            };
+                            _TaamerProContext.Notification.Add(UserNotification);
+                            _TaamerProContext.SaveChanges();
+
+                            _notificationService.sendmobilenotification(usr, "  انهاء المشروع وتحويلة الي الارشيف", " تم انهاء مشروع رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + " وتحويلة من جاري الي الارشيف" + " بسبب " + resn.NameAr);
+
+                            var htmlBody = "";
+
+
+                            //var Desc = "Dear : " + user.FullName + " Project No " + proj.ProjectNo + " For Customer " + customer.CustomerNameAr + " has working ";
+
+
+
+                            htmlBody = @"<!DOCTYPE html>
+                                            <html>
+                                             <head></head>
+                                            <body  style='direction: rtl;'>
+                                             
+                                                <table style=' border: 1px solid black; border-collapse: collapse;' align='center'>
+                                                  <tr>
+                                                    <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>رقم المشروع</th>
+                                                    <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + proj.ProjectNo + @"</td>
+                                                  </tr>
+                                                    <tr>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>اسم العميل</td>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + customer.CustomerNameAr + @"</td>
+                                              
+                                                    </tr>
+                                                    <tr>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>مدير المشروع </td>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + manager.FullNameAr + @"</td>
+                                              
+                                                    </tr>
+       
+                                                                <tr>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>تاريخ الانهاء  </td>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + DateTime.Now.Date + @"</td>
+                                              
+                                                    </tr>
+                                                                     <tr>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>تم الانهاء بواسطة  </td>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + updatetduse.FullNameAr + @"</td>
+                                              
+                                                    </tr>
+   <tr>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>  سبب انهاء المشروع   </td>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + Reasontext + @"</td>
+                                              
+                                                    </tr>
+
+                                                    <tr>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>  السبب   </td>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + resn.NameAr + @"</td>
+                                              
+                                                    </tr>
+
+                                                </table>
+                                            </body>
+                                            </html>";
+                            //SendMailNoti(projectId, Desc, "ايقاف مشروع", BranchId, UserId, proj.MangerId ?? 0);
+                            SendMail_ProjectStamp(BranchId, UserId, usr, "انهاء مشروع وتحويلة من جاري الي الارشيف", htmlBody, Url, ImgUrl, 1, true);
+
+
+
+                            //SendMailNoti(projectId, Desc, "تشغيل مشروع", BranchId, UserId, proj.MangerId ?? 0);
+                            //}
+                            //if (UserNotifPriv.Contains(343))
+                            //{
+                            //var userObj = _usersRepository.GetById(userCounter.UserId);
+                            var NotStr = "Dear : " + user.FullName + " Project No " + proj.ProjectNo + " For Customer " + customer.CustomerNameAr + " has working ";
+                            if (user.Mobile != null && user.Mobile != "")
+                            {
+                                var result = _userNotificationPrivilegesService.SendSMS(user.Mobile, NotStr, UserId, BranchId);
+                            }
+                            //}
                         }
                     }
 
+
                 }
-
-
-                if (whichClickDesc != 0)
+                catch (Exception ex)
                 {
-                    SendGeneralCustomerEmailandSMS(customer, proj, TypeId, UserId, BranchId, whichClickDesc);
+
                 }
 
 

@@ -143,14 +143,15 @@ namespace TaamerProject.Service.Services
                     var ListOfPrivNotify = new List<Notification>();
 
                    // var project = _ProjectRepository.GetById(supervisions.ProjectId);
-                    Project? project =   _TaamerProContext.Project.Where(s => s.ProjectId == supervisions.ProjectId).FirstOrDefault();
+                    Project? project =   _TaamerProContext.Project.Where(s => s.ProjectId == supervisions.ProjectId).Include(x=>x.customer).FirstOrDefault();
 
-                    var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(supervisions.ReceivedEmpId ?? 0).Result;
-                    if (UserNotifPriv.Count() != 0)
-                    {
-                        if (UserNotifPriv.Contains(3182))
-                        {
-                            ListOfPrivNotify.Add(new Notification
+                    var customer = _TaamerProContext.Customer.Where(x => x.CustomerId == project.CustomerId).FirstOrDefault();
+                    //var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(supervisions.ReceivedEmpId ?? 0).Result;
+                    //if (UserNotifPriv.Count() != 0)
+                    //{
+                        //if (UserNotifPriv.Contains(3182))
+                        //{
+                          var notification =new Notification
                             {
                                 ReceiveUserId = supervisions.ReceivedEmpId,
                                 Name = "اضافة طلعة اشراف",
@@ -167,15 +168,26 @@ namespace TaamerProject.Service.Services
                                 AddDate = DateTime.Now,
                                 IsHidden = false,
                                 IsDeleted = false,
-                            });
+                            };
+                    _TaamerProContext.Notification.Add(notification);
+                    _TaamerProContext.SaveChanges();
+                            _notificationService.sendmobilenotification(supervisions.ReceivedEmpId??0, "اضافة طلعة اشراف", " أضافة طلعة اشراف علي مشروع رقم   : " + project?.ProjectNo + " للعميل " + customer?.CustomerNameAr);
+                    if(project !=null && project.MangerId != null)
+                    {
+                        Notification mangernotification = new Notification();
+                        mangernotification = notification;
+                        mangernotification.NotificationId = 0;
+                        mangernotification.ReceiveUserId = project.MangerId;
+                        _TaamerProContext.Notification.Add(mangernotification);
+                        _TaamerProContext.SaveChanges();
+                        _notificationService.sendmobilenotification(project.MangerId ?? 0, "اضافة طلعة اشراف", " أضافة طلعة اشراف علي مشروع رقم   : " + project?.ProjectNo + " للعميل " + customer?.CustomerNameAr);
+                    }
+                    //}
 
-                            _notificationService.sendmobilenotification(supervisions.ReceivedEmpId??0, "اضافة طلعة اشراف", " أضافة طلعة اشراف علي مشروع رقم   : " + project?.ProjectNo + " للعميل " + project?.customer?.CustomerNameAr);
-                        }
-
-                        if (UserNotifPriv.Contains(3181))
-                        {
-                            var htmlBody = "";
-                            var Desc = project?.customer?.CustomerNameAr + " للعميل " + project?.ProjectNo + " أضافة طلعة اشراف علي مشروع رقم  ";
+                    //if (UserNotifPriv.Contains(3181))
+                    //{
+                    var htmlBody = "";
+                            var Desc = customer?.CustomerNameAr + " للعميل " + project?.ProjectNo + " أضافة طلعة اشراف علي مشروع رقم  ";
                             htmlBody = @"<!DOCTYPE html>
                                             <html>
                                              <head></head>
@@ -184,11 +196,13 @@ namespace TaamerProject.Service.Services
                                                 <table style=' border: 1px solid black; border-collapse: collapse;' align='center'>
                                                   <tr>
                                                     <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>رقم المشروع</th>
-                                                    <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>اسم العميل</th>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + project?.ProjectNo + @"</td>
+
                                                   </tr>
                                                     <tr>
-                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + project?.ProjectNo + @"</td>
-                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + project?.customer?.CustomerNameAr + @"</td>
+                                                    <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>اسم العميل</th>
+
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + customer?.CustomerNameAr + @"</td>
                                               
                                                     </tr>
                                                 </table>
@@ -196,10 +210,13 @@ namespace TaamerProject.Service.Services
                                             </html>";
                             //SendMailNoti(supervisions.ProjectId ?? 0, Desc, "اضافة طلعة اشراف", BranchId, UserId, supervisions.ReceivedEmpId ?? 0);
                             SendMail_ProjectStamp(BranchId, UserId, supervisions.ReceivedEmpId ?? 0, "اضافة طلعة اشراف", htmlBody, Url, ImgUrl, 1, true);
-
-                        }
-
+                    if (project.MangerId != null)
+                    {
+                        SendMail_ProjectStamp(BranchId, UserId, project.MangerId ?? 0, "اضافة طلعة اشراف", htmlBody, Url, ImgUrl, 1, true);
                     }
+                        //}
+
+                    //}
 
                     _TaamerProContext.SaveChanges();
                     //-----------------------------------------------------------------------------------------------------------------
@@ -816,7 +833,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public GeneralMessage ReciveSuper(int SupervisionId, int UserId, int BranchId)
+        public GeneralMessage ReciveSuper(int SupervisionId, int UserId, int BranchId, string Url, string ImgUrl)
         {
             try
             {
@@ -826,6 +843,85 @@ namespace TaamerProject.Service.Services
                 {
                     supervisions.SuperStatus = 2;
                     _TaamerProContext.SaveChanges();
+                    try
+                    {
+                        Project? project = _TaamerProContext.Project.Where(s => s.ProjectId == supervisions.ProjectId).Include(x => x.customer).FirstOrDefault();
+
+                        var customer = _TaamerProContext.Customer.Where(x => x.CustomerId == project.CustomerId).FirstOrDefault();
+                        //var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(supervisions.ReceivedEmpId ?? 0).Result;
+                        //if (UserNotifPriv.Count() != 0)
+                        //{
+                        //if (UserNotifPriv.Contains(3182))
+                        //{
+                        var notification = new Notification
+                        {
+                            ReceiveUserId = supervisions.ReceivedEmpId,
+                            Name = "استلام طلعة اشراف",
+                            Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
+                            HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
+                            SendUserId = UserId,
+                            Type = 1, // notification
+                            Description = " استلام طلعة اشراف علي مشروع رقم   : " + project?.ProjectNo + " للعميل " + project?.customer?.CustomerNameAr,
+                            AllUsers = false,
+                            SendDate = DateTime.Now,
+                            ProjectId = supervisions.ProjectId,
+                            TaskId = 0,
+                            AddUser = UserId,
+                            AddDate = DateTime.Now,
+                            IsHidden = false,
+                            IsDeleted = false,
+                        };
+                        _TaamerProContext.Notification.Add(notification);
+                        _TaamerProContext.SaveChanges();
+                        _notificationService.sendmobilenotification(supervisions.ReceivedEmpId ?? 0, "استلام طلعة اشراف", " استلام طلعة اشراف علي مشروع رقم   : " + project?.ProjectNo + " للعميل " + customer?.CustomerNameAr);
+                        if (project != null && project.MangerId != null)
+                        {
+                            Notification mangernotification = new Notification();
+                            mangernotification = notification;
+                            mangernotification.NotificationId = 0;
+                            mangernotification.ReceiveUserId = project.MangerId;
+                            _TaamerProContext.Notification.Add(mangernotification);
+                            _TaamerProContext.SaveChanges();
+                            _notificationService.sendmobilenotification(project.MangerId ?? 0, "استلام طلعة اشراف", " استلام طلعة اشراف علي مشروع رقم   : " + project?.ProjectNo + " للعميل " + customer?.CustomerNameAr);
+                        }
+                        //}
+
+                        //if (UserNotifPriv.Contains(3181))
+                        //{
+                        var htmlBody = "";
+                        var Desc = customer?.CustomerNameAr + " للعميل " + project?.ProjectNo + " استلام طلعة اشراف علي مشروع رقم  ";
+                        htmlBody = @"<!DOCTYPE html>
+                                            <html>
+                                             <head></head>
+                                            <body  style='direction: rtl;'>
+                                             
+                                                <table style=' border: 1px solid black; border-collapse: collapse;' align='center'>
+                                                  <tr>
+                                                    <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>رقم المشروع</th>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + project?.ProjectNo + @"</td>
+
+                                                  </tr>
+                                                    <tr>
+                                                    <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>اسم العميل</th>
+
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + customer?.CustomerNameAr + @"</td>
+                                              
+                                                    </tr>
+                                                </table>
+                                            </body>
+                                            </html>";
+                        //SendMailNoti(supervisions.ProjectId ?? 0, Desc, "اضافة طلعة اشراف", BranchId, UserId, supervisions.ReceivedEmpId ?? 0);
+                        SendMail_ProjectStamp(BranchId, UserId, supervisions.ReceivedEmpId ?? 0, "استلام طلعة اشراف", htmlBody, Url, ImgUrl, 2, true);
+                        if (project.MangerId != null)
+                        {
+                            SendMail_ProjectStamp(BranchId, UserId, project.MangerId ?? 0, "استلام طلعة اشراف", htmlBody, Url, ImgUrl, 2, true);
+                        }
+
+                    }
+                    catch(Exception ex)
+                    {
+
+                    }
 
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
@@ -1270,7 +1366,13 @@ namespace TaamerProject.Service.Services
                     title = "تم اضافة طلعة اشراف علي المشروع التالي";
                     body = PopulateBody(textBody, _UsersRepository.GetUserById(ReceivedUser, "rtl").Result.FullName, title, "مع تحيات قسم ادارة المشاريع", Url, org.NameAr);
                 }
-            
+
+                if (type == 2)
+                {
+                    title = "تم استلام طلعة اشراف علي المشروع التالي";
+                    body = PopulateBody(textBody, _UsersRepository.GetUserById(ReceivedUser, "rtl").Result.FullName, title, "مع تحيات قسم ادارة المشاريع", Url, org.NameAr);
+                }
+
                 LinkedResource logo = new LinkedResource(ImgUrl);
                 logo.ContentId = "companylogo";
                 // done HTML formatting in the next line to display my bayanatech logo

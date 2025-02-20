@@ -102,7 +102,7 @@ namespace TaamerProject.Service.Services
                     var notitxt = "تم رفع مشروع رقم " + Project.ProjectNo + "الي " + distinationtype.NameAr;
                     //var listusers = new List<int>();
                     var listusers = _TaamerProContext.ProjectWorkers.Where(x => x.IsDeleted == false && x.ProjectId == Project.ProjectId).ToList().Select(x => x.UserId).Distinct().ToList();
-
+                    var tasksuser = _TaamerProContext.ProjectPhasesTasks.Where(x => x.IsDeleted == false && x.ProjectId == Project.ProjectId && x.Type==3 && x.Status !=4).Distinct().ToList().Select(x=>x.UserId).ToList();
                     strbody = @"<!DOCTYPE html><html lang = '' ><head>
                                                 <style>
                                                 .square {
@@ -116,6 +116,7 @@ namespace TaamerProject.Service.Services
                             <table align = 'center' border = '1' ><tr> <td>  رقم المشروع</td><td>" + Project.ProjectNo + @"</td> </tr> <tr> <td> اسم العميل  </td> <td>" + customer.CustomerNameAr + @"</td>
                              </tr>  <tr> <td> الفرع</td> <td>" + branch.NameAr + @"</td></tr><tr> <td> مدير المشروع</td> <td>" + Manager.FullNameAr + @"</td></tr><tr> <td> إسم الجهة الخارجية</td> <td>" + distinationtype.NameAr + @"</td></tr></table> <h7> مع تحيات قسم ادارة المشاريع</h7>                         
                             </ body ></ html > ";
+                    listusers.AddRange(tasksuser);
                     if (listusers != null && listusers.Count() > 0)
                     {
                         foreach (var usr in listusers)
@@ -301,6 +302,8 @@ namespace TaamerProject.Service.Services
                     var branch = _TaamerProContext.Branch.Where(x => x.BranchId == Proj.BranchId).FirstOrDefault();
                     //var listusers = new List<int>();
                     var listusers = _TaamerProContext.ProjectWorkers.Where(x => x.IsDeleted == false && x.ProjectId == Proj.ProjectId).ToList().Select(x => x.UserId).Distinct().ToList();
+                    var tasksuser = _TaamerProContext.ProjectPhasesTasks.Where(x => x.IsDeleted == false && x.ProjectId == Proj.ProjectId && x.Type == 3 && x.Status != 4).Distinct().ToList().Select(x => x.UserId).ToList();
+
                     var status = DestinationsUpdated.Status == 2 ? "موافقة" : "رفض";
                     var notitxt = " تم رد  " + distinationtype.NameAr + "بال " + status + "علي مشروع رقم" + Proj.ProjectNo;
 
@@ -317,6 +320,8 @@ namespace TaamerProject.Service.Services
                             <table align = 'center' border = '1' ><tr> <td>  رقم المشروع</td><td>" + Proj.ProjectNo + @"</td> </tr> <tr> <td> اسم العميل  </td> <td>" + customer.CustomerNameAr + @"</td>
                              </tr>  <tr> <td> الفرع</td> <td>" + branch.NameAr + @"</td></tr><tr> <td> مدير المشروع</td> <td>" + Manager.FullNameAr + @"</td></tr><tr> <td> إسم الجهة الخارجية</td> <td>" + distinationtype.NameAr + @"</td></tr><tr> <td> حالة الرد </td> <td>" + status + @"</td></tr></table> <h7> مع تحيات قسم ادارة المشاريع</h7>                         
                             </ body ></ html > ";
+                    listusers.AddRange(tasksuser);
+
                     if (listusers != null && listusers.Count() > 0)
                     {
                         foreach (var usr in listusers)
