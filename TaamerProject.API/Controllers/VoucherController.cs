@@ -1155,7 +1155,7 @@ namespace TaamerProject.API.Controllers
         [HttpPost("SaveVoucherP")]
         public IActionResult SaveVoucherP(Invoices voucher)
         {
-            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext); //global
 
             var VoucherDatetime = DateTime.ParseExact(voucher.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
             if (_globalshared.YearId_G != VoucherDatetime.Year)
