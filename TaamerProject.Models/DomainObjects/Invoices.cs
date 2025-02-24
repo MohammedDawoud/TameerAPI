@@ -43,7 +43,7 @@ namespace TaamerProject.Models
         public int? ProjectId { get; set; }
         public int? ToAccountId { get; set; }
         public short? VoucherType { get; set; }
-        public int? ToInvoiceId { get; set; }
+        public string? ToInvoiceId { get; set; }
         public bool? IsTax { get; set; }
         public decimal? TaxAmount { get; set; }
         public short? PayType { get; set; }

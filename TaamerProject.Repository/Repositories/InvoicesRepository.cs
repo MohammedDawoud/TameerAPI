@@ -8117,11 +8117,11 @@ namespace TaamerProject.Repository.Repositories
         }
 
 
-        public async Task<InvoicesVM> GetInvoiceByNo(int voucherNo, int YearId)
+        public async Task<InvoicesVM> GetInvoiceByNo(string voucherNo, int YearId)
         {
             try
             {
-                var inv = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && Convert.ToInt32(s.InvoiceNumber )== voucherNo && s.YearId == YearId ).Select(x => new InvoicesVM
+                var inv = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.InvoiceNumber == voucherNo && s.YearId == YearId ).Select(x => new InvoicesVM
                 {
                     InvoiceNumber = x.InvoiceNumber,
                     InvoiceId = x.InvoiceId,
@@ -8141,11 +8141,11 @@ namespace TaamerProject.Repository.Repositories
 
 
 
-        public async Task<InvoicesVM> GetInvoiceByNo_purches(int voucherNo, int YearId)
+        public async Task<InvoicesVM> GetInvoiceByNo_purches(string voucherNo, int YearId)
         {
             try
             {
-                var inv = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && Convert.ToInt32(s.InvoiceNumber) == voucherNo && s.YearId == YearId
+                var inv = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.InvoiceNumber == voucherNo && s.YearId == YearId
                 && s.Type== (int)VoucherType.Purches).Select(x => new InvoicesVM
                 {
                     InvoiceNumber = x.InvoiceNumber,

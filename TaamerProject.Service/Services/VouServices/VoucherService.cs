@@ -2798,7 +2798,7 @@ namespace TaamerProject.Service.Services
             {
                 decimal sumValue = 0;
                 var VoucherUpdated_Re = _TaamerProContext.Invoices.Where(s=>s.IsDeleted==false && s.Type==6 
-                && s.YearId== VoucherUpdated.YearId && s.ToInvoiceId== Convert.ToInt32(VoucherUpdated.InvoiceNumber)).ToList();
+                && s.YearId== VoucherUpdated.YearId && s.ToInvoiceId== VoucherUpdated.InvoiceNumber).ToList();
 
                 foreach(var item in VoucherUpdated_Re)
                 {
@@ -2891,7 +2891,7 @@ namespace TaamerProject.Service.Services
             {
                 decimal sumValue = 0;
                 var VoucherUpdated_Re = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 6
-                && s.YearId == VoucherUpdated.YearId && s.ToInvoiceId == Convert.ToInt32(VoucherUpdated.InvoiceNumber)).ToList();
+                && s.YearId == VoucherUpdated.YearId && s.ToInvoiceId == VoucherUpdated.InvoiceNumber).ToList();
 
                 foreach (var item in VoucherUpdated_Re)
                 {
@@ -2925,7 +2925,7 @@ namespace TaamerProject.Service.Services
             {
                 decimal sumValue = 0;
                 var VoucherUpdated_Re = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 5
-                && s.YearId == VoucherUpdated.YearId && s.ToInvoiceId == Convert.ToInt32(VoucherUpdated.InvoiceNumber)).ToList();
+                && s.YearId == VoucherUpdated.YearId && s.ToInvoiceId == VoucherUpdated.InvoiceNumber).ToList();
 
                 foreach (var item in VoucherUpdated_Re)
                 {
@@ -2959,7 +2959,7 @@ namespace TaamerProject.Service.Services
             {
                 decimal sumValue = 0;
                 var VoucherUpdated_Re = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 5
-                && s.YearId == VoucherUpdated.YearId && s.ToInvoiceId == Convert.ToInt32(VoucherUpdated.InvoiceNumber)).ToList();
+                && s.YearId == VoucherUpdated.YearId && s.ToInvoiceId == VoucherUpdated.InvoiceNumber).ToList();
 
                 foreach (var item in VoucherUpdated_Re)
                 {
@@ -2999,7 +2999,7 @@ namespace TaamerProject.Service.Services
                 {
                     decimal sumValue = 0;
                     var VoucherUpdated_Re = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 6
-                    && s.YearId == VoucherUpdated.YearId && s.ToInvoiceId == Convert.ToInt32(VoucherUpdated.InvoiceNumber));
+                    && s.YearId == VoucherUpdated.YearId && s.ToInvoiceId == VoucherUpdated.InvoiceNumber);
 
                     foreach (var item in VoucherUpdated_Re)
                     {
@@ -3031,7 +3031,7 @@ namespace TaamerProject.Service.Services
                 {
                     decimal sumValue = 0;
                     var VoucherUpdated_Re = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 5
-                    && s.YearId == VoucherUpdated.YearId && s.ToInvoiceId == Convert.ToInt32(VoucherUpdated.InvoiceNumber));
+                    && s.YearId == VoucherUpdated.YearId && s.ToInvoiceId == VoucherUpdated.InvoiceNumber);
 
                     foreach (var item in VoucherUpdated_Re)
                     {
@@ -17083,14 +17083,14 @@ namespace TaamerProject.Service.Services
           
         }
 
-        public async Task<InvoicesVM> GetInvoiceByNo(int VocherNo, int YearId)
+        public async Task<InvoicesVM> GetInvoiceByNo(string VocherNo, int YearId)
         {
 
             return await _InvoicesRepository.GetInvoiceByNo(VocherNo, YearId);
 
 
         }
-        public async Task<InvoicesVM> GetInvoiceByNo_purches(int VocherNo, int YearId)
+        public async Task<InvoicesVM> GetInvoiceByNo_purches(string VocherNo, int YearId)
         {
 
             return await _InvoicesRepository.GetInvoiceByNo_purches(VocherNo, YearId);
