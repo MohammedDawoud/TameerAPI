@@ -762,7 +762,7 @@ namespace TaamerProject.Service.Services
                     voucher.printBankAccount = false;
 
 
-                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
                         //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
@@ -1109,7 +1109,7 @@ namespace TaamerProject.Service.Services
                     _TaamerProContext.Transactions.AddRange(voucher.TransactionDetails);
 
                     _TaamerProContext.SaveChanges();
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 6 && s.YearId == yearid && s.InvoiceNumber == (VoucherUpdated!.InvoiceNumber ?? "0") && s.InvoiceValue == voucher.InvoiceValue).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 6 && s.YearId == yearid && s.InvoiceNumber == (VoucherUpdated!.InvoiceNumber ?? "0") && s.InvoiceValue == voucher.InvoiceValue && s.BranchId == BranchId).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
@@ -1176,7 +1176,7 @@ namespace TaamerProject.Service.Services
                     voucher.printBankAccount = false;
 
 
-                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
 
@@ -1670,7 +1670,7 @@ namespace TaamerProject.Service.Services
 
                     
 
-                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
                         //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
@@ -2255,7 +2255,7 @@ namespace TaamerProject.Service.Services
                     voucher.printBankAccount = false;
 
 
-                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
                         //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
@@ -3145,7 +3145,7 @@ namespace TaamerProject.Service.Services
                     voucher.ProjectId = voucher.ProjectId;
                     voucher.printBankAccount = false;
 
-                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId==BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
                         //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
@@ -3453,7 +3453,7 @@ namespace TaamerProject.Service.Services
                     voucher.AddDate = DateTime.Now;
                     voucher.ProjectId = voucher.ProjectId;
 
-                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
                         //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
@@ -4017,7 +4017,7 @@ namespace TaamerProject.Service.Services
 
                     voucher.InvUUID = GET_UUID();
 
-                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId==yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId==yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                     if(vouchercheck.Count()>0)
                     {
                         //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
@@ -4610,7 +4610,7 @@ namespace TaamerProject.Service.Services
 
                     voucher.InvUUID = GET_UUID();
 
-                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
                         //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
@@ -5711,7 +5711,7 @@ namespace TaamerProject.Service.Services
                         voucher.InvUUID = GET_UUID();
 
 
-                        var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                        var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                         if (vouchercheck.Count() > 0)
                         {
                             //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumberNotiCredit(voucher.Type, yearid, BranchId).Result;
@@ -6844,7 +6844,7 @@ namespace TaamerProject.Service.Services
                         voucher.InvUUID = GET_UUID();
 
 
-                        var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                        var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                         if (vouchercheck.Count() > 0)
                         {
                             //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumberNotiDepit(voucher.Type, yearid, BranchId).Result;
@@ -7837,7 +7837,7 @@ namespace TaamerProject.Service.Services
                     voucher.InvUUID = GET_UUID();
 
 
-                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid &&  s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid &&  s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
                         //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
@@ -9543,7 +9543,7 @@ namespace TaamerProject.Service.Services
                     voucher.ProjectId = voucher.ProjectId;
                     voucher.DunCalc = false;
 
-                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
                         //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
@@ -10130,7 +10130,7 @@ namespace TaamerProject.Service.Services
                         voucher.InvUUID = GET_UUID();
 
 
-                        var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                        var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                         if (vouchercheck.Count() > 0)
                         {
                             //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumberPurchaseNotiDepit(voucher.Type, yearid, BranchId).Result;
@@ -11131,7 +11131,7 @@ namespace TaamerProject.Service.Services
                     voucher.DunCalc = false;
 
 
-                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
                         //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
@@ -12758,7 +12758,7 @@ namespace TaamerProject.Service.Services
                     voucher.DunCalc = false;
 
 
-                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
                         //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
@@ -13360,7 +13360,7 @@ namespace TaamerProject.Service.Services
                     voucher.DunCalc = false;
 
 
-                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
                         //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
@@ -13932,7 +13932,7 @@ namespace TaamerProject.Service.Services
                     voucher.JournalNumber = null;
 
 
-                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
                         //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
@@ -14165,7 +14165,7 @@ namespace TaamerProject.Service.Services
                     voucher.DunCalc = voucher.DunCalc??false;
                     voucher.VoucherAdjustment = voucher.VoucherAdjustment ?? false;
 
-                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
                         //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
@@ -14616,7 +14616,7 @@ namespace TaamerProject.Service.Services
                     voucher.DunCalc = false;
 
 
-                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
                         //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
@@ -15450,7 +15450,7 @@ namespace TaamerProject.Service.Services
                     voucher.AddDate = DateTime.Now;
                     voucher.DunCalc = false;
 
-                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.InvoiceNumber == voucher.InvoiceNumber);
+                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
                     if (vouchercheck.Count() > 0)
                     {
                         //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
