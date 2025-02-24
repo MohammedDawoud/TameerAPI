@@ -119,7 +119,7 @@ namespace TaamerProject.Service.Services
             try
             {
                 //2 ynf3o
-                var Invoice = _InvoicesRepository.GetInvById(InvoiceId).Result;
+                var Invoice = _InvoicesRepository.GetInvById(InvoiceId).Result; 
                 //var Invoice = _InvoicesRepository.GetVoucherById(InvoiceId).Result;
 
                
