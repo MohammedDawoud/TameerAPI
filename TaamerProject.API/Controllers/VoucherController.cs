@@ -1260,7 +1260,7 @@ namespace TaamerProject.API.Controllers
         }
 
         [HttpPost("UpdateVoucher_recipient")]
-        public IActionResult UpdateVoucher_recipient(int InvoiceId)
+        public IActionResult UpdateVoucher_recipient(string InvoiceId)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var result = _voucherService.UpdateVoucherRecepient(InvoiceId, _globalshared.UserId_G, _globalshared.BranchId_G,_globalshared.YearId_G);
