@@ -158,7 +158,6 @@ namespace TaamerProject.Service.Services
                             var userObj = _usersRepository.GetById(user);
                             //mail
                             string OrgName = _OrganizationsRepository.GetBranchOrganization().Result.NameAr;
-                            var direectmanager = _TaamerProContext.Employees.Where(x => x.EmployeeId == Emp.DirectManager).FirstOrDefault();
 
                             htmlBody = @"<!DOCTYPE html><html lang = ''><head><meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'><meta http-equiv='X-UA-Compatible' content='IE=edge'>
                                     <meta charset = 'utf-8><meta name = 'description' content = ''><meta name = 'keywords' content = ''><meta name = 'csrf-token' content = ''><title></title><link rel = 'icon' type = 'image/x-icon' href = ''></head>
@@ -174,11 +173,7 @@ namespace TaamerProject.Service.Services
                             {
                                 _customerMailService.SendMail_SysNotification((int)Emp.BranchId, 0, 0, "فك العهدة", htmlBody, true, Emp.Email);
                             }
-                            if (direectmanager.Email != null)
-                            {
-                                _customerMailService.SendMail_SysNotification((int)direectmanager.BranchId, 0, 0, "فك العهده", htmlBody, true, direectmanager.Email);
-                            }
-                            var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(user).Result;
+
                             //Notification
                             try
                             {
@@ -201,37 +196,35 @@ namespace TaamerProject.Service.Services
                                 _TaamerProContext.Notification.Add(UserNotification);
                                 _TaamerProContext.SaveChanges();
 
-                                if (direectmanager != null)
+                                if (Emp.DirectManager != null && Emp.DirectManager != 0)
                                 {
-                                    var Not_directmanager = new Notification();
-                                    Not_directmanager = UserNotification;
-                                    Not_directmanager.ReceiveUserId = direectmanager.UserId;
-                                    Not_directmanager.NotificationId = 0;
-                                    _TaamerProContext.Notification.Add(Not_directmanager);
-                                    _TaamerProContext.SaveChanges();
+                                    var direectmanager = _TaamerProContext.Employees.Where(x => x.EmployeeId == Emp.DirectManager).FirstOrDefault();
 
+                                    if (direectmanager.Email != null)
+                                    {
+                                        _customerMailService.SendMail_SysNotification((int)direectmanager.BranchId, 0, 0, "فك العهده", htmlBody, true, direectmanager.Email);
+                                    }
+
+                                    if (direectmanager != null)
+                                    {
+                                        var Not_directmanager = new Notification();
+                                        Not_directmanager = UserNotification;
+                                        Not_directmanager.ReceiveUserId = direectmanager.UserId??0;
+                                        Not_directmanager.NotificationId = 0;
+                                        _TaamerProContext.Notification.Add(Not_directmanager);
+                                        _TaamerProContext.SaveChanges();
+
+                                    }
+                                _notificationService.sendmobilenotification(direectmanager.UserId.Value, "فك العهدة", NotStr);
                                 }
                                 _notificationService.sendmobilenotification(user, "فك العهدة", NotStr);
-                                _notificationService.sendmobilenotification(direectmanager.UserId.Value, "فك العهدة", NotStr);
 
                             }
                             catch (Exception ex)
                             {
 
                             }
-                            //mail
-                            //SMS
-                            try
-                            {
-                                if (UserNotifPriv.Count() != 0 && UserNotifPriv.Contains(163))
-                                {
-                                    var res = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
-                                }
-                            }
-                            catch (Exception ex3)
-                            {
-
-                            }
+                          
                         }
 
                         }

@@ -289,7 +289,7 @@ namespace TaamerProject.Repository.Repositories
                     SendUserImgUrl = x.Users.ImgUrl ?? "/distnew/images/userprofile.png",
                     ProjectNo = x.Project.ProjectNo,
 
-                }).OrderBy(m => m.IsRead).ThenByDescending(x => x.SendDate).ToListAsync();
+                }).OrderByDescending(x => x.SendDate).ToListAsync();
                 return Notifications;
             }
             catch (Exception ex)

@@ -1312,7 +1312,7 @@ namespace TaamerProject.Service.Services
        
                                                                 <tr>
                                                       <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>تاريخ الايقاف  </td>
-                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + DateTime.Now.Date + @"</td>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")) + @"</td>
                                               
                                                     </tr>
                                                                      <tr>
@@ -2044,7 +2044,7 @@ namespace TaamerProject.Service.Services
        
                                                                 <tr>
                                                       <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>تاريخ الانهاء  </td>
-                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + DateTime.Now.Date + @"</td>
+                                                      <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")) + @"</td>
                                               
                                                     </tr>
                                                                      <tr>
