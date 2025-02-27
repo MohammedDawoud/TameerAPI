@@ -13,6 +13,7 @@ namespace TaamerProject.Repository.Interfaces
         Task<IEnumerable<BranchesVM>> FillBranchSelectNew(string lang);
 
         Task<IEnumerable<BranchesVM>> GetBranchByBranchId(string lang, int BranchId);
+        Task<BranchesVM> GetBranchByBranchIdCheck(string lang, int BranchId);
 
         Task<IEnumerable<BranchesVM>> GetActiveBranch();
         Task<int> GenerateNextBranchNumber();
