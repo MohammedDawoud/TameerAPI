@@ -199,11 +199,11 @@ namespace TaamerProject.Service.Interfaces
 
         Task<List<InvoicesVM>> GetFinancialfollowup(string Con, FinancialfollowupVM _financialfollowupVM);
 
-        GeneralMessage UpdateVoucherRecepient(int InvoiceId, int UserId, int BranchId, int YearId);
+        GeneralMessage UpdateVoucherRecepient(string InvoiceId, int UserId, int BranchId, int YearId);
         Task<List<InvoicesVM>> GetInvoiceByCustomer(int CustomerId, int YearId);
 
-        Task<InvoicesVM> GetInvoiceByNo(int VocherNo, int YearId);
-        Task<InvoicesVM> GetInvoiceByNo_purches(int VocherNo, int YearId);
+        Task<InvoicesVM> GetInvoiceByNo(string VocherNo, int YearId);
+        Task<InvoicesVM> GetInvoiceByNo_purches(string VocherNo, int YearId);
         decimal? PayVousher_Sum(int InvoiceId);
     }
 }

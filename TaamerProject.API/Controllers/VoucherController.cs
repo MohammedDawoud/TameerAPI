@@ -391,7 +391,7 @@ namespace TaamerProject.API.Controllers
         }
 
         [HttpGet("GetInvoiceByNo")]
-        public IActionResult GetInvoiceByNo(int VoucherNo)
+        public IActionResult GetInvoiceByNo(string VoucherNo)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var someVoucher = _voucherService.GetInvoiceByNo(VoucherNo, _globalshared.YearId_G).Result;
@@ -400,7 +400,7 @@ namespace TaamerProject.API.Controllers
         }
 
         [HttpGet("GetInvoiceByNo_purches")]
-        public IActionResult GetInvoiceByNo_purches(int VoucherNo)
+        public IActionResult GetInvoiceByNo_purches(string VoucherNo)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var someVoucher = _voucherService.GetInvoiceByNo_purches(VoucherNo, _globalshared.YearId_G).Result;
@@ -1155,7 +1155,7 @@ namespace TaamerProject.API.Controllers
         [HttpPost("SaveVoucherP")]
         public IActionResult SaveVoucherP(Invoices voucher)
         {
-            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext); //global
 
             var VoucherDatetime = DateTime.ParseExact(voucher.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
             if (_globalshared.YearId_G != VoucherDatetime.Year)
@@ -1260,7 +1260,7 @@ namespace TaamerProject.API.Controllers
         }
 
         [HttpPost("UpdateVoucher_recipient")]
-        public IActionResult UpdateVoucher_recipient(int InvoiceId)
+        public IActionResult UpdateVoucher_recipient(string InvoiceId)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var result = _voucherService.UpdateVoucherRecepient(InvoiceId, _globalshared.UserId_G, _globalshared.BranchId_G,_globalshared.YearId_G);

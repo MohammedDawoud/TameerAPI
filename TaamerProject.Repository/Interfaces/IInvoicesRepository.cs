@@ -100,8 +100,8 @@ namespace TaamerProject.Repository.Interfaces
         Task<List<InvoicesVM>> GetFinancialfollowup(string Con, FinancialfollowupVM _financialfollowupVM);
 
         Task<List<InvoicesVM>> GetInvoiceByCustomer(int CustomerId, int YearId);
-        Task<InvoicesVM> GetInvoiceByNo(int voucherNo, int YearId);
-        Task<InvoicesVM> GetInvoiceByNo_purches(int voucherNo, int YearId);
+        Task<InvoicesVM> GetInvoiceByNo(string voucherNo, int YearId);
+        Task<InvoicesVM> GetInvoiceByNo_purches(string voucherNo, int YearId);
 
 
     }
