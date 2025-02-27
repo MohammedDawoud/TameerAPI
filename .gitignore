@@ -424,3 +424,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 /TaamerProject.API/Uploads/Attachment
+/TaamerProject.API/Uploads/Organizations/pictures
