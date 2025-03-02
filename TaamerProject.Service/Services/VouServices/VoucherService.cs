@@ -903,7 +903,7 @@ namespace TaamerProject.Service.Services
                     _TaamerProContext.Transactions.AddRange(voucher.TransactionDetails);
                     
                     _TaamerProContext.SaveChanges();
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 6 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.InvoiceValue == voucher.InvoiceValue && s.BranchId == BranchId).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 6 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.InvoiceValue == voucher.InvoiceValue && s.BranchId == BranchId && s.Date == voucher.Date).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
@@ -1109,7 +1109,7 @@ namespace TaamerProject.Service.Services
                     _TaamerProContext.Transactions.AddRange(voucher.TransactionDetails);
 
                     _TaamerProContext.SaveChanges();
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 6 && s.YearId == yearid && s.InvoiceNumber == (VoucherUpdated!.InvoiceNumber ?? "0") && s.InvoiceValue == voucher.InvoiceValue && s.BranchId == BranchId).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 6 && s.YearId == yearid && s.InvoiceNumber == (VoucherUpdated!.InvoiceNumber ?? "0") && s.InvoiceValue == voucher.InvoiceValue && s.BranchId == BranchId && s.Date == voucher.Date).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
@@ -1368,7 +1368,7 @@ namespace TaamerProject.Service.Services
 
                     _TaamerProContext.SaveChanges();
 
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == voucher.Type && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == voucher.Type && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId && s.Date == voucher.Date).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
@@ -1567,7 +1567,7 @@ namespace TaamerProject.Service.Services
                     _TaamerProContext.Transactions.AddRange(voucher.TransactionDetails);
 
                     _TaamerProContext.SaveChanges();
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 6 && s.YearId == yearid && s.InvoiceNumber == (VoucherUpdated!.InvoiceNumber ?? "0") && s.InvoiceValue == voucher.InvoiceValue && s.BranchId == BranchId).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 6 && s.YearId == yearid && s.InvoiceNumber == (VoucherUpdated!.InvoiceNumber ?? "0") && s.InvoiceValue == voucher.InvoiceValue && s.BranchId == BranchId && s.Date == voucher.Date).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
@@ -1861,7 +1861,7 @@ namespace TaamerProject.Service.Services
                     _TaamerProContext.Transactions.AddRange(voucher.TransactionDetails);
 
                     _TaamerProContext.SaveChanges();
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == voucher.Type && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == voucher.Type && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId && s.Date == voucher.Date).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
@@ -2122,7 +2122,7 @@ namespace TaamerProject.Service.Services
                     }
                     _TaamerProContext.Transactions.AddRange(voucher.TransactionDetails);
                     _TaamerProContext.SaveChanges(); 
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == voucher.Type && s.YearId == yearid && s.InvoiceNumber == (VoucherUpdated!.InvoiceNumber ?? "0") && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == voucher.Type && s.YearId == yearid && s.InvoiceNumber == (VoucherUpdated!.InvoiceNumber ?? "0") && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId && s.Date == voucher.Date).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
@@ -2512,7 +2512,7 @@ namespace TaamerProject.Service.Services
                     }
 
                     _TaamerProContext.SaveChanges();
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == voucher.Type && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == voucher.Type && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId && s.Date == voucher.Date).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
@@ -4437,7 +4437,7 @@ namespace TaamerProject.Service.Services
 
                     _TaamerProContext.SaveChanges();
                     voucher.QRCodeNum = "200010001000" + voucher.InvoiceId.ToString();
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId==BranchId).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId==BranchId && s.Date == voucher.Date).ToList();
                     if(ExistInvoice.Count()>1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
@@ -5035,7 +5035,7 @@ namespace TaamerProject.Service.Services
 
                     _TaamerProContext.SaveChanges();
                     voucher.QRCodeNum = "200010001000" + voucher.InvoiceId.ToString();
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId && s.Date == voucher.Date).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
@@ -5522,7 +5522,7 @@ namespace TaamerProject.Service.Services
 
                         _TaamerProContext.SaveChanges();
                         VoucherUpdated.QRCodeNum = "200010001000" + voucher.InvoiceId.ToString();
-                        var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == yearid && s.InvoiceNumber == VoucherUpdated.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId).ToList();
+                        var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == yearid && s.InvoiceNumber == VoucherUpdated.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId && s.Date == voucher.Date).ToList();
                         if (ExistInvoice.Count() > 1)
                         {
                             var invid = ExistInvoice.FirstOrDefault().InvoiceId;
@@ -8261,7 +8261,7 @@ namespace TaamerProject.Service.Services
 
                     _TaamerProContext.SaveChanges();
                     voucher.QRCodeNum = "200010001000" + voucher.InvoiceId.ToString();
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId && s.Date == voucher.Date).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
@@ -9948,7 +9948,7 @@ namespace TaamerProject.Service.Services
 
                     _TaamerProContext.SaveChanges();
                     voucher.QRCodeNum = "200010001000" + voucher.InvoiceId.ToString();
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId && s.Date == voucher.Date).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
@@ -11523,7 +11523,7 @@ namespace TaamerProject.Service.Services
 
                     _TaamerProContext.SaveChanges();
                     voucher.QRCodeNum = "200010001000" + voucher.InvoiceId.ToString();
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId && s.Date == voucher.Date).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
@@ -13195,7 +13195,7 @@ namespace TaamerProject.Service.Services
 
                     _TaamerProContext.SaveChanges();
                     voucher.QRCodeNum = "200010001000" + voucher.InvoiceId.ToString();
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId && s.Date == voucher.Date).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
@@ -13800,7 +13800,7 @@ namespace TaamerProject.Service.Services
 
                     _TaamerProContext.SaveChanges();
                     voucher.QRCodeNum = "200010001000" + voucher.InvoiceId.ToString();
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId && s.Date == voucher.Date).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
@@ -13994,7 +13994,7 @@ namespace TaamerProject.Service.Services
                     _TaamerProContext.SaveChanges();
 
 
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 8 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 8 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId && s.Date == voucher.Date).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
@@ -14100,7 +14100,7 @@ namespace TaamerProject.Service.Services
                     }
 
                     _TaamerProContext.SaveChanges();
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 8 && s.YearId == yearid && s.InvoiceNumber == (VoucherUpdated!.InvoiceNumber??"0") && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 8 && s.YearId == yearid && s.InvoiceNumber == (VoucherUpdated!.InvoiceNumber??"0") && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId && s.Date == voucher.Date).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;
@@ -14272,7 +14272,7 @@ namespace TaamerProject.Service.Services
                     }
 
                     _TaamerProContext.SaveChanges();
-                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 8 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId).ToList();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 8 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId && s.Date == voucher.Date).ToList();
                     if (ExistInvoice.Count() > 1)
                     {
                         var invid = ExistInvoice.FirstOrDefault().InvoiceId;

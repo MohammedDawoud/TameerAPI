@@ -14,6 +14,7 @@ namespace TaamerProject.Service.Interfaces
         Task<IEnumerable<BranchesVM>> FillBranchSelectNew(string lang);
 
         Task<IEnumerable<BranchesVM>> GetBranchByBranchId(string lang, int BranchId);
+        Task<BranchesVM> GetBranchByBranchIdCheck(string lang, int BranchId);
 
         Task<IEnumerable<BranchesVM>> GetAllBranchesByUserId(string Lang, int UserId);
         Task<IEnumerable<BranchesVM>> GetAllBranchesAndMainByUserId(string Lang, int UserId);

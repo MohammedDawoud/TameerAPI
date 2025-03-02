@@ -240,6 +240,19 @@ namespace TaamerProject.Repository.Repositories
             });
             return branches;
         }
+        public async Task<BranchesVM> GetBranchByBranchIdCheck(string lang, int BranchId)
+        {
+            var branches = _TaamerProContext.Branch.Where(s => s.IsDeleted == false && s.BranchId == BranchId).Select(x => new BranchesVM
+            {
+                BranchId = x.BranchId,
+                Code = x.Code,
+                BranchName = lang == "ltr" ? x.NameEn : x.NameAr,
+                NameAr = x.NameAr,
+                NameEn = x.NameEn,
+                TaxCode=x.TaxCode,
+            }).FirstOrDefault();
+            return branches;
+        }
 
         public async Task<int> GenerateNextBranchNumber()
         {

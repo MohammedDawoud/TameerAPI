@@ -55,6 +55,11 @@ namespace TaamerProject.Service.Services
             var Branches =await _BranchesRepository.GetBranchByBranchId(lang, BranchId);
             return Branches;
         }
+        public async Task<BranchesVM> GetBranchByBranchIdCheck(string lang, int BranchId)
+        {
+            var Branches = await _BranchesRepository.GetBranchByBranchIdCheck(lang, BranchId);
+            return Branches;
+        }
         public async Task<IEnumerable<BranchesVM>> GetAllBranchesByUserId(string Lang, int UserId)
         {
             var Branches =await _UserBranchesRepository.GetAllBranchesByUserId(Lang, UserId);

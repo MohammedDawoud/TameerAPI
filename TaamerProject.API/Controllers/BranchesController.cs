@@ -62,6 +62,13 @@ namespace TaamerProject.API.Controllers
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             return Ok(_branchesservice.GetBranchByBranchId(_globalshared.Lang_G, _globalshared.BranchId_G));
         }
+        [HttpGet("GetBranchByBranchIdCheck")]
+
+        public IActionResult GetBranchByBranchIdCheck()
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            return Ok(_branchesservice.GetBranchByBranchIdCheck(_globalshared.Lang_G, _globalshared.BranchId_G));
+        }
         [HttpGet("GetAllBranchesByUserId")]
 
         public IActionResult GetAllBranchesByUserId(int UserId)
