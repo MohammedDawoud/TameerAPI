@@ -6415,7 +6415,7 @@ namespace TaamerProject.Service.Services
                             string ActionNote2 = Resources.General_SavedFailed;
                            _SystemAction.SaveAction("PlayPauseTask", "ProjectPhasesTasksService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
                             //-----------------------------------------------------------------------------------------------------------------
-                            return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.Cantruntask +  task.UserName + task.DescriptionAr };
+                            return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.Cantruntask , ReturnedStrExtra= task.UserName, ReturnedStrExtra2= task.DescriptionAr };
                         }
                     }
                 }
@@ -7166,7 +7166,6 @@ namespace TaamerProject.Service.Services
                     ProTaskUpdated.UpdateDate = DateTime.Now;
                     ProTaskUpdated.PlusTimeReason_admin = ProjectPhasesTasks.PlusTimeReason_admin;
 
-
                 }
                 _TaamerProContext.SaveChanges();
                 //-----------------------------------------------------------------------------------------------------------------
@@ -7353,6 +7352,7 @@ namespace TaamerProject.Service.Services
                     ProTaskUpdated.UpdateUser = UserId;
                     ProTaskUpdated.UpdateDate = DateTime.Now;
                     ProTaskUpdated.PlusTimeReason_admin = ProjectPhasesTasks.PlusTimeReason_admin;
+
                 }
                 string formattedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
 
@@ -7443,7 +7443,7 @@ namespace TaamerProject.Service.Services
                _SystemAction.SaveAction("RefusePlustimeTask", "ProjectPhasesTasksService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
                 //SendMailFinishTask(ProTaskUpdated, BranchId, UserId);
-                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.Pro_PlusTasktime };
+                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "تم رفض تمديد وقت المهمة" };
             }
             catch (Exception)
             {
@@ -7471,6 +7471,7 @@ namespace TaamerProject.Service.Services
                     ProTaskUpdated.UpdateUser = UserId;
                     ProTaskUpdated.UpdateDate = DateTime.Now;
                     ProTaskUpdated.convertReason_admin = ProjectPhasesTasks.convertReason_admin;
+
                 }
                 string formattedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
 
@@ -7557,17 +7558,17 @@ namespace TaamerProject.Service.Services
                 _TaamerProContext.SaveChanges();
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                string ActionNote = "رفض تمديد وقت المهمة";
+                string ActionNote = "رفض تحويل المهمة";
                 _SystemAction.SaveAction("RefusePlustimeTask", "ProjectPhasesTasksService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
                 //SendMailFinishTask(ProTaskUpdated, BranchId, UserId);
-                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.Pro_PlusTasktime };
+                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "تم رفض تحويل المهمة" };
             }
             catch (Exception)
             {
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                string ActionNote = "فشل في رفض تمديد وقت المهمة";
+                string ActionNote = "فشل في رفض تحويل المهمة";
                 _SystemAction.SaveAction("RefusePlustimeTask", "ProjectPhasesTasksService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.Pro_faildPlustimeTask };
