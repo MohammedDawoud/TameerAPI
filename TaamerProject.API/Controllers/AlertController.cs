@@ -23,11 +23,11 @@ namespace TaamerProject.API.Controllers
         [HttpGet("GetAllAlerts")]
         public IActionResult GetAllAlerts()
         {
-            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext); //alerts
             return Ok(_notificationservice.GetAllAlerts(_globalshared.BranchId_G));
         }
         [HttpGet("GetUserAlerts_Dashboard")]
-        public IActionResult GetUserAlerts_Dashboard()
+        public IActionResult GetUserAlerts_Dashboard() //alertsdash
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var result = _notificationservice.GetUserlAlerts_Dashboard(_globalshared.BranchId_G, _globalshared.UserId_G);
