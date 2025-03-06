@@ -6546,7 +6546,19 @@ namespace TaamerProject.Service.Services
                             UserNotification.NextTime = null;
                             UserNotification.AddDate = DateTime.Now;
                             _TaamerProContext.Notification.Add(UserNotification);
-                   
+                            _TaamerProContext.SaveChanges();
+                            if(projectData.MangerId != null)
+                            {
+                                var managernot = new Notification();
+                                managernot = UserNotification;
+                                managernot.ReceiveUserId = projectData.MangerId;
+                                managernot.NotificationId = 0;
+                                _TaamerProContext.Add(managernot);
+                                _TaamerProContext.SaveChanges();
+                                _notificationService.sendmobilenotification(projectData.MangerId ?? 0, " انهاء المهمة ", "  تم انهاء المهمة : " + ProTaskUpdated.DescriptionAr + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + "");
+
+                            }
+
                             _notificationService.sendmobilenotification(ProTaskUpdated.UserId ?? 0, " انهاء المهمة ", "  تم انهاء المهمة : " + ProTaskUpdated.DescriptionAr + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + "");
 
                             //}
@@ -8646,7 +8658,7 @@ namespace TaamerProject.Service.Services
                     mail.To.Add(new MailAddress(_UsersRepository.GetById(ProjectPhasesTasks!.UserId??0).Email));
 
                 }
-                else if (type == 2 || type == 3 ||type==5 || type==4 || type==7 || type==8)
+                else if (type == 1 || type == 2 || type == 3 ||type==5 || type==4 || type==7 || type==8)
                 {
                     mail.To.Add(new MailAddress(_UsersRepository.GetById(ProjectPhasesTasks!.UserId ?? 0).Email));
                     mail.To.Add(new MailAddress(_UsersRepository.GetById(MangerId).Email));
