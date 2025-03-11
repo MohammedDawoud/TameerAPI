@@ -1352,7 +1352,7 @@ namespace TaamerProject.API.Controllers
         public IActionResult GetNewCodeByParentId(int ParentId)
         {
             //string code = _accountsService.GetNewCodeByParentId(ParentId).Result;
-            var code = _accountsService.GetNewCodeByParentId(ParentId);
+            var code = _accountsService.GetNewCodeByParentId(ParentId,0);
 
             return Ok(code);
         }

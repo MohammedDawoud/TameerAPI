@@ -1111,17 +1111,24 @@ namespace TaamerProject.Repository.Repositories
             return allAccounts;
         }
 
-        public async Task<string> GetNewCodeByParentId(int ParentId)
+        public async Task<string> GetNewCodeByParentId(int ParentId,int Type)
         {
+            //Type=0 normal acc,, Type=1 cust acc,, Type=2 emp acc,, Type=3 sup acc
             var childList = _TaamerProContext.Accounts.Where(x => x.ParentId == ParentId && !x.IsDeleted).ToList();
             if (childList.Count() == 0)
             {
                 var parentAccount = _TaamerProContext.Accounts.Where(x => x.AccountId == ParentId).FirstOrDefault()!;
                 var parentAccountCode = parentAccount.Code;
                 var Code = "01";
+                
                 if(parentAccount.Level==1){ Code = "01"; }
-                else if (parentAccount.Level == 2) { Code = "001"; }
-                else if (parentAccount.Level == 3) { Code = "001"; }
+                else if (parentAccount.Level == 2) {
+                    if (Type == 3){Code = "0001"; }else{Code = "001";}               
+                }
+                else if (parentAccount.Level == 3)
+                {
+                    if (Type == 3) { Code = "0001"; } else { Code = "001"; }
+                }
                 else if (parentAccount.Level == 4) { Code = "01"; }
                 else if (parentAccount.Level == 5) { Code = "01"; }
                 else { Code = "01"; }

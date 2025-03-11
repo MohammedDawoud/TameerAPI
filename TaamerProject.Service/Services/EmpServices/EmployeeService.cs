@@ -540,27 +540,8 @@ namespace TaamerProject.Service.Services
                                 var parentEmpAcc = _accountsRepository.GetById((int)Branch.EmployeesAccId);
                                 var newEmpAcc = new Accounts();
 
-                                //var substrCode = (_accountsRepository.GetMatching(s => s.IsDeleted == false && s.IsMain == false && s.Classification == 7 && s.ParentId == parentEmpAcc.AccountId && s.BranchId == BranchId).Count() + 1).ToString();
-                                var substrCode = (_accountsRepository.GetMatching(s => s.IsDeleted == false && s.ParentId == parentEmpAcc.AccountId).Count() + 1).ToString();
-                                if (int.Parse(substrCode.ToString()) < 10)
-                                    substrCode = "0000" + substrCode;
-                                else if (int.Parse(substrCode.ToString()) < 100)
-                                    substrCode = "000" + substrCode;
-                                else if (int.Parse(substrCode.ToString()) < 1000)
-                                    substrCode = "00" + substrCode;
-                                else if (int.Parse(substrCode.ToString()) < 10000)
-                                    substrCode = "0" + substrCode;
-                                var fullcode = parentEmpAcc.Code + substrCode;
-                                var checkcode = _accountsRepository.GetMatching(s => s.IsDeleted == false && s.Code.Trim() == fullcode.Trim());
-                                if (checkcode.Count() != 0)
-                                {
-                                    var lastcode = _accountsRepository.GetMatching(s => s.IsDeleted == false && s.ParentId == parentEmpAcc.AccountId).OrderByDescending(x => x.Code).FirstOrDefault().Code;
-                                    fullcode = (long.Parse(lastcode.ToString()) + 1).ToString();
-                                }
-                                newEmpAcc.Code = fullcode;
-
-                                var ValNewAccount = GetAccountCodeNewValue(parentEmpAcc.AccountId, 0);
-                                newEmpAcc.AccountCodeNew = ValNewAccount;
+                                var AccCode = _accountsRepository.GetNewCodeByParentId(Branch.EmployeesAccId ?? 0,2).Result;
+                                newEmpAcc.Code = AccCode;
 
                                 //newEmpAcc.Code = parentEmpAcc.Code + substrCode;
                                 newEmpAcc.Classification = parentEmpAcc.Classification??15;
@@ -602,28 +583,10 @@ namespace TaamerProject.Service.Services
                             {
                                 var parentEmpAcc = _accountsRepository.GetById((int)Branch.LoanAccId);
                                 var newEmpAcc = new Accounts();
-                                //var substrCode = (_accountsRepository.GetMatching(s => s.IsDeleted == false && s.IsMain == false && s.Classification == 7 && s.ParentId == parentEmpAcc.AccountId && s.BranchId == BranchId).Count() + 1).ToString();
-                                var substrCode = (_accountsRepository.GetMatching(s => s.IsDeleted == false && s.ParentId == parentEmpAcc.AccountId).Count() + 1).ToString();
-                                // var substrCode = (_accountsRepository.GetMatching(s => s.IsMain == false && s.Classification == 2 && s.ParentId == parentCustAcc.AccountId).Count() + 1).ToString();
-                                if (int.Parse(substrCode.ToString()) < 10)
-                                    substrCode = "0000" + substrCode;
-                                else if (int.Parse(substrCode.ToString()) < 100)
-                                    substrCode = "000" + substrCode;
-                                else if (int.Parse(substrCode.ToString()) < 1000)
-                                    substrCode = "00" + substrCode;
-                                else if (int.Parse(substrCode.ToString()) < 10000)
-                                    substrCode = "0" + substrCode;
-                                var fullcode = parentEmpAcc.Code + substrCode;
-                                var checkcode = _accountsRepository.GetMatching(s => s.IsDeleted == false && s.Code.Trim() == fullcode.Trim());
-                                if (checkcode.Count() != 0)
-                                {
-                                    var lastcode = _accountsRepository.GetMatching(s => s.IsDeleted == false && s.ParentId == parentEmpAcc.AccountId).OrderByDescending(x => x.Code).FirstOrDefault().Code;
-                                    fullcode = (long.Parse(lastcode.ToString()) + 1).ToString();
-                                }
-                                newEmpAcc.Code = fullcode;
 
-                                var ValNewAccount = GetAccountCodeNewValue(parentEmpAcc.AccountId, 0);
-                                newEmpAcc.AccountCodeNew = ValNewAccount;
+                                var AccCode = _accountsRepository.GetNewCodeByParentId(Branch.LoanAccId ?? 0,2).Result;
+                                newEmpAcc.Code = AccCode;
+
                                 // newEmpAcc.Code = parentEmpAcc.Code + substrCode;
                                 //newEmpAcc.Code = parentEmpAcc.Code + substrCode;
                                 newEmpAcc.Classification = parentEmpAcc.Classification ?? 15;
@@ -778,27 +741,9 @@ namespace TaamerProject.Service.Services
                             {
                                 var parentEmpAcc = _accountsRepository.GetById((int)Branch.PurchaseDelayAccId);
                                 var newEmpAcc = new Accounts();
-                                var substrCode = (_accountsRepository.GetMatching(s => s.IsDeleted == false && s.ParentId == parentEmpAcc.AccountId).Count() + 1).ToString();
-                                if (int.Parse(substrCode.ToString()) < 10)
-                                    substrCode = "0000" + substrCode;
-                                else if (int.Parse(substrCode.ToString()) < 100)
-                                    substrCode = "000" + substrCode;
-                                else if (int.Parse(substrCode.ToString()) < 1000)
-                                    substrCode = "00" + substrCode;
-                                else if (int.Parse(substrCode.ToString()) < 10000)
-                                    substrCode = "0" + substrCode;
+                                var AccCode = _accountsRepository.GetNewCodeByParentId(Branch.PurchaseDelayAccId ?? 0,2).Result;
+                                newEmpAcc.Code = AccCode;
 
-                                var fullcode = parentEmpAcc.Code + substrCode;
-                                var checkcode = _accountsRepository.GetMatching(s => s.IsDeleted == false && s.Code.Trim() == fullcode.Trim());
-                                if (checkcode.Count() != 0)
-                                {
-                                    var lastcode = _accountsRepository.GetMatching(s => s.IsDeleted == false && s.ParentId == parentEmpAcc.AccountId).OrderByDescending(x => x.Code).FirstOrDefault().Code;
-                                    fullcode = (long.Parse(lastcode.ToString()) + 1).ToString();
-                                }
-                                newEmpAcc.Code = fullcode;
-
-                                var ValNewAccount = GetAccountCodeNewValue(parentEmpAcc.AccountId, 0);
-                                newEmpAcc.AccountCodeNew = ValNewAccount;
                                 // newEmpAcc.Code = parentEmpAcc.Code + substrCode;
 
                                 //newEmpAcc.Code = parentEmpAcc.Code + substrCode;
@@ -1095,7 +1040,7 @@ namespace TaamerProject.Service.Services
                     string ActionNote2 = "اضافة بونص موظف جديد";
                    _SystemAction.SaveAction("SaveEmpBouns", "EmployeeService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate2, User, BranchId, ActionNote2, 1);
                     //-----------------------------------------------------------------------------------------------------------------
-                    return new GeneralMessage() { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Resources.General_SavedSuccessfully" };
+                    return new GeneralMessage() { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
                 }
                 else
                 {
@@ -1104,7 +1049,7 @@ namespace TaamerProject.Service.Services
                     string ActionNote = "فشل في حفظ بونص موظف";
                    _SystemAction.SaveAction("SaveEmpBouns", "EmployeeService", 1, Resources.General_SavedFailed, "", "", ActionDate, User, BranchId, ActionNote, 0);
                     //-----------------------------------------------------------------------------------------------------------------
-                    return new GeneralMessage() { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Resources.General_SavedFailed" };
+                    return new GeneralMessage() { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedFailed };
 
                 }
             }
@@ -1116,7 +1061,7 @@ namespace TaamerProject.Service.Services
                _SystemAction.SaveAction("SaveEmpBouns", "EmployeeService", 1, Resources.General_SavedFailed, "", "", ActionDate, User, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
 
-                return new GeneralMessage() { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "Resources.General_SavedFailed" };
+                return new GeneralMessage() { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
         public GeneralMessage DeleteEmplocation(int EmpId, int LocationId, int User, string Lang, int BranchId)

@@ -33,7 +33,7 @@ namespace TaamerProject.Repository.Interfaces
         Task<IEnumerable<AccountVM>> GetAllSubAccounts(string SearchText, string lang, int BranchId);
         Task<IEnumerable<AccountVM>> GetAllReceiptExchangeAccounts(string SearchText, string lang, int BranchId, List<int> ReceiptExchangeAccIds);
         Task<IEnumerable<AccountVM>> GetAllHirearchialAccounts(int BranchId, string lang);
-        Task<string> GetNewCodeByParentId(int ParentId);
+        Task<string> GetNewCodeByParentId(int ParentId,int Type);
         Task<IEnumerable<AccountVM>> GetAccountsByType(string accountName, string lang);
         Task<IEnumerable<AccountVM>> GetAccountSatement(int BranchId, string lang, int YearId, int AccountId, int CostCenterId, string FromDate, string ToDate);
         Task<IEnumerable<AccountVM>> GetGeneralBudget(int BranchId, string lang, int YearId, string FromDate, string ToDate);

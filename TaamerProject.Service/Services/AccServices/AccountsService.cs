@@ -2197,9 +2197,9 @@ namespace TaamerProject.Service.Services
             return new List<AccountStatmentVM>();
             //return null;
         }
-        public async Task<string> GetNewCodeByParentId(int ParentId)
+        public async Task<string> GetNewCodeByParentId(int ParentId, int Type)
         {
-            return await _accountsRepository.GetNewCodeByParentId(ParentId);
+            return await _accountsRepository.GetNewCodeByParentId(ParentId, Type);
         }
 
        

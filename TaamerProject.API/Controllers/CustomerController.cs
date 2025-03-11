@@ -26,17 +26,19 @@ namespace TaamerProject.API.Controllers
             private IBranchesService _branchesService;
             private IOrganizationsService _organizationsservice;
             private ISMSSettingsService _sMSSettingsService;
+             private ISystemSettingsService _systemSettingsService;
             private string? Con;
             private IConfiguration Configuration;
             public GlobalShared _globalshared;
         private readonly IWebHostEnvironment _hostingEnvironment;
 
         public CustomerController(ICustomerService customerService, ICustomerMailService customerMailService, ICustomerSMSService customerSMSService, IBranchesService branchesService,
-                IOrganizationsService organizationsService, ISMSSettingsService sMSSettingsService, IConfiguration _configuration, IWebHostEnvironment webHostEnvironment)
+                IOrganizationsService organizationsService, ISystemSettingsService systemSettingsService, ISMSSettingsService sMSSettingsService, IConfiguration _configuration, IWebHostEnvironment webHostEnvironment)
             {
                 this._customerservice = customerService;
                 this._CustomerMailService = customerMailService;
-                this._CustomerSMSService = customerSMSService;
+            this._systemSettingsService = systemSettingsService;
+            this._CustomerSMSService = customerSMSService;
                 this._branchesService = branchesService;
                 this._organizationsservice = organizationsService;
                 this._sMSSettingsService = sMSSettingsService;
@@ -465,7 +467,8 @@ namespace TaamerProject.API.Controllers
                 {
                     result.ReasonPhrase = "Saved Successfully";
                 }
-                return Ok(result);
+            var result2 = _systemSettingsService.MaintenanceFunc(Con, _globalshared.Lang_G, _globalshared.BranchId_G, _globalshared.UserId_G, 0);
+            return Ok(result);
             }
         [HttpGet("CheckFileExist")]
         public bool CheckFileExist(string path)

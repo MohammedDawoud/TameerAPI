@@ -34,21 +34,23 @@ namespace TaamerProject.API.Controllers
             private readonly ICityService _cityService;
             private readonly ICityPassService _cityPassService;
             private readonly IBanksService _banksService;
-            private byte[] ReportPDF;
+        private ISystemSettingsService _systemSettingsService;
+        private byte[] ReportPDF;
         string? Con;
         private IConfiguration Configuration;
         public GlobalShared _globalshared;
 
         public EmployeeController(IEmployeesService employeesService, IBranchesService branchesService, IOrganizationsService organizationsService, IPayrollMarchesService payrollMarches,
                 IAllowanceService allowanceService, ILoanService loanService, IDiscountRewardService discountRewardService, IVacationService vacationService, ICityService cityService,
-               ICityPassService cityPassService, IBanksService banksService, IConfiguration _configuration)
+                ISystemSettingsService systemSettingsService, ICityPassService cityPassService, IBanksService banksService, IConfiguration _configuration)
             {
                 this._branchesService = branchesService;
                 this._organizationsservice = organizationsService;
                 this._employesService = employeesService;
                 this._payrollMarchesService = payrollMarches;
+            this._systemSettingsService = systemSettingsService;
 
-                _allowanceService = allowanceService;
+            _allowanceService = allowanceService;
                 _loanService = loanService;
                 _discountRewardService = discountRewardService;
                 _vacationService = vacationService;
@@ -221,7 +223,9 @@ namespace TaamerProject.API.Controllers
                 {
                     result.ReasonPhrase = "Saved Successfully";
                 }
-                return Ok(new { result.StatusCode, result.ReasonPhrase, result.ReturnedParm, result.ReturnedStr });
+            var result2 = _systemSettingsService.MaintenanceFunc(Con, _globalshared.Lang_G, _globalshared.BranchId_G, _globalshared.UserId_G, 0);
+
+            return Ok(new { result.StatusCode, result.ReasonPhrase, result.ReturnedParm, result.ReturnedStr });
             }
         [HttpPost("SaveOfficialDocuments")]
         public IActionResult SaveOfficialDocuments([FromBody]Employees OffDoc)
