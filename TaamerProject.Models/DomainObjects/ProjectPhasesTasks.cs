@@ -39,7 +39,7 @@ namespace TaamerProject.Models
         public int? PhasePriority { get; set; }
         public int? ExecPercentage { get; set; }
         public virtual ProjectSubTypes? ProjectSubTypes { get; set; }
-        public virtual ProjectPhasesTasks? MainPhase { get; set; }
+        //public virtual ProjectPhasesTasks? MainPhase { get; set; }
         public virtual ProjectPhasesTasks? SubPhase { get; set; }
         public virtual Users? Users { get; set; }
         public virtual NodeLocations? NodeLocations { get; set; }
