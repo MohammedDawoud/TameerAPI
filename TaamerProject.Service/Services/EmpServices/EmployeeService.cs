@@ -412,7 +412,7 @@ namespace TaamerProject.Service.Services
                     emp.BirthDate = bdate.ToString();
                 }
                 string EmpAccCode = "";
-                var codeExist = _employeeRepository.GetMatching(s => s.IsDeleted == false&& string.IsNullOrEmpty(s.EndWorkDate) && s.EmployeeId != emp.EmployeeId && s.EmployeeNo == emp.EmployeeNo).FirstOrDefault();
+                var codeExist = _employeeRepository.GetMatching(s => s.IsDeleted == false/*&& string.IsNullOrEmpty(s.EndWorkDate)*/ && s.EmployeeId != emp.EmployeeId && s.EmployeeNo == emp.EmployeeNo).FirstOrDefault();
                 var EmpNational = _employeeRepository.SearchEmployeesOfNational(emp.NationalId, "", emp.BranchId.Value, emp.EmployeeId).Result;
 
                 if (codeExist != null)

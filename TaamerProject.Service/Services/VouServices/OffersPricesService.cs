@@ -411,12 +411,12 @@ namespace TaamerProject.Service.Services
 
 
                     _TaamerProContext.SaveChanges();
+                    string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                    string ActionNote = "تم حذف عرض سعر رقم : " + offer.OfferNo;
+                    _SystemAction.SaveAction("DeleteOffer", "OffersPricesService", 1, "تم حذف عرض سعر رقم : " + offer.OfferNo, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                    //-----------------------------------------------------------------------------------------------------------------
 
                 }
-                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                string ActionNote = "تم الحذف";
-                _SystemAction.SaveAction("Customeraccept", "OffersPricesService", 1, "تم الحذف", "", "", ActionDate, UserId, BranchId, ActionNote, 0);
-                //-----------------------------------------------------------------------------------------------------------------
 
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "تم الحذف " };
             }
@@ -424,7 +424,7 @@ namespace TaamerProject.Service.Services
             {
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote ="فشل في الحذف";
-                _SystemAction.SaveAction("Intoduceoffer", "OffersPricesService", 1, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                _SystemAction.SaveAction("DeleteOffer", "OffersPricesService", 1, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
 
                 return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
@@ -786,6 +786,11 @@ namespace TaamerProject.Service.Services
 
 
                 }
+                string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote2 = "   حفظ عرض السعر رقم : " + offerprice.OfferNo;
+                _SystemAction.SaveAction("saveoffer", "OffersPricesService", 1, "   حفظ عرض السعر رقم : " + offerprice.OfferNo, "", "", ActionDate2, UserId, BranchId, ActionNote2, 1);
+                //-----------------------------------------------------------------------------------------------------------------
+
 
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
             }

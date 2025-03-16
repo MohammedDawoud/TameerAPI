@@ -8680,14 +8680,12 @@ namespace TaamerProject.Service.Services
                     mail.Body = ProjectPhasesTasks.DescriptionAr + " : " + ProjectPhasesTasks.Notes ?? "";
                 }
                 System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
                 var smtpClient = new SmtpClient(EmailSett.Host);
                 smtpClient.EnableSsl = true;
                 smtpClient.UseDefaultCredentials = false;
                 smtpClient.Credentials = loginInfo;
                 //smtpClient.Port = 587;
                 smtpClient.Port = Convert.ToInt32(EmailSett.Port);
-
                 smtpClient.Send(mail);
                 return true;
             }

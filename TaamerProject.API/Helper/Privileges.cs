@@ -892,8 +892,14 @@ namespace TaamerProject.API.Helper
                                         new Privilege { Id = 17121013 , ParentId = 171210 , Name =  @Resources.General_Edit, Description =Resources.General_EditUser},
                                    new Privilege { Id = 171211 , ParentId = 1712 , Name =  Resources.General_Groups, Description = Resources.General_Groups},
                                          new Privilege { Id = 17121110 , ParentId = 171211 , Name =  Resources.Acc_AddNewGroup , Description = Resources.Acc_AddNewGroup},
-                                   
-                     
+
+
+
+                                           new Privilege { Id = 17123, ParentId = 17 , Name =  "اعدادات نطاق العمل", Description = "اعدادات نطاق العمل" },
+                                        new Privilege { Id = 1712310 , ParentId = 17123 , Name =  Resources.General_Add, Description = Resources.General_Add },
+                                        new Privilege { Id = 1712311 , ParentId = 17123 , Name =  Resources.General_Edit, Description = Resources.General_Edit },
+                                        new Privilege { Id = 1712312 , ParentId = 17123 , Name =  @Resources.General_Delete , Description = Resources.General_Delete},
+                                       
              
             //////////////////////////////////////////////////////////////////
             new Privilege { Id = 1714 , ParentId = 17 , Name =  "تنبيه لجميع المستخدمين" },
