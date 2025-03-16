@@ -79,17 +79,9 @@ namespace TaamerProject.Service.Services
                     {
                         var parentSuppAcc = _accountsRepository.GetById((int)Branch.SuppliersAccId);
                         var newSuppAcc = new Accounts();
-                        var substrCode = (_accountsRepository.GetMatching(s => s.IsMain == false && s.ParentId == parentSuppAcc.AccountId).Count() + 1).ToString();
-                        if (int.Parse(substrCode.ToString()) < 10)
-                            substrCode = "0000" + substrCode;
-                        else if (int.Parse(substrCode.ToString()) < 100)
-                            substrCode = "000" + substrCode;
-                        else if (int.Parse(substrCode.ToString()) < 1000)
-                            substrCode = "00" + substrCode;
-                        else if (int.Parse(substrCode.ToString()) < 10000)
-                            substrCode = "0" + substrCode;
+                        var AccCode = _accountsRepository.GetNewCodeByParentId(Branch.SuppliersAccId ?? 0,3).Result;
+                        newSuppAcc.Code = AccCode;
 
-                        newSuppAcc.Code = parentSuppAcc.Code + substrCode;
                         newSuppAcc.Classification = 2;
                         newSuppAcc.ParentId = parentSuppAcc.AccountId;
                         newSuppAcc.IsMain = false;
@@ -167,17 +159,9 @@ namespace TaamerProject.Service.Services
                             {
                                 var parentSuppAcc = _accountsRepository.GetById((int)Branch.SuppliersAccId);
                                 var newSuppAcc = new Accounts();
-                                var substrCode = (_accountsRepository.GetMatching(s => s.IsMain == false && s.ParentId == parentSuppAcc.AccountId).Count() + 1).ToString();
-                                if (int.Parse(substrCode.ToString()) < 10)
-                                    substrCode = "0000" + substrCode;
-                                else if (int.Parse(substrCode.ToString()) < 100)
-                                    substrCode = "000" + substrCode;
-                                else if (int.Parse(substrCode.ToString()) < 1000)
-                                    substrCode = "00" + substrCode;
-                                else if (int.Parse(substrCode.ToString()) < 10000)
-                                    substrCode = "0" + substrCode;
+                                var AccCode = _accountsRepository.GetNewCodeByParentId(Branch.SuppliersAccId ?? 0,3).Result;
+                                newSuppAcc.Code = AccCode;
 
-                                newSuppAcc.Code = parentSuppAcc.Code + substrCode;
                                 newSuppAcc.Classification = parentSuppAcc.Classification;
                                 newSuppAcc.ParentId = parentSuppAcc.AccountId;
                                 newSuppAcc.IsMain = false;

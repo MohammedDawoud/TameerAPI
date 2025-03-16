@@ -970,7 +970,7 @@ namespace TaamerProject.Service.Services
                     }
                 }
 
-                var tskremov = _TaamerProContext.ProjectPhasesTasks.Where(s => s.ProjectId == projectId);
+                var tskremov = _TaamerProContext.ProjectPhasesTasks.Where(s => s.ProjectId == projectId).ToList();
                 _TaamerProContext.ProjectPhasesTasks.RemoveRange(tskremov);
                 proj.IsDeleted = true;
                 proj.DeleteDate = DateTime.Now;

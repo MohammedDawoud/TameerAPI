@@ -101,7 +101,7 @@ namespace TaamerProject.Service.Interfaces
        Task<DataTable> GetGeneralBudgetFRENCHDGV(string FromDate, string ToDate, string LVL, int CCID, int BranchId, string lang, string Con, int? yearid, int ZeroCheck);
 
         Task<IEnumerable<AccountStatmentVM>> GetFullAccountStatmentDGV(string FromDate, string ToDate, string AccountCode, string CCID, string Con, int BranchId, int? yearid);
-        Task<string> GetNewCodeByParentId(int ParentId);
+        Task<string> GetNewCodeByParentId(int ParentId, int Type);
         Task<IEnumerable<GeneralmanagerRevVM>> GetGeneralManagerRevenueAMRDGV(int? ManagerId, string FromDate, string ToDate, int BranchId, string Con, int? yearid);
        Task<IEnumerable<ClosingVouchers>> GetClosingVouchers(int BranchId, string Con, int? yearid);
        Task<IEnumerable<CostCenterEX_REVM>> GetCostCenterEX_RE(int? CostCenterId, string FromDate, string ToDate, int BranchId, string Con, int? yearid, string FlagTotal);

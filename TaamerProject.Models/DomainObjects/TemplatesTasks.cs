@@ -36,7 +36,7 @@ namespace TaamerProject.Models
         public int? SettingId { get; set; }
         public int? ParentSettingId { get; set; }
         public ProjectSubTypes? ProjectSubTypes { get; set; }
-        public ProjectPhasesTasks? MainPhase { get; set; }
+        //public ProjectPhasesTasks? MainPhase { get; set; }
         public ProjectPhasesTasks? SubPhase { get; set; }
         public Users? Users { get; set; }
         public NodeLocations? NodeLocations { get; set; }

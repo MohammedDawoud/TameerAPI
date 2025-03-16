@@ -17,10 +17,17 @@ namespace TaamerProject.API.Controllers
         private IAcc_SuppliersService _Acc_SuppliersService;
         private readonly IFiscalyearsService _FiscalyearsService;
         public GlobalShared _globalshared;
-        public SuppliersController(IAcc_SuppliersService acc_SuppliersService, IFiscalyearsService fiscalyearsService)
+        private ISystemSettingsService _systemSettingsService;
+        private string? Con;
+        private IConfiguration Configuration;
+        public SuppliersController(IAcc_SuppliersService acc_SuppliersService, IConfiguration _configuration,
+            ISystemSettingsService systemSettingsService, IFiscalyearsService fiscalyearsService)
         {
             _Acc_SuppliersService = acc_SuppliersService;
             _FiscalyearsService = fiscalyearsService;
+            this._systemSettingsService = systemSettingsService;
+            Configuration = _configuration; Con = this.Configuration.GetConnectionString("DBConnection");
+
             HttpContext httpContext = HttpContext;_globalshared = new GlobalShared(httpContext);
         }
         [HttpGet("GetAllSuppliers")]
@@ -35,6 +42,7 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var result = _Acc_SuppliersService.SaveSupplier(Supplier, _globalshared.UserId_G, _globalshared.BranchId_G);
+            var result2 = _systemSettingsService.MaintenanceFunc(Con, _globalshared.Lang_G, _globalshared.BranchId_G, _globalshared.UserId_G, 0);
             return Ok(result);
         }
         [HttpPost("DeleteSupplier")]

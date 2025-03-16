@@ -2925,7 +2925,7 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 modelBuilder.Entity<ProjectPhasesTasks>().HasOne(s => s.Project).WithMany(s=>s.ProjectPhasesTasks).HasForeignKey(e => e.ProjectId);
                 modelBuilder.Entity<ProjectPhasesTasks>().HasOne(s => s.ProjectSubTypes).WithMany().HasForeignKey(e => e.ProjSubTypeId);
 
-                modelBuilder.Entity<ProjectPhasesTasks>().HasOne(s => s.MainPhase).WithMany().HasForeignKey(e => e.ProjSubTypeId);
+                //modelBuilder.Entity<ProjectPhasesTasks>().HasOne(s => s.MainPhase).WithMany().HasForeignKey(e => e.ProjSubTypeId);
                 modelBuilder.Entity<ProjectPhasesTasks>().HasOne(s => s.SubPhase).WithMany().HasForeignKey(e => e.ParentId);
                 modelBuilder.Entity<ProjectPhasesTasks>().HasOne(s => s.Users).WithMany().HasForeignKey(e => e.UserId);
                 modelBuilder.Entity<ProjectPhasesTasks>().HasOne(s => s.NodeLocations).WithMany().HasForeignKey(e => e.LocationId);
@@ -3953,7 +3953,7 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
 
                 modelBuilder.Entity<TemplatesTasks>().HasOne(s => s.Project).WithMany().HasForeignKey(e => e.ProjectId);
                 modelBuilder.Entity<TemplatesTasks>().HasOne(s => s.ProjectSubTypes).WithMany().HasForeignKey(e => e.ProjSubTypeId);
-                modelBuilder.Entity<TemplatesTasks>().HasOne(s => s.MainPhase).WithMany().HasForeignKey(e => e.ProjSubTypeId);
+                //modelBuilder.Entity<TemplatesTasks>().HasOne(s => s.MainPhase).WithMany().HasForeignKey(e => e.ProjSubTypeId);
                 modelBuilder.Entity<TemplatesTasks>().HasOne(s => s.SubPhase).WithMany().HasForeignKey(e => e.ParentId);
                 modelBuilder.Entity<TemplatesTasks>().HasOne(s => s.Users).WithMany().HasForeignKey(e => e.UserId);
                 modelBuilder.Entity<TemplatesTasks>().HasOne(s => s.NodeLocations).WithMany().HasForeignKey(e => e.LocationId);

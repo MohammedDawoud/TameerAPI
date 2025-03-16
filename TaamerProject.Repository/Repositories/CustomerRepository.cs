@@ -1056,7 +1056,7 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
                         ToUserId = t.ToUserId,
                         Notes = x.Notes ?? "",
                         BranchId = x.BranchId,
-                        MainPhaseName = t.MainPhase!.DescriptionAr,
+                        //MainPhaseName = t.MainPhase!.DescriptionAr,
                         SubPhaseName = t.SubPhase!.DescriptionAr,
                         ProjectSubTypeName = t.ProjectSubTypes!.NameAr,
                         ProjectTypeName = t.ProjectSubTypes!.ProjectType!.NameAr,
