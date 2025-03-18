@@ -236,7 +236,7 @@ namespace TaamerProject.Repository.Repositories
             return projectPhasesTasks;
         }
 
-        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasks(string SearchText, int BranchId, string Lang)
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasks(string searchtext, int BranchId, string Lang)
         {
             var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 /*&& s.BranchId == BranchId*/ && s.IsMerig == -1).Select(x => new ProjectPhasesTasksVM
             {
@@ -363,14 +363,14 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeFrom = s.TaskTimeFrom ?? "",
                 TaskTimeTo = s.TaskTimeTo ?? "",
             });
-            if (SearchText != "")
+            if (searchtext != "")
             {
-                projectPhasesTasks = projectPhasesTasks.Where(s => s.DescriptionAr.Contains(SearchText.Trim()) || s.DescriptionEn.Contains(SearchText.Trim())).ToList();
+                projectPhasesTasks = projectPhasesTasks.Where(s => s.DescriptionAr.Contains((searchtext ?? "").Trim()) || s.DescriptionEn.Contains((searchtext ?? "").Trim())).ToList();
             }
             return projectPhasesTasks;
         }
          
-        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasks_WithB(string SearchText, int BranchId, string Lang)
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasks_WithB(string searchtext, int BranchId, string Lang)
         {
             var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && s.BranchId == BranchId && s.IsMerig == -1).Select(x => new ProjectPhasesTasksVM
             {
@@ -498,9 +498,9 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeFrom = s.TaskTimeFrom ?? "",
                 TaskTimeTo = s.TaskTimeTo ?? "",
             });
-            if (SearchText != "")
+            if (searchtext != "")
             {
-                projectPhasesTasks = projectPhasesTasks.Where(s => s.DescriptionAr.Contains(SearchText.Trim()) || s.DescriptionEn.Contains(SearchText.Trim())).ToList();
+                projectPhasesTasks = projectPhasesTasks.Where(s => s.DescriptionAr.Contains((searchtext ?? "").Trim()) || s.DescriptionEn.Contains((searchtext ?? "").Trim())).ToList();
             }
             return projectPhasesTasks;
         }
@@ -1189,14 +1189,14 @@ namespace TaamerProject.Repository.Repositories
         }
 
 
-        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksS(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo,string? SearchText)
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksS(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo,string? searchtext)
         {
             if (status == 7)
             {
                 var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && s.BranchId == BranchId && s.IsMerig == -1 && s.IsRetrieved == 1 && (UserId == null || s.UserId == UserId) &&
-            (s.Project.customer.CustomerNameAr.Contains(SearchText) || s.Project.ProjectDescription.Contains(SearchText) ||
-            s.DescriptionAr.Contains(SearchText) || s.Project.ProjectNo.Contains(SearchText) || s.Project.ProjectName.Contains(SearchText) ||
-            s.Project.projecttype.NameAr.Contains(SearchText) || SearchText == null || SearchText == "")).Select(x => new ProjectPhasesTasksVM
+            (s.Project.customer.CustomerNameAr.Contains((searchtext ?? "")) || s.Project.ProjectDescription.Contains((searchtext ?? "")) ||
+            s.DescriptionAr.Contains((searchtext ?? "")) || s.Project.ProjectNo.Contains((searchtext ?? "")) || s.Project.ProjectName.Contains((searchtext ?? "")) ||
+            s.Project.projecttype.NameAr.Contains((searchtext ?? "")) || searchtext == null || searchtext == "")).Select(x => new ProjectPhasesTasksVM
                 {
                     PhaseTaskId = x.PhaseTaskId,
                     DescriptionAr = x.DescriptionAr,
@@ -1336,9 +1336,9 @@ namespace TaamerProject.Repository.Repositories
             else
             {
                 var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && s.BranchId == BranchId && s.IsMerig == -1 && (status == null || s.Status == status) && (UserId == null || s.UserId == UserId) &&
-            (s.Project.customer.CustomerNameAr.Contains(SearchText) || s.Project.ProjectDescription.Contains(SearchText) ||
-            s.DescriptionAr.Contains(SearchText) || s.Project.ProjectNo.Contains(SearchText) || s.Project.ProjectName.Contains(SearchText) ||
-            s.Project.projecttype.NameAr.Contains(SearchText) || SearchText == null || SearchText == "")).Select(x => new ProjectPhasesTasksVM
+            (s.Project.customer.CustomerNameAr.Contains((searchtext ?? "")) || s.Project.ProjectDescription.Contains((searchtext ?? "")) ||
+            s.DescriptionAr.Contains((searchtext ?? "")) || s.Project.ProjectNo.Contains((searchtext ?? "")) || s.Project.ProjectName.Contains((searchtext ?? "")) ||
+            s.Project.projecttype.NameAr.Contains((searchtext ?? "")) || searchtext == null || searchtext == "")).Select(x => new ProjectPhasesTasksVM
                 {
                     PhaseTaskId = x.PhaseTaskId,
                     DescriptionAr = x.DescriptionAr,
@@ -1757,14 +1757,14 @@ namespace TaamerProject.Repository.Repositories
         }
 
 
-        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksbystatus(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo,string? SearchText)
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksbystatus(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo,string? searchtext)
         {
             if (status == 7)
             {
                 var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && (BranchId == 0 || s.BranchId == BranchId) && s.IsMerig == -1 && s.IsRetrieved == 1 && (UserId == null || s.UserId == UserId) &&
-            (s.Project.customer.CustomerNameAr.Contains(SearchText) || s.Project.ProjectDescription.Contains(SearchText) ||
-            s.DescriptionAr.Contains(SearchText) || s.Project.ProjectNo.Contains(SearchText) || s.Project.ProjectName.Contains(SearchText) ||
-            s.Project.projecttype.NameAr.Contains(SearchText) || SearchText == null || SearchText == "")).Select(x => new ProjectPhasesTasksVM
+            (s.Project.customer.CustomerNameAr.Contains((searchtext ?? "")) || s.Project.ProjectDescription.Contains((searchtext ?? "")) ||
+            s.DescriptionAr.Contains((searchtext ?? "")) || s.Project.ProjectNo.Contains((searchtext ?? "")) || s.Project.ProjectName.Contains((searchtext ?? "")) ||
+            s.Project.projecttype.NameAr.Contains((searchtext ?? "")) || searchtext == null || searchtext == "")).Select(x => new ProjectPhasesTasksVM
                 {
                     PhaseTaskId = x.PhaseTaskId,
                     DescriptionAr = x.DescriptionAr,
@@ -1904,9 +1904,9 @@ namespace TaamerProject.Repository.Repositories
             else
             {
                 var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && s.BranchId == BranchId && s.IsMerig == -1 && s.Status == status && (UserId == null || s.UserId == UserId) &&
-            (s.Project.customer.CustomerNameAr.Contains(SearchText) || s.Project.ProjectDescription.Contains(SearchText) ||
-            s.DescriptionAr.Contains(SearchText) || s.Project.ProjectNo.Contains(SearchText) || s.Project.ProjectName.Contains(SearchText) ||
-            s.Project.projecttype.NameAr.Contains(SearchText) || SearchText == null || SearchText == "")).Select(x => new ProjectPhasesTasksVM
+            (s.Project.customer.CustomerNameAr.Contains((searchtext ?? "")) || s.Project.ProjectDescription.Contains((searchtext ?? "")) ||
+            s.DescriptionAr.Contains((searchtext ?? "")) || s.Project.ProjectNo.Contains((searchtext ?? "")) || s.Project.ProjectName.Contains((searchtext ?? "")) ||
+            s.Project.projecttype.NameAr.Contains((searchtext ?? "")) || searchtext == null || searchtext == "")).Select(x => new ProjectPhasesTasksVM
                 {
                     PhaseTaskId = x.PhaseTaskId,
                     DescriptionAr = x.DescriptionAr,
@@ -3426,12 +3426,12 @@ namespace TaamerProject.Repository.Repositories
             return projectPhasesTasks;
         }
 
-        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllLateProjectPhasesTasksbyUserId2(string EndDateP, int BranchId, int? UserId, string Lang,string? SearchText)
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllLateProjectPhasesTasksbyUserId2(string EndDateP, int BranchId, int? UserId, string Lang,string? searchtext)
         {
             var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.BranchId == BranchId && s.Type == 3 && s.IsMerig == -1 && s.Status != 4 && (UserId == null || s.UserId == UserId) && s.Remaining < 0 &&
-            (s.Project.customer.CustomerNameAr.Contains(SearchText) || s.Project.ProjectDescription.Contains(SearchText) ||
-            s.DescriptionAr.Contains(SearchText) || s.Project.ProjectNo.Contains(SearchText) || s.Project.ProjectName.Contains(SearchText) ||
-            s.Project.projecttype.NameAr.Contains(SearchText) || SearchText==null || SearchText =="")).Select(x => new ProjectPhasesTasksVM
+            (s.Project.customer.CustomerNameAr.Contains((searchtext ?? "")) || s.Project.ProjectDescription.Contains((searchtext ?? "")) ||
+            s.DescriptionAr.Contains((searchtext ?? "")) || s.Project.ProjectNo.Contains((searchtext ?? "")) || s.Project.ProjectName.Contains((searchtext ?? "")) ||
+            s.Project.projecttype.NameAr.Contains((searchtext ?? "")) || searchtext == null || searchtext == "")).Select(x => new ProjectPhasesTasksVM
             {
                 PhaseTaskId = x.PhaseTaskId,
                 DescriptionAr = x.DescriptionAr,
@@ -3566,7 +3566,7 @@ namespace TaamerProject.Repository.Repositories
         }
 
         ///////////////////////TasksSearch///////////////////////
-        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksByUserId(string SearchText, int? UserId, int BranchId)
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksByUserId(string searchtext, int? UserId, int BranchId)
         {
             var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && s.UserId == UserId && s.IsMerig == -1).Select(x => new ProjectPhasesTasksVM
             {
@@ -3684,15 +3684,15 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeTo = s.TaskTimeTo ?? "",
                 PlayingTime = s.PlayingTime,
             });
-            if (SearchText != "")
+            if (searchtext != "")
             {
-                projectPhasesTasks = projectPhasesTasks.Where(s => s.DescriptionAr.Contains(SearchText.Trim()) || s.DescriptionEn.Contains(SearchText.Trim())).ToList();
+                projectPhasesTasks = projectPhasesTasks.Where(s => s.DescriptionAr.Contains((searchtext??"").Trim()) || s.DescriptionEn.Contains((searchtext??"").Trim())).ToList();
             }
             return projectPhasesTasks;
         }
 
 
-         public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasks2(string SearchText, int BranchId, string Lang)
+         public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasks2(string searchtext, int BranchId, string Lang)
         {
 
             var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && s.IsMerig == -1).Select(x => new ProjectPhasesTasksVM
@@ -3818,11 +3818,11 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeFrom = s.TaskTimeFrom ?? "",
                 TaskTimeTo = s.TaskTimeTo ?? "",
             });
-            if (SearchText != "")
+            if (searchtext != "")
             {
-                //projectPhasesTasks = projectPhasesTasks.Where(s => s.ProjectNumber.Equals(SearchText.Trim())).ToList();
-                projectPhasesTasks = projectPhasesTasks.Where(s => s.ProjectNumber == SearchText.Trim()).ToList();
-                //projectPhasesTasks = projectPhasesTasks.Where(s => s.ProjectNumber.Equals(SearchText.Trim())).ToList();
+                //projectPhasesTasks = projectPhasesTasks.Where(s => s.ProjectNumber.Equals(searchtext.Trim())).ToList();
+                projectPhasesTasks = projectPhasesTasks.Where(s => s.ProjectNumber == searchtext.Trim()).ToList();
+                //projectPhasesTasks = projectPhasesTasks.Where(s => s.ProjectNumber.Equals(searchtext.Trim())).ToList();
 
             }
             var running = projectPhasesTasks.Where(x => x.Status == 2 || x.Status == 1).ToList().OrderByDescending(x => x.Status).ThenBy(x => x.OrderNo).ThenByDescending(x => x.PhasePriority).ThenBy(x => x.Remaining); 
@@ -3965,7 +3965,7 @@ namespace TaamerProject.Repository.Repositories
 
         ///////////////////////TasksSearch///////////////////////
         //time
-        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetInProgressProjectPhasesTasks(string SearchText, string Lang)
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetInProgressProjectPhasesTasks(string searchtext, string Lang)
         {
             var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && s.Status == 2 && s.IsMerig == -1).Select(x => new ProjectPhasesTasksVM
             {
@@ -4107,9 +4107,9 @@ namespace TaamerProject.Repository.Repositories
                 IsConverted = s.IsConverted
 
             });
-            if (SearchText != "")
+            if (searchtext != "")
             {
-                projectPhasesTasks = projectPhasesTasks.Where(s => s.DescriptionAr.Contains(SearchText.Trim()) || s.DescriptionEn.Contains(SearchText.Trim())).ToList();
+                projectPhasesTasks = projectPhasesTasks.Where(s => s.DescriptionAr.Contains((searchtext??"").Trim()) || s.DescriptionEn.Contains((searchtext??"").Trim())).ToList();
             }
             return projectPhasesTasks.ToList().OrderByDescending(x => x.Status).ThenBy(x => x.OrderNo).ThenByDescending(x => x.PhasePriority).ThenBy(x => x.Remaining); 
         }
@@ -4410,12 +4410,12 @@ namespace TaamerProject.Repository.Repositories
         }
 
 
-        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetInProgressProjectPhasesTasks_Branchesfilterd(int BranchId, string Lang, int? CustomerId,string? SearchText)
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetInProgressProjectPhasesTasks_Branchesfilterd(int BranchId, string Lang, int? CustomerId,string? searchtext)
         {
             var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && s.Status == 2 && s.IsMerig == -1 && s.BranchId == BranchId
-            && (CustomerId == null || CustomerId == 0 || s.Project.CustomerId == CustomerId) && (s.DescriptionAr.Contains(SearchText) ||
-            s.Project.customer.CustomerNameAr.Contains(SearchText) || s.Users.FullNameAr.Contains(SearchText) ||
-            SearchText ==null || SearchText=="")).Select(x => new ProjectPhasesTasksVM
+            && (CustomerId == null || CustomerId == 0 || s.Project.CustomerId == CustomerId) && (s.DescriptionAr.Contains((searchtext??"")) ||
+            s.Project.customer.CustomerNameAr.Contains((searchtext??"")) || s.Users.FullNameAr.Contains((searchtext??"")) ||
+            searchtext ==null || searchtext=="")).Select(x => new ProjectPhasesTasksVM
             {
                 PhaseTaskId = x.PhaseTaskId,
                 PhasesTaskName = Lang == "ltr" ? x.DescriptionEn : x.DescriptionAr,
@@ -4560,7 +4560,7 @@ namespace TaamerProject.Repository.Repositories
             return projectPhasesTasks.ToList().OrderByDescending(x => x.IsNew).ThenBy(x => x.Status).ThenBy(x => x.OrderNo).ThenByDescending(x => x.PhasePriority).ThenBy(x => x.Remaining);
         }
 
-        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetInProgressProjectPhasesTasksHome(string SearchText, int BranchId, string Lang)
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetInProgressProjectPhasesTasksHome(string searchtext, int BranchId, string Lang)
         {
             var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && s.Status == 2 && s.IsMerig == -1).Select(x => new ProjectPhasesTasksVM
             {
@@ -4690,9 +4690,9 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeFrom = s.TaskTimeFrom ?? "",
                 TaskTimeTo = s.TaskTimeTo ?? "",
             });
-            if (SearchText != "")
+            if (searchtext != "")
             {
-                projectPhasesTasks = projectPhasesTasks.Where(s => s.DescriptionAr.Contains(SearchText.Trim()) || s.DescriptionEn.Contains(SearchText.Trim())).ToList();
+                projectPhasesTasks = projectPhasesTasks.Where(s => s.DescriptionAr.Contains((searchtext??"").Trim()) || s.DescriptionEn.Contains((searchtext??"").Trim())).ToList();
             }
             return projectPhasesTasks;
         }
@@ -4902,9 +4902,9 @@ namespace TaamerProject.Repository.Repositories
                 PlayingTime = x.TimeMinutes - x.Remaining,
                 //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) : 100,
             }).ToList().OrderBy(x => x.OrderNo).ThenByDescending(x => x.PhasePriority).ThenBy(x => x.Remaining).ThenBy(x=> x.Status);
-            //if (SearchText != "")
+            //if (searchtext != "")
             //{
-            //    projectPhasesTasks = projectPhasesTasks.Where(s => s.DescriptionAr.Contains(SearchText.Trim()) || s.DescriptionEn.Contains(SearchText.Trim()) || s.ProjectNumber.Equals(SearchText.Trim())).ToList();
+            //    projectPhasesTasks = projectPhasesTasks.Where(s => s.DescriptionAr.Contains((searchtext??"").Trim()) || s.DescriptionEn.Contains((searchtext??"").Trim()) || s.ProjectNumber.Equals(searchtext.Trim())).ToList();
             //}
             return projectPhasesTasks;
         }
@@ -5200,9 +5200,9 @@ namespace TaamerProject.Repository.Repositories
                 PlayingTime = x.TimeMinutes - x.Remaining,
                 //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) : 100,
             });
-            //if (SearchText != "")
+            //if (searchtext != "")
             //{
-            //    projectPhasesTasks = projectPhasesTasks.Where(s => s.DescriptionAr.Contains(SearchText.Trim()) || s.DescriptionEn.Contains(SearchText.Trim()) || s.ProjectNumber.Equals(SearchText.Trim())).ToList();
+            //    projectPhasesTasks = projectPhasesTasks.Where(s => s.DescriptionAr.Contains((searchtext??"").Trim()) || s.DescriptionEn.Contains((searchtext??"").Trim()) || s.ProjectNumber.Equals(searchtext.Trim())).ToList();
             //}
             return projectPhasesTasks;
         }
@@ -5584,9 +5584,9 @@ namespace TaamerProject.Repository.Repositories
             }
 
 
-            //if (SearchText != "")
+            //if (searchtext != "")
             //{
-            //    projectPhasesTasks = projectPhasesTasks.Where(s => s.DescriptionAr.Contains(SearchText.Trim()) || s.DescriptionEn.Contains(SearchText.Trim()) || s.ProjectNumber.Equals(SearchText.Trim())).ToList();
+            //    projectPhasesTasks = projectPhasesTasks.Where(s => s.DescriptionAr.Contains((searchtext??"").Trim()) || s.DescriptionEn.Contains((searchtext??"").Trim()) || s.ProjectNumber.Equals(searchtext.Trim())).ToList();
             //}
             return projectPhasesTasks;//.OrderByDescending(x=> x.PhasePriority);
         }
@@ -5842,11 +5842,11 @@ namespace TaamerProject.Repository.Repositories
 
 
 
-        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetLateTasksByUserIdHomefilterd(int? UserId, string Lang, int? ProjectId, int? CustomerId,string? Searchtext)
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetLateTasksByUserIdHomefilterd(int? UserId, string Lang, int? ProjectId, int? CustomerId,string? searchtext)
         {
             var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && s.UserId == UserId && s.IsMerig == -1 && s.Remaining < 0 && s.Status != 4
              && (ProjectId == null || ProjectId == 0 || s.ProjectId == ProjectId) && (CustomerId == null || CustomerId == 0
-            || s.Project.CustomerId == CustomerId) && (s.DescriptionAr.Contains(Searchtext) || s.Project.ProjectNo.Contains(Searchtext)
+            || s.Project.CustomerId == CustomerId) && (s.DescriptionAr.Contains((searchtext??"")) || s.Project.ProjectNo.Contains((searchtext ?? ""))
             )).Select(x => new ProjectPhasesTasksVM
             {
                 PhaseTaskId = x.PhaseTaskId,
@@ -6594,14 +6594,14 @@ namespace TaamerProject.Repository.Repositories
 
 
 
-        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetNewTasksByUserId2(int? UserId, string Lang, int? ProjectId, int? CustomerId,string? SearchText)
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetNewTasksByUserId2(int? UserId, string Lang, int? ProjectId, int? CustomerId,string? searchtext)
         {
             var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.UserId == UserId && s.Type == 3 && s.Status != 4 && s.IsMerig == -1 && (s.Remaining > 0 || s.Remaining == null)
             && (ProjectId == null || ProjectId == 0 || s.ProjectId == ProjectId) && (CustomerId == null || CustomerId == 0
-            || s.Project.CustomerId == CustomerId) && (s.DescriptionAr.Contains(SearchText) || s.DescriptionEn.Contains(SearchText)||
-            s.Project.customer.CustomerNameAr.Contains(SearchText) || s.Project.ProjectNo.Contains(SearchText) ||
-            s.Project.ProjectDescription.Contains(SearchText) || s.ProjectSubTypes.NameAr.Contains(SearchText) ||
-            SearchText ==null || SearchText =="")).Select(x => new ProjectPhasesTasksVM
+            || s.Project.CustomerId == CustomerId) && (s.DescriptionAr.Contains((searchtext??"")) || s.DescriptionEn.Contains((searchtext??""))||
+            s.Project.customer.CustomerNameAr.Contains((searchtext??"")) || s.Project.ProjectNo.Contains((searchtext??"")) ||
+            s.Project.ProjectDescription.Contains((searchtext??"")) || s.ProjectSubTypes.NameAr.Contains((searchtext??"")) ||
+            searchtext ==null || searchtext =="")).Select(x => new ProjectPhasesTasksVM
             {
                 PhaseTaskId = x.PhaseTaskId,
                 DescriptionAr = x.DescriptionAr,
@@ -8438,13 +8438,13 @@ namespace TaamerProject.Repository.Repositories
         }
 
 
-        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllTasksByProjectIdS(int? ProjectId, int? DepartmentId, string DateFrom, string DateTo, int BranchId,string? SearchText)
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllTasksByProjectIdS(int? ProjectId, int? DepartmentId, string DateFrom, string DateTo, int BranchId,string? searchtext)
         {
             var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && (DepartmentId == null || DepartmentId == 0 || s.DepartmentId == DepartmentId) && (ProjectId == null || ProjectId == 0 || s.ProjectId == ProjectId) && s.Type == 3 && s.IsMerig == -1 && s.BranchId == BranchId
             && (
-                s.Project.customer.CustomerNameAr.Contains(SearchText) || s.Project.ProjectDescription.Contains(SearchText) ||
-                s.Project.ProjectTypeName.Contains(SearchText) || s.DescriptionAr.Contains(SearchText) || s.Users.FullNameAr.Contains(SearchText) ||
-                SearchText == null || SearchText == "")).Select(x => new ProjectPhasesTasksVM
+                s.Project.customer.CustomerNameAr.Contains((searchtext??"")) || s.Project.ProjectDescription.Contains((searchtext??"")) ||
+                s.Project.ProjectTypeName.Contains((searchtext??"")) || s.DescriptionAr.Contains((searchtext??"")) || s.Users.FullNameAr.Contains((searchtext??"")) ||
+                searchtext == null || searchtext == "")).Select(x => new ProjectPhasesTasksVM
             {
                 PhaseTaskId = x.PhaseTaskId,
                 DescriptionAr = x.DescriptionAr,
@@ -10015,12 +10015,12 @@ namespace TaamerProject.Repository.Repositories
             return projectPhasesTasks;
         }
 
-        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetLateTasksByUserIdrptsearch(int? UserId, int? status, string DateFrom, string DateTo, string Lang, int BranchId,string? SearchText)
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetLateTasksByUserIdrptsearch(int? UserId, int? status, string DateFrom, string DateTo, string Lang, int BranchId,string? searchtext)
         {
             var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.BranchId == BranchId && s.Type == 3 && (UserId == null || s.UserId == UserId) && s.IsMerig == -1 && s.Remaining < 0 && s.Status != 4 &&
-            (s.Project.customer.CustomerNameAr.Contains(SearchText) || s.Project.ProjectDescription.Contains(SearchText) ||
-            s.DescriptionAr.Contains(SearchText) || s.Project.ProjectNo.Contains(SearchText) || s.Project.ProjectName.Contains(SearchText) ||
-            s.Project.projecttype.NameAr.Contains(SearchText) || SearchText == null || SearchText == "")).Select(x => new ProjectPhasesTasksVM
+            (s.Project.customer.CustomerNameAr.Contains((searchtext??"")) || s.Project.ProjectDescription.Contains((searchtext??"")) ||
+            s.DescriptionAr.Contains((searchtext??"")) || s.Project.ProjectNo.Contains((searchtext??"")) || s.Project.ProjectName.Contains((searchtext??"")) ||
+            s.Project.projecttype.NameAr.Contains((searchtext??"")) || searchtext == null || searchtext == "")).Select(x => new ProjectPhasesTasksVM
             {
                 PhaseTaskId = x.PhaseTaskId,
                 DescriptionAr = x.DescriptionAr,
@@ -10468,9 +10468,9 @@ namespace TaamerProject.Repository.Repositories
             }
 
 
-            //if (SearchText != "")
+            //if (searchtext != "")
             //{
-            //    projectPhasesTasks = projectPhasesTasks.Where(s => s.DescriptionAr.Contains(SearchText.Trim()) || s.DescriptionEn.Contains(SearchText.Trim()) || s.ProjectNumber.Equals(SearchText.Trim())).ToList();
+            //    projectPhasesTasks = projectPhasesTasks.Where(s => s.DescriptionAr.Contains((searchtext??"").Trim()) || s.DescriptionEn.Contains((searchtext??"").Trim()) || s.ProjectNumber.Equals(searchtext.Trim())).ToList();
             //}
             return projectPhasesTasks.ToList().Where(m => (string.IsNullOrEmpty(startdate) || (!string.IsNullOrEmpty(m.StartDate) && DateTime.ParseExact(m.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(startdate, "yyyy-MM-dd", CultureInfo.InvariantCulture))) && (string.IsNullOrEmpty(enddate) || string.IsNullOrEmpty(m.EndDate) || DateTime.ParseExact(m.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(enddate, "yyyy-MM-dd", CultureInfo.InvariantCulture)));
 
