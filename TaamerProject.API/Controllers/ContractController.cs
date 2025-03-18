@@ -1587,7 +1587,7 @@ namespace TaamerProject.API.Controllers
 
                     Htable.TableFormat.Borders.Bottom.Color = System.Drawing.Color.Gray;
 
-                    TextRange FText = Htable[0, 0].AddParagraph().AppendText(string.Format(OrgData.NameAr));
+                    TextRange FText = Htable[0, 0].AddParagraph().AppendText(string.Format(OrgData!.NameAr ?? ""));
 
                     FText.CharacterFormat.FontName = "Calibri";
                     FText.CharacterFormat.FontSize = 13;
