@@ -2066,6 +2066,7 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 modelBuilder.Entity<Invoices>().HasOne(s => s.Accounts).WithMany().HasForeignKey(e => e.ToAccountId);
                 modelBuilder.Entity<Invoices>().HasOne(s => s.Invoices_Credit).WithMany().HasForeignKey(e => e.CreditNotiId);
                 modelBuilder.Entity<Invoices>().HasOne(s => s.Invoices_Depit).WithMany().HasForeignKey(e => e.DepitNotiId);
+                modelBuilder.Entity<Invoices>().HasOne(s => s.Delegate).WithMany().HasForeignKey(e => e.DelegateId);
 
             });
 

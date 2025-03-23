@@ -200,7 +200,7 @@ namespace TaamerProject.Repository.Repositories
                 CreditNotiId = x.CreditNotiId ?? 0,
                 DepitNotiId = x.DepitNotiId ?? 0,
                 AddInvoiceImg=x.AddUsers!.ImgUrl?? "/distnew/images/userprofile.png",
-
+                DelegateId=x.DelegateId,
                 VoucherDetails = x.VoucherDetails!.Where(s => s.InvoiceId == x.InvoiceId && s.IsDeleted == false).Select(z => new VoucherDetailsVM
                 {
                     VoucherDetailsId = z.VoucherDetailsId,
@@ -415,7 +415,7 @@ namespace TaamerProject.Repository.Repositories
                 CreditNotiId = x.CreditNotiId ?? 0,
                 DepitNotiId = x.DepitNotiId ?? 0,
                 AddInvoiceImg=x.AddUsers!.ImgUrl?? "/distnew/images/userprofile.png",
-
+                DelegateId=x.DelegateId,
                 //CreditDepitNotiTotal=x.InvoicesNoti.Where(s => s.CreditDepitNotiId != null && s.InvoicesNoti.Any(a => a.IsDeleted == false)).Sum(q => q.TotalValue),
                 VoucherDetails = x.VoucherDetails!.Where(s => s.InvoiceId == x.InvoiceId && s.IsDeleted == false).Select(z => new VoucherDetailsVM
                 {
@@ -4841,6 +4841,7 @@ namespace TaamerProject.Repository.Repositories
                     CreditNotiId = x.CreditNotiId ?? 0,
                     DepitNotiId = x.DepitNotiId ?? 0,
                     AddInvoiceImg=x.AddUsers!.ImgUrl?? "/distnew/images/userprofile.png",
+                    DelegateId=x.DelegateId,
                     //CreditDepitNotiTotal = x.InvoicesNoti.Where(s => s.CreditDepitNotiId != null && s.InvoicesNoti.Any(a => a.IsDeleted == false)).Sum(q => q.TotalValue),
                     VoucherDetails = x.VoucherDetails!.Where(s => s.InvoiceId == x.InvoiceId && s.IsDeleted == false).Select(z => new VoucherDetailsVM
                     {
@@ -6158,7 +6159,7 @@ namespace TaamerProject.Repository.Repositories
                 DepitNotiId = x.DepitNotiId ?? 0,
                 //CreditDepitNotiTotal = x.InvoicesNoti.Where(s => s.CreditDepitNotiId != null && s.InvoicesNoti.Any(a => a.IsDeleted == false)).Sum(q => q.TotalValue),
                 PayTypeName = (x.PayType == 1) ? "نقدي" : (x.PayType == 2) ? "شيك" : (x.PayType == 6) ? "حوالة" : (x.PayType == 3) ? "عهده" : (x.PayType == 4) ? "خصم مكتسب" : (x.PayType == 5) ? "خصم مسموح به" : (x.PayType == 8) ? "أجل" : (x.PayType == 9) ? "شبكة" : (x.PayType == 17) ? "نقدا - نقاط البيع" : "",
-
+                DelegateId=x.DelegateId,
                 VoucherDetails = x.VoucherDetails!.Where(s => s.InvoiceId == x.InvoiceId && s.IsDeleted == false).Select(z => new VoucherDetailsVM
                 {
                     VoucherDetailsId = z.VoucherDetailsId,
@@ -6200,9 +6201,51 @@ namespace TaamerProject.Repository.Repositories
 
             return details;
         }
+        public async Task<IEnumerable<InvoicesVM>> GetAllVouchersDelegate(int YearId, int BranchId)
+        {
+            var details = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == YearId && s.BranchId == BranchId &&  s.DelegateId != null  ).Select(x => new InvoicesVM
+            {
+                InvoiceNumber = x.InvoiceNumber,
+                InvoiceId = x.InvoiceId,
+                Type = x.Type,
+                IsPost = x.IsPost,
+                PostDate = x.PostDate,
+                PostHijriDate = x.PostHijriDate,
+                StatusName = x.IsPost == true ? "تم الترحيل" : "غير مرحل",
+                StatusNameNew = x.Rad == true ? "ملغي" : x.IsPost == true ? "تم الترحيل" : "غير مرحل",
+                Rad = x.Rad,
+                Date = x.Date,
+                HijriDate = x.HijriDate,
+                Notes = x.Notes ?? "",
+                InvoiceNotes = x.InvoiceNotes ?? "",
+                TotalValue = x.TotalValue,
+                InvoiceValue = x.InvoiceValue ?? 0,
+                TaxAmount = x.TaxAmount,
+                PayType = x.PayType,
+                ProjectId = x.ProjectId,
+                ProjectNo = x.Project != null ? x.Project!.ProjectNo : "بدون",
+                InvoiceValueText = x.InvoiceValueText,
+                CustomerName_W = x.Customer != null ? x.Customer.CustomerNameAr : "بدون",
+                CustomerName = x.Customer != null ? x.Customer!.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.Customer.CustomerNameAr : x.Customer!.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.Customer.CustomerNameAr : x.Customer!.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.Customer.CustomerNameAr + "(*)" : x.Customer!.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.Customer.CustomerNameAr + "(**)" : x.Customer!.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.Customer.CustomerNameAr + "(***)" : x.Customer!.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.Customer.CustomerNameAr + "(VIP)" : x.Customer.CustomerNameAr : "بدون",
+                JournalNumber = x.JournalNumber,
+                PayTypeName = (x.PayType == 1) ? "نقدي" : (x.PayType == 2) ? "شيك" : (x.PayType == 6) ? "حوالة" : (x.PayType == 3) ? "عهده" : (x.PayType == 4) ? "خصم مكتسب" : (x.PayType == 5) ? "خصم مسموح به" : (x.PayType == 8) ? "أجل" : (x.PayType == 9) ? "شبكة" : (x.PayType == 17) ? "نقدا - نقاط البيع" : "",
+                AddUser = x.AddUsers!.FullName,
+                AddDate = x.AddDate,
+                DiscountPercentage = x.DiscountPercentage ?? 0,
+                DiscountValue = x.DiscountValue ?? 0,
+                StoreId = x.StoreId,
+                PaidValue = x.PaidValue,
+                RecevierTxt = x.RecevierTxt,
+                InvoiceRetId = x.InvoiceRetId ?? "000000",
+                DelegateId=x.DelegateId,
+                DelegateName = x.Delegate!=null?x.Delegate.EmployeeNameAr??"":"",
+            }).OrderByDescending(s => s.InvoiceNumber).ToList();
+
+            return details;
+        }
 
 
-       public async Task<IEnumerable<InvoicesVM>> GetAllVouchersfromcontractSearch(VoucherFilterVM voucherFilterVM, int YearId, int BranchId)
+        public async Task<IEnumerable<InvoicesVM>> GetAllVouchersfromcontractSearch(VoucherFilterVM voucherFilterVM, int YearId, int BranchId)
         {
             var details = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.PageInsert == 2 && s.Type == voucherFilterVM!.Type && s.YearId == YearId && s.BranchId == BranchId).Select(x => new InvoicesVM
             {
@@ -6265,7 +6308,7 @@ namespace TaamerProject.Repository.Repositories
                 AddInvoiceImg = x.AddUsers!.ImgUrl ?? "/distnew/images/userprofile.png",
                 //CreditDepitNotiTotal = x.InvoicesNoti.Where(s => s.CreditDepitNotiId != null && s.InvoicesNoti.Any(a => a.IsDeleted == false)).Sum(q => q.TotalValue),
                 PayTypeName = (x.PayType == 1) ? "نقدي" : (x.PayType == 2) ? "شيك" : (x.PayType == 6) ? "حوالة" : (x.PayType == 3) ? "عهده" : (x.PayType == 4) ? "خصم مكتسب" : (x.PayType == 5) ? "خصم مسموح به" : (x.PayType == 8) ? "أجل" : (x.PayType == 9) ? "شبكة" : (x.PayType == 17) ? "نقدا - نقاط البيع" : "",
-
+                DelegateId=x.DelegateId,
                 VoucherDetails = x.VoucherDetails!.Where(s => s.InvoiceId == x.InvoiceId && s.IsDeleted == false).Select(z => new VoucherDetailsVM
                 {
                     VoucherDetailsId = z.VoucherDetailsId,
@@ -7187,7 +7230,7 @@ namespace TaamerProject.Repository.Repositories
                     AppearUser= x.AddUsers!.AppearInInvoicePrint??0,
                     //CreditDepitNotiTotal = x.InvoicesNoti.Where(s => s.CreditDepitNotiId != null && s.InvoicesNoti.Any(a => a.IsDeleted == false)).Sum(q => q.TotalValue),
                     PayTypeName = (x.PayType == 1) ? "نقدي" : (x.PayType == 2) ? "شيك" : (x.PayType == 6) ? "حوالة" : (x.PayType == 3) ? "عهده" : (x.PayType == 4) ? "خصم مكتسب" : (x.PayType == 5) ? "خصم مسموح به" : (x.PayType == 8) ? "أجل" : (x.PayType == 9) ? "شبكة" : (x.PayType == 17) ? "نقدا - نقاط البيع" : "",
-
+                    DelegateId=x.DelegateId,
                     VoucherDetails = x.VoucherDetails!.Select(s => new VoucherDetailsVM
                     {
                         VoucherDetailsId = s.VoucherDetailsId,

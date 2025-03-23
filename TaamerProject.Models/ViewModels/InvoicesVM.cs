@@ -15,7 +15,7 @@ namespace TaamerProject.Models
         public decimal? ExchangeRate { get; set; }
         public short? OederId { get; set; }
         public bool? Rad { get; set; }
-        public short? DelegateId { get; set; }
+        public int? DelegateId { get; set; }
         public string? Notes { get; set; }
         public short? StoreId { get; set; }
         public int? JournalNumber { get; set; }
@@ -131,7 +131,7 @@ namespace TaamerProject.Models
         public string? SupplierName { get; set; }
         public string? ClauseName { get; set; }
         //public long? InvoiceNoRequest { get; set; }
-
+        public string? DelegateName { get; set; }
 
         public List<VoucherDetailsVM> VoucherDetails { get; set; }
         public List<TransactionsVM> Transactions { get; set; }
