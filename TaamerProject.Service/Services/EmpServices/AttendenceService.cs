@@ -1412,7 +1412,17 @@ namespace TaamerProject.Service.Services
 
 
         }
+        public async Task<IEnumerable<LateVM>> GetAttendanceData(string FromDate, string ToDate, int Shift, int BranchId, string lang, string Con, int? yearid, int pageNumber, int pageSize)
+        {
 
+            if (yearid != null)
+            {
+                return await _AttendenceRepository.GetAttendanceData(FromDate, ToDate, yearid, Shift, BranchId, lang, Con, pageNumber, pageSize);
+            }
+            return new List<LateVM>();
+
+
+        }
         public async Task<IEnumerable<LateVM>> GetAttendanceData_Application(string FromDate, string ToDate, int Shift, int BranchId, string lang, string Con, int? yearid)
         {
 

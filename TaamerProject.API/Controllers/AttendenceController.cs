@@ -547,6 +547,15 @@ namespace TaamerProject.API.Controllers
             return Ok(result);
 
         }
+
+        [HttpGet("GetAttendanceDataDGV_paging")]
+        public IActionResult GetAttendanceDataDGV_paging(string FromDate, string ToDate, int Shift, int BranchId, int pageNumber, int pageSize)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var result = _attendenceservice.GetAttendanceData(FromDate, ToDate, Shift, BranchId, _globalshared.Lang_G, Con ?? "", _globalshared.YearId_G, pageNumber, pageSize);
+            return Ok(result);
+
+        }
         [HttpGet("GetAttendance_Screen")]
         public IActionResult GetAttendance_Screen(string? FromDate, string ?ToDate, int? Shift, int? BrID, int? SwType, int? UserIDF)
         {

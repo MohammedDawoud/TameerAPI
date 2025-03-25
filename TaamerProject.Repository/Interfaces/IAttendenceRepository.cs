@@ -29,6 +29,7 @@ namespace TaamerProject.Repository.Interfaces
         Task<IEnumerable<NotLoggedOutVM>> GetNotLoggedOutData(string FromDate, string ToDate,  int? YearId,  int BranchId, string lang, string Con);
 
         Task<IEnumerable<LateVM>> GetAttendanceData(string FromDate, string ToDate, int? YearId, int Shift, int BranchId, string lang, string Con);
+         Task<IEnumerable<LateVM>> GetAttendanceData(  string FromDate, string ToDate, int? YearId, int Shift, int BranchId, string lang, string Con, int pageNumber, int pageSize);
         Task<IEnumerable<LateVM>> GetAttendance_Screen(string FromDate, string ToDate, int? YearId, int Shift, int BranchId,int SwType, string lang, string Con, int UserIDF);
         Task<IEnumerable<Attendance_M_VM>> GetAttendance_Screen_M(int Year, int Month,  int? YearId, int Shift, int BranchId, int SwType, string lang, string Con, int UserIDF);
         Task<IEnumerable<Attendance_W_VM>> GetAttendance_Screen_W(int Year, int Month, int? YearId, int Shift, int BranchId, int SwType, string lang, string Con, int UserIDF);

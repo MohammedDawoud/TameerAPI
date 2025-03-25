@@ -1284,39 +1284,39 @@ namespace TaamerProject.Repository.Repositories
                         // loop for adding add from dataset to list<modeldata>  
                         {
 
-                            TimeSpan t1 = TimeSpan.Parse("00:00");
-                            var abs = 0;
-                            var att = 0;
-                            if (YearId != null)
-                            {
-                                var late = GetLateData(FromDate, ConvertDateCalendar((DateTime)dr[3], "Gregorian", "en-US"), (int)dr[1], YearId, Shift, BranchId, lang, Con).Result.ToList();
-                                if (late.Count() > 0)
-                                {
-                                    foreach (var item in late)
-                                    {
-                                        if (item.MoveTimeStringJoin1 != null && item.MoveTimeStringJoin1 != "")
-                                        {
-                                            // t1. += int.Parse(item.MoveTimeStringJoin1.ToString().Substring(1));
-                                            var time = Convert.ToDateTime(item.MoveTimeStringJoin1).ToString("hh:mm");
+                            //TimeSpan t1 = TimeSpan.Parse("00:00");
+                            //var abs = 0;
+                            //var att = 0;
+                            //if (YearId != null)
+                            //{
+                            //    var late = GetLateData(FromDate, ConvertDateCalendar((DateTime)dr[3], "Gregorian", "en-US"), (int)dr[1], YearId, Shift, BranchId, lang, Con).Result.ToList();
+                            //    if (late.Count() > 0)
+                            //    {
+                            //        foreach (var item in late)
+                            //        {
+                            //            if (item.MoveTimeStringJoin1 != null && item.MoveTimeStringJoin1 != "")
+                            //            {
+                            //                // t1. += int.Parse(item.MoveTimeStringJoin1.ToString().Substring(1));
+                            //                var time = Convert.ToDateTime(item.MoveTimeStringJoin1).ToString("hh:mm");
 
 
-                                           t1 = t1.Add(TimeSpan.Parse(item.MoveTimeStringJoin1));
-                                        }
-                                    }
-                                }
-                                t1.ToString();
-                            }
-                            if (YearId != null)
-                            {
-                                var result = GetAbsenceData(FromDate, ConvertDateCalendar((DateTime)dr[3], "Gregorian", "en-US"), (int)dr[1], YearId, BranchId, lang, Con).Result;
-                                abs = result.Count();
-                            }
-                            AttendenceVM AttendenceSearch = new AttendenceVM();
-                            AttendenceSearch.StartDate = FromDate;
-                            AttendenceSearch.EndDate = ConvertDateCalendar((DateTime)dr[3], "Gregorian", "en-US");
-                            AttendenceSearch.EmpId = (int)dr[1];
-                            AttendenceSearch.BranchId = BranchId;
-                            att = EmpAttendenceSearch(AttendenceSearch, BranchId).Result.ToList().DistinctBy(x => x.AttendenceDate).ToList().Count();
+                            //               t1 = t1.Add(TimeSpan.Parse(item.MoveTimeStringJoin1));
+                            //            }
+                            //        }
+                            //    }
+                            //    t1.ToString();
+                            //}
+                            //if (YearId != null)
+                            //{
+                            //    var result = GetAbsenceData(FromDate, ConvertDateCalendar((DateTime)dr[3], "Gregorian", "en-US"), (int)dr[1], YearId, BranchId, lang, Con).Result;
+                            //    abs = result.Count();
+                            //}
+                            //AttendenceVM AttendenceSearch = new AttendenceVM();
+                            //AttendenceSearch.StartDate = FromDate;
+                            //AttendenceSearch.EndDate = ConvertDateCalendar((DateTime)dr[3], "Gregorian", "en-US");
+                            //AttendenceSearch.EmpId = (int)dr[1];
+                            //AttendenceSearch.BranchId = BranchId;
+                            //att = EmpAttendenceSearch(AttendenceSearch, BranchId).Result.ToList().DistinctBy(x => x.AttendenceDate).ToList().Count();
 
                             lmd.Add(new LateVM
                             {
@@ -1329,9 +1329,9 @@ namespace TaamerProject.Repository.Repositories
                                 TimeJoin2 = (!String.IsNullOrWhiteSpace(dr[6].ToString())) ? Convert.ToDateTime(dr[6]).ToString("hh:mm tt") : dr[13].ToString() != 1.ToString() ? "----" : "",
                                 TimeLeave2 = (!String.IsNullOrWhiteSpace(dr[7].ToString())) ? Convert.ToDateTime(dr[7]).ToString("hh:mm tt") : dr[13].ToString() != 1.ToString() ? "----" : "",
                                 DateDay = ConvertDateCalendar((DateTime)dr[3], "Gregorian", "en-US"),
-                                Late = t1.ToString(),
-                                absence = abs.ToString(),
-                                attend = att.ToString(),
+                                Late = (dr[28]).ToString(),
+                                absence = (dr[29]).ToString(),
+                                attend = (dr[30]).ToString(),
 
                             });
 
@@ -1348,6 +1348,60 @@ namespace TaamerProject.Repository.Repositories
                 return lmd;
             }
 
+        }
+
+
+        public async Task<IEnumerable<LateVM>> GetAttendanceData(
+      string FromDate, string ToDate, int? YearId, int Shift, int BranchId,
+      string lang, string Con, int pageNumber, int pageSize)
+        {
+            try
+            {
+                List<LateVM> lmd = new List<LateVM>();
+                using (SqlConnection con = new SqlConnection(Con))
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.CommandText = "SP_AttEmployees";
+                        command.Connection = con;
+
+                        string from = string.IsNullOrEmpty(FromDate) ? $"{YearId}-01-01" : FromDate;
+                        string to = string.IsNullOrEmpty(ToDate) ? $"{YearId + 1}-12-31" : ToDate;
+
+                        command.Parameters.AddWithValue("@From", from);
+                        command.Parameters.AddWithValue("@To", to);
+                        command.Parameters.AddWithValue("@BranchId", BranchId);
+                        command.Parameters.AddWithValue("@PageNumber", pageNumber);
+                        command.Parameters.AddWithValue("@PageSize", pageSize);
+
+                        con.Open();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            while (reader.Read())
+                            {
+                                lmd.Add(new LateVM
+                                {
+                                    EmpNo = reader["EmpNo"].ToString(),
+                                    FullName = reader["FullName"].ToString(),
+                                    TimeJoin1 = reader["TimeJoin1"] != DBNull.Value ? Convert.ToDateTime(reader["TimeJoin1"]).ToString("hh:mm tt") : "----",
+                                    TimeLeave1 = reader["TimeLeave1"] != DBNull.Value ? Convert.ToDateTime(reader["TimeLeave1"]).ToString("hh:mm tt") : "----",
+                                    TimeJoin2 = reader["TimeJoin2"] != DBNull.Value ? Convert.ToDateTime(reader["TimeJoin2"]).ToString("hh:mm tt") : "----",
+                                    TimeLeave2 = reader["TimeLeave2"] != DBNull.Value ? Convert.ToDateTime(reader["TimeLeave2"]).ToString("hh:mm tt") : "----",
+                                    DateDay = Convert.ToDateTime(reader["DateDay"]).ToString("yyyy-MM-dd")
+                                });
+                            }
+                        }
+                    }
+                }
+                return lmd;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return new List<LateVM>();
+            }
         }
 
         public async Task<IEnumerable<LateVM>> GetAttendanceData_Application(string FromDate, string ToDate, int? YearId, int Shift, int BranchId, string lang, string Con)
