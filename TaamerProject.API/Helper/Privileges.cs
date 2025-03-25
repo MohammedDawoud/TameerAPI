@@ -625,6 +625,7 @@ namespace TaamerProject.API.Helper
                           new Privilege { Id = 13180808 , ParentId = 131808 , Name =  "متابعة مراكز التكلفة", Description = "متابعة مراكز التكلفة" },
                           new Privilege { Id = 13180809 , ParentId = 131808 , Name =  "اشعارات الدائن والمدين", Description = "اشعارات الدائن والمدين" },
                           new Privilege { Id = 13180810 , ParentId = 131808 , Name =  "جدول أعمار الديون", Description = "جدول أعمار الديون" },
+                           new Privilege { Id = 13180811 , ParentId = 131808 , Name =  "متابعة المندوبين", Description = "متابعة المندوبين" },
 
 
 

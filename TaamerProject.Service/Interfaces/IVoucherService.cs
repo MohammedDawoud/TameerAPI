@@ -29,6 +29,8 @@ namespace TaamerProject.Service.Interfaces
         Task<IEnumerable<InvoicesVM>> GetAllNotioucher(VoucherFilterVM voucherFilterVM, int BranchId, int? yearid);
 
         Task<IEnumerable<InvoicesVM>> GetAllVouchersRetSearch(VoucherFilterVM voucherFilterVM, int BranchId, int? yearid);
+        Task<IEnumerable<InvoicesVM>> GetAllVouchersDelegate(int BranchId, int? yearid);
+
         Task<IEnumerable<InvoicesVM>> GetAllVouchersRetSearchPurchase(VoucherFilterVM voucherFilterVM, int BranchId, int? yearid);
 
 

@@ -708,6 +708,14 @@ namespace TaamerProject.API.Controllers
             return Ok(someVoucher);
 
         }
+        [HttpGet("GetAllVouchersDelegate")]
+        public IActionResult GetAllVouchersDelegate()
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var someVoucher = _voucherService.GetAllVouchersDelegate(_globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
+            return Ok(someVoucher);
+
+        }
         [HttpPost("GetAllVouchersfromcontractSearch")]
         public IActionResult GetAllVouchersfromcontractSearch(VoucherFilterVM voucherFilterVM)
         {

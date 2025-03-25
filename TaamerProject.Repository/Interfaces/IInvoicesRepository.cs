@@ -44,6 +44,8 @@ namespace TaamerProject.Repository.Interfaces
         Task<IEnumerable<InvoicesVM>> GetAllNotioucher(VoucherFilterVM voucherFilterVM, int YearId, int BranchId);
 
         Task<IEnumerable<InvoicesVM>> GetAllVouchersRetSearch(VoucherFilterVM voucherFilterVM, int YearId, int BranchId);
+        Task<IEnumerable<InvoicesVM>> GetAllVouchersDelegate(int YearId, int BranchId);
+
         Task<IEnumerable<InvoicesVM>> GetAllVouchersRetSearchPurchase(VoucherFilterVM voucherFilterVM, int YearId, int BranchId);
 
 

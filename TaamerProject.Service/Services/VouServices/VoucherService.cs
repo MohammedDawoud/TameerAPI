@@ -532,6 +532,14 @@ namespace TaamerProject.Service.Services
             }
             return new List<InvoicesVM>();
         }
+        public async Task<IEnumerable<InvoicesVM>> GetAllVouchersDelegate( int BranchId, int? yearid)
+        {
+            if (yearid != null)
+            {
+                return await _InvoicesRepository.GetAllVouchersDelegate( yearid ?? default(int), BranchId);
+            }
+            return new List<InvoicesVM>();
+        }
 
         public async Task<IEnumerable<InvoicesVM>> GetAllVouchersfromcontractSearch(VoucherFilterVM voucherFilterVM, int BranchId, int? yearid)
         {

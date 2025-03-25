@@ -941,7 +941,7 @@ namespace TaamerProject.API.Controllers
                             CustomerNationalData = string.Format("سجل تجاري: {0}", (customerData.CommercialRegister??""));
                         }
 
-                        doc.Replace("#CustNationalData ", CustomerNationalData, false, true);
+                        doc.Replace("#CustNationalData", CustomerNationalData, false, true);
                         doc.Replace("#TotalTxt", (CustContract.ValueText??""), false, true);
                         //New
                         // doc.Replace("#TaxValue", CustContract.TaxesValue.HasValue ? CustContract.TaxesValue.Value.ToString() : "", false, true);
@@ -1360,7 +1360,7 @@ namespace TaamerProject.API.Controllers
                             CustomerNationalData = string.Format("سجل تجاري: {0}", customerData.CommercialRegister);
                         }
 
-                        doc.Replace("#CustNationalData ", CustomerNationalData, false, true);
+                        doc.Replace("#CustNationalData", CustomerNationalData, false, true);
                         doc.Replace("#TotalTxt", CustContract.ValueText??"", false, true);
                         //New
                         doc.Replace("#TaxValue", CustContract.TaxesValue.HasValue ? CustContract.TaxesValue.Value.ToString() : "", false, true);
@@ -1587,7 +1587,7 @@ namespace TaamerProject.API.Controllers
 
                     Htable.TableFormat.Borders.Bottom.Color = System.Drawing.Color.Gray;
 
-                    TextRange FText = Htable[0, 0].AddParagraph().AppendText(string.Format(OrgData.NameAr));
+                    TextRange FText = Htable[0, 0].AddParagraph().AppendText(string.Format(OrgData!.NameAr ?? ""));
 
                     FText.CharacterFormat.FontName = "Calibri";
                     FText.CharacterFormat.FontSize = 13;
