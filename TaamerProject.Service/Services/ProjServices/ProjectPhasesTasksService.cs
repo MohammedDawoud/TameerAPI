@@ -216,20 +216,23 @@ namespace TaamerProject.Service.Services
             if (ProjectPhasesTasks != null && ProjectPhasesTasks.Count() > 0)
             {
                 List<TasksVM> treeItems = new List<TasksVM>();
+
                 foreach (var item in ProjectPhasesTasks)
                 {
-                    //var tamded = "";
-                    //var ta7weel = "";
-                    //if (item.PlusTime == true)
-                    //{
-                    //    tamded = "<i class='ri-time-line'></i>";
-
-                    //}
-                    //if (item.IsConverted == 1)
-                    //{
-                    //    ta7weel = "<i class='fa fa-arrow-right'></i>";
-
-                    //}
+                    var tamded = "";
+                    var ta7weel = "";
+                    if (item.PlusTime == true)
+                    {
+                        //tamded = "<i class='ri-time-line'></i>";
+                        //tamded = "<span> <i class='fa-solid fa-folder-plus tree-icon'></i></span>";
+                        tamded = "(مطلوب تمديدها)";
+                    }
+                    if (item.IsConverted == 1)
+                    {
+                        //ta7weel = "<i class='fa fa-arrow-right'></i>";
+                        //ta7weel = "<span> <i class='fa-solid fa-folder-plus tree-icon'></i></span>";
+                        ta7weel = "(مطلوب تحويلها)";
+                    }
                     string TimeSTR = "";
                     if (!(item.EndDateNew==null || item.StartDateNew==null))
                     {
@@ -252,14 +255,14 @@ namespace TaamerProject.Service.Services
                         TimeSTR = item.TimeStr;
                     }
 
-                    treeItems.Add(new TasksVM(item.PhaseTaskId.ToString(), ((item.ProjectId == 0 || item.ProjectId == null) ? "#" : item.ProjectId.ToString() + "pr"), item.DescriptionAr + "-" + TimeSTR, item.PhaseTaskId.ToString()));
+                    treeItems.Add(new TasksVM(item.PhaseTaskId.ToString(), ((item.ProjectId == 0 || item.ProjectId == null) ? "#" : item.ProjectId.ToString() + "pr"), item.DescriptionAr + "-" + TimeSTR + " " + tamded + " " + ta7weel, item.PhaseTaskId.ToString()));
                 }
                 List<TasksVM> treepro = new List<TasksVM>();
                 foreach (var item in Projects)
                 {
                     var Pro = (item.Key.ToString() + "pr");
                     var ListChild = treeItems.Where(s => s.parent == Pro).ToList();
-                    treepro.Add(new TasksVM(item.Key.ToString() + "pr", "#", item.Value?.ProjectNumber?.ToString() + " - " + item.Value?.ClientName?.ToString(), ListChild, item.Key.ToString()));
+                    treepro.Add(new TasksVM(item.Key.ToString() + "pr", "#", item.Value?.ProjectNumber?.ToString() + " - " + item.Value?.ClientName?.ToString() , ListChild, item.Key.ToString()));
                 }
                 var IteUnion = treeItems.Union(treepro);
 
@@ -327,21 +330,23 @@ namespace TaamerProject.Service.Services
             if (ProjectPhasesTasks != null && ProjectPhasesTasks.Count() > 0)
             {
                 List<TasksVM> treeItems = new List<TasksVM>();
+
                 foreach (var item in ProjectPhasesTasks)
                 {
-
-                    //var tamded = "";
-                    //var ta7weel = "";
-                    //if (item.PlusTime == true)
-                    //{
-                    //    tamded = "<i class='ri-time-line'></i>";
-
-                    //}
-                    //if (item.IsConverted == 1)
-                    //{
-                    //    ta7weel = "<i class='fa fa-arrow-right'></i>";
-
-                    //}
+                    var tamded = "";
+                    var ta7weel = "";
+                    if (item.PlusTime == true)
+                    {
+                        //tamded = "<i class='ri-time-line'></i>";
+                        //tamded = "<span> <i class='fa-solid fa-folder-plus tree-icon'></i></span>";
+                        tamded = "(مطلوب تمديدها)";
+                    }
+                    if (item.IsConverted == 1)
+                    {
+                        //ta7weel = "<i class='fa fa-arrow-right'></i>";
+                        //ta7weel = "<span> <i class='fa-solid fa-folder-plus tree-icon'></i></span>";
+                        ta7weel = "(مطلوب تحويلها)";
+                    }
                     string TimeSTR = "";
                     if (!(item.EndDateNew == null || item.StartDateNew == null))
                     {
@@ -364,7 +369,7 @@ namespace TaamerProject.Service.Services
                         TimeSTR = item.TimeStr;
                     }
 
-                    treeItems.Add(new TasksVM(item.PhaseTaskId.ToString(), ((item.ProjectId == 0 || item.ProjectId == null) ? "#" : item.ProjectId.ToString() + "pr"), item.DescriptionAr + "-" + item.TimeStr, item.PhaseTaskId.ToString()));
+                    treeItems.Add(new TasksVM(item.PhaseTaskId.ToString(), ((item.ProjectId == 0 || item.ProjectId == null) ? "#" : item.ProjectId.ToString() + "pr"), item.DescriptionAr + "-" + item.TimeStr + " " + tamded + " " + ta7weel, item.PhaseTaskId.ToString()));
                 }
                 List<TasksVM> treepro = new List<TasksVM>();
                 foreach (var item in Projects)
@@ -587,8 +592,24 @@ namespace TaamerProject.Service.Services
             if (ProjectPhasesTasks != null && ProjectPhasesTasks.Count() > 0)
             {
                 List<TasksVM> treeItems = new List<TasksVM>();
+
+
                 foreach (var item in ProjectPhasesTasks)
                 {
+                    var tamded = "";
+                    var ta7weel = "";
+                    if (item.PlusTime == true)
+                    {
+                        //tamded = "<i class='ri-time-line'></i>";
+                        //tamded = "<span> <i class='fa-solid fa-folder-plus tree-icon'></i></span>";
+                        tamded = "(مطلوب تمديدها)";
+                    }
+                    if (item.IsConverted == 1)
+                    {
+                        //ta7weel = "<i class='fa fa-arrow-right'></i>";
+                        //ta7weel = "<span> <i class='fa-solid fa-folder-plus tree-icon'></i></span>";
+                        ta7weel = "(مطلوب تحويلها)";
+                    }
 
                     string TimeSTR = "";
                     if (!(item.EndDateNew == null || item.StartDateNew == null))
@@ -612,7 +633,7 @@ namespace TaamerProject.Service.Services
                         TimeSTR = item.TimeStr;
                     }
 
-                    treeItems.Add(new TasksVM(item.PhaseTaskId.ToString(), ((item.ProjectId == 0 || item.ProjectId == null) ? "#" : item.ProjectId.ToString() + "pr"), item.DescriptionAr + "-" + TimeSTR, item.PhaseTaskId.ToString()));
+                    treeItems.Add(new TasksVM(item.PhaseTaskId.ToString(), ((item.ProjectId == 0 || item.ProjectId == null) ? "#" : item.ProjectId.ToString() + "pr"), item.DescriptionAr + "-" + TimeSTR + " " + tamded + " " + ta7weel, item.PhaseTaskId.ToString()));
                 }
 
                 List<TasksVM> treepro = new List<TasksVM>();
@@ -705,8 +726,25 @@ namespace TaamerProject.Service.Services
             if (ProjectPhasesTasks != null && ProjectPhasesTasks.Count() > 0)
             {
                 List<TasksVM> treeItems = new List<TasksVM>();
+
+
                 foreach (var item in ProjectPhasesTasks)
                 {
+                    var tamded = "";
+                    var ta7weel = "";
+                    if (item.PlusTime == true)
+                    {
+                        //tamded = "<i class='ri-time-line'></i>";
+                        //tamded = "<span> <i class='fa-solid fa-folder-plus tree-icon'></i></span>";
+                        tamded = "(مطلوب تمديدها)";
+                    }
+                    if (item.IsConverted == 1)
+                    {
+                        //ta7weel = "<i class='fa fa-arrow-right'></i>";
+                        //ta7weel = "<span> <i class='fa-solid fa-folder-plus tree-icon'></i></span>";
+                        ta7weel = "(مطلوب تحويلها)";
+                    }
+
                     string TimeSTR = "";
                     if (!(item.EndDateNew == null || item.StartDateNew == null))
                     {
@@ -728,7 +766,7 @@ namespace TaamerProject.Service.Services
                     {
                         TimeSTR = item.TimeStr;
                     }
-                    treeItems.Add(new TasksVM(item.PhaseTaskId.ToString(), ((item.ProjectId == 0 || item.ProjectId == null) ? "#" : item.ProjectId.ToString() + "pr"), item.DescriptionAr + "-" + TimeSTR, item.PhaseTaskId.ToString()));
+                    treeItems.Add(new TasksVM(item.PhaseTaskId.ToString(), ((item.ProjectId == 0 || item.ProjectId == null) ? "#" : item.ProjectId.ToString() + "pr"), item.DescriptionAr + "-" + TimeSTR + " " + tamded + " " + ta7weel, item.PhaseTaskId.ToString()));
                 }
                 List<TasksVM> treepro = new List<TasksVM>();
                 foreach (var item in Projects)
