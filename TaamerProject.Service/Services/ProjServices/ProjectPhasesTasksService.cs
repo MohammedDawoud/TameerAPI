@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic.FileIO;
+﻿using Microsoft.Graph.Models;
+using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -5731,9 +5732,8 @@ namespace TaamerProject.Service.Services
                                 // }
 
 
-
                                 //  SendMailNoti(ProTaskUpdated.ProjectId ?? 0, Desc, "طلب تحويل المهمة", BranchId, UserId, ProTaskUpdated.Project.MangerId ?? 0);
-                                SendMailFinishTask2(ProTaskUpdated, "تحويل المهمة", BranchId, UserId, Url, ImgUrl, 5, userFrom.Value, project.CustomerName ?? "", project.ProjectNo ?? "", project.MangerId ?? 0, _UsersRepository.GetById(project.MangerId??0).FullNameAr ??"");
+                                SendMailFinishTask2(ProTaskUpdated, "تحويل المهمة", BranchId, UserId, Url, ImgUrl, 5, userFrom.Value, cust.CustomerNameAr ?? "", project.ProjectNo ?? "", project.MangerId ?? 0, _UsersRepository.GetById(project.MangerId??0).FullNameAr ??"");
 
                                 //if (UserNotifPriv.Contains(363))
                                 //{
@@ -6542,7 +6542,7 @@ namespace TaamerProject.Service.Services
                     }
                     string formattedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
 
-                    if (ProTaskUpdated != null && ProTaskUpdated.ProjectId > 0)
+                    if (ProTaskUpdated != null && ProTaskUpdated.ProjectId > 0  && ProjectPhasesTasks.Status==4)
                     {
                         var projectData = _ProjectRepository.GetProjectByIdSome("rtl", ProTaskUpdated.ProjectId ?? 0).Result;
                         if (projectData != null && projectData.CustomerId > 0)
@@ -8672,7 +8672,7 @@ namespace TaamerProject.Service.Services
                     mail.From = new MailAddress(EmailSett.SenderEmail, "لديك اشعار من نظام تعمير السحابي");
                 }
 
-                LinkedResource logo = new LinkedResource(ImgUrl);
+                System.Net.Mail.LinkedResource logo = new System.Net.Mail.LinkedResource(ImgUrl);
                 logo.ContentId = "companylogo";
                 // done HTML formatting in the next line to display my bayanatech logo
                 AlternateView av1 = AlternateView.CreateAlternateViewFromString(body.Replace("{date}", DateOfTask), null, MediaTypeNames.Text.Html);
@@ -8708,7 +8708,7 @@ namespace TaamerProject.Service.Services
                 smtpClient.EnableSsl = true;
                 smtpClient.UseDefaultCredentials = false;
                 smtpClient.Credentials = loginInfo;
-                //smtpClient.Port = 587;
+                smtpClient.Port = 587;
                 smtpClient.Port = Convert.ToInt32(EmailSett.Port);
                 smtpClient.Send(mail);
                 return true;
@@ -8753,7 +8753,7 @@ namespace TaamerProject.Service.Services
                     body = PopulateBody2(textBody, _UsersRepository.GetUserById(ReceivedUser, "rtl").Result.FullName, title, "مع تحيات قسم ادارة المساريع", Url, org.NameAr);
                 }
 
-                LinkedResource logo = new LinkedResource(ImgUrl);
+                System.Net.Mail.LinkedResource logo = new System.Net.Mail.LinkedResource(ImgUrl);
                 logo.ContentId = "companylogo";
                 // done HTML formatting in the next line to display my bayanatech logo
                 AlternateView av1 = AlternateView.CreateAlternateViewFromString(body.Replace("{Header}", title), null, MediaTypeNames.Text.Html);
@@ -8822,8 +8822,8 @@ namespace TaamerProject.Service.Services
             body = body.Replace("{CustomerName}", CustomerName??"");
 
             body = body.Replace("{Duration}", time);
-            body = body.Replace("{StartDate}", projectphase.ExcpectedStartDate);
-            body = body.Replace("{EndDate}", dateoftask);
+            body = body.Replace("{StartDate}", projectphase.StartDateNew.ToString());
+            body = body.Replace("{EndDate}", projectphase.EndDateNew.ToString());
             body = body.Replace("{AssUser}", addtaskname);
             body = body.Replace("{orgname}", orgname);
             if(type==2)

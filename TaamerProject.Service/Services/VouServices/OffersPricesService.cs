@@ -446,12 +446,12 @@ namespace TaamerProject.Service.Services
                     //-----------------------------------------------------------------------------------------------------------------
                     return  new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "رقم العرض موجود من قبل" };
                 }
-
+                var save = 1;
                 if (offerprice.OffersPricesId == 0)
                 {
-                   
+                    save = 1;
 
-                    var offer = new OffersPrices();
+                     var offer = new OffersPrices();
 
                     //offer.OffersPricesId = offerprice.OffersPricesId;
                     offer.OfferNo = offerprice.OfferNo;
@@ -616,9 +616,17 @@ namespace TaamerProject.Service.Services
 
 
                     _TaamerProContext.SaveChanges();
+
+                    string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+
+                    string ActionNote2 = "   حفظ عرض السعر رقم : " + offerprice.OfferNo;
+                    _SystemAction.SaveAction("saveoffer", "OffersPricesService", 1, "   حفظ عرض السعر رقم : " + offerprice.OfferNo, "", "", ActionDate2, UserId, BranchId, ActionNote2, 1);
+                    //-----------------------------------------------------------------------------------------------------------------
+
                 }
                 else
                 {
+                    save = 2;
                     var offer = _offersPricesRepository.GetById(offerprice.OffersPricesId);
 
                     offer.OffersPricesId = offerprice.OffersPricesId;
@@ -783,13 +791,14 @@ namespace TaamerProject.Service.Services
                     }
                     _TaamerProContext.SaveChanges();
 
+                    string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+
+                    string ActionNote2 = "   تعديل عرض السعر رقم : " + offerprice.OfferNo;
+                    _SystemAction.SaveAction("saveoffer", "OffersPricesService", 2, "   تعديل عرض السعر رقم : " + offerprice.OfferNo, "", "", ActionDate2, UserId, BranchId, ActionNote2, 1);
+                    //-----------------------------------------------------------------------------------------------------------------
 
 
                 }
-                string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                string ActionNote2 = "   حفظ عرض السعر رقم : " + offerprice.OfferNo;
-                _SystemAction.SaveAction("saveoffer", "OffersPricesService", 1, "   حفظ عرض السعر رقم : " + offerprice.OfferNo, "", "", ActionDate2, UserId, BranchId, ActionNote2, 1);
-                //-----------------------------------------------------------------------------------------------------------------
 
 
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
