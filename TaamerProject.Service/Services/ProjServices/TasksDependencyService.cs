@@ -258,7 +258,7 @@ namespace TaamerProject.Service.Services
                             UserVacation = UserVacation.Where(s =>                             
                                     // أو عنده إجازة في نفس وقت المهمة
                                     (!(s.StartDate == null || s.StartDate.Equals("")) && !(phases.ExcpectedStartDate == null || phases.ExcpectedStartDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(phases.ExcpectedStartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
-                                    (!(s.EndDate == null || s.EndDate.Equals("")) && !(phases.ExcpectedEndDate == null || phases.ExcpectedEndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) > DateTime.ParseExact(phases.ExcpectedEndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))
+                                    (!(s.EndDate == null || s.EndDate.Equals("")) && !(phases.ExcpectedEndDate == null || phases.ExcpectedEndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(phases.ExcpectedEndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))
                             ).ToList();
 
                             //var UserVacation = _TaamerProContext.Vacation.AsEnumerable().Where(s => s.IsDeleted == false && s.UserId == phases.UserId && s.VacationStatus == 2 && s.DecisionType == 1
@@ -267,7 +267,7 @@ namespace TaamerProject.Service.Services
                             //    (
                             //        // أو عنده إجازة في نفس وقت المهمة
                             //        (!(s.StartDate == null || s.StartDate.Equals("")) && !(phases.ExcpectedStartDate == null || phases.ExcpectedStartDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(phases.ExcpectedStartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
-                            //        (!(s.EndDate == null || s.EndDate.Equals("")) && !(phases.ExcpectedEndDate == null || phases.ExcpectedEndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) > DateTime.ParseExact(phases.ExcpectedEndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                            //        (!(s.EndDate == null || s.EndDate.Equals("")) && !(phases.ExcpectedEndDate == null || phases.ExcpectedEndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(phases.ExcpectedEndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
                             //    )
                             //    ).ToList();
                             if (UserVacation.Count() != 0)
