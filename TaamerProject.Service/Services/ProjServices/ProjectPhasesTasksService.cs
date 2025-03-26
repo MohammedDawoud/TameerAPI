@@ -217,20 +217,23 @@ namespace TaamerProject.Service.Services
             if (ProjectPhasesTasks != null && ProjectPhasesTasks.Count() > 0)
             {
                 List<TasksVM> treeItems = new List<TasksVM>();
+
                 foreach (var item in ProjectPhasesTasks)
                 {
-                    //var tamded = "";
-                    //var ta7weel = "";
-                    //if (item.PlusTime == true)
-                    //{
-                    //    tamded = "<i class='ri-time-line'></i>";
-
-                    //}
-                    //if (item.IsConverted == 1)
-                    //{
-                    //    ta7weel = "<i class='fa fa-arrow-right'></i>";
-
-                    //}
+                    var tamded = "";
+                    var ta7weel = "";
+                    if (item.PlusTime == true)
+                    {
+                        //tamded = "<i class='ri-time-line'></i>";
+                        //tamded = "<span> <i class='fa-solid fa-folder-plus tree-icon'></i></span>";
+                        tamded = "(مطلوب تمديدها)";
+                    }
+                    if (item.IsConverted == 1)
+                    {
+                        //ta7weel = "<i class='fa fa-arrow-right'></i>";
+                        //ta7weel = "<span> <i class='fa-solid fa-folder-plus tree-icon'></i></span>";
+                        ta7weel = "(مطلوب تحويلها)";
+                    }
                     string TimeSTR = "";
                     if (!(item.EndDateNew==null || item.StartDateNew==null))
                     {
@@ -253,14 +256,14 @@ namespace TaamerProject.Service.Services
                         TimeSTR = item.TimeStr;
                     }
 
-                    treeItems.Add(new TasksVM(item.PhaseTaskId.ToString(), ((item.ProjectId == 0 || item.ProjectId == null) ? "#" : item.ProjectId.ToString() + "pr"), item.DescriptionAr + "-" + TimeSTR, item.PhaseTaskId.ToString()));
+                    treeItems.Add(new TasksVM(item.PhaseTaskId.ToString(), ((item.ProjectId == 0 || item.ProjectId == null) ? "#" : item.ProjectId.ToString() + "pr"), item.DescriptionAr + "-" + TimeSTR + " " + tamded + " " + ta7weel, item.PhaseTaskId.ToString()));
                 }
                 List<TasksVM> treepro = new List<TasksVM>();
                 foreach (var item in Projects)
                 {
                     var Pro = (item.Key.ToString() + "pr");
                     var ListChild = treeItems.Where(s => s.parent == Pro).ToList();
-                    treepro.Add(new TasksVM(item.Key.ToString() + "pr", "#", item.Value?.ProjectNumber?.ToString() + " - " + item.Value?.ClientName?.ToString(), ListChild, item.Key.ToString()));
+                    treepro.Add(new TasksVM(item.Key.ToString() + "pr", "#", item.Value?.ProjectNumber?.ToString() + " - " + item.Value?.ClientName?.ToString() , ListChild, item.Key.ToString()));
                 }
                 var IteUnion = treeItems.Union(treepro);
 
@@ -328,21 +331,23 @@ namespace TaamerProject.Service.Services
             if (ProjectPhasesTasks != null && ProjectPhasesTasks.Count() > 0)
             {
                 List<TasksVM> treeItems = new List<TasksVM>();
+
                 foreach (var item in ProjectPhasesTasks)
                 {
-
-                    //var tamded = "";
-                    //var ta7weel = "";
-                    //if (item.PlusTime == true)
-                    //{
-                    //    tamded = "<i class='ri-time-line'></i>";
-
-                    //}
-                    //if (item.IsConverted == 1)
-                    //{
-                    //    ta7weel = "<i class='fa fa-arrow-right'></i>";
-
-                    //}
+                    var tamded = "";
+                    var ta7weel = "";
+                    if (item.PlusTime == true)
+                    {
+                        //tamded = "<i class='ri-time-line'></i>";
+                        //tamded = "<span> <i class='fa-solid fa-folder-plus tree-icon'></i></span>";
+                        tamded = "(مطلوب تمديدها)";
+                    }
+                    if (item.IsConverted == 1)
+                    {
+                        //ta7weel = "<i class='fa fa-arrow-right'></i>";
+                        //ta7weel = "<span> <i class='fa-solid fa-folder-plus tree-icon'></i></span>";
+                        ta7weel = "(مطلوب تحويلها)";
+                    }
                     string TimeSTR = "";
                     if (!(item.EndDateNew == null || item.StartDateNew == null))
                     {
@@ -365,7 +370,7 @@ namespace TaamerProject.Service.Services
                         TimeSTR = item.TimeStr;
                     }
 
-                    treeItems.Add(new TasksVM(item.PhaseTaskId.ToString(), ((item.ProjectId == 0 || item.ProjectId == null) ? "#" : item.ProjectId.ToString() + "pr"), item.DescriptionAr + "-" + item.TimeStr, item.PhaseTaskId.ToString()));
+                    treeItems.Add(new TasksVM(item.PhaseTaskId.ToString(), ((item.ProjectId == 0 || item.ProjectId == null) ? "#" : item.ProjectId.ToString() + "pr"), item.DescriptionAr + "-" + item.TimeStr + " " + tamded + " " + ta7weel, item.PhaseTaskId.ToString()));
                 }
                 List<TasksVM> treepro = new List<TasksVM>();
                 foreach (var item in Projects)
@@ -588,8 +593,24 @@ namespace TaamerProject.Service.Services
             if (ProjectPhasesTasks != null && ProjectPhasesTasks.Count() > 0)
             {
                 List<TasksVM> treeItems = new List<TasksVM>();
+
+
                 foreach (var item in ProjectPhasesTasks)
                 {
+                    var tamded = "";
+                    var ta7weel = "";
+                    if (item.PlusTime == true)
+                    {
+                        //tamded = "<i class='ri-time-line'></i>";
+                        //tamded = "<span> <i class='fa-solid fa-folder-plus tree-icon'></i></span>";
+                        tamded = "(مطلوب تمديدها)";
+                    }
+                    if (item.IsConverted == 1)
+                    {
+                        //ta7weel = "<i class='fa fa-arrow-right'></i>";
+                        //ta7weel = "<span> <i class='fa-solid fa-folder-plus tree-icon'></i></span>";
+                        ta7weel = "(مطلوب تحويلها)";
+                    }
 
                     string TimeSTR = "";
                     if (!(item.EndDateNew == null || item.StartDateNew == null))
@@ -613,7 +634,7 @@ namespace TaamerProject.Service.Services
                         TimeSTR = item.TimeStr;
                     }
 
-                    treeItems.Add(new TasksVM(item.PhaseTaskId.ToString(), ((item.ProjectId == 0 || item.ProjectId == null) ? "#" : item.ProjectId.ToString() + "pr"), item.DescriptionAr + "-" + TimeSTR, item.PhaseTaskId.ToString()));
+                    treeItems.Add(new TasksVM(item.PhaseTaskId.ToString(), ((item.ProjectId == 0 || item.ProjectId == null) ? "#" : item.ProjectId.ToString() + "pr"), item.DescriptionAr + "-" + TimeSTR + " " + tamded + " " + ta7weel, item.PhaseTaskId.ToString()));
                 }
 
                 List<TasksVM> treepro = new List<TasksVM>();
@@ -706,8 +727,25 @@ namespace TaamerProject.Service.Services
             if (ProjectPhasesTasks != null && ProjectPhasesTasks.Count() > 0)
             {
                 List<TasksVM> treeItems = new List<TasksVM>();
+
+
                 foreach (var item in ProjectPhasesTasks)
                 {
+                    var tamded = "";
+                    var ta7weel = "";
+                    if (item.PlusTime == true)
+                    {
+                        //tamded = "<i class='ri-time-line'></i>";
+                        //tamded = "<span> <i class='fa-solid fa-folder-plus tree-icon'></i></span>";
+                        tamded = "(مطلوب تمديدها)";
+                    }
+                    if (item.IsConverted == 1)
+                    {
+                        //ta7weel = "<i class='fa fa-arrow-right'></i>";
+                        //ta7weel = "<span> <i class='fa-solid fa-folder-plus tree-icon'></i></span>";
+                        ta7weel = "(مطلوب تحويلها)";
+                    }
+
                     string TimeSTR = "";
                     if (!(item.EndDateNew == null || item.StartDateNew == null))
                     {
@@ -729,7 +767,7 @@ namespace TaamerProject.Service.Services
                     {
                         TimeSTR = item.TimeStr;
                     }
-                    treeItems.Add(new TasksVM(item.PhaseTaskId.ToString(), ((item.ProjectId == 0 || item.ProjectId == null) ? "#" : item.ProjectId.ToString() + "pr"), item.DescriptionAr + "-" + TimeSTR, item.PhaseTaskId.ToString()));
+                    treeItems.Add(new TasksVM(item.PhaseTaskId.ToString(), ((item.ProjectId == 0 || item.ProjectId == null) ? "#" : item.ProjectId.ToString() + "pr"), item.DescriptionAr + "-" + TimeSTR + " " + tamded + " " + ta7weel, item.PhaseTaskId.ToString()));
                 }
                 List<TasksVM> treepro = new List<TasksVM>();
                 foreach (var item in Projects)
@@ -1565,7 +1603,7 @@ namespace TaamerProject.Service.Services
                         UserVacation = UserVacation.Where(s =>
 
                         (!(s.StartDate == null || s.StartDate.Equals("")) && !(Project.ProjectDate == null || Project.ProjectDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(Project.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
-                            (!(s.EndDate == null || s.EndDate.Equals("")) && !(Project.ProjectExpireDate == null || Project.ProjectExpireDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) > DateTime.ParseExact(Project.ProjectExpireDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))
+                            (!(s.EndDate == null || s.EndDate.Equals("")) && !(Project.ProjectExpireDate == null || Project.ProjectExpireDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(Project.ProjectExpireDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))
                         ).ToList();
                         if (UserVacation.Count() != 0)
                         {
@@ -2975,7 +3013,7 @@ namespace TaamerProject.Service.Services
                         UserVacation = UserVacation.Where(s =>
 
                         (!(s.StartDate == null || s.StartDate.Equals("")) && !(Project.ProjectDate == null || Project.ProjectDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(Project.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
-                            (!(s.EndDate == null || s.EndDate.Equals("")) && !(Project.ProjectExpireDate == null || Project.ProjectExpireDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) > DateTime.ParseExact(Project.ProjectExpireDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))
+                            (!(s.EndDate == null || s.EndDate.Equals("")) && !(Project.ProjectExpireDate == null || Project.ProjectExpireDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(Project.ProjectExpireDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))
                         ).ToList();
                         if (UserVacation.Count() != 0)
                         {
@@ -5370,7 +5408,7 @@ namespace TaamerProject.Service.Services
                 UserVacation = UserVacation.Where(s =>
                    // أو عنده إجازة في نفس وقت المهمة
                 (!(s.StartDate == null || s.StartDate.Equals("")) && !(ProjectPhasesTasks.ExcpectedStartDate == null || ProjectPhasesTasks.ExcpectedStartDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(ProjectPhasesTasks.ExcpectedStartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
-                    (!(s.EndDate == null || s.EndDate.Equals("")) && !(ProjectPhasesTasks.ExcpectedEndDate == null || ProjectPhasesTasks.ExcpectedEndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) > DateTime.ParseExact(ProjectPhasesTasks.ExcpectedEndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))
+                    (!(s.EndDate == null || s.EndDate.Equals("")) && !(ProjectPhasesTasks.ExcpectedEndDate == null || ProjectPhasesTasks.ExcpectedEndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(ProjectPhasesTasks.ExcpectedEndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))
                 ).ToList();
 
                 //var UserVacation = _TaamerProContext.Vacation.AsEnumerable().Where(s => s.IsDeleted == false && s.UserId == ProjectPhasesTasks.UserId && s.VacationStatus == 2 && s.DecisionType == 1
@@ -5379,7 +5417,7 @@ namespace TaamerProject.Service.Services
                 //(
                 //    // أو عنده إجازة في نفس وقت المهمة
                 //    (!(s.StartDate == null || s.StartDate.Equals("")) && !(ProjectPhasesTasks.ExcpectedStartDate == null || ProjectPhasesTasks.ExcpectedStartDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(ProjectPhasesTasks.ExcpectedStartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
-                //    (!(s.EndDate == null || s.EndDate.Equals("")) && !(ProjectPhasesTasks.ExcpectedEndDate == null || ProjectPhasesTasks.ExcpectedEndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) > DateTime.ParseExact(ProjectPhasesTasks.ExcpectedEndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                //    (!(s.EndDate == null || s.EndDate.Equals("")) && !(ProjectPhasesTasks.ExcpectedEndDate == null || ProjectPhasesTasks.ExcpectedEndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(ProjectPhasesTasks.ExcpectedEndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
                 //)
                 //);
                 if (UserVacation.Count() != 0)
