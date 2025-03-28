@@ -24,6 +24,8 @@ namespace TaamerProject.Models
         public string? parent { get; set; }
         public string? name { get; set; }
         public string? phaseTaskId { get; set; }
+        public bool? plusTime { get; set; }
+        public int? isConverted { get; set; }
 
         public List<TasksVM>? children { get; set; }
 
@@ -32,20 +34,25 @@ namespace TaamerProject.Models
         //{
            
         //}
-        public TasksVM(string? ID, string? Parent, string? Text, string? phaseid)
+        public TasksVM(string? ID, string? Parent, string? Text, string? phaseid, bool? PlusTime, int? IsConverted)
         {
             id = ID;
             parent = Parent;
             name = Text;
             phaseTaskId = phaseid;
+            plusTime = PlusTime ?? false;
+            isConverted = IsConverted ?? 0;
+
         }
-        public TasksVM(string? ID, string? Parent, string? Text, List<TasksVM>? Children, string? phaseid)
+        public TasksVM(string? ID, string? Parent, string? Text, List<TasksVM>? Children, string? phaseid, bool? PlusTime, int? IsConverted)
         {
             id = ID;
             parent = Parent;
             name = Text;
             children = Children;
             phaseTaskId = phaseid;
+            plusTime = PlusTime??false;
+            isConverted = IsConverted??0;
         }
 
     }
@@ -56,6 +63,9 @@ namespace TaamerProject.Models
         public string? parent { get; set; }
         public string? name { get; set; }
         public string? phaseTaskId { get; set; }
+        public bool? plusTime { get; set; }
+        public int? isConverted { get; set; }
+
         public List<ChildrenVM>? children { get; set; }
 
 
@@ -63,12 +73,15 @@ namespace TaamerProject.Models
         {
 
         }
-        public TasksLoadVM(string? ID, string? Parent, string? Text, string? phaseid)
+        public TasksLoadVM(string? ID, string? Parent, string? Text, string? phaseid,bool? PlusTime,int? IsConverted)
         {
             id = ID;
             parent = Parent;
             name = Text;
             phaseTaskId = phaseid;
+            plusTime = PlusTime??false;
+            isConverted = IsConverted??0;
+
         }
         public TasksLoadVM(string? ID, string? Parent, string? Text, List<ChildrenVM>? Children)
         {
@@ -85,12 +98,16 @@ namespace TaamerProject.Models
         public string? id { get; set; }
         public string? name { get; set; }
         public itemVM? item { get; set; }
+        public bool? plusTime { get; set; }
+        public int? isConverted { get; set; }
     }
     public class itemVM
     {
         public string? phaseid { get; set; }
         public string? phrase { get; set; }
-        public string? phaseTaskId { get; set; }     
+        public string? phaseTaskId { get; set; }
+        public bool? plusTime { get; set; }
+        public int? isConverted { get; set; }
 
     }
 

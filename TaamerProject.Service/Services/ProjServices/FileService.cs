@@ -75,7 +75,7 @@ namespace TaamerProject.Service.Services
                 List<TasksVM> treeItems = new List<TasksVM>();
                 foreach (var item in Files)
                 {
-                    treeItems.Add(new TasksVM(item.FileId.ToString(), ((item.ProjectId == 0 || item.ProjectId == null) ? "#" : item.ProjectId.ToString() + "pr"), item.FileName + "-" + item.FileTypeName + "-" + item.UserFullName, item.FileId.ToString()));
+                    treeItems.Add(new TasksVM(item.FileId.ToString(), ((item.ProjectId == 0 || item.ProjectId == null) ? "#" : item.ProjectId.ToString() + "pr"), item.FileName + "-" + item.FileTypeName + "-" + item.UserFullName, item.FileId.ToString(),null,null));
                 }
 
                 List<TasksVM> treepro = new List<TasksVM>();
@@ -83,7 +83,7 @@ namespace TaamerProject.Service.Services
                 {
                     var Pro = (item.Key.ToString() + "pr");
                     var ListChild = treeItems.Where(s => s.parent == Pro).ToList();
-                    treepro.Add(new TasksVM(item.Key.ToString() + "pr", "#", item.Value?.ProjectNo?.ToString() + " - " + item.Value?.CustomerName?.ToString(), ListChild, item.Key.ToString()));
+                    treepro.Add(new TasksVM(item.Key.ToString() + "pr", "#", item.Value?.ProjectNo?.ToString() + " - " + item.Value?.CustomerName?.ToString(), ListChild, item.Key.ToString(),null,null));
                 }
                 var IteUnion = treeItems.Union(treepro);
 
