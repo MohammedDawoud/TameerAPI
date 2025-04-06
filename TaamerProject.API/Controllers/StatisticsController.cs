@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using TaamerProject.API.Helper;
 using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;
@@ -25,11 +26,12 @@ namespace TaamerProject.API.Controllers
         private IConfiguration Configuration;
         private readonly IOrganizationsService _organizationsservice;
         private readonly IEmployeesService _employeeService;
+        private readonly IAttendenceService _attendence;
         public GlobalShared _globalshared;
         public StatisticsController(IConfiguration _configuration, IAccountsService accountsService, IProjectService projectservice
             , INotificationService NotificationService, IProjectPhasesTasksService projectPhasesTasksservice
             , IBranchesService branchesService, IOrganizationsService organizationsservice, IEmployeesService employeeService
-            , IUserMailsService userMailsservice)
+            , IUserMailsService userMailsservice, IAttendenceService attendence)
         {
              _accountsService = accountsService;
              _projectservice = projectservice;
@@ -42,6 +44,7 @@ namespace TaamerProject.API.Controllers
             
             _employeeService = employeeService;
             Configuration = _configuration;
+            _attendence = attendence;
             Con = this.Configuration.GetConnectionString("DBConnection");
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
         }
@@ -82,7 +85,22 @@ namespace TaamerProject.API.Controllers
                 VactionBalance = emp.VacationEndCount ?? 0;
             }
 
+
             VactionBalancestr = (VactionBalance < 30) ? VactionBalance + " يوم " : (VactionBalance == 30) ? VactionBalance / 30 + " شهر " : (VactionBalance > 30) ? ((VactionBalance / 30) + " شهر " + (VactionBalance % 30) + " يوم  ") : "";
+            // Get current date
+            DateTime now = DateTime.Now;
+            DateTime startDate = new DateTime(now.Year, now.Month, 1);
+            DateTime endDate = startDate.AddMonths(1).AddDays(-1);
+            var arabicCulture = new CultureInfo("ar");
+            arabicCulture.DateTimeFormat.Calendar = new GregorianCalendar();
+            string arabicMonthName = arabicCulture.DateTimeFormat.GetMonthName(now.Month);
+            var atteendence = _attendence.GetAbsenceData(startDate.ToString("yyyy-MM-dd"), endDate.ToString("yyyy-MM-dd"), emp.EmployeeId, _globalshared.BranchId_G, _globalshared.Lang_G, Con, _globalshared.YearId_G);
+            var abs = new
+            {
+                AbsenceCount = atteendence.Count(),
+                MonthName = arabicMonthName,
+                Dawam = emp.DawamId
+            };
             var Counts = new
             {
                 NotificationsCount = _NotificationService.GetNotificationReceived(_globalshared.UserId_G).Result.Where(s => s.IsRead != true).Count(),
@@ -91,8 +109,9 @@ namespace TaamerProject.API.Controllers
                 MyInboxCount = _userMailsservice.GetAllUserMails(_globalshared.UserId_G, _globalshared.BranchId_G).Result.Count(),
                 GetUserProjects = ProjectCount,
                 VacationBalance = VactionBalancestr,
-                BackupAlertLoad_M = _NotificationService.GetUserBackupNotesAlert(_globalshared.UserId_G).Result
-        };
+                BackupAlertLoad_M = _NotificationService.GetUserBackupNotesAlert(_globalshared.UserId_G).Result,
+                AbsenceData= abs
+            };
             return Ok(Counts );
         }
 
