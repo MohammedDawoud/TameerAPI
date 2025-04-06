@@ -513,6 +513,18 @@ namespace TaamerProject.Service.Services
                 }
                 //var UserBranchs = _UserBranchesRepository.GetBranchByBranchId(Lang, BranchId).Count();
 
+                var Customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId == BranchId);
+                if (Customers != null && Customers.Count() > 0)
+                {
+                    string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                    string ActionNote2 = " فشل في حذف الفرع رقم " + BranchId; ;
+                    _SystemAction.SaveAction("DeleteBranches", "BranchesService", 3, "يوجد عملاء علي هذا الفرع من فضلك قم بنقلهم اولا الي فرع اخر او قم بحذفهم", "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                    //-----------------------------------------------------------------------------------------------------------------
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "يوجد عملاء علي هذا الفرع من فضلك قم بنقلهم اولا الي فرع اخر او قم بحذفهم" };
+                }
+
+
+
                 var AccTrans = _TaamerProContext.Transactions.Where(s => s.IsDeleted == false && s.BranchId == BranchId);
                 if (AccTrans != null && AccTrans.Count() > 0)
                 {
