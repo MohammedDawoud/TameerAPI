@@ -68,7 +68,6 @@ namespace TaamerProject.API.Controllers
         {
             _offersPricesService = offersPricesService;
             _filesAuthService = filesAuthService;
-
             _UsersService = usersService;
             _Versionservice = versionService;
             _branchesService = branchesService;
@@ -510,6 +509,7 @@ namespace TaamerProject.API.Controllers
                     var min2 = 0;
                     if (result)
                     {
+
                         if (user.ActiveTime != null)
                         {
                             DateTime ActiveUsertime = user.ActiveTime ?? DateTime.Now;
@@ -751,8 +751,22 @@ namespace TaamerProject.API.Controllers
 
             }
         }
-
-
+        [HttpPost("ValidateRecaptchaAsync")]
+        public async Task<IActionResult> ValidateRecaptchaAsync([FromForm] string recaptchaResponse, [FromForm] string secretKey)
+        {
+            RecaptchaValidator _RecaptchaValidator = new RecaptchaValidator();
+            var isValid = await _RecaptchaValidator.ValidateRecaptchaAsync(recaptchaResponse, secretKey);
+            if (isValid)
+            {
+                // reCAPTCHA is valid, proceed with your application's logic
+                return Ok(new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "reCAPTCHA is valid, proceed with your application's logic" });
+            }
+            else
+            {
+                // reCAPTCHA is invalid, return an error
+                return Ok(new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "reCAPTCHA is invalid" });
+            }
+        }
         //public IActionResult Login(string username, string password, string activationCode, string remember, string branch, string returnUrl)
         //{
 

@@ -27,6 +27,7 @@ using TaamerProject.Service.Services.EmpServices;
 using TaamerProject.Models;
 using TaamerProject.Service.Services.ProjServices;
 using TaamerProject.Service.Services.SysServices;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TaamerProject.API
 {
@@ -46,7 +47,6 @@ namespace TaamerProject.API
                     builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
                 });
             });
-
 
             builder.Services.AddControllers();
             builder.Services.AddControllers().AddNewtonsoftJson();
