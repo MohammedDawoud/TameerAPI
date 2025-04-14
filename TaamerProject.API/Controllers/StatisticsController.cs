@@ -94,25 +94,46 @@ namespace TaamerProject.API.Controllers
             var arabicCulture = new CultureInfo("ar");
             arabicCulture.DateTimeFormat.Calendar = new GregorianCalendar();
             string arabicMonthName = arabicCulture.DateTimeFormat.GetMonthName(now.Month);
-            var atteendence = _attendence.GetAbsenceData(startDate.ToString("yyyy-MM-dd"), endDate.ToString("yyyy-MM-dd"), emp.EmployeeId, _globalshared.BranchId_G, _globalshared.Lang_G, Con, _globalshared.YearId_G);
-            var abs = new
+            if (emp != null)
             {
-                AbsenceCount = atteendence.Count(),
-                MonthName = arabicMonthName,
-                Dawam = emp.DawamId
-            };
-            var Counts = new
+                var atteendence = _attendence.GetAbsenceData(startDate.ToString("yyyy-MM-dd"), endDate.ToString("yyyy-MM-dd"), emp.EmployeeId, _globalshared.BranchId_G, _globalshared.Lang_G, Con, _globalshared.YearId_G);
+                var abs = new
+                {
+                    AbsenceCount = atteendence.Count(),
+                    MonthName = arabicMonthName,
+                    Dawam = emp.DawamId
+                };
+
+                var Counts = new
+                {
+                    NotificationsCount = _NotificationService.GetNotificationReceived(_globalshared.UserId_G).Result.Where(s => s.IsRead != true).Count(),
+                    AllertCount = _NotificationService.GetUserAlert(_globalshared.UserId_G).Result.Where(x => x.IsRead != true).Count(),
+                    TasksByUserCount = _projectPhasesTasksservice.GetTasksByUserId(_globalshared.UserId_G, 0, _globalshared.BranchId_G).Result.Count(),
+                    MyInboxCount = _userMailsservice.GetAllUserMails(_globalshared.UserId_G, _globalshared.BranchId_G).Result.Count(),
+                    GetUserProjects = ProjectCount,
+                    VacationBalance = VactionBalancestr,
+                    BackupAlertLoad_M = _NotificationService.GetUserBackupNotesAlert(_globalshared.UserId_G).Result,
+                    AbsenceData = abs
+                };
+                return Ok(Counts);
+            }
+            else
             {
-                NotificationsCount = _NotificationService.GetNotificationReceived(_globalshared.UserId_G).Result.Where(s => s.IsRead != true).Count(),
-                AllertCount = _NotificationService.GetUserAlert(_globalshared.UserId_G).Result.Where(x => x.IsRead != true).Count(),
-                TasksByUserCount = _projectPhasesTasksservice.GetTasksByUserId(_globalshared.UserId_G, 0, _globalshared.BranchId_G).Result.Count(),
-                MyInboxCount = _userMailsservice.GetAllUserMails(_globalshared.UserId_G, _globalshared.BranchId_G).Result.Count(),
-                GetUserProjects = ProjectCount,
-                VacationBalance = VactionBalancestr,
-                BackupAlertLoad_M = _NotificationService.GetUserBackupNotesAlert(_globalshared.UserId_G).Result,
-                AbsenceData= abs
-            };
-            return Ok(Counts );
+                var Counts = new
+                {
+                    NotificationsCount = _NotificationService.GetNotificationReceived(_globalshared.UserId_G).Result.Where(s => s.IsRead != true).Count(),
+                    AllertCount = _NotificationService.GetUserAlert(_globalshared.UserId_G).Result.Where(x => x.IsRead != true).Count(),
+                    TasksByUserCount = _projectPhasesTasksservice.GetTasksByUserId(_globalshared.UserId_G, 0, _globalshared.BranchId_G).Result.Count(),
+                    MyInboxCount = _userMailsservice.GetAllUserMails(_globalshared.UserId_G, _globalshared.BranchId_G).Result.Count(),
+                    GetUserProjects = ProjectCount,
+                    VacationBalance = VactionBalancestr,
+                    BackupAlertLoad_M = _NotificationService.GetUserBackupNotesAlert(_globalshared.UserId_G).Result,
+                    
+                };
+                return Ok(Counts);
+
+            }
+               
         }
 
 
