@@ -22,14 +22,21 @@ namespace TaamerProject.Service.Services
          private readonly IEmployeesRepository _employeesRepository;
         private readonly TaamerProjectContext _TaamerProContext;
         private readonly ISystemAction _SystemAction;
+        private readonly IOrganizationsService _organizationsService;
+        private readonly ICustomerMailService _customerMailService;
+        private readonly INotificationService _notificationService;
         public PayrollMarchesService(IPayrollMarchesRepository payrollMarchesRepository 
             , IEmployeesRepository employeesRepository
-            , TaamerProjectContext dataContext, ISystemAction systemAction)
+            , TaamerProjectContext dataContext, ISystemAction systemAction, IOrganizationsService organizationsService
+            ,ICustomerMailService customerMailService, INotificationService notificationService)
         {
             _payrollMarchesRepository = payrollMarchesRepository;
              _employeesRepository = employeesRepository;
             _TaamerProContext = dataContext;
             _SystemAction = systemAction;
+            _organizationsService = organizationsService;
+            _customerMailService = customerMailService;
+            _notificationService = notificationService;
         }
         
         public Task<PayrollMarches> GetPayrollMarches(int EmpId, int MonthId) {
@@ -180,6 +187,7 @@ namespace TaamerProject.Service.Services
                 UpdatedPayroll.UpdateUser = UserId;
                 UpdatedPayroll.IsPostVoucher = false;
                 _TaamerProContext.SaveChanges();
+                sendemployeemail(UpdatedPayroll);
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = " ترحيل مسير رواتب رقم " + PayrollId;
@@ -490,6 +498,7 @@ namespace TaamerProject.Service.Services
                 //
                 UpdatedPayroll.IsPostPayVoucher = true;
                 _TaamerProContext.SaveChanges();
+                //sendemployeemail(UpdatedPayroll);
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = " ترحيل مسير رواتب رقم " + PayrollId;
@@ -511,7 +520,89 @@ namespace TaamerProject.Service.Services
         }
 
 
-        
+
+        public bool sendemployeemail(PayrollMarches payroll)
+        {
+            bool IsSent = false;
+            string OrgName = _organizationsService.GetBranchOrganization().Result.NameAr;
+            var EmployeeUpdated = _TaamerProContext.Employees.Where(x => x.EmployeeId == payroll.EmpId).FirstOrDefault();
+            string DepartmentNameAr = "";
+            Department? DepName = _TaamerProContext.Department.Where(s => s.DepartmentId == EmployeeUpdated.DepartmentId).FirstOrDefault();
+            if (DepName != null)
+            {
+                DepartmentNameAr = DepName.DepartmentNameAr;
+            }
+
+            //string BranchName = _BranchRepository.GetById(EmployeeUpdated.BranchId).NameAr;
+            string NameAr = "";
+            Branch? BranchName = _TaamerProContext.Branch.Where(s => s.BranchId == EmployeeUpdated.BranchId).FirstOrDefault();
+            var job = _TaamerProContext.Job.FirstOrDefault(x => x.JobId == EmployeeUpdated.JobId);
+            if (BranchName != null)
+            {
+                NameAr = BranchName.NameAr;
+            }
+            var directmanager = _TaamerProContext.Employees.Where(x => x.EmployeeId == EmployeeUpdated.DirectManager).FirstOrDefault();
+
+            var directmanagername = directmanager == null ? "" : directmanager.EmployeeNameAr;
+            var htmlBody = @"<!DOCTYPE html><html lang = ''><head><meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'><meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta charset = 'utf-8><meta name = 'description' content = ''><meta name = 'keywords' content = ''><meta name = 'csrf-token' content = ''><title></title><link rel = 'icon' type = 'image/x-icon' href = ''></head>
+    <body style = 'background:#f9f9f9;direction:rtl'><div class='container' style='max-width:630px;padding-right: var(--bs-gutter-x, .75rem); padding-left: var(--bs-gutter-x, .75rem); margin-right: auto;  margin-left: auto;'>
+    <style> .bordered {width: 550px; height: 700px; padding: 20px;border: 3px solid yellowgreen; background-color:lightgray;} </style>
+    <div class= 'row' style = 'font-family: Cairo, sans-serif'>  <div class= 'card' style = 'padding: 2rem;background:#fff'> <div style = 'width: 550px; height: 700px; padding: 20px; border: 3px solid yellowgreen; background-color: lightgray;'> <p style='text-align:center'></p>
+    <h4> عزيزي الموظف " + EmployeeUpdated.EmployeeNameAr + "</h4> <h4> السلام عليكم ورحمة الله وبركاتة</h4> <h3 style = 'text-align:center;' >تفاصيل الراتب  عن شهر "+payroll.MonthNo+" </h3><table align = 'center' border = '1' ><tr> <td>  الموظف</td><td>" + EmployeeUpdated.EmployeeNameAr + @"</td> </tr> <tr> <td>   الراتب</td><td>" + payroll.SalaryOfThisMonth + @"</td> </tr><tr> <td>   بدل السكن  </td> <td>" + payroll.HousingAllowance + @"</td>
+     </tr> <tr> <td>   البدلات</td> <td>" + payroll.MonthlyAllowances + @"</td> </tr> <tr> <td>  علاوات   </td> <td>" + payroll.Bonus + @"</td> </tr>  <tr> <td> مكافئات  </td> <td>" + payroll.TotalRewards + @"</td> </tr> <tr> <td> السلف  </td> <td>" + payroll.TotalLoans + @"</td> </tr> <tr> <td> خصومات  </td> <td>" + payroll.TotalDiscounts + @"</td> </tr> <tr> <td> تأمينات  </td> <td>" + payroll.Taamen + @"</td> </tr> <tr> <td> أيام غياب  </td> <td>" + payroll.TotalAbsDays + @"</td> </tr>
+<tr> <td> اجازات مخصومة من الراتب  </td> <td>" + payroll.TotalVacations + @"</td> </tr><tr> <td> التاخير  </td> <td>" + payroll.TotalLateDiscount + @"</td> </tr><tr> <td> الغياب  </td> <td>" + payroll.TotalAbsenceDiscount + @"</td> </tr> <tr> <td> الصافي  </td> <td>" + payroll.TotalSalaryOfThisMonth + @"</td> </tr></table><p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
+	
+    </div> </div></div></div></body></html> ";
+
+            //Mail
+            if (EmployeeUpdated.Email != null && EmployeeUpdated.Email != "")
+            {
+                IsSent = _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, 0, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), htmlBody, true, EmployeeUpdated.Email);
+            }
+            //if (directmanager != null)
+            //{
+            //    _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, 0, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), htmlBody, true, directmanager.Email);
+
+            //}
+            //string NotStr = "تم انضمام الموظف " + EmployeeUpdated.EmployeeNameAr + " إلى فريق " + OrgName + ", الوظيفة: " + job.JobNameAr + " قسم : " + DepartmentNameAr + " فرع: " + NameAr;
+            //Notification UserNotification = new Notification();
+            //UserNotification.ReceiveUserId = EmployeeUpdated.UserId.Value;
+            //UserNotification.Name = Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar"));
+            //UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+            //UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
+            //UserNotification.SendUserId = 1;
+            //UserNotification.Type = 1; // notification
+            //UserNotification.Description = NotStr;
+            //UserNotification.AllUsers = false;
+            //UserNotification.SendDate = DateTime.Now;
+            //UserNotification.ProjectId = 0;
+            //UserNotification.TaskId = 0;
+            //UserNotification.IsHidden = false;
+            //UserNotification.AddUser = EmployeeUpdated.UserId.Value;
+            //UserNotification.AddDate = DateTime.Now;
+            //UserNotification.IsRead = false;
+            //_TaamerProContext.Notification.Add(UserNotification);
+            //_TaamerProContext.SaveChanges();
+            //if (directmanager != null)
+            //{
+            //    var Not_directmanager = new Notification();
+            //    Not_directmanager = UserNotification;
+            //    Not_directmanager.ReceiveUserId = directmanager.UserId.Value;
+            //    Not_directmanager.NotificationId = 0;
+            //    _TaamerProContext.Notification.Add(Not_directmanager);
+            //    _TaamerProContext.SaveChanges();
+            //}
+            //_notificationService.sendmobilenotification(EmployeeUpdated.UserId.Value, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), NotStr);
+            //if (directmanager != null)
+            //{
+            //    _notificationService.sendmobilenotification(directmanager.UserId.Value, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), NotStr);
+            //}
+
+            return IsSent;
+        }
+
+
 
     }
 }
