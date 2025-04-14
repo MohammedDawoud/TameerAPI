@@ -1129,8 +1129,14 @@ namespace TaamerProject.Repository.Repositories
                 {
                     if (Type == 3) { Code = "0001"; } else { Code = "001"; }
                 }
-                else if (parentAccount.Level == 4) { Code = "01"; }
-                else if (parentAccount.Level == 5) { Code = "01"; }
+                else if (parentAccount.Level == 4)
+                {
+                    if (Type == 1) { Code = "001"; } else { Code = "01"; }
+                }
+                else if (parentAccount.Level == 5)
+                {
+                    if (Type == 1) { Code = "001"; } else { Code = "01"; }
+                }
                 else { Code = "01"; }
                 return parentAccountCode + Code;
             }
