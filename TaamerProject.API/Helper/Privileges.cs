@@ -467,6 +467,7 @@ namespace TaamerProject.API.Helper
                                        new Privilege { Id = 17010302 , ParentId = 170103 , Name =  Resources.ShowAlert , Description = Resources.ShowAlert},
 
                                new Privilege { Id = 142005 , ParentId = 14 , Name =  "ارشيف الموظفين" , Description = "ارشيف الموظفين" },
+                               new Privilege { Id = 142006 , ParentId = 14 , Name =  "Admin HR" , Description = "Admin HR" },
 
               ///////////////// Accounting /////////////////////////////////////    
              new Privilege { Id = 13 , ParentId = null , Name =  Resources.General_Accounts , Description = Resources.General_Accounts},

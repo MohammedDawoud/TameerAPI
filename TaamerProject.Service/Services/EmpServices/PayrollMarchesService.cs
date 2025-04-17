@@ -453,6 +453,7 @@ namespace TaamerProject.Service.Services
                     //
                     UpdatedPayroll.IsPostPayVoucher = true;
                     _TaamerProContext.SaveChanges();
+                    sendemployeemail(UpdatedPayroll);
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                     string ActionNote = " ترحيل مسيرات رواتب  " ;
@@ -545,20 +546,20 @@ namespace TaamerProject.Service.Services
 
             var directmanagername = directmanager == null ? "" : directmanager.EmployeeNameAr;
             var htmlBody = @"<!DOCTYPE html><html lang = ''><head><meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'><meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <meta charset = 'utf-8><meta name = 'description' content = ''><meta name = 'keywords' content = ''><meta name = 'csrf-token' content = ''><title></title><link rel = 'icon' type = 'image/x-icon' href = ''></head>
-    <body style = 'background:#f9f9f9;direction:rtl'><div class='container' style='max-width:630px;padding-right: var(--bs-gutter-x, .75rem); padding-left: var(--bs-gutter-x, .75rem); margin-right: auto;  margin-left: auto;'>
-    <style> .bordered {width: 550px; height: 700px; padding: 20px;border: 3px solid yellowgreen; background-color:lightgray;} </style>
-    <div class= 'row' style = 'font-family: Cairo, sans-serif'>  <div class= 'card' style = 'padding: 2rem;background:#fff'> <div style = 'width: 550px; height: 700px; padding: 20px; border: 3px solid yellowgreen; background-color: lightgray;'> <p style='text-align:center'></p>
-    <h4> عزيزي الموظف " + EmployeeUpdated.EmployeeNameAr + "</h4> <h4> السلام عليكم ورحمة الله وبركاتة</h4> <h3 style = 'text-align:center;' >تفاصيل الراتب  عن شهر "+payroll.MonthNo+" </h3><table align = 'center' border = '1' ><tr> <td>  الموظف</td><td>" + EmployeeUpdated.EmployeeNameAr + @"</td> </tr> <tr> <td>   الراتب</td><td>" + payroll.SalaryOfThisMonth + @"</td> </tr><tr> <td>   بدل السكن  </td> <td>" + payroll.HousingAllowance + @"</td>
-     </tr> <tr> <td>   البدلات</td> <td>" + payroll.MonthlyAllowances + @"</td> </tr> <tr> <td>  علاوات   </td> <td>" + payroll.Bonus + @"</td> </tr>  <tr> <td> مكافئات  </td> <td>" + payroll.TotalRewards + @"</td> </tr> <tr> <td> السلف  </td> <td>" + payroll.TotalLoans + @"</td> </tr> <tr> <td> خصومات  </td> <td>" + payroll.TotalDiscounts + @"</td> </tr> <tr> <td> تأمينات  </td> <td>" + payroll.Taamen + @"</td> </tr> <tr> <td> أيام غياب  </td> <td>" + payroll.TotalAbsDays + @"</td> </tr>
-<tr> <td> اجازات مخصومة من الراتب  </td> <td>" + payroll.TotalVacations + @"</td> </tr><tr> <td> التاخير  </td> <td>" + payroll.TotalLateDiscount + @"</td> </tr><tr> <td> الغياب  </td> <td>" + payroll.TotalAbsenceDiscount + @"</td> </tr> <tr> <td> الصافي  </td> <td>" + payroll.TotalSalaryOfThisMonth + @"</td> </tr></table><p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
+                            <meta charset = 'utf-8><meta name = 'description' content = ''><meta name = 'keywords' content = ''><meta name = 'csrf-token' content = ''><title></title><link rel = 'icon' type = 'image/x-icon' href = ''></head>
+                            <body style = 'background:#f9f9f9;direction:rtl'><div class='container' style='max-width:630px;padding-right: var(--bs-gutter-x, .75rem); padding-left: var(--bs-gutter-x, .75rem); margin-right: auto;  margin-left: auto;'>
+                            <style> .bordered {width: 550px; height: 700px; padding: 20px;border: 3px solid yellowgreen; background-color:lightgray;} </style>
+                            <div class= 'row' style = 'font-family: Cairo, sans-serif'>  <div class= 'card' style = 'padding: 2rem;background:#fff'> <div style = 'width: 550px; height: 700px; padding: 20px; border: 3px solid yellowgreen; background-color: lightgray;'> <p style='text-align:center'></p>
+                            <h4>  اسم الموظف :  " + EmployeeUpdated.EmployeeNameAr + "</h4> <h4>  رقم الموظف :   "+EmployeeUpdated.EmployeeNo+" </h4> <h4 >   المسمي الوظيفي :   " + job .JobNameAr+ " </h4><h3 align = 'center'> تفاصيل الراتب</h3><h3 align = 'center'>" + GetArabicMonthName(payroll.MonthNo)+ "  " +DateTime.Now.Year+ "</h3><table align = 'center' border = '1' > <tr> <td colspan='2'> الايرادات</td><td colspan='2'>الخصومات</td> </tr> <tr> <td> الراتب</td> <td>" + payroll.SalaryOfThisMonth + @"</td><td> السلف  </td> <td>" + payroll.TotalLoans + @"</td></tr><tr><td>   بدل السكن  </td> <td>" + payroll.HousingAllowance + @"</td>
+                            <td> خصومات  </td> <td>" + payroll.TotalDiscounts + @"</td></tr><tr><td>البدلات</td><td>"+payroll.MonthlyAllowances+"</td><td>تأمينات</td><td>"+payroll.Taamen+"</td></tr><tr><td>علاوات</td><td>"+payroll.Bonus+"</td><td>أيام غياب</td><td>"+payroll.TotalAbsDays+"</td></tr><tr><td>مكافئات</td><td>"+payroll.TotalRewards+"</td><td>إجازات مخصومة من الراتب</td><td>"+payroll.TotalVacations+ "</td></tr>" +
+                            "<tr><td></td><td></td><td>التاخير</td><td>"+payroll.TotalLateDiscount+"</td></tr><tr><td></td><td></td><td>الغياب</td><td>"+payroll.TotalAbsenceDiscount+ "</td></tr><tr><td colspan='2'>الصافي</td><td colspan='2'>"+payroll.TotalSalaryOfThisMonth+"</td></tr></table><p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
 	
-    </div> </div></div></div></body></html> ";
+                            </div> </div></div></div></body></html> ";
 
             //Mail
             if (EmployeeUpdated.Email != null && EmployeeUpdated.Email != "")
             {
-                IsSent = _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, 0, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), htmlBody, true, EmployeeUpdated.Email);
+                IsSent = _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, 0, "تفاصيل الراتب", htmlBody, true, EmployeeUpdated.Email);
             }
             //if (directmanager != null)
             //{
@@ -601,8 +602,29 @@ namespace TaamerProject.Service.Services
 
             return IsSent;
         }
+        public static string GetArabicMonthName(int monthNumber)
+        {
+            var months = new Dictionary<int, string>
+    {
+        { 1, "يناير" },
+        { 2, "فبراير" },
+        { 3, "مارس" },
+        { 4, "أبريل" },
+        { 5, "مايو" },
+        { 6, "يونيو" },
+        { 7, "يوليو" },
+        { 8, "أغسطس" },
+        { 9, "سبتمبر" },
+        { 10, "أكتوبر" },
+        { 11, "نوفمبر" },
+        { 12, "ديسمبر" }
+    };
+
+            return months.TryGetValue(monthNumber, out var name) ? name : "شهر غير صالح";
+        }
 
 
 
     }
+
 }
