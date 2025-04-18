@@ -50,6 +50,8 @@ namespace TaamerProject.Service.Interfaces
 
 
         Task<IEnumerable<object>> FillAccountSelect(string Con, string SelectStetment);
+        Task<IEnumerable<object>> FillAccountNewSelect(string Con, string SelectStetment);
+
         Task<IEnumerable<object>> FillYearsSelect(string Con, string SelectStetment);
         Task<IEnumerable<object>> GetNetValue(string Con, string SelectStetment);
 

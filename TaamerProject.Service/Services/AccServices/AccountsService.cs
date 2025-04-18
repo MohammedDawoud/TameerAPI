@@ -1640,6 +1640,26 @@ namespace TaamerProject.Service.Services
                 Name = row[1].ToString()
             });
         }
+        public async Task<IEnumerable<object>> FillAccountNewSelect(string Con, string SelectStetment)
+        {
+            //var Statuses = _ProjectRepository.GetAllArchiveProjectsByDateSearch(DateFrom, DateTo, BranchId);
+
+            SqlConnection con = new SqlConnection(Con);
+            SqlDataAdapter da = new SqlDataAdapter(SelectStetment, Con);
+            da.SelectCommand.CommandType = CommandType.Text;
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+
+            DataTable myDataTable = ds.Tables[0];
+            con.Close();
+
+            return myDataTable.AsEnumerable().Select(row => new
+            {
+                Id = int.Parse(row[0].ToString()),
+                Name = row[1].ToString(),
+                Classification = row[2].ToString(),
+            });
+        }
         public async Task<IEnumerable<object>> FillYearsSelect(string Con, string SelectStetment)
         {
             //var Statuses = _ProjectRepository.GetAllArchiveProjectsByDateSearch(DateFrom, DateTo, BranchId);

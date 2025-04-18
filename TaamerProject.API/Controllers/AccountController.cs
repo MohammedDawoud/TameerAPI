@@ -777,8 +777,8 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var SelectStetment = "";
-            SelectStetment = "select  AccountId,AccountCode+'-'+NameAr from Acc_Accounts where IsDeleted=0 and IsMain=0  and (BranchId in(select branchid from Sys_UserBranches where userid=" + _globalshared.UserId_G + ") or BranchId in(select branchid from Sys_Users where userid=" + _globalshared.UserId_G + ")) union  select  AccountId,AccountCode+'-'+NameAr from Acc_Accounts where IsDeleted=0 and ParentId in (select AccountId from V_ParentAccountBranches where (branchid in(select branchid from Sys_UserBranches where userid=" + _globalshared.UserId_G + ") or BranchId in(select branchid from Sys_Users where userid=" + _globalshared.UserId_G + ")))  union   select  AccountId,AccountCode+'-'+NameAr from Acc_Accounts where ParentId not in (select AccountId from V_ParentAccountBranches) and IsDeleted=0 and IsMain=0";
-            var Accounts = _accountsService.FillAccountSelect(Con, SelectStetment);
+            SelectStetment = "select  AccountId,AccountCode+'-'+NameAr,Classification from Acc_Accounts where IsDeleted=0 and IsMain=0  and (BranchId in(select branchid from Sys_UserBranches where userid=" + _globalshared.UserId_G + ") or BranchId in(select branchid from Sys_Users where userid=" + _globalshared.UserId_G + ")) union  select  AccountId,AccountCode+'-'+NameAr,Classification from Acc_Accounts where IsDeleted=0 and ParentId in (select AccountId from V_ParentAccountBranches where (branchid in(select branchid from Sys_UserBranches where userid=" + _globalshared.UserId_G + ") or BranchId in(select branchid from Sys_Users where userid=" + _globalshared.UserId_G + ")))  union   select  AccountId,AccountCode+'-'+NameAr,Classification from Acc_Accounts where ParentId not in (select AccountId from V_ParentAccountBranches) and IsDeleted=0 and IsMain=0";
+            var Accounts = _accountsService.FillAccountNewSelect(Con, SelectStetment);
             return Ok(Accounts);
         }
         [HttpGet("GetAccCodeFormID")]

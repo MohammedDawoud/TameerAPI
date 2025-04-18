@@ -37,6 +37,7 @@ namespace TaamerProject.Models
         public string? AccTransactionDate { get; set; }
         public string? AccTransactionHijriDate { get; set; }
         public int? VoucherDetailsId { get; set; }
+        public decimal? Amounttax { get; set; }
 
         public virtual Invoices? Invoices { get; set; }
         public virtual Accounts? Accounts { get; set; }

@@ -32,6 +32,7 @@ namespace TaamerProject.Repository.Repositories
                 LineNumber = x.LineNumber,
                 AccountId = x.AccountId,
                 Amount = (x.Depit > x.Credit) ? x.Depit : x.Credit,
+                Amounttax = x.Amounttax??null,
                 DepitOrCreditName = x.Depit > x.Credit ? "مدين" : "دائن",
                 AccountName = x.Accounts!=null? x.Accounts.Code+" - "+x.Accounts.NameAr:"",
                 CostCenterId = x.CostCenterId,
@@ -42,6 +43,8 @@ namespace TaamerProject.Repository.Repositories
                 Notes = x.Notes ?? "",
                 AccCalcExpen=x.AccCalcExpen??false,
                 AccCalcIncome = x.AccCalcIncome ?? false,
+                Classification = x.Accounts != null ? x.Accounts.Classification:0,
+                AccCalcAll= x.AccCalcIncome==true?true:x.AccCalcExpen==true?true:false,
 
             });
             return details;
@@ -56,6 +59,7 @@ namespace TaamerProject.Repository.Repositories
                 LineNumber = x.LineNumber,
                 AccountId = x.AccountId,
                 Amount = (x.Depit > x.Credit) ? x.Depit : x.Credit,
+                Amounttax = x.Amounttax ?? null,
                 DepitOrCreditName = x.Depit > x.Credit ? "مدين" : "دائن",
                 AccountName =x.Accounts!=null?x.Accounts.NameAr:"",
                 CostCenterId = x.CostCenterId,
@@ -64,6 +68,8 @@ namespace TaamerProject.Repository.Repositories
                 CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
                 InvoiceReference = x.InvoiceReference ?? "",
                 Notes = x.Notes ?? "",
+                Classification = x.Accounts != null ? x.Accounts.Classification : 0,
+                AccCalcAll = x.AccCalcIncome == true ? true : x.AccCalcExpen == true ? true : false,
             });
             return details;
         }

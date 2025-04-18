@@ -56,6 +56,10 @@ namespace TaamerProject.Models
         public string? pieceNo { get; set; }
 
         public string? TotalRes { get; set; }
+        public decimal? Amounttax { get; set; }
+        public int? Classification { get; set; }
+        public bool? AccCalcAll { get; set; }
+
 
     }
 }
