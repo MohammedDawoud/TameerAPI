@@ -213,44 +213,16 @@ namespace TaamerProject.Service.Services
                             Users? BranchIdOfUser = _TaamerProContext.Users.Where(s => s.UserId == settings.UserId).FirstOrDefault();
 
                             var UserVacation = _TaamerProContext.Vacation.AsEnumerable().Where(s => s.IsDeleted == false && s.UserId == settings.UserId && s.VacationStatus == 2 && s.DecisionType == 1 && (s.BackToWorkDate == null || (s.BackToWorkDate??"")=="")).ToList();
-                            var SettingStart2 = Convert.ToDateTime(settings.StartDate).ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                            var SettingEnd2 = Convert.ToDateTime(settings.EndDate).ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                            //var SettingStart = Convert.ToDateTime(SettingStart2);
-                            //var SettingEnd = Convert.ToDateTime(SettingEnd2);
 
-                            //var ss= settings.StartDate.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-
-                            //UserVacation = UserVacation.Where(s =>
-                            //    (!(s.StartDate == null || s.StartDate.Equals("")) && !(SettingStart == null || SettingStart.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= SettingStart) &&
-                            //    (!(s.EndDate == null || s.EndDate.Equals("")) && !(SettingEnd == null || SettingEnd.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= SettingEnd)
-                            //).ToList();
-
-                            UserVacation = UserVacation.Where(s =>
-                            // أو عنده إجازة في نفس وقت المهمة
-                            (!(s.StartDate == null || s.StartDate.Equals("")) && !(SettingStart2 == null || SettingStart2.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(SettingStart2, "yyyy-MM-dd", CultureInfo.InvariantCulture))
+                            var UserVacation2 = _TaamerProContext.Vacation.AsEnumerable().Where(s => s.IsDeleted == false && s.UserId == settings.UserId && s.VacationStatus == 2 && s.DecisionType == 1
+                            &&
+                            ((s.BackToWorkDate == null || s.BackToWorkDate.Equals("")) || // لسه مرجعش من إجازة 
+                            (
+                                // أو عنده إجازة في نفس وقت المهمة
+                                (!(s.StartDate == null || s.StartDate.Equals("")) && !(settings.StartDate == null || settings.StartDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= settings.StartDate) &&
+                                (!(s.EndDate == null || s.EndDate.Equals("")) && !(settings.EndDate == null || settings.EndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) > settings.EndDate))
+                            )
                             ).ToList();
-
-                            UserVacation = UserVacation.Where(s =>
-                                (!(s.EndDate == null || s.EndDate.Equals("")) && !(SettingEnd2 == null || SettingEnd2.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(SettingEnd2, "yyyy-MM-dd", CultureInfo.InvariantCulture))
-                            ).ToList();
-
-
-                            UserVacation = UserVacation.Where(s =>
-                            // أو عنده إجازة في نفس وقت المهمة
-                            (!(s.StartDate == null || s.StartDate.Equals("")) && !(SettingStart2 == null || SettingStart2.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(SettingStart2, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
-                                (!(s.EndDate == null || s.EndDate.Equals("")) && !(SettingEnd2 == null || SettingEnd2.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(SettingEnd2, "yyyy-MM-dd", CultureInfo.InvariantCulture))
-                            ).ToList();
-
-
-                            //var UserVacation2 = _TaamerProContext.Vacation.AsEnumerable().Where(s => s.IsDeleted == false && s.UserId == settings.UserId && s.VacationStatus == 2 && s.DecisionType == 1
-                            //&&
-                            //((s.BackToWorkDate == null || s.BackToWorkDate.Equals("")) || // لسه مرجعش من إجازة 
-                            //(
-                            //    // أو عنده إجازة في نفس وقت المهمة
-                            //    (!(s.StartDate == null || s.StartDate.Equals("")) && !(settings.StartDate == null || settings.StartDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= settings.StartDate) &&
-                            //    (!(s.EndDate == null || s.EndDate.Equals("")) && !(settings.EndDate == null || settings.EndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) > settings.EndDate))
-                            //)
-                            //).ToList();
                             if (UserVacation.Count() != 0)
                             {
                                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.UserVac };
