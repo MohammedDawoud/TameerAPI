@@ -800,7 +800,7 @@ namespace TaamerProject.API.Helper
 
 
                                        new Privilege { Id = 170104 , ParentId = 1701 , Name =  Resources.SystemOptions , Description = Resources.SystemOptions},
-                                       new Privilege { Id = 17010401 , ParentId = 170104 , Name =  "الربط مع منصة هيئة الزكاة - فاتورة" , Description = "الربط مع منصة هيئة الزكاة - فاتورة"},
+                                       new Privilege { Id = 17010401 , ParentId = 170104 , Name =  "سجل احداث النظام" , Description = "سجل احداث النظام"},
 
 
                                           new Privilege { Id = 170105 , ParentId = 1701 , Name =  Resources.MD_Create_restore_backup , Description = Resources.MD_Create_restore_backup},
