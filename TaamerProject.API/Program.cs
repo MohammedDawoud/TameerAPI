@@ -1,7 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using TaamerProject.Models.DBContext;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection; 
 //using TaamerProject.Service.Interfaces.UsersF;
 //using TaamerProject.Service.Services.UsersF;
 using TaamerProject.Repository.Interfaces;
@@ -566,14 +566,14 @@ namespace TaamerProject.API
 
             //app.UseRequestLocalization();
 
-
+            //---------------------------------------------
             //Using localization
             var options = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(options.Value);
 
             //app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
-
+            //---------------------------------------------
             var provider = new FileExtensionContentTypeProvider();
             // Add new mappings
             provider.Mappings[".dwg"] = "application/acad";
@@ -583,6 +583,7 @@ namespace TaamerProject.API
             provider.Mappings[".woff2"] = "application/font-woff";
             provider.Mappings[".kml"] = "application/vnd.google-earth.kml+xml";
             provider.Mappings[".kmz"] = "application/vnd.google-earth.kmz";
+            //---------------------------------------------
 
             app.UseStaticFiles(new StaticFileOptions
             {
