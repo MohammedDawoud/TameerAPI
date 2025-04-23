@@ -1932,8 +1932,9 @@ namespace TaamerProject.Repository.Repositories
             (!string.IsNullOrEmpty(s.WorkStartDate) && ((int.Parse(s.WorkStartDate.Split('-')[0]) < YearId) || ((int.Parse(s.WorkStartDate.Split('-')[1]) <= Monthno) && (int.Parse(s.WorkStartDate.Split('-')[0]) == YearId)))) &&
                         (!string.IsNullOrEmpty(s.ContractStartDate) && ((int.Parse(s.ContractStartDate.Split('-')[0]) < YearId) || ((int.Parse(s.ContractStartDate.Split('-')[1]) <= Monthno) && (int.Parse(s.ContractStartDate.Split('-')[0]) == YearId)))) &&
 
-                (string.IsNullOrEmpty(s.EndWorkDate) || (!string.IsNullOrEmpty(s.EndWorkDate) && ((int.Parse(s.EndWorkDate.Split('-')[0]) > YearId) || ((int.Parse(s.EndWorkDate.Split('-')[1]) >= Monthno) && (int.Parse(s.EndWorkDate.Split('-')[0]) == YearId))))) &&
-                (string.IsNullOrEmpty(s.ContractEndDate) || (!string.IsNullOrEmpty(s.ContractEndDate) && ((int.Parse(s.ContractEndDate.Split('-')[0]) > YearId) || ((int.Parse(s.ContractEndDate.Split('-')[1]) >= Monthno) && (int.Parse(s.ContractEndDate.Split('-')[0]) == YearId)))))).ToList();
+                (string.IsNullOrEmpty(s.EndWorkDate) || (!string.IsNullOrEmpty(s.EndWorkDate) && ((int.Parse(s.EndWorkDate.Split('-')[0]) > YearId) || ((int.Parse(s.EndWorkDate.Split('-')[1]) >= Monthno) && (int.Parse(s.EndWorkDate.Split('-')[0]) == YearId))))) 
+                &&(string.IsNullOrEmpty(s.ContractEndDate) || (!string.IsNullOrEmpty(s.ContractEndDate) && ((int.Parse(s.ContractEndDate.Split('-')[0]) > YearId) || ((int.Parse(s.ContractEndDate.Split('-')[1]) >= Monthno) && (int.Parse(s.ContractEndDate.Split('-')[0]) == YearId)))))
+                ).ToList();
 
             var EmpInVacactions = this.GetEmpsInVacations(Monthno);
             // employees = employees.Where(x => !EmpInVacactions.Contains(x.EmployeeId)).ToList();
