@@ -213,21 +213,16 @@ namespace TaamerProject.Service.Services
                             Users? BranchIdOfUser = _TaamerProContext.Users.Where(s => s.UserId == settings.UserId).FirstOrDefault();
 
                             var UserVacation = _TaamerProContext.Vacation.AsEnumerable().Where(s => s.IsDeleted == false && s.UserId == settings.UserId && s.VacationStatus == 2 && s.DecisionType == 1 && (s.BackToWorkDate == null || (s.BackToWorkDate??"")=="")).ToList();
-                            UserVacation = UserVacation.Where(s =>
+
+                            var UserVacation2 = _TaamerProContext.Vacation.AsEnumerable().Where(s => s.IsDeleted == false && s.UserId == settings.UserId && s.VacationStatus == 2 && s.DecisionType == 1
+                            &&
+                            ((s.BackToWorkDate == null || s.BackToWorkDate.Equals("")) || // لسه مرجعش من إجازة 
+                            (
+                                // أو عنده إجازة في نفس وقت المهمة
                                 (!(s.StartDate == null || s.StartDate.Equals("")) && !(settings.StartDate == null || settings.StartDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= settings.StartDate) &&
-                                (!(s.EndDate == null || s.EndDate.Equals("")) && !(settings.EndDate == null || settings.EndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) > settings.EndDate)
+                                (!(s.EndDate == null || s.EndDate.Equals("")) && !(settings.EndDate == null || settings.EndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) > settings.EndDate))
+                            )
                             ).ToList();
-
-
-                            //var UserVacation2 = _TaamerProContext.Vacation.AsEnumerable().Where(s => s.IsDeleted == false && s.UserId == settings.UserId && s.VacationStatus == 2 && s.DecisionType == 1
-                            //&&
-                            //((s.BackToWorkDate == null || s.BackToWorkDate.Equals("")) || // لسه مرجعش من إجازة 
-                            //(
-                            //    // أو عنده إجازة في نفس وقت المهمة
-                            //    (!(s.StartDate == null || s.StartDate.Equals("")) && !(settings.StartDate == null || settings.StartDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= settings.StartDate) &&
-                            //    (!(s.EndDate == null || s.EndDate.Equals("")) && !(settings.EndDate == null || settings.EndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) > settings.EndDate))
-                            //)
-                            //).ToList();
                             if (UserVacation.Count() != 0)
                             {
                                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.UserVac };

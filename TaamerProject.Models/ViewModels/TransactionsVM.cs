@@ -58,8 +58,7 @@ namespace TaamerProject.Models
         public string? TotalRes { get; set; }
         public decimal? Amounttax { get; set; }
         public int? Classification { get; set; }
-        public bool? AccCalcAll { get; set; }
-
+        public string? AccCalcAll { get; set; }
 
     }
 }

@@ -25,7 +25,7 @@ namespace TaamerProject.Repository.Repositories
         }
         public async Task< IEnumerable<TransactionsVM>> GetAllTransByVoucherId(int? voucherId)
         {
-            var details = _TaamerProContext.Transactions.Where(s => s.IsDeleted == false && s.InvoiceId == voucherId).Select(x => new TransactionsVM
+            var details = _TaamerProContext.Transactions.Where(s => s.IsDeleted == false && s.InvoiceId == voucherId && s.Type!=17).Select(x => new TransactionsVM
             {
                 TransactionId = x.TransactionId,
                 InvoiceId = x.InvoiceId,
@@ -44,7 +44,9 @@ namespace TaamerProject.Repository.Repositories
                 AccCalcExpen=x.AccCalcExpen??false,
                 AccCalcIncome = x.AccCalcIncome ?? false,
                 Classification = x.Accounts != null ? x.Accounts.Classification:0,
-                AccCalcAll= x.AccCalcIncome==true?true:x.AccCalcExpen==true?true:false,
+                //AccCalcAll= x.AccCalcIncome==true?true:x.AccCalcExpen==true?true:false,
+                AccCalcAll = x.AccCalcIncome == true ? "O" : x.AccCalcExpen == true ? "I" : "0",
+
 
             });
             return details;
@@ -69,7 +71,9 @@ namespace TaamerProject.Repository.Repositories
                 InvoiceReference = x.InvoiceReference ?? "",
                 Notes = x.Notes ?? "",
                 Classification = x.Accounts != null ? x.Accounts.Classification : 0,
-                AccCalcAll = x.AccCalcIncome == true ? true : x.AccCalcExpen == true ? true : false,
+                //AccCalcAll = x.AccCalcIncome == true ? true : x.AccCalcExpen == true ? true : false,
+                AccCalcAll = x.AccCalcIncome == true ? "O" : x.AccCalcExpen == true ? "I" : "0",
+
             });
             return details;
         }
@@ -148,7 +152,7 @@ namespace TaamerProject.Repository.Repositories
                     Notes = x.Notes ?? "",
                     Balance = x.Depit - x.Credit,
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     TransactionDate = x.TransactionDate,
                     Type=x.Type,
                     IsPost = x.IsPost,
@@ -175,7 +179,7 @@ namespace TaamerProject.Repository.Repositories
                     Credit = x.Credit ?? 0,
                     AccountName = x.Accounts != null ? x.Accounts.NameAr : "",
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     x.InvoiceReference,
                     Notes = x.Notes ?? "",
                     Balance = x.Depit - x.Credit,
@@ -219,7 +223,7 @@ namespace TaamerProject.Repository.Repositories
                     Notes = x.Notes ?? "",
                     Balance = x.Depit - x.Credit,
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     TransactionDate = x.TransactionDate,
                 });
                 return details;
@@ -243,7 +247,7 @@ namespace TaamerProject.Repository.Repositories
                     Credit = x.Credit ?? 0,
                     AccountName = x.Accounts != null ? x.Accounts.NameAr : "",
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     x.InvoiceReference,
                     Notes = x.Notes ?? "",
                     Balance = x.Depit - x.Credit,
@@ -287,7 +291,7 @@ namespace TaamerProject.Repository.Repositories
                     Notes = x.Notes ?? "",
                     Balance = x.Depit - x.Credit,
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     TransactionDate = x.TransactionDate,
                 });
                 return details;
@@ -311,7 +315,7 @@ namespace TaamerProject.Repository.Repositories
                     Credit = x.Credit ?? 0,
                     AccountName = x.Accounts != null ? x.Accounts.NameAr : "",
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     x.InvoiceReference,
                     Notes = x.Notes ?? "",
                     Balance = x.Depit - x.Credit,
@@ -361,7 +365,7 @@ namespace TaamerProject.Repository.Repositories
                    DebitBalance = (x.Depit - x.Credit) > 0 ? (x.Depit - x.Credit) : 0,
                    CreditBalance = (x.Credit - x.Depit) > 0 ? (x.Credit - x.Depit) : 0,
                    CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                   TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                   TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                    TransactionDate = x.TransactionDate,
                    CustomerName =x.Customer!=null?x.Customer.CustomerNameAr:"",
                });
@@ -386,7 +390,7 @@ namespace TaamerProject.Repository.Repositories
                     Credit = x.Credit ?? 0,
                     AccountName = x.Accounts != null ? x.Accounts.NameAr : "",
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     x.InvoiceReference,
                     Notes = x.Notes ?? "",
                     Balance = x.Depit - x.Credit,
@@ -427,7 +431,7 @@ namespace TaamerProject.Repository.Repositories
 
                                                                     AccountName = x.Accounts != null ? x.Accounts.NameAr : "",
                         CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                        TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                        TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                         x.InvoiceReference,
                                                                    Notes = x.Notes ?? "",
                                                                    Balance = x.Depit - x.Credit,
@@ -470,7 +474,7 @@ namespace TaamerProject.Repository.Repositories
                                                                                         Credit = x.Credit ?? 0,
                                                                                         AccountName = x.Accounts != null ? x.Accounts.NameAr : "",
                                                                                         CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                                                                                        TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                                                                                        TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                                                                                         x.InvoiceReference,
                                                                                         Notes = x.Notes ?? "",
                                                                                         Balance = x.Depit - x.Credit,
@@ -515,7 +519,7 @@ namespace TaamerProject.Repository.Repositories
                                                                     Credit = x.Credit ?? 0,
                                                                     AccountName = x.Accounts != null ? x.Accounts.NameAr : "",
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     x.InvoiceReference,
                                                                      Notes = x.Notes ?? "",
                                                                      Balance = x.Depit - x.Credit,
@@ -564,7 +568,7 @@ namespace TaamerProject.Repository.Repositories
                                                                         InvoiceReference = x.InvoiceReference ?? "",
                                                                         Notes = x.Notes ?? "",
                                                                         Balance = x.Depit - x.Credit,
-                                                                        TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                                                                        TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                                                                         TransactionDate = x.TransactionDate,
                                                                     }).ToList();
                 return details;
@@ -754,7 +758,7 @@ namespace TaamerProject.Repository.Repositories
 
                                                                         Notes =x.Invoices!=null? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "":"",
                                                                         Balance = x.Depit - x.Credit,
-                                                                        TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                                                                        TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                                                                         TransactionDate = x.TransactionDate,
                                                                         InvoiceDate = x.Invoices != null ? x.Invoices.Date : "",
 
@@ -789,7 +793,7 @@ namespace TaamerProject.Repository.Repositories
                     JournalNo = x.JournalNo,
                     AccountName = x.Accounts != null ? x.Accounts.NameAr : "",
                     CostCenterName = x.CostCenters != null ? x.CostCenters.IsDeleted == false ? x.CostCenters.NameAr + "-" + x.CostCenters.Code : "" : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     x.InvoiceReference,
                     Notes =x.Invoices!=null? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "":"",
                                                                         Details = x.Details ?? "",
@@ -980,7 +984,7 @@ namespace TaamerProject.Repository.Repositories
                         Details = x.Details ?? "",
                         Type = x.Type,
                         Balance = x.Depit - x.Credit,
-                        TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                        TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                         TransactionDate = x.TransactionDate,
                         InvoiceDate = x.Invoices != null ? x.Invoices.Date : "",
                         AccTransactionDate = x.AccTransactionDate ?? "",
@@ -1019,7 +1023,7 @@ namespace TaamerProject.Repository.Repositories
                     JournalNo = x.JournalNo,
                     AccountName = x.Accounts != null ? x.Accounts.NameAr : "",
                     CostCenterName = x.CostCenters != null ? x.CostCenters.IsDeleted == false ? x.CostCenters.NameAr + "-" + x.CostCenters.Code : "" : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     x.InvoiceReference,
                     Notes =x.Invoices!=null? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "":"",
                                                                         Details = x.Details ?? "",
@@ -1225,7 +1229,7 @@ namespace TaamerProject.Repository.Repositories
                         Details = x.Details ?? "",
                         Type = x.Type,
                         Balance = x.Depit - x.Credit,
-                        TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                        TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                         TransactionDate = x.TransactionDate,
                         InvoiceDate = x.Invoices != null ? x.Invoices.Date : "",
                         AccTransactionDate = x.AccTransactionDate ?? "",
@@ -1262,7 +1266,7 @@ namespace TaamerProject.Repository.Repositories
                     
                     AccountName = x.Accounts != null ? x.Accounts.NameAr : "",
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     x.InvoiceReference,
                     Notes =x.Invoices!=null? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "":"",
                     Balance = x.Depit - x.Credit,
@@ -1368,7 +1372,7 @@ namespace TaamerProject.Repository.Repositories
                                                                         InvoiceReference = x.InvoiceReference ?? "",
                                                                         Notes =x.Invoices!=null? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "":"",
                                                                         Balance = x.Depit - x.Credit,
-                                                                        TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                                                                        TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                                                                         TransactionDate = x.TransactionDate,
                                                                         InvoiceDate = x.Invoices != null ? x.Invoices.Date : "",
 
@@ -1401,7 +1405,7 @@ namespace TaamerProject.Repository.Repositories
 
                     AccountName = x.Accounts != null ? x.Accounts.NameAr : "",
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     x.InvoiceReference,
                     Notes =x.Invoices!=null? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "":"",
                     Balance = x.Depit - x.Credit,
@@ -1515,7 +1519,7 @@ namespace TaamerProject.Repository.Repositories
                         InvoiceReference = x.InvoiceReference ?? "",
                         Notes =x.Invoices!=null? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "":"",
                         Balance = x.Depit - x.Credit,
-                        TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                        TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                         TransactionDate = x.TransactionDate,
                         InvoiceDate = x.Invoices != null ? x.Invoices.Date : "",
                         AccTransactionDate = x.AccTransactionDate ?? "",
@@ -1549,7 +1553,7 @@ namespace TaamerProject.Repository.Repositories
 
                     AccountName = x.Accounts != null ? x.Accounts.NameAr : "",
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     x.InvoiceReference,
                     Notes =x.Invoices!=null? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "":"",
                     Balance = x.Depit - x.Credit,
@@ -1663,7 +1667,7 @@ namespace TaamerProject.Repository.Repositories
                         InvoiceReference = x.InvoiceReference ?? "",
                         Notes =x.Invoices!=null? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "":"",
                         Balance = x.Depit - x.Credit,
-                        TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                        TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                         TransactionDate = x.TransactionDate,
                         InvoiceDate = x.Invoices != null ? x.Invoices.Date : "",
                         AccTransactionDate = x.AccTransactionDate ?? "",
@@ -1694,7 +1698,7 @@ namespace TaamerProject.Repository.Repositories
                                                                       Credit = x.Credit ?? 0,
                                                                       AccountName = x.Accounts != null ? x.Accounts.NameAr : "",
                                                                       CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                                                                      TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                                                                      TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                                                                       x.InvoiceReference,
                                                                       Notes =x.Invoices!=null? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "":"",
                                                                       Balance = x.Depit - x.Credit,
@@ -1747,7 +1751,7 @@ namespace TaamerProject.Repository.Repositories
                                                                         InvoiceReference = x.InvoiceReference ?? "",
                                                                         Notes =x.Invoices!=null? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "":"",
                                                                         Balance = x.Depit - x.Credit,
-                                                                        TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                                                                        TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                                                                         TransactionDate = x.TransactionDate,
                                                                         InvoiceDate = x.Invoices != null ? x.Invoices.Date : "",
 
@@ -1775,7 +1779,7 @@ namespace TaamerProject.Repository.Repositories
                 DebitBalance = (x.Depit - x.Credit) > 0 ? (x.Depit - x.Credit) : 0,
                 CreditBalance = (x.Credit - x.Depit) > 0 ? (x.Credit - x.Depit) : 0,
                 CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                 TransactionDate = x.TransactionDate,
             });
             return details;
@@ -1797,7 +1801,7 @@ namespace TaamerProject.Repository.Repositories
                     Credit = x.Credit ?? 0,
                     AccountName = x.Accounts != null ? x.Accounts.NameAr : "",
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     x.InvoiceReference,
                     Notes =x.Invoices!=null? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "":"",
                     Balance = x.Depit - x.Credit,
@@ -1843,7 +1847,7 @@ namespace TaamerProject.Repository.Repositories
                     Notes =x.Invoices!=null? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "":"",
                     Balance = x.Depit - x.Credit,
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     TransactionDate = x.TransactionDate,
                               DebitBalance = (x.Depit - x.Credit) > 0 ? (x.Depit - x.Credit) : 0,
                               CreditBalance = (x.Credit - x.Depit) > 0 ? (x.Credit - x.Depit) : 0,
@@ -1867,7 +1871,7 @@ namespace TaamerProject.Repository.Repositories
                     Credit = x.Credit ?? 0,
                     AccountName = x.Accounts != null ? x.Accounts.NameAr : "",
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     x.InvoiceReference,
                     Notes =x.Invoices!=null? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "":"",
                     Balance = x.Depit - x.Credit,
@@ -1908,7 +1912,7 @@ namespace TaamerProject.Repository.Repositories
                                 Depit = x.Depit ?? 0,
                                 Credit = x.Credit ?? 0,
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     InvoiceReference = x.InvoiceReference ?? "",
                     Notes =x.Invoices!=null? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "":"",
                     Balance = x.Depit - x.Credit,
@@ -1935,7 +1939,7 @@ namespace TaamerProject.Repository.Repositories
                     Credit = x.Credit ?? 0,
                     AccountName = x.Accounts != null ? x.Accounts.NameAr : "",
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     x.InvoiceReference,
                     Notes =x.Invoices!=null? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "":"",
                     Balance = x.Depit - x.Credit,
@@ -1979,7 +1983,7 @@ namespace TaamerProject.Repository.Repositories
                     Depit = x.Depit ?? 0,
                     Credit = x.Credit ?? 0,
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     InvoiceReference = x.InvoiceReference ?? "",
                     Notes =x.Invoices!=null? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "":"",
                     DebitBalance = (x.Depit - x.Credit) > 0 ? (x.Depit - x.Credit) : 0,
@@ -2110,7 +2114,7 @@ namespace TaamerProject.Repository.Repositories
                     Credit = x.Credit ?? 0,
                     AccountName = x.Accounts != null ? x.Accounts.NameAr : "",
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     x.InvoiceReference,
                     Notes =x.Invoices!=null? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "":"",
                     Balance = x.Depit - x.Credit,
@@ -2154,7 +2158,7 @@ namespace TaamerProject.Repository.Repositories
                     Depit = x.Depit ?? 0,
                     Credit = x.Credit ?? 0,
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     InvoiceReference = x.InvoiceReference ?? "",
                     Notes =x.Invoices!=null? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "":"",
                     DebitBalance = (x.Depit - x.Credit) > 0 ? (x.Depit - x.Credit) : 0,
@@ -2482,7 +2486,7 @@ namespace TaamerProject.Repository.Repositories
         }
         public async Task< IEnumerable<TransactionsVM>> GetAllJournalsByDailyID(int? invId, int? YearId, int BranchId)
         {
-            var Journals = _TaamerProContext.Transactions.Where(s => s.IsDeleted == false && s.Type == 8 /*&& s.BranchId == BranchId*/ && s.YearId == YearId && s.IsPost == true && s.InvoiceId == invId).Select(tr => new TransactionsVM
+            var Journals = _TaamerProContext.Transactions.Where(s => s.IsDeleted == false && (s.Type == 8 || s.Type==17) /*&& s.BranchId == BranchId*/ && s.YearId == YearId && s.IsPost == true && s.InvoiceId == invId).Select(tr => new TransactionsVM
             {
                 TransactionId = tr.TransactionId,
                 JournalNo = tr.JournalNo,
@@ -2491,7 +2495,7 @@ namespace TaamerProject.Repository.Repositories
                 Credit = tr.Credit ?? 0,
                 InvoiceNumber = tr.Invoices != null ? tr.Invoices.InvoiceNumber : "",
                 CostCenterName = tr.CostCenters != null ? tr.CostCenters.NameAr : "",
-                TypeName = tr.AccTransactionTypes != null ? tr.AccTransactionTypes.NameAr : "",
+                TypeName = tr.Type == 17 ? "سند يومية" : tr.AccTransactionTypes != null ? tr.AccTransactionTypes.NameAr : "",
                 Notes = tr.Invoices != null ? tr.Invoices.InvoiceNotes == null ? tr.Notes : tr.Invoices.InvoiceNotes ?? "" ?? "" : "",
                 AccountCode = tr.Accounts != null ? tr.Accounts.Code : "",
                 InvoiceReference = tr.InvoiceReference ?? "",
@@ -2515,7 +2519,7 @@ namespace TaamerProject.Repository.Repositories
                     Credit = tr.Credit ?? 0,
                     InvoiceNumber = tr.Invoices != null ? tr.Invoices.InvoiceNumber : "",
                     CostCenterName = tr.CostCenters != null ? tr.CostCenters.NameAr : "",
-                    TypeName = tr.AccTransactionTypes != null ? tr.AccTransactionTypes.NameAr : "",
+                    TypeName = tr.Type == 17 ? "سند يومية" : tr.AccTransactionTypes != null ? tr.AccTransactionTypes.NameAr : "",
                     Notes = tr.Invoices != null ? tr.Invoices.InvoiceNotes == null ? tr.Notes : tr.Invoices.InvoiceNotes ?? "" ?? "" : "",
                     AccountCode = tr.Accounts != null ? tr.Accounts.Code : "",
                     InvoiceReference = tr.InvoiceReference ?? "",
@@ -3162,7 +3166,7 @@ namespace TaamerProject.Repository.Repositories
                     AccountName = x.Accounts != null ? x.Accounts.NameAr : "",
                     InvoiceNumber = x.Invoices != null ? x.Invoices.InvoiceNumber : "",
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     Notes = x.Invoices != null ? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "" : "",
                     AccountCode = x.Accounts != null ? x.Accounts.Code : "",
                     x.InvoiceReference,
@@ -3208,7 +3212,7 @@ namespace TaamerProject.Repository.Repositories
                     Credit = x.Credit ?? 0,
                     InvoiceNumber = x.Invoices != null ? x.Invoices.InvoiceNumber : "",
                     CostCenterName = x.CostCenters != null ? x.CostCenters.NameAr : "",
-                    TypeName = x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
+                    TypeName = x.Type == 17 ? "سند يومية": x.AccTransactionTypes != null ? x.AccTransactionTypes.NameAr : "",
                     Notes = x.Invoices != null ? x.Invoices.InvoiceNotes == null ? x.Notes : x.Invoices.InvoiceNotes ?? "" ?? "" : "",
                     AccountCode = x.Accounts != null ? x.Accounts.Code : "",
                     InvoiceReference = x.InvoiceReference ?? "",
