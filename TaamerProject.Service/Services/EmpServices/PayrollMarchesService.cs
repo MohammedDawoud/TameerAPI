@@ -295,6 +295,7 @@ namespace TaamerProject.Service.Services
                     UpdatedPayroll.UpdateUser = UserId;
                     UpdatedPayroll.IsPostVoucher = false;
                     _TaamerProContext.SaveChanges();
+                        sendemployeemail(UpdatedPayroll);
                     }
                     else
                     {
@@ -453,7 +454,7 @@ namespace TaamerProject.Service.Services
                     //
                     UpdatedPayroll.IsPostPayVoucher = true;
                     _TaamerProContext.SaveChanges();
-                    sendemployeemail(UpdatedPayroll);
+                    //sendemployeemail(UpdatedPayroll);
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                     string ActionNote = " ترحيل مسيرات رواتب  " ;
