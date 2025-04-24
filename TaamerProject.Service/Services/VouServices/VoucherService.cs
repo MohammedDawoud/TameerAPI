@@ -6278,6 +6278,11 @@ namespace TaamerProject.Service.Services
                         VoucherUpdatedCredit.FirstOrDefault().InvoiceValueText = ConvertToWord_NEW(VoucherUpdatedCredit.FirstOrDefault().TotalValue.ToString());
 
 
+                        //dawoudnoti
+                        var NewNextInvNotifCredit = GenerateVoucherNumberNewProNoti(voucher.Type, BranchId, yearid, 4, Con).Result;
+                        VoucherUpdatedCredit.FirstOrDefault().InvoiceRetId = NewNextInvNotifCredit.ToString();
+
+
                         int? itemToAccountId = 0;
                         int? itemAccountId = 0;
                         var vouchertypename = "";
