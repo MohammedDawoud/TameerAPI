@@ -5720,15 +5720,19 @@ namespace TaamerProject.Service.Services
                         voucher.InvUUID = GET_UUID();
 
 
-                        var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
-                        if (vouchercheck.Count() > 0)
-                        {
-                            //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumberNotiCredit(voucher.Type, yearid, BranchId).Result;
-                            var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
-                            //var NewNextInv = string.Format("{0:000000}", NextInv);
+                        //var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
+                        //if (vouchercheck.Count() > 0)
+                        //{
+                        //    //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumberNotiCredit(voucher.Type, yearid, BranchId).Result;
+                        //    var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+                        //    //var NewNextInv = string.Format("{0:000000}", NextInv);
 
-                            voucher.InvoiceNumber = NewNextInv.ToString();
-                        }
+                        //    voucher.InvoiceNumber = NewNextInv.ToString();
+                        //}
+                        //dawoudnoti
+                        var NewNextInvNotifCredit = GenerateVoucherNumberNewProNoti(voucher.Type, BranchId, yearid, 4, Con).Result;
+                        voucher.InvoiceRetId = NewNextInvNotifCredit.ToString();
+
 
                         if (voucher.ProjectId != null)
                         {
@@ -15878,6 +15882,39 @@ namespace TaamerProject.Service.Services
             }
             return (NewValue);
         }
+        public async Task<string> GenerateVoucherNumberNewProNoti(int Type, int BranchId, int? yearid, int Status, string Con)
+        {
+            var codePrefix = "";
+            var BranchObj = _BranchesRepository.GetById(BranchId);
+            if (BranchObj.InvoiceBranchSeparated == false)
+            {
+                BranchId = 0;
+            }
+            if (Type == 29)
+            {
+                if (BranchObj.InvoiceStartCode != null && BranchObj.InvoiceStartCode != "")
+                {
+                    codePrefix = BranchObj.InvoiceStartCode;
+                }
+            }
+            var ProList = await _InvoicesRepository.GenerateVoucherNumberNewPro(Type, yearid, BranchId, codePrefix, BranchObj.InvoiceBranchSeparated ?? false, Status, Con);
+            var Value = 0;
+            if (ProList.Count() > 0)
+            {
+                Value = ProList.FirstOrDefault()!.Newinvoicenumber ?? 1;
+            }
+            else
+            {
+                Value = 1;
+            }
+            var NewValue = string.Format("{0:000000}", Value);
+            if (codePrefix != "")
+            {
+                NewValue = codePrefix + NewValue;
+            }
+            return (NewValue);
+        }
+
         public async Task<int?> GenerateVoucherZatcaNumber( int BranchId, int? yearid)
         {
             return await _InvoicesRepository.GenerateVoucherZatcaNumber(yearid, BranchId);

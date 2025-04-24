@@ -3441,7 +3441,14 @@ namespace TaamerProject.API.Controllers
             ZatcaIntegrationSDK.UBLXML ubl = new ZatcaIntegrationSDK.UBLXML();
             ZatcaIntegrationSDK.Invoice inv = new ZatcaIntegrationSDK.Invoice();
             ZatcaIntegrationSDK.Result res = new ZatcaIntegrationSDK.Result();
-            inv.ID = InvoicesVM.InvoiceNumber;
+            if (InvoicesVM.Type == 29)
+            {
+                inv.ID = InvoicesVM.InvoiceRetId;
+            }
+            else
+            {
+                inv.ID = InvoicesVM.InvoiceNumber;
+            }
             inv.UUID = Guid.NewGuid().ToString();
             //inv.IssueDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
             inv.IssueDate = DateTime.Now.ToString("yyyy-MM-dd");
