@@ -83,8 +83,20 @@ namespace TaamerProject.API.Controllers
             var result = _Pro_DestinationsService.SaveDestination(Destination, _globalshared.UserId_G, _globalshared.BranchId_G, org, url, file);
             return Ok(result);
         }
-        [HttpPost("SaveDestinationReplay")]
+        [HttpPost("SaveDestinationNotifi")]
 
+        public IActionResult SaveDestinationNotifi(Pro_Destinations Destination)
+        {
+
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var url = Path.Combine("Email/MailStamp.html");
+            var org = _organizationsservice.GetOrganizationDataLogin(_globalshared.Lang_G).Result;
+            string resultLogoUrl = org.LogoUrl.Remove(0, 1);
+            var file = Path.Combine(resultLogoUrl);
+            var result = _Pro_DestinationsService.SaveDestinationNotifi(Destination, _globalshared.UserId_G, _globalshared.BranchId_G, org, url, file);
+            return Ok(result);
+        }
+        [HttpPost("SaveDestinationReplay")]
         public IActionResult SaveDestinationReplay(Pro_Destinations Destination)
         {
 
@@ -95,6 +107,19 @@ namespace TaamerProject.API.Controllers
             string resultLogoUrl = org.LogoUrl.Remove(0, 1);
             var file = Path.Combine(resultLogoUrl);
             var result = _Pro_DestinationsService.SaveDestinationReplay(Destination, _globalshared.UserId_G, _globalshared.BranchId_G, org, url, file);
+            return Ok(result);
+        }
+        [HttpPost("SaveDestinationReplayNotifi")]
+        public IActionResult SaveDestinationReplayNotifi(Pro_Destinations Destination)
+        {
+
+
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var url = Path.Combine("Email/MailStamp.html");
+            var org = _organizationsservice.GetOrganizationDataLogin(_globalshared.Lang_G).Result;
+            string resultLogoUrl = org.LogoUrl.Remove(0, 1);
+            var file = Path.Combine(resultLogoUrl);
+            var result = _Pro_DestinationsService.SaveDestinationReplayNotifi(Destination, _globalshared.UserId_G, _globalshared.BranchId_G, org, url, file);
             return Ok(result);
         }
         [HttpPost("DeleteDestination")]

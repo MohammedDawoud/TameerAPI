@@ -18,7 +18,9 @@ namespace TaamerProject.Service.Interfaces
         //GeneralMessage SaveDestinationReplay(Pro_Destinations Destination, int UserId, int BranchId);
         GeneralMessage DeleteDestination(int DestinationId, int UserId, int BranchId);
         GeneralMessage SaveDestination(Pro_Destinations Destination, int UserId, int BranchId, OrganizationsVM Organization, string Url, string ImgUrl);
+        GeneralMessage SaveDestinationNotifi(Pro_Destinations Destination, int UserId, int BranchId, OrganizationsVM Organization, string Url, string ImgUrl);
         GeneralMessage SaveDestinationReplay(Pro_Destinations Destination, int UserId, int BranchId, OrganizationsVM Organization, string Url, string ImgUrl);
+        GeneralMessage SaveDestinationReplayNotifi(Pro_Destinations Destination, int UserId, int BranchId, OrganizationsVM Organization, string Url, string ImgUrl);
 
     }
 }

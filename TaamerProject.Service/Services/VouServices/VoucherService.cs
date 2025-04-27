@@ -14015,7 +14015,9 @@ namespace TaamerProject.Service.Services
                             TransacItem.AccountType = _TaamerProContext.Accounts.Where(s => s.AccountId == item.AccountId)?.FirstOrDefault()?.Type;
                             TransacItem.InvoiceId = item.InvoiceId;
                             TransacItem.Invoices = item.Invoices;
-
+                            TransacItem.Details = item.Details;
+                            TransacItem.Notes = item.Notes;
+                            TransacItem.InvoiceReference = item.InvoiceReference;
                             TransacItem.IsPost = false;
                             TransacItem.YearId = yearid;
                             TransacItem.CostCenterId = Convert.ToInt32(voucher.CostCenterId) > 0 ? voucher.CostCenterId : item.CostCenterId;
@@ -14164,6 +14166,9 @@ namespace TaamerProject.Service.Services
                             TransacItem.TransactionHijriDate = voucher.HijriDate;
                             TransacItem.AccountType = _TaamerProContext.Accounts.Where(s => s.AccountId == item.AccountId)?.FirstOrDefault()?.Type;
                             TransacItem.InvoiceId = voucher.InvoiceId;
+                            TransacItem.Details = item.Details;
+                            TransacItem.Notes = item.Notes;
+                            TransacItem.InvoiceReference = item.InvoiceReference;
                             TransacItem.IsPost = false;
                             TransacItem.YearId = yearid;
                             TransacItem.CostCenterId = Convert.ToInt32(voucher.CostCenterId) > 0 ? voucher.CostCenterId : item.CostCenterId;
@@ -14330,6 +14335,9 @@ namespace TaamerProject.Service.Services
                             TransacItem.AccountType = _TaamerProContext.Accounts.Where(s => s.AccountId == item.AccountId)?.FirstOrDefault()?.Type;
                             TransacItem.InvoiceId = item.InvoiceId;
                             TransacItem.Invoices = item.Invoices;
+                            TransacItem.Details = item.Details;
+                            TransacItem.Notes = item.Notes;
+                            TransacItem.InvoiceReference = item.InvoiceReference;
                             TransacItem.IsPost = false;
                             TransacItem.YearId = yearid;
                             TransacItem.CostCenterId = Convert.ToInt32(voucher.CostCenterId) > 0 ? voucher.CostCenterId : item.CostCenterId;
@@ -14523,6 +14531,9 @@ namespace TaamerProject.Service.Services
                             TransacItem.TransactionHijriDate = voucher.HijriDate;
                             TransacItem.AccountType = _TaamerProContext.Accounts.Where(s => s.AccountId == item.AccountId)?.FirstOrDefault()?.Type;
                             TransacItem.InvoiceId = voucher.InvoiceId;
+                            TransacItem.Details = item.Details;
+                            TransacItem.Notes = item.Notes;
+                            TransacItem.InvoiceReference = item.InvoiceReference;
                             TransacItem.IsPost = false;
                             TransacItem.YearId = yearid;
                             TransacItem.CostCenterId = Convert.ToInt32(voucher.CostCenterId) > 0 ? voucher.CostCenterId : item.CostCenterId;

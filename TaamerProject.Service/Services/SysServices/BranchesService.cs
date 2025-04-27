@@ -316,7 +316,7 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = " تعدلات بادئة الفاتورة الفرع رقم " + branches.BranchId;
-                _SystemAction.SaveAction("SaveBrancheAccs", "BranchesService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                _SystemAction.SaveAction("SaveBranchesInvoiceCode", "BranchesService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
             }
@@ -325,7 +325,7 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = " فشل في حفظ بادئة الفاتورة الفرع رقم " + branches.BranchId;
-                _SystemAction.SaveAction("SaveBrancheAccs", "BranchesService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                _SystemAction.SaveAction("SaveBranchesInvoiceCode", "BranchesService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
 
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
