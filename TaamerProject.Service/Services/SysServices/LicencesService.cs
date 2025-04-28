@@ -83,6 +83,12 @@ namespace TaamerProject.Service.Services
                         LicenceUpdated.Support_Start_Date=Licence.Support_Start_Date;
                         LicenceUpdated.Subscrip_Domain = Licence.Subscrip_Domain;
                         LicenceUpdated.Subscrip_Hosting = Licence.Subscrip_Hosting;
+
+                        LicenceUpdated.ServerStorage = Licence.ServerStorage;
+                        LicenceUpdated.Cost = Licence.Cost;
+                        LicenceUpdated.Tax = Licence.Tax;
+                        LicenceUpdated.TotalCost = Licence.TotalCost;
+
                         if (Licence.Hosting_Expiry_Date == null || Licence.Hosting_Expiry_Date == "بدون")
                         {
                             LicenceUpdated.Hosting_Expiry_Date = null;

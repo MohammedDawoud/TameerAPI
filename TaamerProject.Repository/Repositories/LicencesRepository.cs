@@ -94,6 +94,12 @@ namespace TaamerProject.Repository.Repositories
                 
                 
                 G_UID=x.G_UID ,
+                ServerStorage=x.ServerStorage ??"",
+                Cost=x.Cost??"",
+                TotalCost=x.TotalCost??"",
+                Tax = x.Tax ?? "",
+                
+                
 
             }).ToList();
             return Licences;
