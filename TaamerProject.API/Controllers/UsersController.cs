@@ -951,6 +951,9 @@ namespace TaamerProject.API.Controllers
                             formData.Add(new StringContent(db ?? ""), "DBName");
                             formData.Add(new StringContent(licences.Email ?? ""), "Email");
 
+                            formData.Add(new StringContent(licences.TotalCost ?? ""), "TotalOprationalCost");
+                            formData.Add(new StringContent(licences.ServerStorage ?? ""), "ServerStorage");
+
 
 
 

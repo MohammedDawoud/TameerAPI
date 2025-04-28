@@ -84,5 +84,10 @@ namespace TaamerProject.Models
 
         public bool? Subscrip_Domain { get; set; }
         public bool? Subscrip_Hosting { get; set; }
+
+        public string? ServerStorage { get; set; }
+        public string? Cost { get; set; }
+        public string? Tax { get; set; }
+        public string? TotalCost { get; set; }
     }
 }
