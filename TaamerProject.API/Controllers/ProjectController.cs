@@ -1061,6 +1061,31 @@ namespace TaamerProject.API.Controllers
             return Ok(result);
         }
 
+
+        [HttpPost("GetProjectsSearch_Export")]
+        public IActionResult GetProjectsSearch_Export(ProjectVM ProjectsSearch, string? SearchText, int page = 1, int pageSize = 10)
+        {
+
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            ProjectsSearch.BranchId = _globalshared.BranchId_G;
+            //var AllPojects = _projectservice.GetAllProjectsNew(Con ?? "", ProjectsSearch, _globalshared.UserId_G, 0, ProjectsSearch.FilterType ?? 0, _globalshared.BranchId_G).Result.ToList();
+            //return Ok(AllPojects);
+
+            List<ProjectVM> AllPojects = new List<ProjectVM>();
+            if (SearchText != null && SearchText != "")
+            {
+                AllPojects = _projectservice.GetAllProjectsNew(Con ?? "", ProjectsSearch, _globalshared.UserId_G, 0, ProjectsSearch.FilterType ?? 0, _globalshared.BranchId_G).Result.ToList().Where(x => x.CustomerName.Contains(SearchText) || x.ProjectNo.Contains(SearchText) || x.ProjectDescription.Contains(SearchText) || x.ContractValue.Contains(SearchText) || SearchText == null || SearchText == "").ToList();
+
+            }
+            else
+            {
+                AllPojects = _projectservice.GetAllProjectsNew(Con ?? "", ProjectsSearch, _globalshared.UserId_G, 0, ProjectsSearch.FilterType ?? 0, _globalshared.BranchId_G).Result.ToList();
+
+            }
+            return Ok(AllPojects);
+        }
+
+
         [HttpPost("GetAllProjectsNew_DashBoard")]
         public IActionResult GetAllProjectsNew_DashBoard(ProjectVM ProjectsSearch)
         {
@@ -1171,6 +1196,18 @@ namespace TaamerProject.API.Controllers
 
 
             return Ok(result);
+        }
+
+        [HttpGet("GetUserProjectsReportS_Export")]
+        public IActionResult GetUserProjectsReportS_Export(int? UserId, int? CustomerId, string? DateFrom, string? DateTo, string? SearchText, int page = 1, int pageSize = 10)
+        {
+            if (UserId == 0) UserId = null;
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var AllPojects = _projectservice.GetUserProjectsReport(UserId, CustomerId, _globalshared.BranchId_G, DateFrom ?? "", DateTo ?? "", SearchText).Result.ToList();
+           
+
+
+            return Ok(AllPojects);
         }
         //public IActionResult GetAllProjectUsersData(int_globalshared.UserId_G)
         //{

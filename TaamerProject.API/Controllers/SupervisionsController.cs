@@ -90,6 +90,15 @@ namespace TaamerProject.API.Controllers
         }
 
 
+        [HttpGet("GetAllBySupervisionSearch_Export")]
+        public IActionResult GetAllBySupervisionSearch_Export(int? ProjectId, int? UserId, int? EmpId, int? PhaseId, string? DateFrom, string? Dateto, string? Searchtext, int page = 1, int pageSize = 10)
+        {
+            var super = _supervisionsservice.GetAllSupervision_Search(ProjectId, UserId, EmpId, PhaseId, DateFrom ?? "", Dateto ?? "", Searchtext).Result;
+          
+            return Ok(super);
+        }
+
+
         [HttpPost("SupervisionAvailability")]
 
         public IActionResult SupervisionAvailability(Supervisions supervisions)
