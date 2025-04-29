@@ -10148,16 +10148,21 @@ namespace TaamerProject.Service.Services
                         voucher.InvUUID = GET_UUID();
 
 
-                        var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
-                        if (vouchercheck.Count() > 0)
-                        {
-                            //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumberPurchaseNotiDepit(voucher.Type, yearid, BranchId).Result;
-                            var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+                        //var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
+                        //if (vouchercheck.Count() > 0)
+                        //{
+                        //    //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumberPurchaseNotiDepit(voucher.Type, yearid, BranchId).Result;
+                        //    var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
 
-                            //var NewNextInv = string.Format("{0:000000}", NextInv);
+                        //    //var NewNextInv = string.Format("{0:000000}", NextInv);
 
-                            voucher.InvoiceNumber = NewNextInv.ToString();
-                        }
+                        //    voucher.InvoiceNumber = NewNextInv.ToString();
+                        //}
+
+
+                        //dawoudnoti
+                        var NewNextInvNotifDepit = GenerateVoucherNumberNewProNoti(voucher.Type, BranchId, yearid, 4, Con).Result;
+                        voucher.InvoiceRetId = NewNextInvNotifDepit.ToString();
 
                         if (voucher.CostCenterId > 0)
                         {
@@ -10618,6 +10623,10 @@ namespace TaamerProject.Service.Services
 
                         VoucherUpdatedDepit.FirstOrDefault().InvoiceValueText = ConvertToWord_NEW(VoucherUpdatedDepit.FirstOrDefault().TotalValue.ToString());
 
+
+                        //dawoudnoti
+                        var NewNextInvNotifDepit = GenerateVoucherNumberNewProNoti(voucher.Type, BranchId, yearid, 4, Con).Result;
+                        VoucherUpdatedDepit.FirstOrDefault().InvoiceRetId = NewNextInvNotifDepit.ToString();
 
                         int? itemToAccountId = 0;
                         int? itemAccountId = 0;

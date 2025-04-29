@@ -3182,12 +3182,12 @@ namespace TaamerProject.API.pdfHandler
                 cell.BorderColor = BaseColor.BLUE;
                 bodyTable.AddCell(cell);
 
-                cell = PdfBase.drawCell(PdfBase.Fonts[fontsenum.nationalTextFont_12_NORMAL.ToString()], "رقم القيد", 6, 0, 0, 1, 1, 1, 15, Element.ALIGN_CENTER);
+                cell = PdfBase.drawCell(PdfBase.Fonts[fontsenum.nationalTextFont_12_NORMAL.ToString()], "رقم القيد", 4, 0, 0, 1, 1, 1, 15, Element.ALIGN_CENTER);
                 cell.Padding = 2;
                 cell.BorderColor = BaseColor.BLUE;
                 bodyTable.AddCell(cell);
 
-                cell = PdfBase.drawCell(PdfBase.Fonts[fontsenum.nationalTextFont_12_NORMAL.ToString()], "نوع الدفع", 6, 0, 0, 0, 1, 1, 15, Element.ALIGN_CENTER);
+                cell = PdfBase.drawCell(PdfBase.Fonts[fontsenum.nationalTextFont_12_NORMAL.ToString()], "نوع الدفع", 4, 0, 0, 0, 1, 1, 15, Element.ALIGN_CENTER);
                 cell.Padding = 2;
                 cell.BorderColor = BaseColor.BLUE;
                 bodyTable.AddCell(cell);
@@ -3203,6 +3203,11 @@ namespace TaamerProject.API.pdfHandler
                 bodyTable.AddCell(cell);
 
                 cell = PdfBase.drawCell(PdfBase.Fonts[fontsenum.nationalTextFont_12_NORMAL.ToString()], "تاريخ الاشعار", 4, 0, 1, 1, 1, 1, 15, Element.ALIGN_CENTER);
+                cell.Padding = 2;
+                cell.BorderColor = BaseColor.BLUE;
+                bodyTable.AddCell(cell);
+
+                cell = PdfBase.drawCell(PdfBase.Fonts[fontsenum.nationalTextFont_12_NORMAL.ToString()], "رقم الاشعار", 4, 0, 1, 1, 1, 1, 15, Element.ALIGN_CENTER);
                 cell.Padding = 2;
                 cell.BorderColor = BaseColor.BLUE;
                 bodyTable.AddCell(cell);
@@ -3237,12 +3242,12 @@ namespace TaamerProject.API.pdfHandler
                         cell.BorderColor = BaseColor.BLUE;
                         bodyTable.AddCell(cell);
 
-                        cell = PdfBase.drawCell(PdfBase.Fonts[fontsenum.nationalTextFont_10_NORMAL.ToString()], (dt[x].JournalNumber != null ? dt[x].JournalNumber.ToString() : ""), 6, 0, 0, 1, 0, 1, 15, Element.ALIGN_CENTER);
+                        cell = PdfBase.drawCell(PdfBase.Fonts[fontsenum.nationalTextFont_10_NORMAL.ToString()], (dt[x].JournalNumber != null ? dt[x].JournalNumber.ToString() : ""), 4, 0, 0, 1, 0, 1, 15, Element.ALIGN_CENTER);
                         cell.Padding = 2;
                         cell.BorderColor = BaseColor.BLUE;
                         bodyTable.AddCell(cell);
 
-                        cell = PdfBase.drawCell(PdfBase.Fonts[fontsenum.nationalTextFont_10_NORMAL.ToString()], (dt[x].PayTypeName != null ? dt[x].PayTypeName.ToString() : ""), 6, 0, 0, 1, 0, 1, 15, Element.ALIGN_CENTER);
+                        cell = PdfBase.drawCell(PdfBase.Fonts[fontsenum.nationalTextFont_10_NORMAL.ToString()], (dt[x].PayTypeName != null ? dt[x].PayTypeName.ToString() : ""), 4, 0, 0, 1, 0, 1, 15, Element.ALIGN_CENTER);
                         cell.Padding = 2;
                         cell.BorderColor = BaseColor.BLUE;
                         bodyTable.AddCell(cell);
@@ -3258,6 +3263,11 @@ namespace TaamerProject.API.pdfHandler
                         bodyTable.AddCell(cell);
 
                         cell = PdfBase.drawCell(PdfBase.Fonts[fontsenum.nationalTextFont_10_NORMAL.ToString()], (dt[x].Date != null ? dt[x].Date.ToString() : ""), 4, 0, 0, 1, 0, 1, 15, Element.ALIGN_CENTER);
+                        cell.Padding = 2;
+                        cell.BorderColor = BaseColor.BLUE;
+                        bodyTable.AddCell(cell);
+
+                        cell = PdfBase.drawCell(PdfBase.Fonts[fontsenum.nationalTextFont_10_NORMAL.ToString()], (dt[x].InvoiceRetId != null ? dt[x].InvoiceRetId.ToString() : ""), 4, 0, 0, 1, 0, 1, 15, Element.ALIGN_CENTER);
                         cell.Padding = 2;
                         cell.BorderColor = BaseColor.BLUE;
                         bodyTable.AddCell(cell);
