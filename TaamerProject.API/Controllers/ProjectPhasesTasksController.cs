@@ -242,7 +242,7 @@ namespace TaamerProject.API.Controllers
 
 
         [HttpGet("GetAllProjectPhasesTasksS_whithworkorder_paging")]
-        public IActionResult GetAllProjectPhasesTasksS_whithworkorder_paging(int? UserId, int? status, string? DateFrom, string? DateTo,string? SearchText, int page = 1, int pageSize = 10)
+        public IActionResult GetAllProjectPhasesTasksS_whithworkorder_paging(int? UserId, int? status, string? DateFrom, string? DateTo,string? SearchText, int? page, int? pageSize)
         {
             if (UserId == 0) UserId = null;
             if (status == 0) status = null;
@@ -259,9 +259,17 @@ namespace TaamerProject.API.Controllers
                     //return Ok(atasks.Union(wo2));
 
                     var all2 = atasks.Union(wo2);
-                    var data2 = GeneratePagination<ProjectPhasesTasksVM>.ToPagedList(all2.ToList(), page, pageSize);
-                    var result2 = new PagedLists<ProjectPhasesTasksVM>(data2.MetaData, data2);
-                    return Ok(result2);
+                    if (page > 0 && pageSize > 0)
+                    {
+                        var data2 = GeneratePagination<ProjectPhasesTasksVM>.ToPagedList(all2.ToList(), page.Value, pageSize.Value);
+                        var result2 = new PagedLists<ProjectPhasesTasksVM>(data2.MetaData, data2);
+                        return Ok(result2);
+                    }
+                    else
+                    {
+                        return Ok(all2);
+
+                    }
                 }
                 else
                 {
@@ -270,9 +278,17 @@ namespace TaamerProject.API.Controllers
 
 
                     var all3=AllTasks1.Union(wo3);
-                    var data3 = GeneratePagination<ProjectPhasesTasksVM>.ToPagedList(all3.ToList(), page, pageSize);
+                    if (page > 0 && pageSize > 0)
+                    {
+                        var data3 = GeneratePagination<ProjectPhasesTasksVM>.ToPagedList(all3.ToList(), page.Value, pageSize.Value);
                     var result3 = new PagedLists<ProjectPhasesTasksVM>(data3.MetaData, data3);
-                    return Ok(result3);
+                        return Ok(result3);
+                    }
+                    else
+                    {
+                        return Ok(all3);
+
+                    }
                 }
             }
 
@@ -283,9 +299,17 @@ namespace TaamerProject.API.Controllers
             //return Ok(AllTasks.Union(wo));
 
             var all = AllTasks.Union(wo);
-            var data = GeneratePagination<ProjectPhasesTasksVM>.ToPagedList(all.ToList(), page, pageSize);
-            var result = new PagedLists<ProjectPhasesTasksVM>(data.MetaData, data);
-            return Ok(result);
+            if (page > 0 && pageSize > 0)
+            {
+                var data = GeneratePagination<ProjectPhasesTasksVM>.ToPagedList(all.ToList(), page.Value, pageSize.Value);
+                var result = new PagedLists<ProjectPhasesTasksVM>(data.MetaData, data);
+                return Ok(result);
+            }
+            else
+            {
+                return Ok(all);
+
+            }
         }
 
 
@@ -312,7 +336,7 @@ namespace TaamerProject.API.Controllers
             }
 
         [HttpGet("GetAllLateProjectPhasesByuser_rpt_paging")]
-        public IActionResult GetAllLateProjectPhasesByuser_rpt_paging(int? UserId, int? status, string? DateFrom, string? DateTo, string? SearchText, int page = 1, int pageSize = 10)
+        public IActionResult GetAllLateProjectPhasesByuser_rpt_paging(int? UserId, int? status, string? DateFrom, string? DateTo, string? SearchText, int? page, int? pageSize)
         {
             if (UserId == 0) UserId = null;
             if (status == 0) status = null;
@@ -321,18 +345,33 @@ namespace TaamerProject.API.Controllers
             if ((DateFrom == "" && DateTo == "") || (DateFrom == null && DateTo == null))
             {
                 var atasks = _projectPhasesTasksservice.GetAllLateProjectPhasesTasksbyUserId2(DateTo, _globalshared.BranchId_G, UserId, _globalshared.Lang_G,SearchText);
-
-                var data = GeneratePagination<ProjectPhasesTasksVM>.ToPagedList(atasks.Result.ToList(), page, pageSize);
-                var result = new PagedLists<ProjectPhasesTasksVM>(data.MetaData, data);
-                return Ok(result);
+                if (page > 0 && pageSize > 0)
+                {
+                    var data = GeneratePagination<ProjectPhasesTasksVM>.ToPagedList(atasks.Result.ToList(), page.Value, pageSize.Value);
+                    var result = new PagedLists<ProjectPhasesTasksVM>(data.MetaData, data);
+                    return Ok(result);
+                
             }
             else
             {
-                var AllTasks = _projectPhasesTasksservice.GetLateTasksByUserIdrptsearch(UserId, status, _globalshared.Lang_G, DateFrom, DateTo, _globalshared.BranchId_G,SearchText).Result.ToList();
+                return Ok(atasks);
 
-                var data = GeneratePagination<ProjectPhasesTasksVM>.ToPagedList(AllTasks.ToList(), page, pageSize);
-                var result = new PagedLists<ProjectPhasesTasksVM>(data.MetaData, data);
-                return Ok(result);
+            }
+        }
+            else
+            {
+                var AllTasks = _projectPhasesTasksservice.GetLateTasksByUserIdrptsearch(UserId, status, _globalshared.Lang_G, DateFrom, DateTo, _globalshared.BranchId_G,SearchText).Result.ToList();
+                if (page > 0 && pageSize > 0)
+                {
+                    var data = GeneratePagination<ProjectPhasesTasksVM>.ToPagedList(AllTasks.ToList(), page.Value, pageSize.Value);
+                    var result = new PagedLists<ProjectPhasesTasksVM>(data.MetaData, data);
+                    return Ok(result);
+                }
+                else
+                {
+                    return Ok(AllTasks);
+
+                }
             }
         }
 
@@ -363,7 +402,7 @@ namespace TaamerProject.API.Controllers
 
 
         [HttpGet("GetAllProjectPhasesTasksbystatus_WithworkOrder_paging")]
-        public IActionResult GetAllProjectPhasesTasksbystatus_WithworkOrder_paging(int? UserId, int? status, string? DateFrom, string? DateTo, string? SearchText, int page = 1, int pageSize = 10)
+        public IActionResult GetAllProjectPhasesTasksbystatus_WithworkOrder_paging(int? UserId, int? status, string? DateFrom, string? DateTo, string? SearchText, int? page, int? pageSize)
         {
             if (UserId == 0) UserId = null;
             if (status == 0) status = null;
@@ -372,9 +411,17 @@ namespace TaamerProject.API.Controllers
             var AllTasks = _projectPhasesTasksservice.GetAllProjectPhasesTasksbystatus(UserId, _globalshared.BranchId_G, status, _globalshared.Lang_G, DateFrom, DateTo, SearchText).Result.ToList();
             var wo = _workOrdersService.GetWorkOrderReport(UserId, status ?? 0, _globalshared.BranchId_G, _globalshared.Lang_G, DateFrom, DateTo, SearchText).Result;
             var AllTask=AllTasks.Union(wo);
-            var data = GeneratePagination<ProjectPhasesTasksVM>.ToPagedList(AllTask.ToList(), page, pageSize);
-            var result = new PagedLists<ProjectPhasesTasksVM>(data.MetaData, data);
-            return Ok(result);
+            if (page > 0 && pageSize > 0)
+            {
+                var data = GeneratePagination<ProjectPhasesTasksVM>.ToPagedList(AllTask.ToList(), page.Value, pageSize.Value);
+                var result = new PagedLists<ProjectPhasesTasksVM>(data.MetaData, data);
+                return Ok(result);
+            }
+            else
+            {
+                return Ok(AllTask);
+
+            }
         }
 
         [HttpGet("GetAllTasksByProjectIdS")]
@@ -402,7 +449,7 @@ namespace TaamerProject.API.Controllers
 
 
         [HttpGet("GetAllTasksByProjectIdS_withworkorder_paging")]
-        public IActionResult GetAllTasksByProjectIdS_withworkorder_paging(int? ProjectId, int? DepartmentId, string? DateFrom, string? DateTo, string? Searchtext, int page = 1, int pageSize = 10)
+        public IActionResult GetAllTasksByProjectIdS_withworkorder_paging(int? ProjectId, int? DepartmentId, string? DateFrom, string? DateTo, string? Searchtext, int? page , int? pageSize)
         {
             if (ProjectId == 0)
                 ProjectId = null;
@@ -414,9 +461,16 @@ namespace TaamerProject.API.Controllers
             }
             //var wo = _workOrdersService.GetWorkOrderReport_ptoject(ProjectId, _globalshared.Lang_G, DateFrom??"", DateTo??"", _globalshared.BranchId_G).Result;
             var tasks=_projectPhasesTasksservice.GetAllTasksByProjectIdS(ProjectId, DepartmentId, DateFrom ?? "", DateTo ?? "", _globalshared.BranchId_G,Searchtext).Result.ToList().Union(wo);
-            var data = GeneratePagination<ProjectPhasesTasksVM>.ToPagedList(tasks.ToList(), page, pageSize);
-            var result = new PagedLists<ProjectPhasesTasksVM>(data.MetaData, data);
-            return Ok(result);
+            if (page > 0 && pageSize > 0)
+            {
+                var data = GeneratePagination<ProjectPhasesTasksVM>.ToPagedList(tasks.ToList(), page.Value, pageSize.Value);
+                var result = new PagedLists<ProjectPhasesTasksVM>(data.MetaData, data);
+                return Ok(result);
+            }
+            else
+            {
+                return Ok(tasks);
+            }
 
         }
 
