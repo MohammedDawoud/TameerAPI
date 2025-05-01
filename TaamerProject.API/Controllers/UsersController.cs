@@ -920,8 +920,8 @@ namespace TaamerProject.API.Controllers
                     var db = _taamerProjectContext.GetDatabaseName();
                     if (licence.StatusCode == HttpStatusCode.OK)
                     {
-                        var uri = "https://api2.tameercloud.com/"; //"https://localhost:44334/";// "http://164.68.110.173:8080/";
-                        //var uri = "https://localhost:44334/";// "http://164.68.110.173:8080/";
+                        //var uri = "https://api2.tameercloud.com/"; //"https://localhost:44334/";// "http://164.68.110.173:8080/";
+                        var uri = "https://localhost:44334/";// "http://164.68.110.173:8080/";
                         if (uri != null && uri != "")
                         {
                             //Generate Token
@@ -952,6 +952,8 @@ namespace TaamerProject.API.Controllers
                             formData.Add(new StringContent(licences.Email ?? ""), "Email");
 
                             formData.Add(new StringContent(licences.TotalCost ?? ""), "TotalOprationalCost");
+                            formData.Add(new StringContent(licences.Tax ?? ""), "Tax");
+                            formData.Add(new StringContent(licences.Cost ?? ""), "Cost");
                             formData.Add(new StringContent(licences.ServerStorage ?? ""), "ServerStorage");
 
 
