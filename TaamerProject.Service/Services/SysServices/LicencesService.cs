@@ -163,6 +163,11 @@ namespace TaamerProject.Service.Services
                         }
                         LicenceUpdated.Email3 = Licence.Email3;
                         LicenceUpdated.Mobile = Licence.Mobile;
+                        LicenceUpdated.Cost = Licence.Cost;
+                        LicenceUpdated.Tax = Licence.Tax;
+                        LicenceUpdated.TotalCost = Licence.TotalCost;
+                        LicenceUpdated.ServerStorage = Licence.ServerStorage;
+
                         LicenceUpdated.Support_Start_Date = Licence.Support_Start_Date;
                         
                         if (Licence.Hosting_Expiry_Date == null || Licence.Hosting_Expiry_Date == "بدون")
