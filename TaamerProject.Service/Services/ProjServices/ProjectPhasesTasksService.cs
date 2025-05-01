@@ -9456,7 +9456,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public async Task<List<RptAllEmpPerformance>> getempdataNew_Proc(ProjectPhasesTasksVM Search, string Lang, string Con, int BranchId)
+        public async Task<List<RptAllEmpPerformance>> getempdataNew_Proc(PerformanceReportVM Search, string Lang, string Con, int BranchId)
         {
             var data = await _UsersRepository.getempdataNew_Proc(Search, Lang, Con, BranchId);
             return data;

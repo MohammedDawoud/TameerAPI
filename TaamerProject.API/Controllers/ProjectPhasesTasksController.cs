@@ -1718,7 +1718,7 @@ namespace TaamerProject.API.Controllers
                 return Ok(allEmpPerformances );
             }
         [HttpPost("getreportNew")]
-        public IActionResult getreportNew(ProjectPhasesTasksVM Search)
+        public IActionResult getreportNew(PerformanceReportVM Search)
             {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             if (Search.BranchId == null)

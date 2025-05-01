@@ -346,9 +346,25 @@ namespace TaamerProject.Service.Services
             try
             {
                // ProSettingDetails settings = _ProSettingDetailsRepository.GetById(SettingId);
+
+
                 ProSettingDetails? settings = _TaamerProContext.ProSettingDetails.Where(s => s.ProSettingId == SettingId).FirstOrDefault();
                 if (settings != null)
                 {
+
+                    var Projects = _TaamerProContext.Project.Where(s => s.IsDeleted == false && s.ProjectTypeId == settings.ProjectTypeId && s.SubProjectTypeId == settings.ProjectSubtypeId).ToList();
+                    if(Projects.Count()>0)
+                    {
+                        //-----------------------------------------------------------------------------------------------------------------
+                        string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                        string ActionNote2 = "لا يمكنك حذف السير لوجود مشاريع مرتبطة بنفس نوع المشروع الفرعي"; 
+                        _SystemAction.SaveAction("DeleteProjectSettingsDetails", "ProSettingDetailsService", 3, Resources.General_DeletedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                        //-----------------------------------------------------------------------------------------------------------------
+                        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكنك حذف السير لوجود مشاريع مرتبطة بنفس نوع المشروع الفرعي" };
+                    }
+
+
+
                     settings.IsDeleted = true;
                     settings.DeleteDate = DateTime.Now;
                     settings.DeleteUser = UserId;
@@ -368,7 +384,7 @@ namespace TaamerProject.Service.Services
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                     string ActionNote = " حذف تفاصيل خيارات مشروع رقم " + SettingId;
-                    _SystemAction.SaveAction("EditProSettingsDetails", "ProSettingDetailsService", 3, Resources.General_DeletedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                    _SystemAction.SaveAction("DeleteProjectSettingsDetails", "ProSettingDetailsService", 3, Resources.General_DeletedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                     //-----------------------------------------------------------------------------------------------------------------
 
                 }
@@ -380,8 +396,8 @@ namespace TaamerProject.Service.Services
 
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                string ActionNote = " فشل في حذف تفاصيل خيارات مشروع رقم " + SettingId; ;
-                _SystemAction.SaveAction("EditProSettingsDetails", "ProSettingDetailsService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                string ActionNote = " فشل في حذف تفاصيل خيارات مشروع رقم " + SettingId; 
+                _SystemAction.SaveAction("DeleteProjectSettingsDetails", "ProSettingDetailsService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest,ReasonPhrase = Resources.General_DeletedFailed };
                 }
@@ -394,6 +410,18 @@ namespace TaamerProject.Service.Services
                 ProSettingDetailsNew? settings = _TaamerProContext.ProSettingDetailsNew.Where(s => s.ProSettingId == SettingId).FirstOrDefault();
                 if (settings != null)
                 {
+
+                    var Projects = _TaamerProContext.Project.Where(s => s.IsDeleted == false && s.ProjectTypeId == settings.ProjectTypeId && s.SubProjectTypeId == settings.ProjectSubtypeId).ToList();
+                    if (Projects.Count() > 0)
+                    {
+                        //-----------------------------------------------------------------------------------------------------------------
+                        string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                        string ActionNote2 = "لا يمكنك حذف السير لوجود مشاريع مرتبطة بنفس نوع المشروع الفرعي";
+                        _SystemAction.SaveAction("DeleteProjectSettingsDetailsNew", "ProSettingDetailsService", 3, Resources.General_DeletedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                        //-----------------------------------------------------------------------------------------------------------------
+                        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكنك حذف السير لوجود مشاريع مرتبطة بنفس نوع المشروع الفرعي" };
+                    }
+
                     settings.IsDeleted = true;
                     settings.DeleteDate = DateTime.Now;
                     settings.DeleteUser = UserId;
@@ -413,7 +441,7 @@ namespace TaamerProject.Service.Services
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                     string ActionNote = " حذف تفاصيل خيارات مشروع رقم " + SettingId;
-                    _SystemAction.SaveAction("EditProSettingsDetails", "ProSettingDetailsService", 3, Resources.General_DeletedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                    _SystemAction.SaveAction("DeleteProjectSettingsDetailsNew", "ProSettingDetailsService", 3, Resources.General_DeletedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                     //-----------------------------------------------------------------------------------------------------------------
 
                 }
@@ -426,7 +454,7 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = " فشل في حذف تفاصيل خيارات مشروع رقم " + SettingId; ;
-                _SystemAction.SaveAction("EditProSettingsDetails", "ProSettingDetailsService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                _SystemAction.SaveAction("DeleteProjectSettingsDetailsNew", "ProSettingDetailsService", 3, Resources.General_DeletedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_DeletedFailed };
             }

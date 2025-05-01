@@ -132,4 +132,19 @@ namespace TaamerProject.Models
         public decimal? Totalhourstask { get; set; }
         public decimal? Totaltaskcost { get; set; }
     }
+
+
+
+
+
+
+    public class PerformanceReportVM
+    {
+        public int? UserId { get; set; }
+        public string? StartDate { get; set; }
+        public string? EndDate { get; set; }
+        public int? BranchId { get; set; }
+        public string? SearchUserIdStr { get; set; }
+    }
+
 }

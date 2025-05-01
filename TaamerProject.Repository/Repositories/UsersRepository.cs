@@ -1537,7 +1537,7 @@ namespace TaamerProject.Repository.Repositories
 
         }
 
-        public async Task<List<RptAllEmpPerformance>> getempdataNew_Proc(ProjectPhasesTasksVM Search, string Lang, string Con, int BranchId)
+        public async Task<List<RptAllEmpPerformance>> getempdataNew_Proc(PerformanceReportVM Search, string Lang, string Con, int BranchId)
         {
             try
             {
@@ -1552,7 +1552,16 @@ namespace TaamerProject.Repository.Repositories
                         command.Connection = con;
 
 
-                        if(Search.UserId == 0)
+                        if (Search.SearchUserIdStr == "" || Search.SearchUserIdStr == null || Search.SearchUserIdStr == "null" || Search.SearchUserIdStr == "0")
+                        {
+                            command.Parameters.Add(new SqlParameter("@UserId_SearchStr", DBNull.Value));
+                        }
+                        else
+                        {
+                            command.Parameters.Add(new SqlParameter("@UserId_SearchStr", Search.SearchUserIdStr));
+                        }
+
+                        if (Search.UserId == 0)
                             command.Parameters.Add(new SqlParameter("@UserId_Search",DBNull.Value));
                         else
                             command.Parameters.Add(new SqlParameter("@UserId_Search", Search.UserId));

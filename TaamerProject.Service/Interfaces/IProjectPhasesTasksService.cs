@@ -178,7 +178,7 @@ namespace TaamerProject.Service.Interfaces
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksbystatus(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo, string? Searchtext);
         RptAllEmpPerformance getempdata(ProjectPhasesTasksVM Search, string Lang, string Con);
         List<RptAllEmpPerformance> getempdataNew(ProjectPhasesTasksVM Search, string Lang, string Con, int BranchId);
-        Task<List<RptAllEmpPerformance>> getempdataNew_Proc(ProjectPhasesTasksVM Search, string Lang, string Con, int BranchId);
+        Task<List<RptAllEmpPerformance>> getempdataNew_Proc(PerformanceReportVM Search, string Lang, string Con, int BranchId);
 
 
         // List<RptAllEmpPerformance> getempdata(ProjectPhasesTasksVM Search, string Lang, string Con);
