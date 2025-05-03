@@ -31,6 +31,7 @@ namespace TaamerProject.Repository.Repositories
                 Support_Expiry_Date = x.Support_Expiry_Date??"",
                 Email = x.Email??"",
                 Mobile = x.Mobile??"",
+                Mobile2 = x.Mobile2??"",
                 Hosting_Expiry_Date = x.Hosting_Expiry_Date?? "E9CT3q6ItKXBskURZSoZZw==",
                 Note = x.Note??"",
 
@@ -98,6 +99,7 @@ namespace TaamerProject.Repository.Repositories
                 Cost=x.Cost??"",
                 TotalCost=x.TotalCost??"",
                 Tax = x.Tax ?? "",
+                
                 
                 
 

@@ -89,5 +89,6 @@ namespace TaamerProject.Models
         public string? Cost { get; set; }
         public string? Tax { get; set; }
         public string? TotalCost { get; set; }
+        public string? Mobile2 { get; set; }
     }
 }

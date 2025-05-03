@@ -16,6 +16,7 @@ namespace TaamerProject.Models
         public string? Support_Expiry_Date { get; set; }
         public string? Email { get; set; }
         public string? Mobile { get; set; }
+        public string? Mobile2 { get; set; }
         public string? Hosting_Expiry_Date { get; set; }
         public string? Note { get; set; }
 
