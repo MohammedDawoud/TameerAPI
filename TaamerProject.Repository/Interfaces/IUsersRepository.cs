@@ -35,7 +35,7 @@ namespace TaamerProject.Repository.Interfaces
 
         Task<UsersVM> GetUserByRecoverLink(String Link);
         Task<IEnumerable<UsersVM>> GetFullReport(ProjectPhasesTasksVM Search, string Lang,string Today, int BranchId);
-        Task<List<RptAllEmpPerformance>> getempdataNew_Proc(ProjectPhasesTasksVM Search, string Lang, string Con, int BranchId);
+        Task<List<RptAllEmpPerformance>> getempdataNew_Proc(PerformanceReportVM Search, string Lang, string Con, int BranchId);
 
         Task<PagedLists<UsersVM>> GetAllAsync(RequestParam<UsersFilterDTO> Param);
         Users GetMatchingUserWithPassword(string UserName, string activationCode = null);
