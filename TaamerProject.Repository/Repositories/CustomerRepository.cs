@@ -90,22 +90,30 @@ namespace TaamerProject.Repository.Repositories
                 CustomerId = x.CustomerId,
                 CustomerCode = x.CustomerCode,
                 //CustomerName = lang == "ltr" ? x.CustomerNameEn : x.CustomerNameAr,
-                CustomerName = lang == "ltr" ? x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? 
-                x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ?
-                x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? 
-                x.CustomerNameEn + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ?
-                x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ?
-                x.CustomerNameEn + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ?
-                x.CustomerNameEn + "(VIP)" : x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ?
-                x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? 
-                x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? 
-                x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ?
-                x.CustomerNameAr + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ?
-                x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? 
-                x.CustomerNameAr + "(VIP)" : x.CustomerNameAr,
+                CustomerName = 
+    (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") +
+    (
+        lang == "ltr"
+        ? (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameEn + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameEn + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameEn + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameEn + "(VIP)"
+            : x.CustomerNameEn
+        )
+        : (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameAr + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameAr + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameAr + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameAr + "(VIP)"
+            : x.CustomerNameAr
+        )
+    ),
 
-                CustomerNameAr = x.CustomerNameAr,
-                CustomerNameEn = x.CustomerNameEn,
+
+                CustomerNameAr = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameAr,
+
+                CustomerNameEn = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameEn,
                 CustomerNationalId = x.CustomerNationalId,
                 NationalIdSource = x.NationalIdSource,
                 CustomerAddress = x.CustomerAddress,
@@ -159,11 +167,29 @@ namespace TaamerProject.Repository.Repositories
                 CustomerId = x.CustomerId,
                 CustomerCode = x.CustomerCode,
                 //CustomerName = lang == "ltr" ? x.CustomerNameEn : x.CustomerNameAr,
-                CustomerName = lang == "ltr" ? x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameEn + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameEn + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameEn + "(VIP)" : x.CustomerNameAr
-                : x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameAr + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)" : x.CustomerNameAr,
+                CustomerName  =
+    (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") +
+    (
+        lang == "ltr"
+        ? (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameEn + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameEn + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameEn + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameEn + "(VIP)"
+            : x.CustomerNameEn
+        )
+        : (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameAr + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameAr + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameAr + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameAr + "(VIP)"
+            : x.CustomerNameAr
+        )
+    ),
 
-                CustomerNameAr = x.CustomerNameAr,
-                CustomerNameEn = x.CustomerNameEn,
+                CustomerNameAr = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameAr,
+
+                CustomerNameEn = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameEn,
                 CustomerNationalId = x.CustomerNationalId,
                 NationalIdSource = x.NationalIdSource,
                 CustomerAddress = x.CustomerAddress,
@@ -214,12 +240,29 @@ namespace TaamerProject.Repository.Repositories
                 CustomerId = x.CustomerId,
                 CustomerCode = x.CustomerCode,
                 //CustomerName = lang == "ltr" ? x.CustomerNameEn : x.CustomerNameAr,
-                CustomerName = lang == "ltr" ? x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameEn + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameEn + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameEn + "(VIP)" : x.CustomerNameAr
-                : x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameAr + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)" : x.CustomerNameAr,
+                CustomerName =
+    (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") +
+    (
+        lang == "ltr"
+        ? (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameEn + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameEn + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameEn + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameEn + "(VIP)"
+            : x.CustomerNameEn
+        )
+        : (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameAr + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameAr + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameAr + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameAr + "(VIP)"
+            : x.CustomerNameAr
+        )
+    ),
+                         CustomerNameAr = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameAr,
 
-                CustomerNameAr = x.CustomerNameAr,
-                CustomerNameEn = x.CustomerNameEn,
-                CustomerNationalId = x.CustomerNationalId,
+                         CustomerNameEn = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameEn,
+                         CustomerNationalId = x.CustomerNationalId,
                 NationalIdSource = x.NationalIdSource,
                 CustomerAddress = x.CustomerAddress,
                 CustomerEmail = x.CustomerEmail,
@@ -262,7 +305,7 @@ namespace TaamerProject.Repository.Repositories
                 CustomerId = x.CustomerId,
                 CustomerCode = x.CustomerCode,
                 //CustomerName = x.CustomerNameAr??"",
-                CustomerName = x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)":x.CustomerNameAr,
+                CustomerName =  x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)":x.CustomerNameAr,
                 CustomerNameAr = x.CustomerNameAr??"",
                 CustomerNameEn = x.CustomerNameEn??"",
                 CustomerNationalId = x.CustomerNationalId,
@@ -306,12 +349,29 @@ namespace TaamerProject.Repository.Repositories
                 CustomerId = x.CustomerId,
                 CustomerCode = x.CustomerCode,
                  //CustomerName = lang == "ltr" ? x.CustomerNameEn : x.CustomerNameAr,
-                 CustomerName = lang == "ltr" ? x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameEn + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameEn + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameEn + "(VIP)" : x.CustomerNameAr
-                : x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameAr + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)" : x.CustomerNameAr,
+                 CustomerName =
+    (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") +
+    (
+        lang == "ltr"
+        ? (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameEn + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameEn + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameEn + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameEn + "(VIP)"
+            : x.CustomerNameEn
+        )
+        : (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameAr + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameAr + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameAr + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameAr + "(VIP)"
+            : x.CustomerNameAr
+        )
+    ),
+                 CustomerNameAr = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameAr,
 
-                 CustomerNameAr = x.CustomerNameAr,
-                CustomerNameEn = x.CustomerNameEn,
-                CustomerNationalId = x.CustomerNationalId,
+                 CustomerNameEn = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameEn,
+                 CustomerNationalId = x.CustomerNationalId,
                 NationalIdSource = x.NationalIdSource,
                 CustomerAddress = x.CustomerAddress,
                 CustomerEmail = x.CustomerEmail,
@@ -356,11 +416,29 @@ namespace TaamerProject.Repository.Repositories
                  CustomerId = x.CustomerId,
                  CustomerCode = x.CustomerCode,
                  //CustomerName = lang == "ltr" ? x.CustomerNameEn : x.CustomerNameAr,
-                 CustomerName = lang == "ltr" ? x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameEn + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameEn + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameEn + "(VIP)" : x.CustomerNameAr
-                : x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameAr + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)" : x.CustomerNameAr,
+                 CustomerName =
+    (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") +
+    (
+        lang == "ltr"
+        ? (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameEn + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameEn + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameEn + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameEn + "(VIP)"
+            : x.CustomerNameEn
+        )
+        : (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameAr + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameAr + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameAr + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameAr + "(VIP)"
+            : x.CustomerNameAr
+        )
+    ),
+                 CustomerNameAr = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameAr,
 
-                 CustomerNameAr = x.CustomerNameAr,
-                 CustomerNameEn = x.CustomerNameEn,
+                 CustomerNameEn = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameEn,
+
                  CustomerNationalId = x.CustomerNationalId,
                  NationalIdSource = x.NationalIdSource,
                  CustomerAddress = x.CustomerAddress,
@@ -410,11 +488,29 @@ namespace TaamerProject.Repository.Repositories
                  CustomerId = x.CustomerId,
                  CustomerCode = x.CustomerCode,
                  //CustomerName = lang == "ltr" ? x.CustomerNameEn : x.CustomerNameAr,
-                 CustomerName = lang == "ltr" ? x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameEn + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameEn + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameEn + "(VIP)" : x.CustomerNameAr
-                : x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameAr + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)" : x.CustomerNameAr,
+                 CustomerName =
+    (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") +
+    (
+        lang == "ltr"
+        ? (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameEn + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameEn + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameEn + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameEn + "(VIP)"
+            : x.CustomerNameEn
+        )
+        : (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameAr + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameAr + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameAr + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameAr + "(VIP)"
+            : x.CustomerNameAr
+        )
+    ),
+                 CustomerNameAr = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameAr,
 
-                 CustomerNameAr = x.CustomerNameAr,
-                 CustomerNameEn = x.CustomerNameEn,
+                 CustomerNameEn = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameEn,
+
                  CustomerNationalId = x.CustomerNationalId,
                  NationalIdSource = x.NationalIdSource,
                  CustomerAddress = x.CustomerAddress,
@@ -533,12 +629,30 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
                 CustomerId = x.CustomerId,
                 CustomerCode = x.CustomerCode,
                 //CustomerName = lang == "ltr" ? x.CustomerNameEn : x.CustomerNameAr,
-                CustomerName = lang == "ltr" ? x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameEn + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameEn + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameEn + "(VIP)" : x.CustomerNameAr
-                : x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameAr + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)" : x.CustomerNameAr,
+                CustomerName =
+    (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") +
+    (
+        lang == "ltr"
+        ? (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameEn + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameEn + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameEn + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameEn + "(VIP)"
+            : x.CustomerNameEn
+        )
+        : (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameAr + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameAr + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameAr + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameAr + "(VIP)"
+            : x.CustomerNameAr
+        )
+    ),
+                         CustomerNameAr = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameAr,
 
-                CustomerNameAr = x.CustomerNameAr,
-                CustomerNameEn = x.CustomerNameEn,
-                CustomerNationalId = x.CustomerNationalId,
+                         CustomerNameEn = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameEn,
+
+                         CustomerNationalId = x.CustomerNationalId,
                 NationalIdSource = x.NationalIdSource,
                 CustomerAddress = x.CustomerAddress,
                 CustomerEmail = x.CustomerEmail,
@@ -582,9 +696,11 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
                 CustomerCode = x.CustomerCode,
                 //CustomerName = x.CustomerNameAr,
                 CustomerName = x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)" : x.CustomerNameAr,
-                CustomerNameAr = x.CustomerNameAr,
-                CustomerNameEn = x.CustomerNameEn,
-                CustomerNationalId = x.CustomerNationalId,
+                         CustomerNameAr = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameAr,
+
+                         CustomerNameEn = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameEn,
+
+                         CustomerNationalId = x.CustomerNationalId,
                 NationalIdSource = x.NationalIdSource,
                 CustomerAddress = x.CustomerAddress,
                 CustomerEmail = x.CustomerEmail,
@@ -627,12 +743,30 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
                 CustomerId = x.CustomerId,
                 CustomerCode = x.CustomerCode,
                 //CustomerName = lang == "ltr" ? x.CustomerNameEn : x.CustomerNameAr,
-                CustomerName = lang == "ltr" ? x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameEn + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameEn + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameEn + "(VIP)" : x.CustomerNameAr
-                : x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameAr + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)" : x.CustomerNameAr,
+                CustomerName =
+    (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") +
+    (
+        lang == "ltr"
+        ? (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameEn + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameEn + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameEn + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameEn + "(VIP)"
+            : x.CustomerNameEn
+        )
+        : (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameAr + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameAr + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameAr + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameAr + "(VIP)"
+            : x.CustomerNameAr
+        )
+    ),
+                         CustomerNameAr = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameAr,
 
-                CustomerNameAr = x.CustomerNameAr,
-                CustomerNameEn = x.CustomerNameEn,
-                CustomerNationalId = x.CustomerNationalId,
+                         CustomerNameEn = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameEn,
+
+                         CustomerNationalId = x.CustomerNationalId,
                 NationalIdSource = x.NationalIdSource,
                 CustomerAddress = x.CustomerAddress,
                 CustomerEmail = x.CustomerEmail,
@@ -680,12 +814,30 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
                 CustomerId = x.CustomerId,
                 CustomerCode = x.CustomerCode,
                 //CustomerName = lang == "ltr" ? x.CustomerNameEn : x.CustomerNameAr,
-                CustomerName = lang == "ltr" ? x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameEn + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameEn + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameEn + "(VIP)" : x.CustomerNameAr
-                : x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameAr + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)" : x.CustomerNameAr,
+                CustomerName =
+    (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") +
+    (
+        lang == "ltr"
+        ? (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameEn + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameEn + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameEn + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameEn + "(VIP)"
+            : x.CustomerNameEn
+        )
+        : (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameAr + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameAr + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameAr + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameAr + "(VIP)"
+            : x.CustomerNameAr
+        )
+    ),
+                         CustomerNameAr = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameAr,
 
-                CustomerNameAr = x.CustomerNameAr,
-                CustomerNameEn = x.CustomerNameEn,
-                CustomerNationalId = x.CustomerNationalId,
+                         CustomerNameEn = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameEn,
+
+                         CustomerNationalId = x.CustomerNationalId,
                 NationalIdSource = x.NationalIdSource,
                 CustomerAddress = x.CustomerAddress,
                 CustomerEmail = x.CustomerEmail,
@@ -789,12 +941,30 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
                                                    {
                                                        CustomerId = x.CustomerId,
                                                        CustomerCode = x.CustomerCode,
-                                                       CustomerNameAr = x.CustomerNameAr,
-                                                       CustomerNameEn = x.CustomerNameEn,
-                                                       //CustomerName = lang == "ltr" ? x.CustomerNameEn : x.CustomerNameAr,
-                                                       CustomerName = lang == "ltr" ? x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameEn + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameEn + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameEn + "(VIP)" : x.CustomerNameAr
-                                                        : x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameAr + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)" : x.CustomerNameAr,
+                                                       CustomerNameAr = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameAr,
 
+                                                       CustomerNameEn = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameEn,
+
+                                                       //CustomerName = lang == "ltr" ? x.CustomerNameEn : x.CustomerNameAr,
+                                                       CustomerName =
+    (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") +
+    (
+        lang == "ltr"
+        ? (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameEn + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameEn + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameEn + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameEn + "(VIP)"
+            : x.CustomerNameEn
+        )
+        : (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameAr + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameAr + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameAr + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameAr + "(VIP)"
+            : x.CustomerNameAr
+        )
+    ),
                                                        CustomerNationalId = x.CustomerNationalId,
                                                        NationalIdSource = x.NationalIdSource,
                                                        CustomerAddress = x.CustomerAddress,
@@ -840,12 +1010,30 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
                 CustomerId = x.CustomerId,
                 CustomerCode = x.CustomerCode,
                 //CustomerName = lang == "ltr" ? x.CustomerNameEn : x.CustomerNameAr,
-                CustomerName = lang == "ltr" ? x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameEn + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameEn + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameEn + "(VIP)" : x.CustomerNameAr
-                : x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameAr + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)" : x.CustomerNameAr,
+                CustomerName =
+    (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") +
+    (
+        lang == "ltr"
+        ? (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameEn + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameEn + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameEn + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameEn + "(VIP)"
+            : x.CustomerNameEn
+        )
+        : (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameAr + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameAr + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameAr + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameAr + "(VIP)"
+            : x.CustomerNameAr
+        )
+    ),
+                         CustomerNameAr = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameAr,
 
-                CustomerNameAr = x.CustomerNameAr,
-                CustomerNameEn = x.CustomerNameEn,
-                CustomerNationalId = x.CustomerNationalId,
+                         CustomerNameEn = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameEn,
+
+                         CustomerNationalId = x.CustomerNationalId,
                 NationalIdSource = x.NationalIdSource,
                 CustomerAddress = x.CustomerAddress,
                 CustomerEmail = x.CustomerEmail,
@@ -894,12 +1082,30 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
                 CustomerId = x.CustomerId,
                 CustomerCode = x.CustomerCode,
                 //CustomerName = lang == "ltr" ? x.CustomerNameEn : x.CustomerNameAr,
-                CustomerName = lang == "ltr" ? x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameEn + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameEn + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameEn + "(VIP)" : x.CustomerNameAr
-                : x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameAr + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)" : x.CustomerNameAr,
+                CustomerName =
+    (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") +
+    (
+        lang == "ltr"
+        ? (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameEn + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameEn + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameEn + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameEn + "(VIP)"
+            : x.CustomerNameEn
+        )
+        : (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameAr + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameAr + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameAr + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameAr + "(VIP)"
+            : x.CustomerNameAr
+        )
+    ),
+                         CustomerNameAr = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameAr,
 
-                CustomerNameAr = x.CustomerNameAr,
-                CustomerNameEn = x.CustomerNameEn,
-                CustomerNationalId = x.CustomerNationalId,
+                         CustomerNameEn = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameEn,
+
+                         CustomerNationalId = x.CustomerNationalId,
                 NationalIdSource = x.NationalIdSource,
                 CustomerAddress = x.CustomerAddress,
                 CustomerEmail = x.CustomerEmail,
@@ -994,12 +1200,30 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
                 CustomerId = x.CustomerId,
                 CustomerCode = x.CustomerCode,
                 //CustomerName = lang == "ltr" ? x.CustomerNameEn : x.CustomerNameAr,
-                CustomerName = lang == "ltr" ? x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameEn + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameEn + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameEn + "(VIP)" : x.CustomerNameAr
-                : x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameAr + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)" : x.CustomerNameAr,
+                CustomerName =
+    (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") +
+    (
+        lang == "ltr"
+        ? (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameEn + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameEn + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameEn + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameEn + "(VIP)"
+            : x.CustomerNameEn
+        )
+        : (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameAr + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameAr + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameAr + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameAr + "(VIP)"
+            : x.CustomerNameAr
+        )
+    ),
+                         CustomerNameAr = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameAr,
 
-                CustomerNameAr = x.CustomerNameAr,
-                CustomerNameEn = x.CustomerNameEn,
-                CustomerNationalId = x.CustomerNationalId,
+                         CustomerNameEn = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameEn,
+
+                         CustomerNationalId = x.CustomerNationalId,
                 NationalIdSource = x.NationalIdSource,
                 CustomerAddress = x.CustomerAddress,
                 CustomerEmail = x.CustomerEmail,
@@ -1108,12 +1332,30 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
                     CustomerId = x.CustomerId,
                     CustomerCode = x.CustomerCode,
                     //CustomerName = lang == "ltr" ? x.CustomerNameEn : x.CustomerNameAr,
-                    CustomerName = lang == "ltr" ? x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameEn + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameEn + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameEn + "(VIP)" : x.CustomerNameAr
-                : x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameAr + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)" : x.CustomerNameAr,
+                    CustomerName =
+    (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") +
+    (
+        lang == "ltr"
+        ? (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameEn + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameEn + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameEn + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameEn + "(VIP)"
+            : x.CustomerNameEn
+        )
+        : (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameAr + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameAr + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameAr + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameAr + "(VIP)"
+            : x.CustomerNameAr
+        )
+    ),
+                         CustomerNameAr = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameAr,
 
-                    CustomerNameAr = x.CustomerNameAr,
-                    CustomerNameEn = x.CustomerNameEn,
-                    CustomerNationalId = x.CustomerNationalId,
+                         CustomerNameEn = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameEn,
+
+                         CustomerNationalId = x.CustomerNationalId,
                     NationalIdSource = x.NationalIdSource,
                     CustomerAddress = x.CustomerAddress,
                     CustomerEmail = x.CustomerEmail,
@@ -1173,12 +1415,30 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
                     CustomerId = x.CustomerId,
                     CustomerCode = x.CustomerCode,
                     //CustomerName = lang == "ltr" ? x.CustomerNameEn : x.CustomerNameAr,
-                    CustomerName = lang == "ltr" ? x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameEn + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameEn + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameEn + "(VIP)" : x.CustomerNameAr
-                : x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameAr + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)" : x.CustomerNameAr,
+                    CustomerName =
+    (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") +
+    (
+        lang == "ltr"
+        ? (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameEn + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameEn + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameEn + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameEn + "(VIP)"
+            : x.CustomerNameEn
+        )
+        : (
+            x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameAr + "(*)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameAr + "(**)"
+            : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameAr + "(***)"
+            : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameAr + "(VIP)"
+            : x.CustomerNameAr
+        )
+    ),
+                         CustomerNameAr = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameAr,
 
-                    CustomerNameAr = x.CustomerNameAr,
-                    CustomerNameEn = x.CustomerNameEn,
-                    CustomerNationalId = x.CustomerNationalId,
+                         CustomerNameEn = (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") + x.CustomerNameEn,
+
+                         CustomerNationalId = x.CustomerNationalId,
                     NationalIdSource = x.NationalIdSource,
                     CustomerAddress = x.CustomerAddress,
                     CustomerEmail = x.CustomerEmail,
@@ -1605,8 +1865,16 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
                 {
                     CustomerId = x.CustomerId,
                     CustomerCode = x.CustomerCode,
-                    CustomerNameAr = x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)" : x.CustomerNameAr,
-                    CustomerNameEn = x.CustomerNameEn,
+                         CustomerNameAr =
+    (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") +
+    (
+        x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)"
+        : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameAr + "(**)"
+        : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)"
+        : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)"
+        : x.CustomerNameAr
+    ),
+                         CustomerNameEn = x.CustomerNameEn,
                     Notes = x.Notes
                 }).ToList();
                 return customers;
@@ -1618,8 +1886,16 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
                 {
                     CustomerId = x.CustomerId,
                     CustomerCode = x.CustomerCode,
-                    CustomerNameAr = x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)" : x.CustomerNameAr,
-                    CustomerNameEn = x.CustomerNameEn,
+                         CustomerNameAr =
+    (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") +
+    (
+        x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)"
+        : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameAr + "(**)"
+        : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)"
+        : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)"
+        : x.CustomerNameAr
+    ),
+                         CustomerNameEn = x.CustomerNameEn,
                     Notes = x.Notes
                 }).ToList();
                 return customers;
@@ -1689,13 +1965,34 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
                      s.Customer_Branches.Any(cb => cb.BranchId == BranchId))).Select(x => new CustomerVM
             {
                 Id = x.CustomerId,
-                Name = lang == "ltr" ? x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameEn + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameEn + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameEn + "(VIP)" : x.CustomerNameAr
-                : x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameAr : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameAr + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameAr + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameAr + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameAr + "(VIP)" : x.CustomerNameAr,
-                NoOfCustProj = x.Projects!.Where(p => p.IsDeleted == false).Count(),
-                NoOfCustProjMark = x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? "" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? "*" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? "**" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? "***" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? "****" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? "VIP" : "",
-                CustomerNameAr=x.CustomerNameAr,
-                CustomerNameEn=x.CustomerNameEn,
-            }).ToList();
+                         Name =
+                            (x.BranchId != BranchId && x.Customer_Branches.Any(cb => cb.BranchId == BranchId) ? "→ " : "") +
+                            (
+                                lang == "ltr"
+                                ? (
+                                    x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameEn + "(*)"
+                                    : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameEn + "(**)"
+                                    : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameEn + "(***)"
+                                    : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameEn + "(VIP)"
+                                    : x.CustomerNameEn
+                                )
+                                : (
+                                    x.Projects!.Count(p => p.IsDeleted == false) == 2 ? x.CustomerNameAr + "(*)"
+                                    : x.Projects!.Count(p => p.IsDeleted == false) == 3 ? x.CustomerNameAr + "(**)"
+                                    : x.Projects!.Count(p => p.IsDeleted == false) == 4 ? x.CustomerNameAr + "(***)"
+                                    : x.Projects!.Count(p => p.IsDeleted == false) >= 5 ? x.CustomerNameAr + "(VIP)"
+                                    : x.CustomerNameAr
+                                )
+                            ),
+                         CustomerNameAr =
+                (x.BranchId != BranchId &&
+                 x.Customer_Branches.Any(cb => cb.BranchId == BranchId)
+                ? "→ " : "") + x.CustomerNameAr,
+                         CustomerNameEn =
+                (x.BranchId != BranchId &&
+                 x.Customer_Branches.Any(cb => cb.BranchId == BranchId)
+                ? "→ " : "") + x.CustomerNameEn,
+                     }).ToList();
             return customers;
         }
 
