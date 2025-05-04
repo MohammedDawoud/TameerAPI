@@ -52,7 +52,7 @@ namespace TaamerProject.API.Helper
                 UserId_G = userid == "" ? 0 : Convert.ToInt32(userid);
                 BranchId_G = Branch == "" ? 0 : Convert.ToInt32(Branch);
                 Lang_G = lng == "" ? "rtl" : lng;
-                YearId_G = yearid == "" ? 0 : Convert.ToInt32(yearid);
+                YearId_G = yearid == "" ? 0 : yearid == "null" ?0: Convert.ToInt32(yearid);
                 Privilliges_G = userprivligs.ToList();
             }
             else

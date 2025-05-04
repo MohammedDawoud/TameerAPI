@@ -3207,6 +3207,16 @@ namespace TaamerProject.Repository.Repositories
                         else
                             command.Parameters.Add(new SqlParameter("@enddate", _project.ProjectExpireDate));
                         //---------------------------------------------------------------------
+                        if (_project.ProjectDateF == "" || _project.ProjectDateF == null)
+                            command.Parameters.Add(new SqlParameter("@startdateF", DBNull.Value));
+                        else
+                            command.Parameters.Add(new SqlParameter("@startdateF", _project.ProjectDateF));
+                        //---------------------------------------------------------------------
+                        if (_project.ProjectExpireDateF == "" || _project.ProjectExpireDateF == null)
+                            command.Parameters.Add(new SqlParameter("@enddateF", DBNull.Value));
+                        else
+                            command.Parameters.Add(new SqlParameter("@enddateF", _project.ProjectExpireDateF));
+                        //---------------------------------------------------------------------
 
                         command.Parameters.Add(new SqlParameter("@AllUserBranchId", AllUserBranchId));
                         //---------------------------------------------------------------------

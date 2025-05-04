@@ -4,6 +4,7 @@ namespace TaamerProject.Models
 {
     public class RptAllEmpPerformance
     {
+        public int? UserId { get; set; }
         public string? UserName { get; set; }
         public string? Latetask { get; set; }
         public string? Inprogress { get; set; }
