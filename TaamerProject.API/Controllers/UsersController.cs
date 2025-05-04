@@ -943,6 +943,7 @@ namespace TaamerProject.API.Controllers
                             formData.Add(new StringContent((licences.Type).ToString() ?? ""), "Type");
                             formData.Add(new StringContent(org.Result.ComDomainLink ?? ""), "Domain");
                             formData.Add(new StringContent(licences.Email3 ?? ""), "ComputerName");
+                            formData.Add(new StringContent(licences.Email3 ?? ""), "Email3");
                             formData.Add(new StringContent((org.Result.TameerAPIURL ?? "").ToString()), "CustomerULR");
                             formData.Add(new StringContent(licences.Support_Start_Date ?? ""), "Support_Start_Date");
                             formData.Add(new StringContent(org.Result.ComDomainAddress ?? ""), "IPAdress");
@@ -950,7 +951,8 @@ namespace TaamerProject.API.Controllers
                             formData.Add(new StringContent(licences.Subscrip_Hosting.ToString().ToLower()), "Subscrip_Hosting");
                             formData.Add(new StringContent(db ?? ""), "DBName");
                             formData.Add(new StringContent(licences.Email ?? ""), "Email");
-
+                            formData.Add(new StringContent(licences.Email2 ?? ""), "Email2");
+                            formData.Add(new StringContent(licences.Mobile2 ?? ""), "Mobile2");
                             formData.Add(new StringContent(licences.TotalCost ?? ""), "TotalOprationalCost");
                             formData.Add(new StringContent(licences.Tax ?? ""), "Tax");
                             formData.Add(new StringContent(licences.Cost ?? ""), "Cost");

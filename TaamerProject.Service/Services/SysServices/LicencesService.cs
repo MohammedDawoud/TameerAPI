@@ -80,6 +80,7 @@ namespace TaamerProject.Service.Services
                         LicenceUpdated.Email2 = Licence.Email2;
                         LicenceUpdated.Email3 = Licence.Email3;
                         LicenceUpdated.Mobile = Licence.Mobile;
+                        LicenceUpdated.Mobile2 = Licence.Mobile2;
                         LicenceUpdated.Support_Start_Date=Licence.Support_Start_Date;
                         LicenceUpdated.Subscrip_Domain = Licence.Subscrip_Domain;
                         LicenceUpdated.Subscrip_Hosting = Licence.Subscrip_Hosting;
@@ -163,6 +164,8 @@ namespace TaamerProject.Service.Services
                         }
                         LicenceUpdated.Email3 = Licence.Email3;
                         LicenceUpdated.Mobile = Licence.Mobile;
+                        LicenceUpdated.Email2 = Licence.Email2;
+                        LicenceUpdated.Mobile2 = Licence.Mobile2;
                         LicenceUpdated.Cost = Licence.Cost;
                         LicenceUpdated.Tax = Licence.Tax;
                         LicenceUpdated.TotalCost = Licence.TotalCost;
