@@ -14,6 +14,7 @@ using TaamerProject.Models.DBContext;
 using TaamerProject.Repository.Interfaces;
 using TaamerProject.Service.IGeneric;
 using TaamerProject.Service.LocalResources;
+using TaamerProject.Models.DomainObjects;
 
 namespace TaamerProject.Service.Services
 {
@@ -432,6 +433,19 @@ namespace TaamerProject.Service.Services
                         //-----------------------------------------------------------------------------------------------------------------
                         return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.Not_saved_financial_account_for_clients };
                     }
+                    List<Customer_Branches> customer_s = new List<Customer_Branches>();
+                    if (customer.OtherBranches != null && customer.OtherBranches.Count() > 0)
+                    {
+                        foreach (var item in customer.OtherBranches)
+                        {
+                            var custbranches = new Customer_Branches();
+                            custbranches.BranchId = item;
+                            customer_s.Add(custbranches);
+
+
+                        }
+                        customer.Customer_Branches = customer_s;
+                    }
                     // }
                     //customer.AccountId = _accountsRepository.GetMaxId() + 1;
                     _TaamerProContext.Customer.Add(customer);
@@ -526,6 +540,25 @@ namespace TaamerProject.Service.Services
                                 cost.NameEn = customerUpdated.CustomerNameEn;
                             }
 
+                        }
+
+                        List<Customer_Branches> customer_s = new List<Customer_Branches>();
+                        var oldbranches = _TaamerProContext.Customer_Branches.Where(x => x.CustomerId == customer.CustomerId).ToList();
+                        if(oldbranches !=null && oldbranches.Count() > 0)
+                        {
+                            _TaamerProContext.Customer_Branches.RemoveRange(oldbranches);
+                        }
+                        if (customer.OtherBranches != null && customer.OtherBranches.Count() > 0)
+                        {
+                            foreach (var item in customer.OtherBranches)
+                            {
+                                var custbranches = new Customer_Branches();
+                                custbranches.BranchId = item;
+                                custbranches.CustomerId = customer.CustomerId;
+                                _TaamerProContext.Customer_Branches.Add(custbranches);
+
+
+                            }
                         }
 
 

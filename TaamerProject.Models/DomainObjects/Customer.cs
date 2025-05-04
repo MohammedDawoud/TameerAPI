@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using TaamerProject.Models.DomainObjects;
 namespace TaamerProject.Models
 {
     public class Customer : Auditable
@@ -49,6 +51,11 @@ namespace TaamerProject.Models
         public virtual List<Project>? Projects { get; set; }
         public virtual List<Invoices>? Invoicess { get; set; }
         public virtual List<Transactions>? Transactions { get; set; }
+        public virtual List<Customer_Branches>? Customer_Branches { get; set; }
+
         public virtual Users? AddUsers { get; set; }
-    }
+        [NotMapped]
+        public List<int>? OtherBranches { get; set; }
+
+}
 }

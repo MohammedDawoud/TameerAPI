@@ -77,6 +77,7 @@ namespace TaamerProject.Models.DBContext
         public virtual DbSet<Currency> Currency { get; set; }
         public virtual DbSet<Custody> Custody { get; set; }
         public virtual DbSet<Customer> Customer { get; set; }
+        public virtual DbSet<Customer_Branches> Customer_Branches { get; set; }
         public virtual DbSet<CustomerFiles> CustomerFiles { get; set; }
         public virtual DbSet<CustomerMail> CustomerMail { get; set; }
         public virtual DbSet<CustomerPayments> CustomerPayments { get; set; }
@@ -1190,6 +1191,19 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
             });
 
             //--------------------------------END--------------------------------------------------
+
+            //--------------------------------END--------------------------------------------------
+            modelBuilder.Entity<Customer_Branches>(entity =>
+            {
+                entity.HasKey(e => e.Customer_BranchesId);
+                entity.ToTable("Pro_Customer_Branches");
+                entity.Property(t => t.CustomerId).HasColumnName("CustomerId");
+                entity.Property(t => t.BranchId).HasColumnName("BranchId");
+                modelBuilder.Entity<Customer_Branches>().HasOne(s => s.Customer).WithMany().HasForeignKey(e => e.CustomerId);
+                modelBuilder.Entity<Customer_Branches>().HasOne(s => s.Branch).WithMany().HasForeignKey(e => e.BranchId);
+            });
+
+            //--------------------------------END--------------------------------------------------
             modelBuilder.Entity<Customer>(entity =>
             {
                 entity.HasKey(e => e.CustomerId);
@@ -1236,6 +1250,7 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 modelBuilder.Entity<Customer>().HasMany<Project>(s => s.Projects).WithOne(g => g.customer).HasForeignKey(s => s.CustomerId);
                 modelBuilder.Entity<Customer>().HasMany<Invoices>(s => s.Invoicess).WithOne(g => g.Customer).HasForeignKey(s => s.CustomerId);
                 modelBuilder.Entity<Customer>().HasMany<Transactions>(s => s.Transactions).WithOne(g => g.Customer).HasForeignKey(s => s.AccountId);
+                modelBuilder.Entity<Customer>().HasMany<Customer_Branches>(s => s.Customer_Branches).WithOne(g => g.Customer).HasForeignKey(s => s.CustomerId);
 
             });
 

@@ -83,7 +83,8 @@ namespace TaamerProject.Repository.Repositories
         }
         public async Task<IQueryable<CustomerVM>> GetAllCustomers(string lang, int BranchId, bool isPrivate)
         {
-            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId == BranchId &&
+            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId)) &&
             (s.IsPrivate == false || s.IsPrivate == isPrivate)).Select(x => new CustomerVM
             {
                 CustomerId = x.CustomerId,
@@ -143,13 +144,16 @@ namespace TaamerProject.Repository.Repositories
                 CityId = x.CityId,
                 CityName = x.city != null ? x.city.NameAr : "",
                 AddDate = x.AddDate,
-                AddedcustomerImg=x.AddUsers.ImgUrl??""
+                AddedcustomerImg=x.AddUsers.ImgUrl??"",
+                Customer_Branches=x.Customer_Branches,
+                OtherBranches = x.Customer_Branches.Where(cb => cb.BranchId.HasValue).Select(cb => cb.BranchId.Value).ToList(),
             });
             return customers;
         }
         public async Task<IQueryable<CustomerVM>> GetAllCustomersSearch(string searchtxt,string lang, int BranchId, bool isPrivate)
         {
-            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId == BranchId && (s.IsPrivate == false || s.IsPrivate == isPrivate) &&
+            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId)) && (s.IsPrivate == false || s.IsPrivate == isPrivate) &&
             (s.CustomerNameEn == searchtxt || s.CustomerNameAr.Contains(searchtxt) || s.CustomerMobile== searchtxt || s.CustomerMobile.Contains(searchtxt) || searchtxt == null)).Select(x => new CustomerVM
             {
                 CustomerId = x.CustomerId,
@@ -204,7 +208,8 @@ namespace TaamerProject.Repository.Repositories
         }
         public async Task<IQueryable<CustomerVM>> GetAllCustomersW(string lang, int BranchId, bool isPrivate)
         {
-            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.CustomerTypeId!=3 && s.BranchId == BranchId).Select(x => new CustomerVM
+            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.CustomerTypeId!=3 && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId))).Select(x => new CustomerVM
             {
                 CustomerId = x.CustomerId,
                 CustomerCode = x.CustomerCode,
@@ -294,7 +299,8 @@ namespace TaamerProject.Repository.Repositories
 
         public async Task<IQueryable<CustomerVM>> GetCustomersArchiveProjects(string lang, int BranchId, bool isPrivate)
         {
-            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId == BranchId && (s.IsPrivate == false || s.IsPrivate == isPrivate)
+            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId)) && (s.IsPrivate == false || s.IsPrivate == isPrivate)
              & s.Projects!.Where(x => x.Status == 1 && !x.IsDeleted && s.BranchId == BranchId).Count() > 0).Select(x => new CustomerVM
             {
                 CustomerId = x.CustomerId,
@@ -343,7 +349,8 @@ namespace TaamerProject.Repository.Repositories
 
         public async Task<IQueryable<CustomerVM>> GetCustomersOwnProjects(string lang, int BranchId, bool isPrivate)
         {
-            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId == BranchId && (s.IsPrivate == false || s.IsPrivate == isPrivate)
+            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId)) && (s.IsPrivate == false || s.IsPrivate == isPrivate)
              & s.Projects!.Where(x => !x.IsDeleted && s.BranchId == BranchId).Count() > 0).Select(x => new CustomerVM
              {
                  CustomerId = x.CustomerId,
@@ -393,7 +400,8 @@ namespace TaamerProject.Repository.Repositories
 
         public async Task<IQueryable<CustomerVM>> GetCustomersOwnNotArcheivedProjects(string lang, int BranchId, bool isPrivate)
         {
-            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId == BranchId && (s.IsPrivate == false || s.IsPrivate == isPrivate)
+            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId)) && (s.IsPrivate == false || s.IsPrivate == isPrivate)
              & s.Projects!.Where(x => !x.IsDeleted && s.BranchId == BranchId && x.Status != 1 &&
                 x.ProjectPhasesTasks.Where(y => y.IsDeleted == false && y.IsMerig == -1 &&
                 y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3)).Count() > 0
@@ -519,7 +527,8 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
 
         public async Task<IQueryable<CustomerVM>> GetAllCustomers(string lang, int BranchId)
         {
-            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId == BranchId).Select(x => new CustomerVM
+            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId))).Select(x => new CustomerVM
             {
                 CustomerId = x.CustomerId,
                 CustomerCode = x.CustomerCode,
@@ -566,7 +575,8 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
 
         public async Task<IQueryable<CustomerVM>> GetAllCustomersCount(int BranchId)
         {
-            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId == BranchId).Select(x => new CustomerVM
+            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId))).Select(x => new CustomerVM
             {
                 CustomerId = x.CustomerId,
                 CustomerCode = x.CustomerCode,
@@ -611,7 +621,8 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
         }
         public async Task<IQueryable<CustomerVM>> GetAllCustomersByCustomerTypeId(int? CustomerTypeId, string lang, int BranchId, bool isPrivate)
         {
-            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.CustomerTypeId == CustomerTypeId && s.BranchId == BranchId).Select(x => new CustomerVM
+            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.CustomerTypeId == CustomerTypeId && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId))).Select(x => new CustomerVM
             {
                 CustomerId = x.CustomerId,
                 CustomerCode = x.CustomerCode,
@@ -663,7 +674,8 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
         }
         public async Task<IQueryable<CustomerVM>> GetAllPrivateCustomers(string lang, int BranchId)
         {
-            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.IsPrivate == true && s.BranchId == BranchId).Select(x => new CustomerVM
+            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.IsPrivate == true && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId))).Select(x => new CustomerVM
             {
                 CustomerId = x.CustomerId,
                 CustomerCode = x.CustomerCode,
@@ -769,7 +781,8 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
             }
             else
             {
-                Customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId == BranchId && ((s.CustomerId == CustomersSearch.CustomerId) || CustomersSearch.CustomerId == null || CustomersSearch.CustomerId == 0) &&
+                Customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId)) && ((s.CustomerId == CustomersSearch.CustomerId) || CustomersSearch.CustomerId == null || CustomersSearch.CustomerId == 0) &&
                                                    (s.CustomerNationalId == CustomersSearch.CustomerNationalId || s.CustomerNationalId.Contains(CustomersSearch.CustomerNationalId) || CustomersSearch.CustomerNationalId == null) &&
                                                    (s.CustomerMobile == CustomersSearch.CustomerMobile || s.CustomerMobile.Contains(CustomersSearch.CustomerMobile) || CustomersSearch.CustomerMobile == null))
                                                    .Select(x => new CustomerVM
@@ -821,7 +834,8 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
         }
         public async Task<IEnumerable<CustomerVM>> CustomerInterval(string FromDate, string ToDate, int BranchId, string lang)
         {
-            var Customer = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId == BranchId).Select(x => new CustomerVM
+            var Customer = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId))).Select(x => new CustomerVM
             {
                 CustomerId = x.CustomerId,
                 CustomerCode = x.CustomerCode,
@@ -874,7 +888,8 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
 
         public async Task<IEnumerable<CustomerVM>> CustomerIntervalByCustomerType(string FromDate, string ToDate, int customerType, int BranchId, string lang)
         {
-            var Customer = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId == BranchId && (s.CustomerTypeId == customerType || customerType == 0)).Select(x => new CustomerVM
+            var Customer = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId)) && (s.CustomerTypeId == customerType || customerType == 0)).Select(x => new CustomerVM
             {
                 CustomerId = x.CustomerId,
                 CustomerCode = x.CustomerCode,
@@ -945,30 +960,36 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
         }
         public async Task<int> GetCitizensCount(int BranchId)
         {
-            return _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.CustomerTypeId == 1 && s.BranchId == BranchId).Count();
+            return _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.CustomerTypeId == 1 && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId))).Count();
         }
         public async Task<int> GetInvestorCompanyCount(int BranchId)
         {
-            return _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.CustomerTypeId == 2 && s.BranchId == BranchId).Count();
+            return _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.CustomerTypeId == 2 && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId))).Count();
         }
         public async Task<int> GetCustomerByEmail(string CustomerSearchEmail, int BranchId)
         {
-            var CustomerSearch = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId == BranchId && s.CustomerEmail == CustomerSearchEmail).Count();
+            var CustomerSearch = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId)) && s.CustomerEmail == CustomerSearchEmail).Count();
             return CustomerSearch;
         }
         public async Task<int> GetGovernmentSideCount(int BranchId)
         {
-            return _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.CustomerTypeId == 3 && s.BranchId == BranchId).Count();
+            return _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.CustomerTypeId == 3 && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId))).Count();
         }
         public async Task<int> GetCustomersCount(int BranchId)
         {
-            return _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId == BranchId).Count();
+            return _TaamerProContext.Customer.Where(s => s.IsDeleted == false && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId))).Count();
 
         }
 
         public async Task<IEnumerable<CustomerVM>> GetAllCustomersProj(string lang, int BranchId)
         {
-            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId == BranchId).Select(x => new CustomerVM
+            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId))).Select(x => new CustomerVM
             {
                 CustomerId = x.CustomerId,
                 CustomerCode = x.CustomerCode,
@@ -1081,7 +1102,8 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
         {
             try
             {
-                var Customer = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId == BranchId && s.Accounts!.Transactions.Where(t => t.IsDeleted == false).Sum(t => t.Credit) > 0).Select(x => new CustomerVM
+                var Customer = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId)) && s.Accounts!.Transactions.Where(t => t.IsDeleted == false).Sum(t => t.Credit) > 0).Select(x => new CustomerVM
                 {
                     CustomerId = x.CustomerId,
                     CustomerCode = x.CustomerCode,
@@ -1145,7 +1167,8 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
             }
             catch 
             {
-                var Customer = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId == BranchId && s.Accounts!.Transactions.Where(t => t.IsDeleted == false).Sum(t => t.Credit) > 0).Select(x => new CustomerVM
+                var Customer = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId)) && s.Accounts!.Transactions.Where(t => t.IsDeleted == false).Sum(t => t.Credit) > 0).Select(x => new CustomerVM
                 {
                     CustomerId = x.CustomerId,
                     CustomerCode = x.CustomerCode,
@@ -1577,7 +1600,8 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
         {
             if (SearchText == "")
             {
-                var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId== BranchId).Select(x => new CustomerVM
+                var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId))).Select(x => new CustomerVM
                 {
                     CustomerId = x.CustomerId,
                     CustomerCode = x.CustomerCode,
@@ -1589,7 +1613,8 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
             }
             else
             {
-                var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId == BranchId && (s.CustomerNameAr.Contains(SearchText) || s.CustomerNameEn.Contains(SearchText))).Select(x => new CustomerVM
+                var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId)) && (s.CustomerNameAr.Contains(SearchText) || s.CustomerNameEn.Contains(SearchText))).Select(x => new CustomerVM
                 {
                     CustomerId = x.CustomerId,
                     CustomerCode = x.CustomerCode,
@@ -1615,12 +1640,16 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
         }
         public async Task<IEnumerable<CustomerVM>> FillAllCustomerSelectNotHaveProjWithBranch(string lang, int BranchId)
         {
-            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId== BranchId &&
+            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId)) &&
             s.Projects!.Where(x => x.IsDeleted == false && x.Status == 0
              ).Count() == 0).Select(x => new CustomerVM
              {
                  CustomerId = x.CustomerId,
-                 CustomerNameAr = x.CustomerNameAr,
+                 CustomerNameAr =
+                (x.BranchId != BranchId &&
+                 x.Customer_Branches.Any(cb => cb.BranchId == BranchId)
+                ? "→ " : "") + x.CustomerNameAr,
              });
             return customers;
         }
@@ -1655,7 +1684,9 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
         }
         public async Task<IEnumerable<CustomerVM>> GetAllCustomerForDropWithBranch(string lang,int BranchId)
         {
-            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false && s.BranchId == BranchId).Select(x => new CustomerVM
+            var customers = _TaamerProContext.Customer.Where(s => s.IsDeleted == false &&
+                    (s.BranchId == BranchId ||
+                     s.Customer_Branches.Any(cb => cb.BranchId == BranchId))).Select(x => new CustomerVM
             {
                 Id = x.CustomerId,
                 Name = lang == "ltr" ? x.Projects!.Where(p => p.IsDeleted == false).Count() == 0 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 1 ? x.CustomerNameEn : x.Projects!.Where(p => p.IsDeleted == false).Count() == 2 ? x.CustomerNameEn + "(*)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 3 ? x.CustomerNameEn + "(**)" : x.Projects!.Where(p => p.IsDeleted == false).Count() == 4 ? x.CustomerNameEn + "(***)" : x.Projects!.Where(p => p.IsDeleted == false).Count() >= 5 ? x.CustomerNameEn + "(VIP)" : x.CustomerNameAr
