@@ -453,7 +453,7 @@ namespace TaamerProject.API.Controllers
 
         public IActionResult SaveProjectRequirement4([FromForm] List<IFormFile>? uploadesgiles,[FromForm] int? RequirementId
             , [FromForm] int? ProjectTypeId, [FromForm] int? ProjectSubTypeId, [FromForm] string? NameAr
-            , [FromForm] string? NameEn, [FromForm] decimal? Cost, [FromForm] int? OrderId, [FromForm] int? PhasesTaskID, [FromForm] string? PageInsert)
+            , [FromForm] string? NameEn, [FromForm] decimal? Cost, [FromForm] int? OrderId, [FromForm] int? PhasesTaskID, [FromForm] string? PageInsert, [FromForm] string? FileName=null, [FromForm] string? TypeId=null, [FromForm] bool? IsCertified=null)
         {
             ProjectRequirements projectRequirements = new ProjectRequirements();
             projectRequirements.RequirementId = RequirementId??0;
@@ -586,11 +586,11 @@ namespace TaamerProject.API.Controllers
 
                     string filename = uploadesgiles[i].FileName;
                     file.ProjectId = ProID;
-                    file.FileName = file.FileName ?? uploadesgiles[i].FileName;
-                    file.IsCertified = file.IsCertified;
+                    file.FileName = FileName ?? uploadesgiles[i].FileName;
+                    file.IsCertified = IsCertified ?? file.IsCertified;
                     file.Notes = file.Notes;
                     file.FileSize = uploadesgiles[i].Length;
-                    file.TypeId = 1;
+                    file.TypeId = TypeId ==null || TypeId=="" ? 1 : Convert.ToInt32(TypeId);
 
 
                     if (Extension == "application/pdf" || Extension == ".pdf")
