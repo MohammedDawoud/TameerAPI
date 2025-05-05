@@ -316,7 +316,8 @@ namespace TaamerProject.Models
         public bool? NewSetting { get; set; }
         public string? lastEditUser { get; set; }
         public DateTime? lastEditUserTime { get; set; }
-
+        public string? ProjectDateF { get; set; }
+        public string? ProjectExpireDateF { get; set; }
         public List<ProjectWorkersVM>? ProjectWorkers { get; set; }
         public List<ProjectPhasesTasksVM>? ProjectPhasesTasks { get; set; }
     }

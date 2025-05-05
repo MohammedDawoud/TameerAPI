@@ -1594,6 +1594,7 @@ namespace TaamerProject.Repository.Repositories
                         {
                             lmd.Add(new RptAllEmpPerformance
                             {
+                                UserId =Convert.ToInt32((dr["UserId"]).ToString()),
                                 UserName = (dr["UserName"]).ToString(),
                                 Notstarted = (dr["Notstarted"]).ToString(),
                                 Inprogress = (dr["Inprogress"]).ToString(),
