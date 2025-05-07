@@ -225,7 +225,7 @@ namespace TaamerProject.API.Helper
              ///////////////////////////// projects /////////////////////////////////////////////////////
             new Privilege { Id = 11 , ParentId = null , Name =  Resources.Pro_Projectmanagement, Description = Resources.Pro_Projectmanagement },
                     new Privilege { Id = 1110 , ParentId = 11 , Name =  Resources.Pro_MainScreen , Description = Resources.Pro_MainScreen},
-                           //new Privilege { Id = 111010 , ParentId = 1110 , Name = Resources.Pro_AddProjectWithoutWizared , Description = Resources.Pro_AddProjectWithoutWizared},
+                           new Privilege { Id = 111010 , ParentId = 1110 , Name = "إضافة مشروع جديد" , Description = "إضافة مشروع جديد"},
                            //new Privilege { Id = 111011 , ParentId = 1110 , Name = @Resources.General_Addagovernmentproject , Description = Resources.General_Addagovernmentproject},
                            //new Privilege { Id = 111012 , ParentId = 1110 , Name =  Resources.Pro_WorkOrderProject , Description = Resources.Pro_WorkOrderProject},
                            //new Privilege { Id = 111013 , ParentId = 1110 , Name =  Resources.Pro_Addrandomproject, Description = Resources.Pro_Addrandomproject },

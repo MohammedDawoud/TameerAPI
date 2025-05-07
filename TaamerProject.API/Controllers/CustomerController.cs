@@ -133,7 +133,7 @@ namespace TaamerProject.API.Controllers
                     someCustomer = Customers.ToList();
                 }
 
-                return someCustomer;
+                return someCustomer.DistinctBy(x=>x.CustomerId).ToList();
             }
         [HttpGet("GetAllCustomersCount")]
 
