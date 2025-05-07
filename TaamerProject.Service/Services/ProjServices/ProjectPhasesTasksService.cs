@@ -4127,7 +4127,7 @@ namespace TaamerProject.Service.Services
                     }
                     else
                     {
-                        if (projectUpdated.NewSetting != Project.NewSetting)
+                        if ((projectUpdated.NewSetting??false) != Project.NewSetting)
                         {
                             return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكنك تعديل مشروع عليه سير بسير جديد" };
                         }
@@ -4544,7 +4544,7 @@ namespace TaamerProject.Service.Services
                     }
                     else
                     {
-                        if (projectUpdated.NewSetting != Project.NewSetting)
+                        if ((projectUpdated.NewSetting??false) != Project.NewSetting)
                         {
                             return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكنك تعديل مشروع عليه سير بسير جديد" };
                         }
