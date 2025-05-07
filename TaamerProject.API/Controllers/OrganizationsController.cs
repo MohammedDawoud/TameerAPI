@@ -379,7 +379,7 @@ namespace TaamerProject.API.Controllers
 
             CertificateRequest certrequest = new CertificateRequest();
             certrequest.OTP = otp;
-            certrequest.CommonName = branch.NameEn!.Trim() + System.Guid.NewGuid();
+            certrequest.CommonName = branch.NameEn!.Trim() + GenerateRandomNo();//System.Guid.NewGuid();
             certrequest.OrganizationName = ORG.NameAr!.Trim();
             certrequest.OrganizationUnitName = branch.NameEn!.Trim(); //branch name
             certrequest.CountryName = "SA";

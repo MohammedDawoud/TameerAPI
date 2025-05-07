@@ -284,7 +284,12 @@ namespace ZatcaIntegrationSDK.BLL
                         try
                         {
                             error = JsonConvert.DeserializeObject<ErrorModel>(reponsestr);
-                            response.ErrorMessage += error.Code + " : " + error.Message;
+                            if (string.IsNullOrEmpty(error.Code) || string.IsNullOrEmpty(error.Message))
+                            {
+                                response.ErrorMessage += reponsestr;
+                            }
+                            else
+                                response.ErrorMessage += error.Code + " : " + error.Message;
                         }
                         catch
                         {
