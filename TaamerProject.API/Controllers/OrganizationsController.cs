@@ -235,7 +235,7 @@ namespace TaamerProject.API.Controllers
             return Ok(result);
         }
         [HttpPost("GenerateCSID")]
-        public IActionResult GenerateCSID(int OrganizationId, string OTP)
+        public IActionResult GenerateCSID(int OrganizationId, string OTP) 
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var objBranch = _BranchesService.GetBranchByBranchId("rtl", _globalshared.BranchId_G).Result.FirstOrDefault();
@@ -386,7 +386,7 @@ namespace TaamerProject.API.Controllers
             certrequest.SerialNumber = Serial!.Trim();
             certrequest.OrganizationIdentifier = ORG.TaxCode!.Trim();
             certrequest.Location = ORG.Address!.Trim();
-            certrequest.BusinessCategory = "Engineering consultant";
+            certrequest.BusinessCategory = "Engineering consultant"; 
             certrequest.InvoiceType = "1100";
             return certrequest;
         }
