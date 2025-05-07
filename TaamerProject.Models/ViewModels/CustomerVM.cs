@@ -66,7 +66,7 @@ namespace TaamerProject.Models
         public decimal? TotalExpenses { get; set; }
         public List<InvoicesVM> Invoices { get; set; }
         public List<TransactionsVM> Transactions { get; set; }
-        public List<Customer_Branches> Customer_Branches { get; set; }
+        public List<Customer_Branches>? Customer_Branches { get; set; }
         public List<int>? OtherBranches { get; set; }
 
     }
