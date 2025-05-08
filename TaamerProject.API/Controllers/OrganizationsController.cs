@@ -412,24 +412,49 @@ namespace TaamerProject.API.Controllers
 
             if (objBranch.Address == null || objBranch.Address == "")
                 Address1 = objOrganization.Address!.Trim();
+            else
+            Address1 = objBranch.Address!.Trim();
             if (objBranch.BuildingNumber == null || objBranch.BuildingNumber == "")
                 BuildingNumber1 = objOrganization.BuildingNumber!.Trim();
+            else
+                BuildingNumber1 = objBranch.BuildingNumber!.Trim();
             if (objBranch.StreetName == null || objBranch.StreetName == "")
                 StreetName1 = objOrganization.StreetName!.Trim();
+            else
+                StreetName1 = objBranch.StreetName!.Trim();
             if (objBranch.Neighborhood == null || objBranch.Neighborhood == "")
                 Neighborhood1 = objOrganization.Neighborhood!.Trim();
+            else
+                Neighborhood1 = objBranch.Neighborhood!.Trim();
             if (objBranch.CityName == null || objBranch.CityName == "")
                 CityName1 = objOrganization.CityName!.Trim();
+            else
+                CityName1 = objBranch.CityName!.Trim();
             if (objBranch.Country == null || objBranch.Country == "")
                 Country1 = objOrganization.Country!.Trim();
+            else
+                Country1 = objBranch.Country!.Trim();
             if (objBranch.PostalCode == null || objBranch.PostalCode == "")
                 PostalCode1 = objOrganization.PostalCode!.Trim();
+            else
+                PostalCode1 = objBranch.PostalCode.Trim();
             if (objBranch.PostalCodeFinal == null || objBranch.PostalCodeFinal == "")
                 PostalCodeFinal1 = objOrganization.PostalCodeFinal!.Trim();
+            else
+                PostalCodeFinal1 = objBranch.PostalCodeFinal!.Trim();
             if (objBranch.ExternalPhone == null || objBranch.ExternalPhone == "")
                 ExternalPhone1 = objOrganization.ExternalPhone!.Trim();
+            else
+                ExternalPhone1 = objOrganization.ExternalPhone!.Trim();
             if (objBranch.TaxCode == null || objBranch.TaxCode == "")
+            {
                 TaxCode1 = objOrganization.TaxCode!.Trim();
+            }
+            else
+                TaxCode1 = objBranch.TaxCode.Trim();
+
+
+
 
 
 
@@ -549,7 +574,7 @@ namespace TaamerProject.API.Controllers
 
             CertificateRequest certrequest = new CertificateRequest();
             certrequest.OTP = otp;
-            certrequest.CommonName = branch.NameEn!.Trim() + System.Guid.NewGuid();
+            certrequest.CommonName = branch.NameEn!.Trim() + GenerateRandomNo(); //+ System.Guid.NewGuid();
             certrequest.OrganizationName = ORG.NameAr!.Trim();
             certrequest.OrganizationUnitName = branch.NameEn!.Trim(); //branch name
             certrequest.CountryName = "SA";
