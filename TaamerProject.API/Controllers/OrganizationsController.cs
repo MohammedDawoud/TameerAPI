@@ -239,7 +239,7 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var objBranch = _BranchesService.GetBranchByBranchId("rtl", _globalshared.BranchId_G).Result.FirstOrDefault();
-            var objOrganization = _organizationsservice.GetBranchOrganizationData(objBranch.OrganizationId ?? 1).Result;
+            var objOrganization = _organizationsservice.GetBranchOrganization().Result;
 
             //string Address1 = "";
             //string BuildingNumber1 = "";
@@ -395,8 +395,8 @@ namespace TaamerProject.API.Controllers
         public IActionResult GenerateCSID_Branch(int BranchId, string OTP)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            var objBranch = _BranchesService.GetBranchByBranchId("rtl", _globalshared.BranchId_G).Result.FirstOrDefault();
-            var objOrganization = _organizationsservice.GetBranchOrganizationData(objBranch.OrganizationId ?? 1).Result;
+            var objBranch = _BranchesService.GetBranchByBranchId("rtl", BranchId).Result.FirstOrDefault();
+            var objOrganization = _organizationsservice.GetBranchOrganization().Result;
 
             string Address1 = "";
             string BuildingNumber1 = "";
@@ -834,8 +834,7 @@ namespace TaamerProject.API.Controllers
         [HttpGet("GetOrganizationData")]
         public IActionResult GetOrganizationData()
         {            
-            int orgId = _BranchesService.GetOrganizationId(_globalshared.BranchId_G).Result;
-            var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId).Result;
+            var objOrganization = _organizationsservice.GetBranchOrganization().Result;
             return Ok(objOrganization);
 
         }
