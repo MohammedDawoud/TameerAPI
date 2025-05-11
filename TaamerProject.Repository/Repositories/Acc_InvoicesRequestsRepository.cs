@@ -38,12 +38,16 @@ namespace TaamerProject.Repository.Repositories
                     errormessage = x.errormessage,
                     InvoiceHash = x.InvoiceHash,
                     SingedXML = x.SingedXML,
-                    EncodedInvoice = x.EncodedInvoice,
+                    //EncodedInvoice = x.EncodedInvoice,
                     ZatcaUUID = x.ZatcaUUID,
                     QRCode = x.QRCode,
                     PIH = x.PIH,
                     SingedXMLFileName = x.SingedXMLFileName,
                     BranchId = x.BranchId,
+                    InvoiceNo = x.Invoice != null ? x.Invoice.InvoiceNumber ?? null : null,
+                    TotalValue = x.Invoice != null ? x.Invoice.TotalValue ?? null : null,
+                    Date = x.Invoice != null ? x.Invoice.Date ?? null : null,
+                    CustomerName = x.Invoice != null ? x.Invoice.Customer != null ? x.Invoice.Customer.CustomerNameAr ?? null : null : null,
 
                 }).FirstOrDefault();
                 return InvRequest;
@@ -54,5 +58,83 @@ namespace TaamerProject.Repository.Repositories
 
             }
         }
+        public async Task<IEnumerable<Acc_InvoicesRequestsVM>> GetAllInvoiceRequests(int BranchId)
+        {
+
+            try
+            {
+                var InvRequest = _TaamerProContext.Acc_InvoicesRequests.Where(s => s.BranchId == BranchId).Select(x => new Acc_InvoicesRequestsVM
+                {
+                    InvoiceReqId = x.InvoiceReqId,
+                    InvoiceId = x.InvoiceId,
+                    InvoiceNoRequest = x.InvoiceNoRequest,
+                    IsSent = x.IsSent,
+                    StatusCode = x.StatusCode,
+                    SendingStatus = x.SendingStatus,
+                    warningmessage = x.warningmessage,
+                    ClearedInvoice = x.ClearedInvoice,
+                    errormessage = x.errormessage,
+                    InvoiceHash = x.InvoiceHash,
+                    SingedXML = x.SingedXML,
+                    //EncodedInvoice = x.EncodedInvoice,
+                    ZatcaUUID = x.ZatcaUUID,
+                    QRCode = x.QRCode,
+                    PIH = x.PIH,
+                    SingedXMLFileName = x.SingedXMLFileName,
+                    BranchId = x.BranchId,
+                    InvoiceNo = x.Invoice != null ? x.Invoice.InvoiceNumber ?? null : null,
+                    TotalValue = x.Invoice != null ? x.Invoice.TotalValue ?? null : null,
+                    Date = x.Invoice != null ? x.Invoice.Date ?? null : null,
+                    CustomerName = x.Invoice != null ? x.Invoice.Customer != null ? x.Invoice.Customer.CustomerNameAr ?? null : null:null,
+                }).ToList();
+                return InvRequest;
+            }
+            catch (Exception ex)
+            {
+                List<Acc_InvoicesRequestsVM> req = new List<Acc_InvoicesRequestsVM>();
+                return req;
+
+            }
+        }
+        public async Task<IEnumerable<Acc_InvoicesRequestsVM>> GetAllInvoiceRequests(int InvoiceId, int BranchId)
+        {
+
+            try
+            {
+                var InvRequest = _TaamerProContext.Acc_InvoicesRequests.Where(s => s.InvoiceId == InvoiceId && s.BranchId == BranchId).Select(x => new Acc_InvoicesRequestsVM
+                {
+                    InvoiceReqId = x.InvoiceReqId,
+                    InvoiceId = x.InvoiceId,
+                    InvoiceNoRequest = x.InvoiceNoRequest,
+                    IsSent = x.IsSent,
+                    StatusCode = x.StatusCode,
+                    SendingStatus = x.SendingStatus,
+                    warningmessage = x.warningmessage,
+                    ClearedInvoice = x.ClearedInvoice,
+                    errormessage = x.errormessage,
+                    InvoiceHash = x.InvoiceHash,
+                    SingedXML = x.SingedXML,
+                    //EncodedInvoice = x.EncodedInvoice,
+                    ZatcaUUID = x.ZatcaUUID,
+                    QRCode = x.QRCode,
+                    PIH = x.PIH,
+                    SingedXMLFileName = x.SingedXMLFileName,
+                    BranchId = x.BranchId,
+                    InvoiceNo = x.Invoice != null ? x.Invoice.InvoiceNumber ?? null : null,
+                    TotalValue = x.Invoice != null ? x.Invoice.TotalValue ?? null : null,
+                    Date = x.Invoice != null ? x.Invoice.Date ?? null : null,
+                    CustomerName = x.Invoice != null ? x.Invoice.Customer != null ? x.Invoice.Customer.CustomerNameAr ?? null : null : null,
+
+                }).ToList();
+                return InvRequest;
+            }
+            catch (Exception ex)
+            {
+                List<Acc_InvoicesRequestsVM> req = new List<Acc_InvoicesRequestsVM>();
+                return req;
+
+            }
+        }
+
     }
 }

@@ -351,20 +351,12 @@ namespace TaamerProject.API.Controllers
             {
 
                 var result = _organizationsservice.SaveCSIDOrganizations(OrganizationId, response.CSR, response.PrivateKey, response.CSID, response.SecretKey, _globalshared.UserId_G, _globalshared.BranchId_G);
-                if (_globalshared.Lang_G == "ltr" && result.StatusCode == HttpStatusCode.OK)
-                {
-                    result.ReasonPhrase = "Deleted Successfully";
-                }
-                else if (_globalshared.Lang_G == "ltr" && result.StatusCode == HttpStatusCode.BadRequest)
-                {
-                    result.ReasonPhrase = "Deleted Falied";
-                }
                 return Ok(result);
             }
             else
             {
                 var result = _organizationsservice.SaveErrorMessageCSIDOrganizations(OrganizationId, response.ErrorMessage, _globalshared.UserId_G, _globalshared.BranchId_G);
-                return Ok(response.ErrorMessage);
+                return Ok(new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = response.ErrorMessage });
             }
         }
         [HttpGet("GetCSRRequest")]
@@ -546,20 +538,11 @@ namespace TaamerProject.API.Controllers
 
                 //var result = _organizationsservice.SaveCSIDOrganizations(OrganizationId, response.CSR, response.PrivateKey, response.CSID, response.SecretKey, _globalshared.UserId_G, _globalshared.BranchId_G);
                 var result = _BranchesService.SaveCSIDBranch(BranchId, response.CSR, response.PrivateKey, response.CSID, response.SecretKey, _globalshared.UserId_G, _globalshared.BranchId_G);
-
-                if (_globalshared.Lang_G == "ltr" && result.StatusCode == HttpStatusCode.OK)
-                {
-                    result.ReasonPhrase = "Deleted Successfully";
-                }
-                else if (_globalshared.Lang_G == "ltr" && result.StatusCode == HttpStatusCode.BadRequest)
-                {
-                    result.ReasonPhrase = "Deleted Falied";
-                }
                 return Ok(result);
             }
             else
             {
-                return Ok(response.ErrorMessage);
+                return Ok(new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = response.ErrorMessage });
             }
         }
         [HttpGet("GetCSRRequest_Branch")]

@@ -25,7 +25,10 @@ namespace TaamerProject.Models
         public string? PIH { get; set; }
         public string? SingedXMLFileName { get; set; }
         public int? BranchId { get; set; }
-
+        public string? InvoiceNo { get; set; }
+        public string? CustomerName { get; set; }
+        public string? Date { get; set; }
+        public decimal? TotalValue { get; set; }
 
 
     }

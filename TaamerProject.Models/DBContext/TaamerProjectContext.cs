@@ -2106,7 +2106,7 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 entity.Property(t => t.QRCode).HasColumnName("QRCode");
                 entity.Property(t => t.PIH).HasColumnName("PIH");
                 entity.Property(t => t.SingedXMLFileName).HasColumnName("SingedXMLFileName");
-                
+                modelBuilder.Entity<Acc_InvoicesRequests>().HasOne(s => s.Invoice).WithMany().HasForeignKey(e => e.InvoiceId);
             });
 
             //--------------------------------END--------------------------------------------------
