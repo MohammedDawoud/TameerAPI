@@ -230,6 +230,8 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
         public virtual DbSet<ContactList> ContactLists { get; set; }
         public virtual DbSet<AttendenceLocationSettings> AttendenceLocations { get; set; }
         public virtual DbSet<Exceptions> Exceptions { get; set; }
+        public virtual DbSet<Permissions> Permissions { get; set; }
+        public virtual DbSet<PermissionType> PermissionTypes { get; set; }
 
         public string GetDatabaseName()
         {
@@ -4446,6 +4448,28 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
             {
                 entity.HasKey(e => e.ExceptionId);
                 entity.ToTable("App_Exceptions");
+            });
+
+            //--------------------------------END--------------------------------------------------
+            modelBuilder.Entity<Permissions>(entity =>
+            {
+                entity.HasKey(e => e.PermissionId);
+                entity.ToTable("Emp_Permissions");
+                modelBuilder.Entity<Permissions>().HasOne(s => s.PermissionType).WithMany().HasForeignKey(e => e.TypeId);
+                modelBuilder.Entity<Permissions>().HasOne(s => s.Employee).WithMany(s => s.Permissions).HasForeignKey(e => e.EmpId);
+                modelBuilder.Entity<Permissions>().HasOne(s => s.UserAcccept).WithMany().HasForeignKey(e => e.AcceptedUser);
+
+            });
+
+            //--------------------------------END--------------------------------------------------
+            modelBuilder.Entity<PermissionType>(entity =>
+            {
+                entity.HasKey(e => e.TypeId);
+                entity.ToTable("Emp_PermissionType");
+                entity.Property(t => t.Code).HasColumnName("Code");
+                entity.Property(t => t.NameAr).HasColumnName("NameAr");
+                entity.Property(t => t.NameEn).HasColumnName("NameEn");
+                entity.Property(t => t.Notes).HasColumnName("Notes");
             });
 
             //--------------------------------END--------------------------------------------------

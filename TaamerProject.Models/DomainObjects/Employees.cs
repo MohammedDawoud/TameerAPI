@@ -166,6 +166,7 @@ namespace TaamerProject.Models
         public virtual List<DiscountReward>? DiscountRewards { get; set; }
         public virtual List<AttAbsentDay>? AttAbsentDays { get; set; }
         public virtual List<Vacation>? Vacations { get; set; }
+        public virtual List<Permissions>? Permissions { get; set; }
         public virtual List<ExpensesGovernment>? ExpensesGovernment { get; set; }
 
         public virtual List<PayrollMarches>? PayrollMarches { get; set; }
