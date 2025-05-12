@@ -3188,6 +3188,22 @@ namespace TaamerProject.API.Controllers
             }
         }
 
+
+        [HttpGet("GetAllInvoiceRequests")]
+        public IActionResult GetAllInvoiceRequests()
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var InvoiceRequest = _invoicesRequestsService.GetAllInvoiceRequests(_globalshared.BranchId_G).Result.ToList();
+            return Ok(InvoiceRequest);
+        }
+        [HttpGet("GetAllInvoiceRequestsByInvoiceId")]
+        public IActionResult GetAllInvoiceRequestsByInvoiceId(int InvoiceId)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var InvoiceRequest = _invoicesRequestsService.GetAllInvoiceRequests(InvoiceId, _globalshared.BranchId_G).Result.ToList();
+            return Ok(InvoiceRequest);
+        }
+
         [HttpPost("ZatcaInvoiceIntegrationFunc")]
         public IActionResult ZatcaInvoiceIntegrationFunc(InvoiceObjDet voucherDetObj)
         {

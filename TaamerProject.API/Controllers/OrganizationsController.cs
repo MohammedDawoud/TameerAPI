@@ -235,11 +235,11 @@ namespace TaamerProject.API.Controllers
             return Ok(result);
         }
         [HttpPost("GenerateCSID")]
-        public IActionResult GenerateCSID(int OrganizationId, string OTP)
+        public IActionResult GenerateCSID(int OrganizationId, string OTP) 
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var objBranch = _BranchesService.GetBranchByBranchId("rtl", _globalshared.BranchId_G).Result.FirstOrDefault();
-            var objOrganization = _organizationsservice.GetBranchOrganizationData(objBranch.OrganizationId ?? 1).Result;
+            var objOrganization = _organizationsservice.GetBranchOrganization().Result;
 
             //string Address1 = "";
             //string BuildingNumber1 = "";
@@ -351,20 +351,12 @@ namespace TaamerProject.API.Controllers
             {
 
                 var result = _organizationsservice.SaveCSIDOrganizations(OrganizationId, response.CSR, response.PrivateKey, response.CSID, response.SecretKey, _globalshared.UserId_G, _globalshared.BranchId_G);
-                if (_globalshared.Lang_G == "ltr" && result.StatusCode == HttpStatusCode.OK)
-                {
-                    result.ReasonPhrase = "Deleted Successfully";
-                }
-                else if (_globalshared.Lang_G == "ltr" && result.StatusCode == HttpStatusCode.BadRequest)
-                {
-                    result.ReasonPhrase = "Deleted Falied";
-                }
                 return Ok(result);
             }
             else
             {
                 var result = _organizationsservice.SaveErrorMessageCSIDOrganizations(OrganizationId, response.ErrorMessage, _globalshared.UserId_G, _globalshared.BranchId_G);
-                return Ok(response.ErrorMessage);
+                return Ok(new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = response.ErrorMessage });
             }
         }
         [HttpGet("GetCSRRequest")]
@@ -386,7 +378,7 @@ namespace TaamerProject.API.Controllers
             certrequest.SerialNumber = Serial!.Trim();
             certrequest.OrganizationIdentifier = ORG.TaxCode!.Trim();
             certrequest.Location = ORG.Address!.Trim();
-            certrequest.BusinessCategory = "Engineering consultant";
+            certrequest.BusinessCategory = "Engineering consultant"; 
             certrequest.InvoiceType = "1100";
             return certrequest;
         }
@@ -395,8 +387,8 @@ namespace TaamerProject.API.Controllers
         public IActionResult GenerateCSID_Branch(int BranchId, string OTP)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            var objBranch = _BranchesService.GetBranchByBranchId("rtl", _globalshared.BranchId_G).Result.FirstOrDefault();
-            var objOrganization = _organizationsservice.GetBranchOrganizationData(objBranch.OrganizationId ?? 1).Result;
+            var objBranch = _BranchesService.GetBranchByBranchId("rtl", BranchId).Result.FirstOrDefault();
+            var objOrganization = _organizationsservice.GetBranchOrganization().Result;
 
             string Address1 = "";
             string BuildingNumber1 = "";
@@ -412,24 +404,49 @@ namespace TaamerProject.API.Controllers
 
             if (objBranch.Address == null || objBranch.Address == "")
                 Address1 = objOrganization.Address!.Trim();
+            else
+            Address1 = objBranch.Address!.Trim();
             if (objBranch.BuildingNumber == null || objBranch.BuildingNumber == "")
                 BuildingNumber1 = objOrganization.BuildingNumber!.Trim();
+            else
+                BuildingNumber1 = objBranch.BuildingNumber!.Trim();
             if (objBranch.StreetName == null || objBranch.StreetName == "")
                 StreetName1 = objOrganization.StreetName!.Trim();
+            else
+                StreetName1 = objBranch.StreetName!.Trim();
             if (objBranch.Neighborhood == null || objBranch.Neighborhood == "")
                 Neighborhood1 = objOrganization.Neighborhood!.Trim();
+            else
+                Neighborhood1 = objBranch.Neighborhood!.Trim();
             if (objBranch.CityName == null || objBranch.CityName == "")
                 CityName1 = objOrganization.CityName!.Trim();
+            else
+                CityName1 = objBranch.CityName!.Trim();
             if (objBranch.Country == null || objBranch.Country == "")
                 Country1 = objOrganization.Country!.Trim();
+            else
+                Country1 = objBranch.Country!.Trim();
             if (objBranch.PostalCode == null || objBranch.PostalCode == "")
                 PostalCode1 = objOrganization.PostalCode!.Trim();
+            else
+                PostalCode1 = objBranch.PostalCode.Trim();
             if (objBranch.PostalCodeFinal == null || objBranch.PostalCodeFinal == "")
                 PostalCodeFinal1 = objOrganization.PostalCodeFinal!.Trim();
+            else
+                PostalCodeFinal1 = objBranch.PostalCodeFinal!.Trim();
             if (objBranch.ExternalPhone == null || objBranch.ExternalPhone == "")
                 ExternalPhone1 = objOrganization.ExternalPhone!.Trim();
+            else
+                ExternalPhone1 = objOrganization.ExternalPhone!.Trim();
             if (objBranch.TaxCode == null || objBranch.TaxCode == "")
+            {
                 TaxCode1 = objOrganization.TaxCode!.Trim();
+            }
+            else
+                TaxCode1 = objBranch.TaxCode.Trim();
+
+
+
 
 
 
@@ -521,20 +538,11 @@ namespace TaamerProject.API.Controllers
 
                 //var result = _organizationsservice.SaveCSIDOrganizations(OrganizationId, response.CSR, response.PrivateKey, response.CSID, response.SecretKey, _globalshared.UserId_G, _globalshared.BranchId_G);
                 var result = _BranchesService.SaveCSIDBranch(BranchId, response.CSR, response.PrivateKey, response.CSID, response.SecretKey, _globalshared.UserId_G, _globalshared.BranchId_G);
-
-                if (_globalshared.Lang_G == "ltr" && result.StatusCode == HttpStatusCode.OK)
-                {
-                    result.ReasonPhrase = "Deleted Successfully";
-                }
-                else if (_globalshared.Lang_G == "ltr" && result.StatusCode == HttpStatusCode.BadRequest)
-                {
-                    result.ReasonPhrase = "Deleted Falied";
-                }
                 return Ok(result);
             }
             else
             {
-                return Ok(response.ErrorMessage);
+                return Ok(new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = response.ErrorMessage });
             }
         }
         [HttpGet("GetCSRRequest_Branch")]
@@ -549,7 +557,7 @@ namespace TaamerProject.API.Controllers
 
             CertificateRequest certrequest = new CertificateRequest();
             certrequest.OTP = otp;
-            certrequest.CommonName = branch.NameEn!.Trim() + System.Guid.NewGuid();
+            certrequest.CommonName = branch.NameEn!.Trim() + GenerateRandomNo(); //+ System.Guid.NewGuid();
             certrequest.OrganizationName = ORG.NameAr!.Trim();
             certrequest.OrganizationUnitName = branch.NameEn!.Trim(); //branch name
             certrequest.CountryName = "SA";
@@ -809,8 +817,7 @@ namespace TaamerProject.API.Controllers
         [HttpGet("GetOrganizationData")]
         public IActionResult GetOrganizationData()
         {            
-            int orgId = _BranchesService.GetOrganizationId(_globalshared.BranchId_G).Result;
-            var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId).Result;
+            var objOrganization = _organizationsservice.GetBranchOrganization().Result;
             return Ok(objOrganization);
 
         }

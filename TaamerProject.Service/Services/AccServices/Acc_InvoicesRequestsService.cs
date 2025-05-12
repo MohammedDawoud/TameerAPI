@@ -38,7 +38,16 @@ namespace TaamerProject.Service.Services
             var Request = _Acc_InvoicesRequestsRepository.GetInvoiceReq(InvoiceId);
             return Request;
         }
-
+        public Task<IEnumerable<Acc_InvoicesRequestsVM>> GetAllInvoiceRequests(int BranchId)
+        {
+            var Requests = _Acc_InvoicesRequestsRepository.GetAllInvoiceRequests(BranchId);
+            return Requests;
+        }
+        public Task<IEnumerable<Acc_InvoicesRequestsVM>> GetAllInvoiceRequests(int InvoiceId, int BranchId)
+        {
+            var Requests = _Acc_InvoicesRequestsRepository.GetAllInvoiceRequests(InvoiceId, BranchId);
+            return Requests;
+        }
 
         public GeneralMessage SaveInvoicesRequest(int InvoiceReqId, int InvoiceId, string InvoiceHash, string SingedXML, string EncodedInvoice
             , string ZatcaUUID, string QRCode, string PIH, string SingedXMLFileName, int InvoiceNoRequest
