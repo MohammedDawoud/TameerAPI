@@ -135,6 +135,9 @@ namespace TaamerProject.Models
 
         public List<VoucherDetailsVM> VoucherDetails { get; set; }
         public List<TransactionsVM> Transactions { get; set; }
+        public int? InvoicesRequestsCount { get; set; }
+        public List<Acc_InvoicesRequestsVM>? InvoicesRequests { get; set; }
+
 
     }
 }

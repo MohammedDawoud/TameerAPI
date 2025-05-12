@@ -720,17 +720,7 @@ namespace TaamerProject.API.Controllers
         public IActionResult GetAllVouchersfromcontractSearch(VoucherFilterVM voucherFilterVM)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-
             var someVoucher = _voucherService.GetAllVouchersfromcontractSearch(voucherFilterVM, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
-
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someVoucher),
-            //    ContentType = "application/json"
-            //};
-
             return Ok(someVoucher);
 
         }
@@ -3188,6 +3178,13 @@ namespace TaamerProject.API.Controllers
             }
         }
 
+        [HttpGet("GetInvoiceReq")]
+        public IActionResult GetInvoiceReq(int InvoiceId)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var InvoiceRequest = _invoicesRequestsService.GetInvoiceReq(InvoiceId).Result;
+            return Ok(InvoiceRequest);
+        }
 
         [HttpGet("GetAllInvoiceRequests")]
         public IActionResult GetAllInvoiceRequests()

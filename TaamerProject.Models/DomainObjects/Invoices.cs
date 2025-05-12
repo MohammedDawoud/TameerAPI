@@ -97,6 +97,8 @@ namespace TaamerProject.Models
         public virtual Employees? Delegate { get; set; }
 
         public virtual List<VoucherDetails>? VoucherDetails { get; set; }
+        public List<Acc_InvoicesRequests>? InvoicesRequests { get; set; }
+
         public virtual Invoices? Invoices_Credit { get; set; }
         public virtual Invoices? Invoices_Depit { get; set; }
         public virtual List<Transactions>? TransactionDetails { get; set; }

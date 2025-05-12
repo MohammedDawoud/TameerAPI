@@ -61,8 +61,23 @@ namespace TaamerProject.API.Controllers
         public ActionResult GetBranchOrganization()
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            int orgId = _BranchesService.GetOrganizationId(_globalshared.BranchId_G).Result;
-            return Ok(_organizationsservice.GetBranchOrganizationData(orgId));
+            return Ok(_organizationsservice.GetBranchOrganization());
+        }
+        [HttpGet("GetBranchOrganizationZatca")]
+        public ActionResult GetBranchOrganizationZatca()
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var OrgData = _organizationsservice.GetBranchOrganization().Result;
+            var branchData = _BranchesService.GetBranchByBranchId("rtl",_globalshared.BranchId_G).Result!.FirstOrDefault()??new BranchesVM();
+            if(branchData.PrivateKey == "" || branchData.PrivateKey==null)
+            {
+                return Ok(OrgData);
+            }
+            else
+            {
+                branchData.ModeType = OrgData.ModeType;
+                return Ok(branchData);
+            }
         }
         [HttpGet("GetComDomainLink_Org")]
         public ActionResult GetComDomainLink_Org()
@@ -82,9 +97,7 @@ namespace TaamerProject.API.Controllers
         public ActionResult GetEmailOrganization()
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            int orgId = _BranchesService.GetOrganizationId(_globalshared.BranchId_G).Result;
-            //var result = _EmailSettingservice.GetEmailSetting(orgId);
-            var result = _organizationsservice.GetBranchOrganizationData(orgId).Result;
+            var result = _organizationsservice.GetBranchOrganization().Result;
             return Ok(result);
         }
         [HttpPost("SavepartialOrganizations")]
