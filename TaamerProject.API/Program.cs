@@ -254,7 +254,9 @@ namespace TaamerProject.API
             builder.Services.AddTransient<ILaw_regulationsService, Law_regulationsService>();
             builder.Services.AddTransient<IContactListsService, ContactListsService>();
             builder.Services.AddTransient<IAttendenceLocationSettingsService, AttendenceLocationSettingsService>();
-
+            builder.Services.AddTransient<IPermissionService, PermissionService>();
+            builder.Services.AddTransient<IPermissionTypeService, PermissionTypeService>();
+            
 
             #endregion
             #region Repository
@@ -451,6 +453,8 @@ namespace TaamerProject.API
             builder.Services.AddTransient<ILaw_regulationsRepository, Law_regulationsRepository>();
             builder.Services.AddTransient<IContactListRepository, ContactListRepository>();
             builder.Services.AddTransient<IAttendenceLocationSettingsRepository, AttendenceLocationSettingsRepository>();
+            builder.Services.AddTransient<IPermissionsRepository, PermissionsRepository>();
+            builder.Services.AddTransient<IPermissionTypeRepository, PermissionTypeRepository>();
             #endregion
 
          builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

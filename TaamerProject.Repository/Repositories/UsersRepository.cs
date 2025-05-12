@@ -488,6 +488,7 @@ namespace TaamerProject.Repository.Repositories
         {
             if(UserId==1)
             {
+         
                 var user = _TaamerProContext.Users.Where(s => s.UserId == 1).Select(x => new
                 {
                     x.UserId,
@@ -498,7 +499,7 @@ namespace TaamerProject.Repository.Repositories
                     x.Mobile,
                     x.GroupId,
                     x.BranchId,
-                    x.EmpId,
+                     x.EmpId,
                     x.UserName,
                     x.Password,
                     x.Status,
@@ -543,7 +544,7 @@ namespace TaamerProject.Repository.Repositories
                     BranchId = s.BranchId,
                     ImgUrl = s.ImgUrl ?? "/distnew/images/userprofile.png",
 
-                    EmpId = s.EmpId,
+                    EmpId = _TaamerProContext.Employees.Where(x=>x.UserId==s.UserId).FirstOrDefault()?.EmployeeId ??0,
                     UserName = s.UserName,
                     Password = s.Password,
                     Status = s.Status,
@@ -632,7 +633,7 @@ namespace TaamerProject.Repository.Repositories
                     GroupId = s.GroupId,
                     BranchId = s.BranchId,
                     ImgUrl = s.ImgUrl ?? "/distnew/images/userprofile.png",
-                    EmpId = s.EmpId,
+                    EmpId = _TaamerProContext.Employees.Where(x => x.UserId == s.UserId).FirstOrDefault()?.EmployeeId ?? 0,
                     UserName = s.UserName,
                     Password = s.Password,
                     Status = s.Status,
