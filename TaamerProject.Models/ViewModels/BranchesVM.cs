@@ -105,5 +105,7 @@ namespace TaamerProject.Models
         public string? PrivateKey { get; set; }
         public string? PublicKey { get; set; }
         public string? SecreteKey { get; set; }
+        public int? ModeType { get; set; }
+
     }
 }

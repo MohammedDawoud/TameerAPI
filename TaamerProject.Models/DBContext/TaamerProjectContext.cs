@@ -2072,6 +2072,7 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 entity.Property(t => t.InvUUID).HasColumnName("InvUUID");
                 entity.Property(t => t.VoucherAdjustment).HasColumnName("VoucherAdjustment");
 
+                modelBuilder.Entity<Invoices>().HasMany<Acc_InvoicesRequests>(s => s.InvoicesRequests).WithOne(g => g.Invoice).HasForeignKey(s => s.InvoiceId);
                 modelBuilder.Entity<Invoices>().HasMany<VoucherDetails>(s => s.VoucherDetails).WithOne(g => g.Invoices).HasForeignKey(s => s.InvoiceId);
                 modelBuilder.Entity<Invoices>().HasMany<Transactions>(s => s.TransactionDetails).WithOne(g => g.Invoices).HasForeignKey(s => s.InvoiceId);
                 modelBuilder.Entity<Invoices>().HasOne(s => s.AddUsers).WithMany().HasForeignKey(e => e.AddUser);
@@ -2108,7 +2109,7 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 entity.Property(t => t.QRCode).HasColumnName("QRCode");
                 entity.Property(t => t.PIH).HasColumnName("PIH");
                 entity.Property(t => t.SingedXMLFileName).HasColumnName("SingedXMLFileName");
-                modelBuilder.Entity<Acc_InvoicesRequests>().HasOne(s => s.Invoice).WithMany().HasForeignKey(e => e.InvoiceId);
+                //modelBuilder.Entity<Acc_InvoicesRequests>().HasOne(s => s.Invoice).WithMany().HasForeignKey(e => e.InvoiceId);
             });
 
             //--------------------------------END--------------------------------------------------
