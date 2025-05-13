@@ -62,6 +62,7 @@ namespace TaamerProject.API.Helper
                         new Privilege { Id = 151321 , ParentId = 1513 , Name =  "Employee contracts are about to expire", Description = "Employee contracts are about to expire" },
                         new Privilege { Id = 151322 , ParentId = 1513 , Name =  "Expired employee contracts", Description = "Expired employee contracts" },
                         new Privilege { Id = 151323 , ParentId = 1513 , Name =  "Employees without contracts", Description = "Employees without contracts" },
+                        new Privilege { Id = 151324 , ParentId = 1513 , Name =  "الاعتماد والموافقة علي الاذن  ", Description = "الاعتماد والموافقة علي الاذن  " },
 
 
                          //new Privilege { Id = 171113 , ParentId = 1511 , Name =  Resources.General_AdjustTheProceedings, Description = Resources.General_AdjustTheProceedings },
@@ -376,6 +377,14 @@ namespace TaamerProject.API.Helper
                             new Privilege { Id = 14110203 , ParentId = 141102 , Name =  Resources.General_Delete , Description =  Resources.General_Delete},
 
                               new Privilege { Id = 141103 , ParentId = 1411 , Name =  "طلب اجازة بعذر" , Description =   "طلب اجازة بعذر" },
+
+
+
+                          new Privilege { Id = 1421 , ParentId = 1411 , Name =  "طلب إذن" , Description =  "طلب إذن"},
+                            new Privilege { Id = 142101 , ParentId = 1421 , Name =  Resources.General_Show , Description = Resources.General_Show},
+                            new Privilege { Id = 142102 , ParentId = 1421 , Name =  Resources.General_Add , Description =  Resources.General_Add},
+                            new Privilege { Id = 142104 , ParentId = 1421 , Name =  Resources.General_Delete , Description =  Resources.General_Delete},
+
 
 
                         new Privilege { Id = 1412 , ParentId = 14 , Name =  Resources.MP_Imprest , Description =  Resources.MP_Imprest},

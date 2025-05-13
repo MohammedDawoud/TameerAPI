@@ -28,5 +28,11 @@ namespace TaamerProject.Models.ViewModels
         public string? StatusName { get; set; }
         public string? AcceptUser { get; set; }
 
+        public string? EmployeeNo { get; set; }
+        public string? EmployeeJob { get; set; }
+        public string? IdentityNo { get; set; }
+        public string? BranchName { get; set; }
+
+
     }
 }
