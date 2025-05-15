@@ -801,9 +801,15 @@ y.Type == 3 && (y.Status == 1 || y.Status == 2 || y.Status == 3) && y.UserId == 
                 BranchId = x.BranchId,
                 CityId = x.CityId,
                 CityName = x.city != null ? x.city.NameAr : "",
-                BuildingNumber = x.BuildingNumber
+                BuildingNumber = x.BuildingNumber,
+                         TotalRevenue = x.Invoicess
+                            .Where(i => i.IsDeleted == false && i.Type == 2 && i.IsPost == true && i.Rad !=true)
+                            .Sum(i => i.InvoiceValue) - x.Invoicess
+                            .Where(i => i.IsDeleted == false && (i.Type == 29 || i.Type==4)&& i.IsPost == true && i.Rad !=true)
+                            .Sum(i => i.InvoiceValue),
 
-            });
+
+                     });
             return customers;
         }
         public async Task<IQueryable<CustomerVM>> GetAllPrivateCustomers(string lang, int BranchId)
