@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.ComponentModel;
 using System.Security.Cryptography;
 using System.Drawing;
+using Microsoft.Graph.Models;
 
 namespace TaamerProject.Service.Services
 {
@@ -1483,6 +1484,7 @@ namespace TaamerProject.Service.Services
                         var officalhol = await _icalHolidayRepository.GetAllOfficalHoliday();
 
                         var IsHoliday = officalhol.Where(x => x.FromDate <= tepyesterday && x.ToDate >= tepyesterday).ToList();
+                        var haspermission = _TaamerProContext.Permissions.Where(x => x.IsDeleted == false && x.EmpId.ToString() == item.EmpId && x.Date == tepyesterday.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"))).ToList();
                         item.Isholiday = IsHoliday;
                         item.Isworkday = IsWorkDay;
 
@@ -1502,11 +1504,16 @@ namespace TaamerProject.Service.Services
                         {
                             status = "x";
                         }
+                        else if(haspermission !=null && haspermission.Count() > 0)
+                        {
+                            status = "ذ";
+                        }
                         else
-                                if (item.MAXSER == "")
+                         if (item.MAXSER == "")
                         {
                             status = "غ";
                         }
+
                         else
                         {
                             status = "ح";
@@ -1559,6 +1566,7 @@ namespace TaamerProject.Service.Services
 
                         item.Isholiday = IsHoliday;
                         item.Isworkday = IsWorkDay;
+                        var haspermission = _TaamerProContext.Permissions.Where(x => x.IsDeleted == false && x.EmpId.ToString() == item.EmpId && x.Date == TempToDay.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"))).ToList();
 
 
                         if (IsHoliday.Count() != 0)
@@ -1574,7 +1582,10 @@ namespace TaamerProject.Service.Services
                         {
                             status = "x";
                         }
-
+                        else if (haspermission != null && haspermission.Count() > 0)
+                        {
+                            status = "ذ";
+                        }
                         else
                         if (item.MAXSER == "")
                         {
@@ -1633,6 +1644,7 @@ namespace TaamerProject.Service.Services
                 var officalhol = await _icalHolidayRepository.GetAllOfficalHoliday();
 
                 var IsHoliday = officalhol.Where(x => x.FromDate <= CurrentDate && x.ToDate >= CurrentDate).ToList();
+                var haspermission = _TaamerProContext.Permissions.Where(x => x.IsDeleted == false && x.EmpId.ToString() == item.EmpId && x.Date == CurrentDate.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"))).ToList();
 
 
                 var isLate = false;
@@ -1667,6 +1679,10 @@ namespace TaamerProject.Service.Services
                     else if (!IsStarted)
                     {
                         CheckValue = "X";
+                    }
+                    else if (haspermission != null && haspermission.Count() > 0)
+                    {
+                        CheckValue = "ذ";
                     }
                     else
                     {
@@ -1715,6 +1731,7 @@ namespace TaamerProject.Service.Services
                 var officalhol = await _icalHolidayRepository.GetAllOfficalHoliday();
 
                 var IsHoliday = officalhol.Where(x => x.FromDate <= CurrentDate && x.ToDate >= CurrentDate).ToList();
+                var haspermission = _TaamerProContext.Permissions.Where(x => x.IsDeleted == false && x.EmpId.ToString() == item.EmpId && x.Date == CurrentDate.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"))).ToList();
 
                 var vac = _vacationRepository.GetVacationApprovedDays(Convert.ToInt16(item.EmpId), con).Result;
                 var invac = vac.ToList().Where(x => x.Contains(CurrentDate.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en")))).ToList();
@@ -1745,6 +1762,10 @@ namespace TaamerProject.Service.Services
                 else if (IsWorkDay.Count() == 0 && M > 0)
                 {
                     CheckValue = "ح";
+                }
+                else if (haspermission != null && haspermission.Count() > 0)
+                {
+                    CheckValue = "ذ";
                 }
 
                 else if (M == 0)

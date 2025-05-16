@@ -27,7 +27,7 @@ namespace TaamerProject.Repository.Repositories
         {
             try
             {
-                var query = _TaamerProContext.Permissions.Include(x=>x.Employee).Include(x=>x.UserAcccept).Include(x=>x.PermissionType)
+                var query = _TaamerProContext.Permissions.Include(x=>x.Employee).Include(x=>x.UserAcccept).Include(x=>x.PermissionType).Include(x=>x.Employee.Job).Include(x=>x.Employee.Branch)
                     .Where(s => s.IsDeleted == false &&
                                 (s.EmpId == EmpId || EmpId == null) &&
                                 !s.Employee.IsDeleted &&
@@ -36,7 +36,6 @@ namespace TaamerProject.Repository.Repositories
                                 (s.TypeId == Type || Type == null) &&
                                 (s.Status == Status || Status == null));
 
-                // Switch to client-side filtering (ToList) to allow DateTime.ParseExact
                 var permissionList = query.ToList();
 
                 if (!string.IsNullOrEmpty(FromDate) && !string.IsNullOrEmpty(ToDate))
@@ -66,12 +65,16 @@ namespace TaamerProject.Repository.Repositories
                     Reason = x.Reason,
                     Status = x.Status,
                     UserId = x.UserId,
-                    PermissionTypeName = x.PermissionType?.NameAr ?? "",        // <-- Safe null check
-                    EmployeName = x.Employee?.EmployeeNameAr ?? "",             // <-- Safe null check
+                    PermissionTypeName = x.PermissionType?.NameAr ?? "",        
+                    EmployeName = x.Employee?.EmployeeNameAr ?? "",            
                     StatusName = x.Status == (int)PermissionStatus.New ? "طلب جديد" :
                       x.Status == (int)PermissionStatus.AtManagement ? "تحت الاجراء" :
                       x.Status == (int)PermissionStatus.Accepted ? "تمت الموافقة" : "تم الرفض",
-                    AcceptUser = x.UserAcccept?.FullNameAr ?? "",               // <-- Safe null check
+                    AcceptUser = x.UserAcccept?.FullNameAr ?? "",
+                    EmployeeJob = x.Employee.Job.JobNameAr,
+                    EmployeeNo = x.Employee.EmployeeNo,
+                    IdentityNo = x.Employee.NationalId.ToString(),
+                    BranchName=x.Employee.Branch.NameAr,
                 }).ToList();
 
                 if (!string.IsNullOrWhiteSpace(SearchText))

@@ -226,18 +226,14 @@ namespace TaamerProject.Service.Services.EmpServices
                 if(permission != null)
                 {
                     
-                    if (Type == (int)PermissionStatus.Accepted)
+                    if (Type != (int)PermissionStatus.AtManagement)
                     {
-
-                    }
-                    else
-                    {
-
+                        permission.AcceptedDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                        permission.AcceptedUser = UserId;
                     }
                     permission.Status = Type;
-                    permission.AcceptedDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                     permission.UpdateUser = UserId;
-                    permission.AcceptedUser = UserId;
+
 
                 }
 
