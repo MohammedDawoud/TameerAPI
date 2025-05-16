@@ -3208,7 +3208,7 @@ namespace TaamerProject.API.Controllers
             var syssetting = _systemSettingsService.GetSystemSettingsByBranchId(_globalshared.BranchId_G).Result;
             if (syssetting.UploadInvZatca == true)
             {
-                var Result = ZatcaInvoiceIntegration(voucherDetObj, _globalshared.BranchId_G, voucherDetObj.voucherDetObjRet??new List<ObjRet>());
+                var Result = ZatcaInvoiceIntegration(voucherDetObj, _globalshared.BranchId_G, voucherDetObj.voucherDetObjRet??new List<ObjRet>(),0);
                 return Ok(Result);
             }
             else
@@ -3219,7 +3219,7 @@ namespace TaamerProject.API.Controllers
         }
 
         [HttpGet("ZatcaInvoiceIntegration")]
-        private GeneralMessage ZatcaInvoiceIntegration(InvoiceObjDet voucherDet, int Branchid,List<ObjRet> vouDetailsRet)
+        private GeneralMessage ZatcaInvoiceIntegration(InvoiceObjDet voucherDet, int Branchid,List<ObjRet> vouDetailsRet, int? InvoiceReqId)
         {
             //var voucher = voucherDet.voucherDetObj.FirstOrDefault();
             List<VoucherDetailsVM> VoucherDetailsVM = new List<VoucherDetailsVM>();
@@ -3653,9 +3653,11 @@ namespace TaamerProject.API.Controllers
             res = ubl.GenerateInvoiceXML(inv, path, savexml);
             //res = ubl.GenerateInvoiceXML(inv, Directory.GetCurrentDirectory(),true);
             var result = new GeneralMessage();
+
+
             if (res.IsValid)
             {
-                result = _invoicesRequestsService.SaveInvoicesRequest(0, invoiceIdV, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName,zatcaVoucherNumber??0,false,null,null,null,null,null, Branchid);
+                result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId ?? 0, invoiceIdV, InvoicesVM.Type, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, zatcaVoucherNumber ?? 0, false, null, null, null, null, null, Branchid);
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = "GenerateInvoiceXML Valid";
@@ -3673,14 +3675,18 @@ namespace TaamerProject.API.Controllers
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = errormsg };
 
             }
+            invReqCl invReqClobj = new invReqCl();
+            invReqClobj.InvoiceReqId = result.ReturnedParm ?? 0;
+            invReqClobj.InvoiceId = invoiceIdV;
+            invReqClobj.Type = InvoicesVM.Type;
 
-            var resultSend=SendToZatcaAPI(inv, res, objOrganization, result.ReturnedParm??0, zatcakeys, Branchid);
+            var resultSend =SendToZatcaAPI(inv, res, objOrganization, invReqClobj, zatcakeys, Branchid);
             return resultSend;
 
         }
 
         [HttpGet("SendToZatcaAPI")]
-        private GeneralMessage SendToZatcaAPI(Invoice inv, ZatcaIntegrationSDK.Result res, OrganizationsVM org,int InvoiceReqId,ZatcaKeys zatcakeys,int BranchId)
+        private GeneralMessage SendToZatcaAPI(Invoice inv, ZatcaIntegrationSDK.Result res, OrganizationsVM org, invReqCl invReqCl ,ZatcaKeys zatcakeys,int BranchId)
         {
             if(org.ModeType==2){mode = Mode.Simulation;}
             else if (org.ModeType == 3){mode = Mode.Production;}
@@ -3716,19 +3722,19 @@ namespace TaamerProject.API.Controllers
                         {
                             warningmessage = responsemodel.WarningMessage;
                         }
-                        var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, warningmessage,null, null, BranchId);
+                        var result = _invoicesRequestsService.SaveInvoicesRequest(invReqCl.InvoiceReqId, invReqCl.InvoiceId??0, invReqCl.Type??0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, warningmessage,null, null, BranchId);
                         return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = responsemodel.ReportingStatus + responsemodel.ClearanceStatus };
                     }
                     else
                     {
                         errormessage = responsemodel.ErrorMessage;
-                        var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, null, null, errormessage, BranchId);
+                        var result = _invoicesRequestsService.SaveInvoicesRequest(invReqCl.InvoiceReqId, invReqCl.InvoiceId ?? 0, invReqCl.Type ?? 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, null, null, errormessage, BranchId);
                         return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = responsemodel.ErrorMessage };
                     }
                 }
                 else
                 {
-                    var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, null, null, tokenresponse.ErrorMessage, BranchId);
+                    var result = _invoicesRequestsService.SaveInvoicesRequest(invReqCl.InvoiceReqId, invReqCl.InvoiceId ?? 0, invReqCl.Type ?? 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, null, null, tokenresponse.ErrorMessage, BranchId);
                     return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = tokenresponse.ErrorMessage };
                 }
             }
@@ -3749,13 +3755,13 @@ namespace TaamerProject.API.Controllers
                         }
                         QRCode = responsemodel.QRCode;
                         ClearedInvoice = responsemodel.ClearedInvoice;
-                        var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, warningmessage, ClearedInvoice, null, BranchId);
+                        var result = _invoicesRequestsService.SaveInvoicesRequest(invReqCl.InvoiceReqId, invReqCl.InvoiceId ?? 0, invReqCl.Type ?? 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, warningmessage, ClearedInvoice, null, BranchId);
                         return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = responsemodel.ClearanceStatus };
                     }
                     else
                     {
                         errormessage = responsemodel.ErrorMessage;
-                        var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, null, null, errormessage, BranchId);
+                        var result = _invoicesRequestsService.SaveInvoicesRequest(invReqCl.InvoiceReqId, invReqCl.InvoiceId ?? 0, invReqCl.Type ?? 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, null, null, errormessage, BranchId);
                         return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = responsemodel.ErrorMessage };
                     }
                 }
@@ -3771,18 +3777,201 @@ namespace TaamerProject.API.Controllers
                         {
                             warningmessage = responsemodel.WarningMessage;
                         }
-                        var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, warningmessage, null, null, BranchId);
+                        var result = _invoicesRequestsService.SaveInvoicesRequest(invReqCl.InvoiceReqId, invReqCl.InvoiceId ?? 0, invReqCl.Type ?? 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, warningmessage, null, null, BranchId);
                         return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = responsemodel.ReportingStatus };
                     }
                     else
                     {
                         errormessage = responsemodel.ErrorMessage;
-                        var result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId, 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, null, null, errormessage, BranchId);
+                        var result = _invoicesRequestsService.SaveInvoicesRequest(invReqCl.InvoiceReqId, invReqCl.InvoiceId ?? 0, invReqCl.Type ?? 0, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, 0, IsSent, statusCode, SendingStatus, null, null, errormessage, BranchId);
                         return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = responsemodel.ErrorMessage };
                     }
                 }
             }
 
+        }
+
+        [HttpPost("ReSendToZatcaAPI_Func")]
+        public IActionResult ReSendToZatcaAPI_Func(int InvoiceReqId)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var org = _organizationsservice.GetBranchOrganization().Result;
+            var InvoiceReqData = _invoicesRequestsService.GetInvoiceReqByReqId(InvoiceReqId).Result;
+            var BranchId = (InvoiceReqData.BranchId ?? _globalshared.BranchId_G);
+            var objBranch = _BranchesService.GetBranchByBranchId("rtl", BranchId).Result.FirstOrDefault();
+            ZatcaKeys zatcakeys = new ZatcaKeys();
+            var OrgIsRequired = _systemSettingsService.GetSystemSettingsByBranchId(BranchId).Result.OrgDataIsRequired;
+            if (OrgIsRequired == true) OrgIsRequired = false; else OrgIsRequired = true;
+            if (OrgIsRequired == true)
+            {
+                zatcakeys.CSR = org.CSR;
+                zatcakeys.PrivateKey = org.PrivateKey;
+                zatcakeys.PublicKey = org.PublicKey;
+                zatcakeys.SecreteKey = org.SecreteKey;
+            }
+            else
+            {
+                zatcakeys.CSR = objBranch.CSR;
+                zatcakeys.PrivateKey = objBranch.PrivateKey;
+                zatcakeys.PublicKey = objBranch.PublicKey;
+                zatcakeys.SecreteKey = objBranch.SecreteKey;
+                if (objBranch.CSR == null || objBranch.CSR == "")
+                {
+                    zatcakeys.CSR = org.CSR;
+                }
+                if (objBranch.PrivateKey == null || objBranch.PrivateKey == "")
+                {
+                    zatcakeys.PrivateKey = org.PrivateKey;
+                }
+                if (objBranch.PublicKey == null || objBranch.PublicKey == "")
+                {
+                    zatcakeys.PublicKey = org.PublicKey;
+                }
+                if (objBranch.SecreteKey == null || objBranch.SecreteKey == "")
+                {
+                    zatcakeys.SecreteKey = org.SecreteKey;
+                }
+
+            }
+            var invoicetypecode = InvoiceTypeEnums.Standared_Invoice;
+            var invoicetypecodeName = InvoiceTypeNameEnums.Standared_Invoice;
+            if (InvoiceReqData.InvoiceValue > 1000)
+            {
+                if (InvoiceReqData.Type == 2)
+                {
+                    invoicetypecode = InvoiceTypeEnums.Standared_Invoice;
+                    invoicetypecodeName = InvoiceTypeNameEnums.Standared_Invoice;
+                }
+                if (InvoiceReqData.Type == 29 || InvoiceReqData.Type == 4)
+                {
+                    invoicetypecode = InvoiceTypeEnums.Standard_CreditNote;
+                    invoicetypecodeName = InvoiceTypeNameEnums.Standard_CreditNote;
+                }
+                if (InvoiceReqData.Type == 30)
+                {
+                    invoicetypecode = InvoiceTypeEnums.Standared_DebitNote;
+                    invoicetypecodeName = InvoiceTypeNameEnums.Standared_DebitNote;
+                }
+            }
+            else
+            {
+                if (InvoiceReqData.Type == 2)
+                {
+                    invoicetypecode = InvoiceTypeEnums.Simplified_Invoice;
+                    invoicetypecodeName = InvoiceTypeNameEnums.Simplified_Invoice;
+                }
+                if (InvoiceReqData.Type == 29 || InvoiceReqData.Type == 4)
+                {
+                    invoicetypecode = InvoiceTypeEnums.Simplified_CreditNote;
+                    invoicetypecodeName = InvoiceTypeNameEnums.Simplified_CreditNote;
+                }
+                if (InvoiceReqData.Type == 30)
+                {
+                    invoicetypecode = InvoiceTypeEnums.Simplified_DebitNote;
+                    invoicetypecodeName = InvoiceTypeNameEnums.Simplified_DebitNote;
+                }
+            }
+
+            Invoice inv = new Invoice();
+            ZatcaIntegrationSDK.Result res = new ZatcaIntegrationSDK.Result();
+            res.EncodedInvoice = InvoiceReqData.EncodedInvoice;
+            res.InvoiceHash = InvoiceReqData.InvoiceHash;
+            res.UUID = InvoiceReqData.ZatcaUUID;
+
+            inv.invoiceTypeCode.id = invoicetypecode;
+            inv.invoiceTypeCode.Name = invoicetypecodeName;
+            inv.cSIDInfo.CertPem = zatcakeys.PublicKey;
+            inv.cSIDInfo.PrivateKey = zatcakeys.PrivateKey;
+
+
+            invReqCl invReqClobj = new invReqCl();
+            invReqClobj.InvoiceReqId = InvoiceReqId;
+            invReqClobj.InvoiceId = InvoiceReqData.InvoiceId;
+            invReqClobj.Type = InvoiceReqData.Type;
+
+            var resultSend = SendToZatcaAPI(inv, res, org, invReqClobj, zatcakeys, BranchId);
+            return Ok(resultSend);
+        }
+
+        [HttpPost("ReSendZatcaInvoiceIntegrationFunc")]
+        public IActionResult ReSendZatcaInvoiceIntegrationFunc(int InvoiceReqId)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var org = _organizationsservice.GetBranchOrganization().Result;
+            var InvoiceReqData = _invoicesRequestsService.GetInvoiceReqByReqId(InvoiceReqId).Result;
+            InvoiceObjDet InvoiceObjDet = new InvoiceObjDet();
+
+            if (InvoiceReqData.Type==2 || InvoiceReqData.Type == 29)
+            {
+                var voucherDet = _TaamerProContext.VoucherDetails.Where(s => s.IsDeleted == false && s.InvoiceId == InvoiceReqData.InvoiceId).ToList();
+                List<int> voDetIds = new List<int>();
+                foreach (var itemV in voucherDet)
+                {
+                    voDetIds.Add(itemV.VoucherDetailsId);
+                }
+                InvoiceObjDet.voucherDetObj = voDetIds;
+            }
+            else if (InvoiceReqData.Type == 4)
+            {
+                var VoucherDetailsV = _voucherService.GetAllDetailsByInvoiceId(InvoiceReqData.InvoiceId).Result;
+                var ObjDet = new List<ObjRet>();
+                var VoucherDetCredit = new List<VoucherDetails>();
+                var VoucherCredit = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.CreditNotiId == InvoiceReqData.InvoiceId).ToList();
+                if (VoucherCredit.Count() > 0)
+                {
+                    VoucherDetCredit = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == VoucherCredit.FirstOrDefault().InvoiceId).ToList();
+                }
+                if (VoucherDetCredit.Count() > 0)
+                {
+                    foreach (var item in VoucherDetailsV)
+                    {
+                        var ObjDetInst = new ObjRet();
+                        foreach (var itemC in VoucherDetCredit)
+                        {
+                            if (item.ServicesPriceId == itemC.ServicesPriceId)
+                            {
+
+                                item.TaxAmount = item.TaxAmount - itemC.TaxAmount;
+                                item.Amount = item.Amount - itemC.Amount;
+                                item.TotalAmount = item.TotalAmount - itemC.TotalAmount;
+
+                            }
+                        }
+                        ObjDetInst.TaxAmount = item.TaxAmount;
+                        ObjDetInst.Amount = item.Amount;
+                        ObjDetInst.TotalAmount = item.TotalAmount;
+                        ObjDetInst.Qty = item.Qty;
+                        ObjDetInst.ServicesPriceName = item.ServicesPriceName;
+                        ObjDetInst.DiscountValue_Det = item.DiscountValue_Det;
+                        ObjDetInst.DiscountPercentage_Det = item.DiscountPercentage_Det;
+                        ObjDetInst.InvoiceId = item.InvoiceId;
+                        ObjDetInst.VoucherDetailsId = item.VoucherDetailsId;
+                        ObjDetInst.Type = 4;
+                        ObjDet.Add(ObjDetInst);
+                    }
+                }
+                else
+                {
+                    foreach (var item in VoucherDetailsV)
+                    {
+                        var ObjDetInst = new ObjRet();
+                        ObjDetInst.TaxAmount = item.TaxAmount;
+                        ObjDetInst.Amount = item.Amount;
+                        ObjDetInst.TotalAmount = item.TotalAmount;
+                        ObjDetInst.Qty = item.Qty;
+                        ObjDetInst.ServicesPriceName = item.ServicesPriceName;
+                        ObjDetInst.DiscountValue_Det = item.DiscountValue_Det;
+                        ObjDetInst.DiscountPercentage_Det = item.DiscountPercentage_Det;
+                        ObjDetInst.InvoiceId = item.InvoiceId;
+                        ObjDetInst.VoucherDetailsId = item.VoucherDetailsId;
+                        ObjDetInst.Type = 4;
+                        ObjDet.Add(ObjDetInst);
+                    }
+                }
+                InvoiceObjDet.voucherDetObjRet = ObjDet;
+            }
+            var Result = ZatcaInvoiceIntegration(InvoiceObjDet, _globalshared.BranchId_G, InvoiceObjDet.voucherDetObjRet ?? new List<ObjRet>(), InvoiceReqId);
+            return Ok(Result);
         }
         private void FillSellerOtherIdentification()
         {
@@ -3849,7 +4038,13 @@ namespace TaamerProject.API.Controllers
         public string PrivateKey { get; set; }
         public string PublicKey { get; set; }
         public string SecreteKey { get; set; }
-
-
     }
+
+    public class invReqCl
+    {
+        public int InvoiceReqId { get; set; }
+        public int? InvoiceId { get; set; }
+        public int? Type { get; set; }
+    }
+
 }
