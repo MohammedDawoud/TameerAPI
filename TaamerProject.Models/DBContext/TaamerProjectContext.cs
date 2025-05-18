@@ -232,6 +232,7 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
         public virtual DbSet<Exceptions> Exceptions { get; set; }
         public virtual DbSet<Permissions> Permissions { get; set; }
         public virtual DbSet<PermissionType> PermissionTypes { get; set; }
+        public virtual DbSet<CommercialActivity> CommercialActivities { get; set; }
 
         public string GetDatabaseName()
         {
@@ -4470,6 +4471,15 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 entity.Property(t => t.NameAr).HasColumnName("NameAr");
                 entity.Property(t => t.NameEn).HasColumnName("NameEn");
                 entity.Property(t => t.Notes).HasColumnName("Notes");
+            });
+
+            //--------------------------------END--------------------------------------------------
+
+            //--------------------------------END--------------------------------------------------
+            modelBuilder.Entity<CommercialActivity>(entity =>
+            {
+                entity.HasKey(e => e.CommercialActivityId);
+                entity.ToTable("Acc_CommercialActivity");
             });
 
             //--------------------------------END--------------------------------------------------
