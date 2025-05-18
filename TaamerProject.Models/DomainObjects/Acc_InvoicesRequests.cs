@@ -25,6 +25,7 @@ namespace TaamerProject.Models
         public string? PIH { get; set; }
         public string? SingedXMLFileName { get; set; }
         public int? BranchId { get; set; }
+        public int? Type { get; set; }
         public virtual Invoices? Invoice { get; set; }
 
 

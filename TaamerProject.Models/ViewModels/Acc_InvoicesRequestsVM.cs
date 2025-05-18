@@ -28,7 +28,11 @@ namespace TaamerProject.Models
         public string? InvoiceNo { get; set; }
         public string? CustomerName { get; set; }
         public string? Date { get; set; }
+        public decimal? InvoiceValue { get; set; }
         public decimal? TotalValue { get; set; }
+        public int? Type { get; set; }
+        public string? InvoiceRetId { get; set; }
+        public bool? Rad { get; set; }
 
 
     }
