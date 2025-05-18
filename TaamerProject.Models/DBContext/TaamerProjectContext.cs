@@ -1245,6 +1245,8 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 entity.Property(t => t.StreetName).HasColumnName("StreetName");
                 entity.Property(t => t.BuildingNumber).HasColumnName("BuildingNumber");
                 entity.Property(t => t.CityId).HasColumnName("CityId");
+                modelBuilder.Entity<Customer>().HasOne(s => s.commercialActivities).WithMany().HasForeignKey(e => e.CommercialActivity);
+                modelBuilder.Entity<Customer>().HasOne(s => s.BranchActivity).WithMany().HasForeignKey(e => e.GeneralManager);
 
                 modelBuilder.Entity<Customer>().HasOne(s => s.city).WithMany().HasForeignKey(e => e.CityId);
                 modelBuilder.Entity<Customer>().HasOne(s => s.Branch).WithMany().HasForeignKey(e => e.BranchId);

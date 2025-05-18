@@ -28,13 +28,13 @@ namespace TaamerProject.Models
         public string? Notes { get; set; }
         public string? LogoUrl { get; set; }
         public string? AttachmentUrl { get; set; }
-        public string? CommercialActivity { get; set; }
+        public int? CommercialActivity { get; set; }
         public string? CommercialRegister { get; set; }
         public string? CommercialRegDate { get; set; }
         public string? CommercialRegHijriDate { get; set; }
         public int? AccountId { get; set; }
         public string? ProjectNo { get; set; }
-        public string? GeneralManager { get; set; }
+        public int? GeneralManager { get; set; }
         public string? AgentName { get; set; }
         public int? AgentType { get; set; }
         public string? AgentNumber { get; set; }
@@ -68,6 +68,9 @@ namespace TaamerProject.Models
         public List<TransactionsVM> Transactions { get; set; }
         public List<Customer_Branches>? Customer_Branches { get; set; }
         public List<int>? OtherBranches { get; set; }
+
+        public string? CommercialActivityName { get; set; }
+        public string? BranchActivityName { get; set; }
 
     }
 }
