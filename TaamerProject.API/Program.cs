@@ -28,6 +28,7 @@ using TaamerProject.Models;
 using TaamerProject.Service.Services.ProjServices;
 using TaamerProject.Service.Services.SysServices;
 using Microsoft.AspNetCore.Authorization;
+using TaamerProject.Service.Services.AccServices;
 
 namespace TaamerProject.API
 {
@@ -256,6 +257,7 @@ namespace TaamerProject.API
             builder.Services.AddTransient<IAttendenceLocationSettingsService, AttendenceLocationSettingsService>();
             builder.Services.AddTransient<IPermissionService, PermissionService>();
             builder.Services.AddTransient<IPermissionTypeService, PermissionTypeService>();
+            builder.Services.AddTransient<ICommercialActivityService, CommercialActivityService>();
             
 
             #endregion
@@ -455,6 +457,7 @@ namespace TaamerProject.API
             builder.Services.AddTransient<IAttendenceLocationSettingsRepository, AttendenceLocationSettingsRepository>();
             builder.Services.AddTransient<IPermissionsRepository, PermissionsRepository>();
             builder.Services.AddTransient<IPermissionTypeRepository, PermissionTypeRepository>();
+            builder.Services.AddTransient<ICommercialActivityRepository, CommercialActivityRepository>();
             #endregion
 
          builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
