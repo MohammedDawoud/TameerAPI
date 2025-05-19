@@ -119,7 +119,7 @@ namespace TaamerProject.API.Controllers
                             formData.Add(new StringContent(serviceobj.RequeterMobileNumber ?? ""), "RequeterMobileNumber");
                             formData.Add(new StringContent((serviceobj.FromApp??0).ToString()), "FromApp");
                             formData.Add(new StringContent((org.Result.NameAr??"").ToString()), "ExternalOrgName");
-                            formData.Add(new StringContent((user.Result.FullNameAr ?? user.Result.FullName ?? "").ToString()), "ExternalCustomerName");
+                            formData.Add(new StringContent((user.Result.FullNameAr ==null || user.Result.FullNameAr=="" ? user.Result.FullName ?? "" : user.Result.FullNameAr ).ToString()), "ExternalCustomerName");
                             formData.Add(new StringContent((org.Result.Mobile ?? "").ToString()), "ExternalMobNumber");
                             formData.Add(new StringContent((supportResquests.Topic ?? "").ToString()), "Note");
                             formData.Add(new StringContent((org.Result.TameerAPIURL ?? "").ToString()), "CustomerULR");
