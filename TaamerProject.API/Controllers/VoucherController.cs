@@ -66,6 +66,7 @@ using TaamerProject.Service.Generic;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ZXing.Common;
 using ZXing;
+using iTextSharp.text.pdf.qrcode;
 
 namespace TaamerProject.API.Controllers
 {
@@ -102,7 +103,7 @@ namespace TaamerProject.API.Controllers
         public GlobalShared _globalshared;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private string Con;
-        private Mode mode = Mode.developer;
+        private ZatcaIntegrationSDK.APIHelper.Mode mode = ZatcaIntegrationSDK.APIHelper.Mode.developer;
         public VoucherController(TaamerProjectContext dataContext, IVoucherService voucherService, ISystemAction systemAction, IAcc_SuppliersService acc_SuppliersService, IServicesPriceService servicesPriceService, IServicesPriceOfferService servicesPriceOfferService, IBranchesService branchesService,
             IOrganizationsService organizationsService, ICostCenterService costCenterService, IProjectService projectService, ICustomerService customerService,
             IAcc_InvoicesRequestsService InvoicesRequestsService, ISystemSettingsService systemSettingsService, ICustomerSMSService sMSService, IFiscalyearsService fiscalyearsService, IEmployeesService employeesService, IConfiguration _configuration, IWebHostEnvironment webHostEnvironment)
@@ -3688,9 +3689,9 @@ namespace TaamerProject.API.Controllers
         [HttpGet("SendToZatcaAPI")]
         private GeneralMessage SendToZatcaAPI(Invoice inv, ZatcaIntegrationSDK.Result res, OrganizationsVM org, invReqCl invReqCl ,ZatcaKeys zatcakeys,int BranchId)
         {
-            if(org.ModeType==2){mode = Mode.Simulation;}
-            else if (org.ModeType == 3){mode = Mode.Production;}
-            else{mode = Mode.developer;}
+            if(org.ModeType==2){mode = ZatcaIntegrationSDK.APIHelper.Mode.Simulation;}
+            else if (org.ModeType == 3){mode = ZatcaIntegrationSDK.APIHelper.Mode.Production;}
+            else{mode = ZatcaIntegrationSDK.APIHelper.Mode.developer;}
 
             string warningmessage = "";
             string errormessage = "";
@@ -3705,7 +3706,7 @@ namespace TaamerProject.API.Controllers
             invrequestbody.invoice = res.EncodedInvoice;
             invrequestbody.invoiceHash = res.InvoiceHash;
             invrequestbody.uuid = res.UUID;
-            if (mode == Mode.developer)
+            if (mode == ZatcaIntegrationSDK.APIHelper.Mode.developer)
             {
                 ComplianceCsrResponse tokenresponse = new ComplianceCsrResponse();
                 string csr = zatcakeys.CSR ?? "";
@@ -3973,6 +3974,36 @@ namespace TaamerProject.API.Controllers
             var Result = ZatcaInvoiceIntegration(InvoiceObjDet, _globalshared.BranchId_G, InvoiceObjDet.voucherDetObjRet ?? new List<ObjRet>(), InvoiceReqId);
             return Ok(Result);
         }
+
+        [HttpPost("PDFDownloadZatca")]
+        public IActionResult PDFDownloadZatca(IFormFile? UploadedFile)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            byte[] pdfByte = { 0 };
+            if(UploadedFile!=null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    UploadedFile.CopyTo(ms);
+                    pdfByte = ms.ToArray();
+                    // Process the byte array
+                }
+            }
+
+            //dawoudprint
+            string existTemp = System.IO.Path.Combine("TempFiles/");
+            if (!Directory.Exists(existTemp))
+            {
+                Directory.CreateDirectory(existTemp);
+            }
+            string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
+            string FilePath = System.IO.Path.Combine("TempFiles/", FileName);
+            System.IO.File.WriteAllBytes(FilePath, pdfByte);
+            string FilePathReturn = "/TempFiles/" + FileName;
+            return Ok(new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = FilePathReturn });
+        }
+
+
         private void FillSellerOtherIdentification()
         {
             Dictionary<string, string> schemes = new Dictionary<string, string>()
