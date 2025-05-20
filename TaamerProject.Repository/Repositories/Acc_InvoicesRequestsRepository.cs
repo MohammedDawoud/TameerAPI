@@ -68,7 +68,7 @@ namespace TaamerProject.Repository.Repositories
 
             try
             {
-                var InvRequest = _TaamerProContext.Acc_InvoicesRequests.Where(s => s.InvoiceId == InvoiceId).Select(x => new Acc_InvoicesRequestsVM
+                var InvRequest = _TaamerProContext.Acc_InvoicesRequests.Where(s => s.InvoiceId == InvoiceId && s.Type==2).Select(x => new Acc_InvoicesRequestsVM
                 {
                     InvoiceReqId = x.InvoiceReqId,
                     InvoiceId = x.InvoiceId,
