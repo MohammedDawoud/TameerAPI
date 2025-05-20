@@ -16359,7 +16359,7 @@ namespace TaamerProject.Service.Services
 
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                string ActionNote = "فك ترحيل "+ GetVoucherType(vtype) + "ارقام"+ VNo;
+                string ActionNote = "فك ترحيل " + GetVoucherType(vtype) + " ارقام " + string.Join(",", VNo);
                 _SystemAction.SaveAction("PostBackVouchers", "VoucherService", 2, Resources.successfullyuninstalled, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
 
