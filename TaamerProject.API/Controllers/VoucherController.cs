@@ -67,6 +67,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ZXing.Common;
 using ZXing;
 using iTextSharp.text.pdf.qrcode;
+using ZatcaIntegrationSDK.GeneralLogic;
 
 namespace TaamerProject.API.Controllers
 {
@@ -2643,9 +2644,76 @@ namespace TaamerProject.API.Controllers
                 {
                     _invoice_PDF.QRCodeString_VD = null;
                 }
+                //Convert Images To Base64
+                #region
+                string base64String = "";
+                if (_invoice_PDF.Org_VD.LogoUrl != null && _invoice_PDF.Org_VD.LogoUrl != "")
+                {
+                    base64String = "";
+                    _invoice_PDF.Org_VD.LogoUrl = _invoice_PDF.Org_VD.LogoUrl.Substring(1);
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(_invoice_PDF.Org_VD.LogoUrl);
+                    base64String = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
+                    _invoice_PDF.Org_VD.LogoUrl = base64String;
+                }
+                if (_invoice_PDF.Org_VD.BankIdImgURL != null && _invoice_PDF.Org_VD.BankIdImgURL != "")
+                {
+                    base64String = "";
+                    _invoice_PDF.Org_VD.BankIdImgURL = _invoice_PDF.Org_VD.BankIdImgURL.Substring(1);
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(_invoice_PDF.Org_VD.BankIdImgURL);
+                    base64String = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
+                    _invoice_PDF.Org_VD.BankIdImgURL = base64String;
+                }
+                if (_invoice_PDF.Org_VD.BankId2ImgURL != null && _invoice_PDF.Org_VD.BankId2ImgURL != "")
+                {
+                    base64String = "";
+                    _invoice_PDF.Org_VD.BankId2ImgURL = _invoice_PDF.Org_VD.BankId2ImgURL.Substring(1);
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(_invoice_PDF.Org_VD.BankId2ImgURL);
+                    base64String = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
+                    _invoice_PDF.Org_VD.BankId2ImgURL = base64String;
+                }
+                if (_invoice_PDF.Branch_VD!.BranchLogoUrl != null && _invoice_PDF.Branch_VD!.BranchLogoUrl != "")
+                {
+                    base64String = "";
+                    _invoice_PDF.Branch_VD.BranchLogoUrl = _invoice_PDF.Branch_VD.BranchLogoUrl.Substring(1);
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(_invoice_PDF.Branch_VD.BranchLogoUrl);
+                    base64String = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
+                    _invoice_PDF.Branch_VD.BranchLogoUrl = base64String;
+                }
+                if (_invoice_PDF.Branch_VD!.HeaderLogoUrl != null && _invoice_PDF.Branch_VD!.HeaderLogoUrl != "")
+                {
+                    base64String = "";
+                    _invoice_PDF.Branch_VD.HeaderLogoUrl = _invoice_PDF.Branch_VD.HeaderLogoUrl.Substring(1);
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(_invoice_PDF.Branch_VD.HeaderLogoUrl);
+                    base64String = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
+                    _invoice_PDF.Branch_VD.HeaderLogoUrl = base64String;
+                }
+                if (_invoice_PDF.Branch_VD!.FooterLogoUrl != null && _invoice_PDF.Branch_VD!.FooterLogoUrl != "")
+                {
+                    base64String = "";
+                    _invoice_PDF.Branch_VD.FooterLogoUrl = _invoice_PDF.Branch_VD.FooterLogoUrl.Substring(1);
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(_invoice_PDF.Branch_VD.FooterLogoUrl);
+                    base64String = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
+                    _invoice_PDF.Branch_VD.FooterLogoUrl = base64String;
+                }
+                if (_invoice_PDF.Branch_VD!.BankIdImgURL != null && _invoice_PDF.Branch_VD!.BankIdImgURL != "")
+                {
+                    base64String = "";
+                    _invoice_PDF.Branch_VD.BankIdImgURL = _invoice_PDF.Branch_VD.BankIdImgURL.Substring(1);
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(_invoice_PDF.Branch_VD.BankIdImgURL);
+                    base64String = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
+                    _invoice_PDF.Branch_VD.BankIdImgURL = base64String;
+                }
+                if (_invoice_PDF.Branch_VD!.BankId2ImgURL != null && _invoice_PDF.Branch_VD!.BankId2ImgURL != "")
+                {
+                    base64String = "";
+                    _invoice_PDF.Branch_VD.BankId2ImgURL = _invoice_PDF.Branch_VD.BankId2ImgURL.Substring(1);
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(_invoice_PDF.Branch_VD.BankId2ImgURL);
+                    base64String = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
+                    _invoice_PDF.Branch_VD.BankId2ImgURL = base64String;
+                }
+                #endregion
+                // End Convert Images To Base64
 
-
-              
             }
             else
             {
@@ -2771,6 +2839,76 @@ namespace TaamerProject.API.Controllers
                 {
                     _invoice_PDF.QRCodeString_VD = null;
                 }
+
+                //Convert Images To Base64
+                #region
+                string base64String = "";
+                if (_invoice_PDF.Org_VD.LogoUrl != null && _invoice_PDF.Org_VD.LogoUrl != "")
+                {
+                    base64String = "";
+                    _invoice_PDF.Org_VD.LogoUrl = _invoice_PDF.Org_VD.LogoUrl.Substring(1);
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(_invoice_PDF.Org_VD.LogoUrl);
+                    base64String = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
+                    _invoice_PDF.Org_VD.LogoUrl = base64String;
+                }
+                if (_invoice_PDF.Org_VD.BankIdImgURL != null && _invoice_PDF.Org_VD.BankIdImgURL != "")
+                {
+                    base64String = "";
+                    _invoice_PDF.Org_VD.BankIdImgURL = _invoice_PDF.Org_VD.BankIdImgURL.Substring(1);
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(_invoice_PDF.Org_VD.BankIdImgURL);
+                    base64String = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
+                    _invoice_PDF.Org_VD.BankIdImgURL = base64String;
+                }
+                if (_invoice_PDF.Org_VD.BankId2ImgURL != null && _invoice_PDF.Org_VD.BankId2ImgURL != "")
+                {
+                    base64String = "";
+                    _invoice_PDF.Org_VD.BankId2ImgURL = _invoice_PDF.Org_VD.BankId2ImgURL.Substring(1);
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(_invoice_PDF.Org_VD.BankId2ImgURL);
+                    base64String = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
+                    _invoice_PDF.Org_VD.BankId2ImgURL = base64String;
+                }
+                if (_invoice_PDF.Branch_VD!.BranchLogoUrl != null && _invoice_PDF.Branch_VD!.BranchLogoUrl != "")
+                {
+                    base64String = "";
+                    _invoice_PDF.Branch_VD.BranchLogoUrl = _invoice_PDF.Branch_VD.BranchLogoUrl.Substring(1);
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(_invoice_PDF.Branch_VD.BranchLogoUrl);
+                    base64String = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
+                    _invoice_PDF.Branch_VD.BranchLogoUrl = base64String;
+                }
+                if (_invoice_PDF.Branch_VD!.HeaderLogoUrl != null && _invoice_PDF.Branch_VD!.HeaderLogoUrl != "")
+                {
+                    base64String = "";
+                    _invoice_PDF.Branch_VD.HeaderLogoUrl = _invoice_PDF.Branch_VD.HeaderLogoUrl.Substring(1);
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(_invoice_PDF.Branch_VD.HeaderLogoUrl);
+                    base64String = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
+                    _invoice_PDF.Branch_VD.HeaderLogoUrl = base64String;
+                }
+                if (_invoice_PDF.Branch_VD!.FooterLogoUrl != null && _invoice_PDF.Branch_VD!.FooterLogoUrl != "")
+                {
+                    base64String = "";
+                    _invoice_PDF.Branch_VD.FooterLogoUrl = _invoice_PDF.Branch_VD.FooterLogoUrl.Substring(1);
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(_invoice_PDF.Branch_VD.FooterLogoUrl);
+                    base64String = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
+                    _invoice_PDF.Branch_VD.FooterLogoUrl = base64String;
+                }
+                if (_invoice_PDF.Branch_VD!.BankIdImgURL != null && _invoice_PDF.Branch_VD!.BankIdImgURL != "")
+                {
+                    base64String = "";
+                    _invoice_PDF.Branch_VD.BankIdImgURL = _invoice_PDF.Branch_VD.BankIdImgURL.Substring(1);
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(_invoice_PDF.Branch_VD.BankIdImgURL);
+                    base64String = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
+                    _invoice_PDF.Branch_VD.BankIdImgURL = base64String;
+                }
+                if (_invoice_PDF.Branch_VD!.BankId2ImgURL != null && _invoice_PDF.Branch_VD!.BankId2ImgURL != "")
+                {
+                    base64String = "";
+                    _invoice_PDF.Branch_VD.BankId2ImgURL = _invoice_PDF.Branch_VD.BankId2ImgURL.Substring(1);
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(_invoice_PDF.Branch_VD.BankId2ImgURL);
+                    base64String = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
+                    _invoice_PDF.Branch_VD.BankId2ImgURL = base64String;
+                }
+                #endregion
+                // End Convert Images To Base64
             }
             else
             {
@@ -2862,7 +3000,6 @@ namespace TaamerProject.API.Controllers
                             ImgReturn = "data:image/png;base64," + Convert.ToBase64String(byteImage);
                         }
                     }
-                    _invoice_PDF.QRCodeString_VD = ImgReturn;
                     _invoice_PDF.QRCodeString_VD = ImgReturn;
 
                 }
@@ -4002,7 +4139,7 @@ namespace TaamerProject.API.Controllers
         }
 
         [HttpPost("PDFDownloadZatca")]
-        public IActionResult PDFDownloadZatca(IFormFile? UploadedFile)
+        public IActionResult PDFDownloadZatca(IFormFile? UploadedFile, [FromForm] int InvoiceId)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             byte[] pdfByte = { 0 };
@@ -4029,7 +4166,60 @@ namespace TaamerProject.API.Controllers
             return Ok(new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = FilePathReturn });
         }
 
+        [HttpPost("ConvertEncodedXMLToPDFA3ByteArray")]
+        public IActionResult ConvertEncodedXMLToPDFA3ByteArray(IFormFile? UploadedFile, [FromForm] int InvoiceId)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            byte[] pdfByte = { 0 };
+            if (UploadedFile != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    UploadedFile.CopyTo(ms);
+                    pdfByte = ms.ToArray();
+                }
+            }
+            var InvoiceReqData = _invoicesRequestsService.GetInvoiceReq(InvoiceId).Result;
 
+            //
+            PDFA3Result pdfresult = new PDFA3Result();
+            XMLPDF xMLPDF = new XMLPDF();
+            // pdfresult = xMLPDF.ConvertXMLToPDFA3ByteArray(txt_xmlpath.Text, txt_pdfpath.Text);
+            pdfresult = xMLPDF.ConvertEncodedXMLToPDFA3ByteArray(InvoiceReqData.ClearedInvoice, pdfByte, "TempFiles", true);
+            if (pdfresult.IsValid)
+            {
+                // MessageBox.Show("File Saved Successfuly at ");
+                if (pdfresult.PDFA3ContentFile != null && pdfresult.PDFA3ContentFile.Length > 0)
+                {
+
+                    ////dawoudprint
+                    //string existTemp = System.IO.Path.Combine("TempFiles/");
+                    //if (!Directory.Exists(existTemp))
+                    //{
+                    //    Directory.CreateDirectory(existTemp);
+                    //}
+                    //string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
+                    //string FilePath = System.IO.Path.Combine("TempFiles/", FileName);
+                    //System.IO.File.WriteAllBytes(FilePath, pdfresult.PDFA3ContentFile);
+                    //string FilePathReturn = "/TempFiles/" + FileName;
+                    string FilePathReturn = pdfresult.PDFA3FileNameFullPath;
+                    FilePathReturn = FilePathReturn.Replace("\\", "/");
+                    FilePathReturn = "/" + FilePathReturn;
+
+                    return Ok(new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = FilePathReturn });
+                }
+                else
+                {
+                    return Ok(new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "PDF-A3 Not Generated !" });
+                }
+
+            }
+            else
+            {
+                return Ok(new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = pdfresult.ErrorMessage });
+            }
+
+        }
         private void FillSellerOtherIdentification()
         {
             Dictionary<string, string> schemes = new Dictionary<string, string>()
