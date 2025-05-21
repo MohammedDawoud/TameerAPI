@@ -2074,6 +2074,7 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 entity.Property(t => t.DepitNotiId).HasColumnName("DepitNotiId");
                 entity.Property(t => t.InvUUID).HasColumnName("InvUUID");
                 entity.Property(t => t.VoucherAdjustment).HasColumnName("VoucherAdjustment");
+                entity.Property(t => t.PurchaseOrderNo).HasColumnName("PurchaseOrderNo");
 
                 modelBuilder.Entity<Invoices>().HasMany<Acc_InvoicesRequests>(s => s.InvoicesRequests).WithOne(g => g.Invoice).HasForeignKey(s => s.InvoiceId);
                 modelBuilder.Entity<Invoices>().HasMany<VoucherDetails>(s => s.VoucherDetails).WithOne(g => g.Invoices).HasForeignKey(s => s.InvoiceId);

@@ -1532,6 +1532,32 @@ namespace TaamerProject.API.Controllers
             var result = _voucherService.SaveandPostPurchaseForServices(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
             return Ok(new { result.StatusCode, result.ReasonPhrase, result.ReturnedParm });
         }
+
+        [HttpPost("SaveandPostPurchaseOrderForServices")]
+        public IActionResult SaveandPostPurchaseOrderForServices(Invoices voucher)
+        {
+
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var VoucherDatetime = DateTime.ParseExact(voucher.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            if (_globalshared.YearId_G != VoucherDatetime.Year)
+            {
+                var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مالية مختلفة" };
+                return Ok(Msg);
+            }
+            var result = _voucherService.SaveandPostPurchaseOrderForServices(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
+            return Ok(new { result.StatusCode, result.ReasonPhrase, result.ReturnedParm });
+        }
+
+        [HttpPost("ConverOrderToInvoice")]
+        public IActionResult ConverOrderToInvoice(int voucherId)
+            {
+
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            
+            var result = _voucherService.ConverOrderToInvoice(voucherId, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
+            return Ok(new { result.StatusCode, result.ReasonPhrase, result.ReturnedParm });
+        }
+
         [HttpPost("SavePurchaseForServicesRet")]
         public IActionResult SavePurchaseForServicesRet(Invoices voucher)
         {

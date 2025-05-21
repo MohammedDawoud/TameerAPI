@@ -2384,6 +2384,58 @@ namespace TaamerProject.Repository.Repositories
 
         }
 
+        public async Task<IEnumerable<TransactionsVM>> GetAllJournalsByInvIDPurchaseOrder(int? invId, int? YearId, int BranchId)
+        {
+            var Journals = _TaamerProContext.Transactions.Where(s => s.IsDeleted == false && s.Type == 35 /*&&  s.BranchId == BranchId*/ && s.YearId == YearId && s.IsPost == true && s.InvoiceId == invId).Select(tr => new TransactionsVM
+            {
+                TransactionId = tr.TransactionId,
+                InvoiceId = tr.InvoiceId,
+                JournalNo = tr.JournalNo,
+                LineNumber = tr.LineNumber,
+                Depit = tr.Depit ?? 0,
+                Credit = tr.Credit ?? 0,
+                InvoiceNumber = tr.Invoices != null ? tr.Invoices.InvoiceNumber : "",
+                CostCenterName = tr.CostCenters != null ? tr.CostCenters.NameAr : "",
+                TypeName = tr.AccTransactionTypes != null ? tr.AccTransactionTypes.NameAr : "",
+                Notes = tr.Invoices != null ? string.IsNullOrEmpty(tr.Invoices.InvoiceNotes) ? tr.Notes : tr.Invoices.InvoiceNotes : "",
+                AccountCode = tr.Accounts != null ? tr.Accounts.Code : "",
+
+                InvoiceReference = tr.InvoiceReference ?? "",
+                CurrentBalance = tr.CurrentBalance,
+                TransactionDate = tr.TransactionDate,
+                AccountName = tr.Accounts != null ? tr.Accounts.NameAr : "",
+            }).ToList();
+            try
+            {
+
+                return Journals;
+            }
+            catch (Exception ex)
+            {
+                var Journals2 = _TaamerProContext.Transactions.Where(s => s.IsDeleted == false && s.Type == 1 /*&& s.BranchId == BranchId*/ && s.YearId == YearId && s.IsPost == true && s.InvoiceId == invId).Select(tr => new TransactionsVM
+                {
+                    TransactionId = tr.TransactionId,
+                    JournalNo = tr.JournalNo,
+                    LineNumber = tr.LineNumber,
+                    Depit = tr.Depit ?? 0,
+                    Credit = tr.Credit ?? 0,
+                    InvoiceNumber = tr.Invoices != null ? tr.Invoices.InvoiceNumber : "",
+                    CostCenterName = tr.CostCenters != null ? tr.CostCenters.NameAr : "",
+                    TypeName = tr.AccTransactionTypes != null ? tr.AccTransactionTypes.NameAr : "",
+                    Notes = tr.Invoices != null ? string.IsNullOrEmpty(tr.Invoices.InvoiceNotes) ? tr.Notes : tr.Invoices.InvoiceNotes : "",
+                    AccountCode = tr.Accounts != null ? tr.Accounts.Code : "",
+                    InvoiceReference = tr.InvoiceReference ?? "",
+                    CurrentBalance = tr.CurrentBalance,
+                    TransactionDate = tr.TransactionDate,
+                    AccountName = tr.Accounts != null ? tr.Accounts.NameAr : "",
+                }).ToList();
+                return Journals2;
+            }
+
+
+
+        }
+
         public async Task< IEnumerable<TransactionsVM>> GetAllJournalsByReVoucherID(int? invId, int? YearId, int BranchId)
         {
             var Journals = _TaamerProContext.Transactions.Where(s => s.IsDeleted == false && s.Type == 6 /*&& s.BranchId == BranchId*/ && s.YearId == YearId && s.IsPost == true && s.InvoiceId == invId).Select(tr => new TransactionsVM

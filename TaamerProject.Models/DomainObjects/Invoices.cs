@@ -79,6 +79,7 @@ namespace TaamerProject.Models
         public int? DepitNotiId { get; set; }
         public string? InvUUID { get; set; }
         public bool? VoucherAdjustment { get; set; }
+        public string? PurchaseOrderNo { get; set; }
 
 
         //public string? InvoiceHash { get; set; }

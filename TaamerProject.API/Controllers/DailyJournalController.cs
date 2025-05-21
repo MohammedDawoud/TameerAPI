@@ -79,6 +79,14 @@ namespace TaamerProject.API.Controllers
 
         return Ok(_Voucherservice.GetAllJournalsByInvIDPurchase(invId,_globalshared.BranchId_G,_globalshared.YearId_G));
         }
+        [HttpGet("GetAllJournalsByInvIDPurchaseOrder")]
+        public IActionResult GetAllJournalsByInvIDPurchaseOrder(int? invId)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+
+
+            return Ok(_Voucherservice.GetAllJournalsByInvIDPurchaseOrder(invId, _globalshared.BranchId_G, _globalshared.YearId_G));
+        }
 
         [HttpGet("GetAllJournalsByReVoucherID")]
         public IActionResult GetAllJournalsByReVoucherID(int? invId)

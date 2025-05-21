@@ -525,6 +525,13 @@ namespace TaamerProject.API.Helper
                                             new Privilege { Id = 13100406 , ParentId = 131004 , Name =  Resources.PostBack , Description =  Resources.PostBack},
                                               new Privilege { Id = 13100407 , ParentId = 131004 , Name =  "حفظ وترحيل" , Description =  "حفظ وترحيل"},
 
+  new Privilege { Id = 131004001 , ParentId = 1310 , Name = "فاتورة مشتريات", Description = "فاتورة مشتريات" },
+                   new Privilege { Id = 1310040011 , ParentId = 131004 , Name =  Resources.General_Add , Description =  Resources.General_Add},
+                                       new Privilege { Id = 1310040012 , ParentId = 131004001 , Name =  Resources.General_Edit , Description =  Resources.General_Edit},
+                                        new Privilege { Id = 1310040013 , ParentId = 131004001 , Name =  Resources.General_Delete , Description =  Resources.General_Delete},
+                                         new Privilege { Id = 1310040014 , ParentId = 131004001 , Name =  Resources.General_Print , Description =  Resources.General_Print},
+                                              new Privilege { Id = 1310040015 , ParentId = 131004001 , Name =  "حفظ" , Description =  "حفظ"},
+                                              new Privilege { Id = 1310040016 , ParentId = 131004001 , Name =  "تحويل إلي الفاتورة" , Description =  "تحويل إلي فاتورة"},
 
                  new Privilege { Id = 131005 , ParentId = 1310 , Name = " العهد المالية للموظفين", Description = "العهد المالية للموظفين" },
                                     new Privilege { Id = 13100501 , ParentId = 131005 , Name =  "اضافة قيد" , Description =  "اضافة قيد"},

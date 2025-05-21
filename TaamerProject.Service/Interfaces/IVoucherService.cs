@@ -129,7 +129,8 @@ namespace TaamerProject.Service.Interfaces
         GeneralMessage SavePurchaseForServicesNotiDepit(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
 
         GeneralMessage SaveandPostPurchaseForServices(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
-
+        GeneralMessage SaveandPostPurchaseOrderForServices(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
+        GeneralMessage ConverOrderToInvoice(int voucherId, int UserId, int BranchId, int? yearid, string Con);
         GeneralMessage SavePurchaseForServicesRet(Invoices voucher, int UserId, int BranchId, int? yearid, string Con);
         GeneralMessage SavePurchaseForServicesRetNEW_func(Invoices voucher, int UserId, int BranchId, int? yearid, string lang, string Con);
 
@@ -176,7 +177,7 @@ namespace TaamerProject.Service.Interfaces
         //IEnumerable<TransactionsVM> GetAllJournals(int? FromJournal, int? ToJournal, string FromDate, string ToDate,  int BranchId);
         Task<IEnumerable<TransactionsVM>> GetAllJournalsByInvID(int? invId, int BranchId, int? yearid);
         Task<IEnumerable<TransactionsVM>> GetAllJournalsByInvIDPurchase(int? invId, int BranchId, int? yearid);
-
+        Task<IEnumerable<TransactionsVM>> GetAllJournalsByInvIDPurchaseOrder(int? invId, int BranchId, int? yearid);
         Task<IEnumerable<TransactionsVM>> GetAllJournalsByReVoucherID(int? invId, int BranchId, int? yearid);
         Task<IEnumerable<TransactionsVM>> GetAllJournalsByPayVoucherID(int? invId, int BranchId, int? yearid);
         Task<IEnumerable<TransactionsVM>> GetAllJournalsByDailyID(int? invId, int BranchId, int? yearid);

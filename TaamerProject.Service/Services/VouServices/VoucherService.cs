@@ -35,6 +35,8 @@ using Google.Apis.Auth.OAuth2;
 using static Dropbox.Api.TeamLog.LoginMethod;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using TaamerProject.Models.Enums;
 
 namespace TaamerProject.Service.Services
 {
@@ -11025,7 +11027,871 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        public  GeneralMessage SaveandPostPurchaseForServices(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
+        ////////////////////////////////Purchases Order ////////////////////////////////////////
+        public GeneralMessage SaveandPostPurchaseOrderForServices(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
+        {
+            try
+            {
+
+                var ToAccount = 0;
+                var CustomerAccountPaid = 0;
+                var BoxBankAccountPaid = 0;
+                var Branch = _TaamerProContext.Branch.Where(s => s.BranchId == BranchId).FirstOrDefault();
+                if (Branch == null || Branch.CashInvoicesAccId == null)
+                {
+                    //-----------------------------------------------------------------------------------------------------------------
+                    string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                    string ActionNote2 = "فشل في حفظ وترحيل الامر";
+                    _SystemAction.SaveAction("SaveandPostPurchaseOrderForServices", "VoucherService", 1, Resources.EnsureThatPurchasesAreAccounted, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                    //-----------------------------------------------------------------------------------------------------------------
+
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.EnsureThatPurchasesAreAccounted };
+
+                }
+                else if (Branch == null || Branch.BoxAccId == null)
+                {
+                    //-----------------------------------------------------------------------------------------------------------------
+                    string ActionDate3 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                    string ActionNote3 = "فشل في حفظ وترحيل الامر";
+                    _SystemAction.SaveAction("SaveandPostPurchaseOrderForServices", "VoucherService", 1, Resources.EnsureFundAccountAccounted, "", "", ActionDate3, UserId, BranchId, ActionNote3, 0);
+                    //-----------------------------------------------------------------------------------------------------------------
+
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.EnsureFundAccountAccounted };
+
+                }
+                else if (Branch == null || Branch.PurchaseDiscAccId == null)
+                {
+
+                    //-----------------------------------------------------------------------------------------------------------------
+                    string ActionDate4 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                    string ActionNote4 = "فشل في حفظ وترحيل الامر";
+                    _SystemAction.SaveAction("SaveandPostPurchaseOrderForServices", "VoucherService", 1, Resources.EnsureDeductionOfPurchasesIsAccounted, "", "", ActionDate4, UserId, BranchId, ActionNote4, 0);
+                    //-----------------------------------------------------------------------------------------------------------------
+
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.EnsureDeductionOfPurchasesIsAccounted };
+
+                }
+                else if (Branch == null || Branch.SuspendedFundAccId == null)
+                {
+                    //-----------------------------------------------------------------------------------------------------------------
+                    string ActionDate5 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                    string ActionNote5 = "فشل في حفظ وترحيل الامر";
+                    _SystemAction.SaveAction("SaveandPostPurchaseOrderForServices", "VoucherService", 1, Resources.EnsureTheDeductionOfPurchasesAccountedTheBranchAccounts, "", "", ActionDate5, UserId, BranchId, ActionNote5, 0);
+                    //-----------------------------------------------------------------------------------------------------------------
+
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.EnsureTheDeductionOfPurchasesAccountedTheBranchAccounts };
+                }
+
+                foreach (var item in voucher.VoucherDetails.ToList())
+                {
+                    var PurchItem = _TaamerProContext.Acc_Categories.Where(s => s.CategoryId == item.CategoryId).FirstOrDefault();
+                    int AccountIdPurchItem = 0;
+                    if (PurchItem != null)
+                    {
+                        AccountIdPurchItem = PurchItem.AccountId ?? 0;
+                        if (AccountIdPurchItem == 0)
+                        {
+                            return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.selectItemAccountBeforeSaving };
+                        }
+                    }
+                    else
+                    {
+                        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.check_the_item_and_account };
+                    }
+
+                }
+
+
+
+                int? CostId;
+                voucher.TransactionDetails = new List<Transactions>();
+
+                if (yearid == null)
+                {
+                    //-----------------------------------------------------------------------------------------------------------------
+                    string ActionDate6 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                    string ActionNote6 = "فشل في حفظ وترحيل الامر";
+                    _SystemAction.SaveAction("SaveandPostPurchaseOrderForServices", "VoucherService", 1, Resources.choosefinYear, "", "", ActionDate6, UserId, BranchId, ActionNote6, 0);
+                    //-----------------------------------------------------------------------------------------------------------------
+
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.choosefinYear };
+                }
+                decimal Disc = 0;
+                
+                if (voucher.InvoiceId == 0)
+                {
+
+                    if (String.IsNullOrWhiteSpace(Convert.ToString(voucher.ToAccountId)) && voucher.Type == 1)
+                    {
+
+                        //-----------------------------------------------------------------------------------------------------------------
+                        string ActionDate3 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                        string ActionNote3 = "فشل في حفظ وترحيل امر الشراء";
+                        _SystemAction.SaveAction("SaveandPostPurchaseOrderForServices", "VoucherService", 1, "يجب اختيار حساب المورد", "", "", ActionDate3, UserId, BranchId, ActionNote3, 0);
+                        //-----------------------------------------------------------------------------------------------------------------
+
+                        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
+                    }
+
+                    voucher.IsPost = false;
+                    voucher.Rad = false;
+                    voucher.IsTax = voucher.VoucherDetails.Where(s => s.TaxType == 2).FirstOrDefault() != null ? true : false;
+                    voucher.YearId = yearid;
+                    voucher.ToAccountId = voucher.ToAccountId;
+                    voucher.AddUser = UserId;
+                    voucher.BranchId = BranchId;
+                    voucher.AddDate = DateTime.Now;
+                    voucher.ProjectId = voucher.ProjectId;
+                    voucher.DunCalc = false;
+
+
+                    var vouchercheck = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && s.Type == voucher.Type && s.BranchId == BranchId && s.InvoiceNumber == voucher.InvoiceNumber);
+                    if (vouchercheck.Count() > 0)
+                    {
+                        //var NextInv = _InvoicesRepository.GenerateNextInvoiceNumber(voucher.Type, yearid, BranchId).Result;
+                        var NewNextInv = GenerateVoucherNumberNewPro(voucher.Type, BranchId, yearid, voucher.Type, Con).Result;
+                        //var NewNextInv = string.Format("{0:000000}", NextInv);
+
+                        voucher.InvoiceNumber = NewNextInv.ToString();
+
+                    }
+
+                    //if (voucher.ProjectId != null)
+                    //{
+                    //    try
+                    //    { CostId = _TaamerProContext.CostCenters.Where(w => w.ProjId == voucher.ProjectId && w.IsDeleted == false).Select(s => s.CostCenterId).FirstOrDefault(); }
+                    //    catch
+                    //    {
+                    //        try
+                    //        { CostId = _TaamerProContext.CostCenters.Where(w => w.BranchId == BranchId && w.IsDeleted == false && w.ProjId == 0).Select(s => s.CostCenterId).FirstOrDefault(); }
+                    //        catch
+                    //        { CostId = null; }
+                    //    }
+
+                    //}
+                    //else
+                    //{
+                    //    try
+                    //    { CostId = _TaamerProContext.CostCenters.Where(w => w.BranchId == BranchId && w.IsDeleted == false && w.ProjId == 0).Select(s => s.CostCenterId).FirstOrDefault(); }
+                    //    catch
+                    //    { CostId = null; }
+                    //}
+                    //if (CostId == 0)
+                    //{
+                    //    try
+                    //    { CostId = _TaamerProContext.CostCenters.Where(w => w.BranchId == BranchId && w.IsDeleted == false && w.ProjId == 0).Select(s => s.CostCenterId).FirstOrDefault(); }
+                    //    catch
+                    //    { CostId = null; }
+                    //}
+
+                    if (voucher.CostCenterId > 0)
+                    {
+                        CostId = voucher.CostCenterId;
+                    }
+                    else
+                    {
+                        try
+                        { CostId = _TaamerProContext.CostCenters.Where(w => w.BranchId == BranchId && w.IsDeleted == false && w.ProjId == 0).Select(s => s.CostCenterId).FirstOrDefault(); }
+                        catch
+                        { CostId = null; }
+                    }
+
+                    voucher.CostCenterId = CostId;
+                    voucher.InvoiceValueText = ConvertToWord_NEW((voucher.InvoiceValue + voucher.TaxAmount - (voucher.DiscountValue ?? 0)).ToString());
+
+                    var AccOVAT = _TaamerProContext.Accounts.Where(w => w.AccountId == Branch.SuspendedFundAccId).Select(s => s.AccountId).FirstOrDefault();
+
+                    _TaamerProContext.Invoices.Add(voucher);
+                    //add details
+                    var ObjList = new List<object>();
+
+                    int? itemToAccountId = 0;
+                    int? itemAccountId = 0;
+                    var vouchertypename = "";
+                    var vouchertypename2 = "";
+                    int? itemInvoiceId = 0;
+                    decimal? AcPaid = 0;
+                    decimal? AcPaid2 = 0;
+                    decimal? AcPaid3 = 0;
+
+                    decimal? SVAT = 0;
+                    int? itemTaxType = 0;
+                    int? AccountMsrofat = 0;
+
+                    foreach (var item in voucher.VoucherDetails.ToList())
+                    {
+
+
+                        ToAccount = voucher.VoucherDetails.FirstOrDefault().AccountId ?? 0;
+
+                        // var ServicesUpdated = _TaamerProContext.Acc_Services_Price.Where(s=>s.ServicesId== item.ServicesPriceId).FirstOrDefault();
+                        //if (ServicesUpdated != null)
+                        //{
+                        //    AccountEradat = ServicesUpdated.AccountId ?? Branch.ContractsAccId;
+                        //}
+
+                        AccountMsrofat = Branch.CashInvoicesAccId;
+
+                        ObjList.Add(new { item.AccountId, item.CostCenterId });
+                        item.AddUser = UserId;
+                        item.PayType = voucher.PayType;
+
+                        item.AddDate = DateTime.Now;
+
+                        decimal? TotalWithoutVAT = (item.Amount);
+                        decimal? TotalWithVAT = (item.Amount + item.TaxAmount);
+                        SVAT = (voucher.TaxAmount);
+                        //SVAT = SVAT + (item.TaxAmount * item.Qty);
+
+                        item.CostCenterId = CostId;
+                        decimal? Depit = item.Amount + item.TaxAmount;
+
+                        decimal? VAT = item.TaxAmount;
+                        item.TotalAmount = item.TotalAmount;
+
+                        item.TFK = ConvertToWord_NEW(Depit.ToString());
+
+                        _TaamerProContext.VoucherDetails.Add(item);
+                        vouchertypename = voucher.Type == 1 ? " فاتورة" + "امر شراء" : "فاتورة";
+                        vouchertypename2 = " خصم امر شراء  ";
+
+                        itemToAccountId = item.ToAccountId;
+                        itemAccountId = voucher.VoucherDetails.FirstOrDefault().AccountId ?? 0;
+                        itemInvoiceId = item.InvoiceId;
+                        itemTaxType = item.TaxType;
+
+                    }
+                    CustomerAccountPaid = itemToAccountId ?? 0; //will be override if paid=invoicevalue
+                    BoxBankAccountPaid = ToAccount; //will be override if paid=invoicevalue
+                    if (voucher.PaidValue == 0 || voucher.PaidValue == null)
+                    {
+                        if (itemTaxType == 2)
+                        {
+                            AcPaid = Convert.ToDecimal(voucher.InvoiceValue) + SVAT - Disc;
+                            AcPaid2 = Convert.ToDecimal(voucher.InvoiceValue);
+                            AcPaid3 = 0;
+                        }
+                        else
+                        {
+                            AcPaid = Convert.ToDecimal(voucher.TotalValue) - Disc;
+                            AcPaid2 = Convert.ToDecimal(voucher.TotalValue) - SVAT;
+                            AcPaid3 = 0;
+                        }
+                    }
+                    else
+                    {
+                        if (Convert.ToInt32(voucher.PaidValue) == Convert.ToInt32(voucher.TotalValue))
+                        {
+                            AcPaid = Convert.ToDecimal(voucher.PaidValue);
+                            AcPaid2 = Convert.ToDecimal(voucher.PaidValue) + Disc - SVAT;
+                            //Edit 21-01-2024 Ostaze Mohammed Req
+                            //AcPaid3 = 0;
+                            AcPaid3 = Convert.ToDecimal(voucher.PaidValue);
+                            var CustomerData = _TaamerProContext.Acc_Suppliers.Where(s => s.SupplierId == voucher.SupplierId).FirstOrDefault();
+                            CustomerAccountPaid = CustomerData.AccountId ?? 0;
+                            BoxBankAccountPaid = itemToAccountId ?? 0;
+                        }
+                        else
+                        {
+                            if (itemTaxType == 2)
+                            {
+                                AcPaid = Convert.ToDecimal(voucher.InvoiceValue) + SVAT - Disc;
+                                AcPaid2 = Convert.ToDecimal(voucher.InvoiceValue);
+                                AcPaid3 = Convert.ToDecimal(voucher.PaidValue);
+                            }
+                            else
+                            {
+                                AcPaid = Convert.ToDecimal(voucher.TotalValue) - Disc;
+                                AcPaid2 = Convert.ToDecimal(voucher.TotalValue) - SVAT;
+                                AcPaid3 = Convert.ToDecimal(voucher.PaidValue);
+                            }
+
+                        }
+
+                    }
+                    if (Convert.ToInt32(voucher.PaidValue ?? 0) < Convert.ToInt32(voucher.TotalValue ?? 0))
+                    {
+                        var CustomerDataV = _TaamerProContext.Acc_Suppliers.Where(s => s.SupplierId == voucher.SupplierId).FirstOrDefault();
+                        CustomerAccountPaid = CustomerDataV.AccountId ?? 0;
+                    }
+                    _TaamerProContext.SaveChanges();
+                    voucher.TransactionDetails.Add(new Transactions
+                    {
+
+                        AccTransactionDate = voucher.Date,
+                        AccTransactionHijriDate = voucher.HijriDate,
+                        TransactionDate = voucher.Date,
+                        TransactionHijriDate = voucher.HijriDate,
+                        AccountId = CustomerAccountPaid,
+                        CostCenterId = CostId,
+                        AccountType = _TaamerProContext.Accounts.Where(s => s.AccountId == CustomerAccountPaid)?.FirstOrDefault()?.Type,
+                        Type = voucher.Type,
+                        LineNumber = 1,
+                        Depit = 0,
+                        Credit = AcPaid,
+                        YearId = yearid,
+                        Notes = "" + vouchertypename + " " + "رقم" + " " + voucher.InvoiceNumber + "",
+                        Details = "" + vouchertypename + " " + "رقم" + " " + voucher.InvoiceNumber + "",
+                        InvoiceReference = "",
+                        InvoiceId = voucher.InvoiceId,
+                        IsPost = false,
+                        BranchId = BranchId,
+                        AddDate = DateTime.Now,
+                        AddUser = UserId,
+                        IsDeleted = false,
+                    });
+
+                    if (voucher.DiscountValue != null)
+                    {
+                        if (Convert.ToInt32(voucher.DiscountValue) != 0)
+                        {
+                            voucher.TransactionDetails.Add(new Transactions
+                            {
+
+                                AccTransactionDate = voucher.Date,
+                                AccTransactionHijriDate = voucher.HijriDate,
+                                TransactionDate = voucher.Date,
+                                TransactionHijriDate = voucher.HijriDate,
+                                AccountId = Branch.PurchaseDiscAccId,
+                                CostCenterId = CostId,
+                                AccountType = _TaamerProContext.Accounts.Where(s => s.AccountId == Branch.PurchaseDiscAccId)?.FirstOrDefault()?.Type,
+                                Type = voucher.Type,
+                                LineNumber = 1,
+                                Depit = 0,
+                                Credit = voucher.DiscountValue,
+                                YearId = yearid,
+                                Notes = "" + vouchertypename2 + " " + "رقم" + " " + voucher.InvoiceNumber + "",
+                                Details = "" + vouchertypename2 + " " + "رقم" + " " + voucher.InvoiceNumber + "",
+                                InvoiceReference = "",
+
+                                InvoiceId = voucher.InvoiceId,
+                                IsPost = false,
+                                BranchId = BranchId,
+                                AddDate = DateTime.Now,
+                                AddUser = UserId,
+                                IsDeleted = false,
+                            });
+
+                        }
+
+                    }
+                    ////credit 
+
+
+                    foreach (var item in voucher.VoucherDetails.ToList())
+                    {
+                        var PurchItem = _TaamerProContext.Acc_Categories.Where(s => s.CategoryId == item.CategoryId).FirstOrDefault();
+
+                        int AccountIdPurchItem = 0;
+                        if (PurchItem != null)
+                        {
+                            AccountIdPurchItem = PurchItem.AccountId ?? 0;
+                            if (AccountIdPurchItem == 0)
+                            {
+                                //return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.selectItemAccountBeforeSaving };
+                            }
+                        }
+                        else
+                        {
+                            //return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.check_the_item_and_account };
+                        }
+                        //item.AccountId = AccountIdPurchItem;
+                        item.Qty = item.Qty ?? 1;
+                        item.DiscountValue_Det = item.DiscountValue_Det ?? 0;
+
+                        if (itemTaxType == 2)
+                        {
+                            item.Amount = (item.Amount * item.Qty) - (item.DiscountValue_Det);
+                        }
+                        else
+                        {
+                            item.Amount = item.TotalAmount - (item.TaxAmount);
+                        }
+                        voucher.TransactionDetails.Add(new Transactions
+                        {
+                            AccTransactionDate = voucher.Date,
+                            AccTransactionHijriDate = voucher.HijriDate,
+                            TransactionDate = voucher.Date,
+                            TransactionHijriDate = voucher.HijriDate,
+                            AccountId = AccountIdPurchItem,
+
+                            CostCenterId = CostId,
+                            AccountType = _TaamerProContext.Accounts.Where(s => s.AccountId == AccountIdPurchItem)?.FirstOrDefault()?.Type,
+                            Type = voucher.Type,
+                            LineNumber = 2,
+                            Credit = 0,
+                            Depit = item.Amount,
+                            YearId = yearid,
+                            Notes = "" + vouchertypename + " " + "رقم" + " " + voucher.InvoiceNumber + "",
+                            Details = "" + vouchertypename + " " + "رقم" + " " + voucher.InvoiceNumber + "",
+                            InvoiceReference = "",
+
+                            InvoiceId = voucher.InvoiceId,
+                            IsPost = false,
+                            BranchId = BranchId,
+                            AddDate = DateTime.Now,
+                            AddUser = UserId,
+                            IsDeleted = false,
+                            VoucherDetailsId = item.VoucherDetailsId,
+
+                        });
+
+                    }
+
+
+                    voucher.TransactionDetails.Add(new Transactions
+                    {
+
+                        AccTransactionDate = voucher.Date,
+                        AccTransactionHijriDate = voucher.HijriDate,
+                        TransactionDate = voucher.Date,
+                        TransactionHijriDate = voucher.HijriDate,
+                        //AccountId = AccOVAT,// الضريبة
+                        AccountId = Branch.SuspendedFundAccId,// الضريبة
+
+                        CostCenterId = CostId,//item.CostCenterId,
+                        AccountType = _TaamerProContext.Accounts.Where(s => s.AccountId == Branch.SuspendedFundAccId)?.FirstOrDefault()?.Type,
+                        Type = voucher.Type,
+                        LineNumber = 3,
+                        Credit = 0,
+                        Depit = SVAT,
+                        YearId = yearid,
+                        Notes = "" + vouchertypename + " " + "رقم" + " " + voucher.InvoiceNumber + "",
+                        Details = "" + vouchertypename + " " + "رقم" + " " + voucher.InvoiceNumber + "",
+                        InvoiceReference = "",
+
+                        InvoiceId = voucher.InvoiceId,
+                        IsPost = false,
+                        BranchId = BranchId,
+                        AddDate = DateTime.Now,
+                        AddUser = UserId,
+                        IsDeleted = false,
+                    });
+
+                    if (AcPaid3 != 0)
+                    {
+                        voucher.TransactionDetails.Add(new Transactions
+                        {
+                            AccTransactionDate = voucher.Date,
+                            AccTransactionHijriDate = voucher.HijriDate,
+                            TransactionDate = voucher.Date,
+                            TransactionHijriDate = voucher.HijriDate,
+                            AccountId = BoxBankAccountPaid,
+                            CostCenterId = CostId,
+                            AccountType = _TaamerProContext.Accounts.Where(s => s.AccountId == BoxBankAccountPaid)?.FirstOrDefault()?.Type,
+                            Type = voucher.Type,
+                            LineNumber = 4,
+                            Depit = 0,
+                            Credit = AcPaid3,
+                            YearId = yearid,
+                            Notes = "" + vouchertypename + " " + "رقم" + " " + voucher.InvoiceNumber + "",
+                            Details = "" + vouchertypename + " " + "رقم" + " " + voucher.InvoiceNumber + "",
+                            InvoiceReference = "",
+                            InvoiceId = voucher.InvoiceId,
+                            IsPost = false,
+                            BranchId = BranchId,
+                            AddDate = DateTime.Now,
+                            AddUser = UserId,
+                            IsDeleted = false,
+                        });
+                        voucher.TransactionDetails.Add(new Transactions
+                        {
+                            AccTransactionDate = voucher.Date,
+                            AccTransactionHijriDate = voucher.HijriDate,
+                            TransactionDate = voucher.Date,
+                            TransactionHijriDate = voucher.HijriDate,
+                            AccountId = CustomerAccountPaid,
+                            CostCenterId = CostId,
+                            AccountType = _TaamerProContext.Accounts.Where(s => s.AccountId == CustomerAccountPaid)?.FirstOrDefault()?.Type,
+                            Type = voucher.Type,
+                            LineNumber = 5,
+                            Depit = AcPaid3,
+                            Credit = 0,
+                            YearId = yearid,
+                            Notes = "" + vouchertypename + " " + "رقم" + " " + voucher.InvoiceNumber + "",
+                            Details = "" + vouchertypename + " " + "رقم" + " " + voucher.InvoiceNumber + "",
+                            InvoiceReference = "",
+                            InvoiceId = voucher.InvoiceId,
+                            IsPost = false,
+                            BranchId = BranchId,
+                            AddDate = DateTime.Now,
+                            AddUser = UserId,
+                            IsDeleted = false,
+                        });
+
+
+                    }
+
+                    _TaamerProContext.Transactions.AddRange(voucher.TransactionDetails);
+
+                    if (voucher.ServicesPriceOffer != null && voucher.ServicesPriceOffer.Count > 0)
+                    {
+                        foreach (var item in voucher.ServicesPriceOffer)
+                        {
+                            item.AddUser = UserId;
+                            item.AddDate = DateTime.Now;
+                            item.InvoiceId = voucher.InvoiceId;
+                            _TaamerProContext.Acc_Services_PriceOffer.Add(item);
+                        }
+                    }
+
+                    _TaamerProContext.SaveChanges();
+                    voucher.QRCodeNum = "200010001000" + voucher.InvoiceId.ToString();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 2 && s.YearId == yearid && s.InvoiceNumber == voucher.InvoiceNumber && s.TotalValue == voucher.TotalValue && s.BranchId == BranchId && s.Date == voucher.Date).ToList();
+                    if (ExistInvoice.Count() > 1)
+                    {
+                        var invid = ExistInvoice.FirstOrDefault().InvoiceId;
+                        var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
+                        ExistInvoice.FirstOrDefault().IsDeleted = true;
+                        ExistInvoice.FirstOrDefault().DeleteUser = 100000;
+                        var VoucherDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
+                        var TransactionDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
+                        if (VoucherDetails.Count() > 0) _TaamerProContext.VoucherDetails.RemoveRange(VoucherDetails);
+                        if (TransactionDetails.Count() > 0) _TaamerProContext.Transactions.RemoveRange(TransactionDetails);
+                    }
+
+                    if (voucher.IsPost != true)
+                    {
+                        voucher.IsPost = true;
+                        //voucher.PostDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                        //voucher.PostHijriDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("ar"));
+                        voucher.PostDate = voucher.Date;
+                        voucher.PostHijriDate = voucher.HijriDate;
+
+                        var newJournal = new Journals();
+                        var JNo = _JournalsRepository.GenerateNextJournalNumber(yearid ?? default(int), BranchId).Result;
+                        if (voucher.Type == 10)
+                        {
+                            JNo = 1;
+                        }
+                        else
+                        {
+                            JNo = (newJournal.VoucherType == 10 && JNo == 1) ? JNo : (newJournal.VoucherType != 10 && JNo == 1) ? JNo + 1 : JNo;
+                        }
+
+
+                        newJournal.JournalNo = JNo;
+                        newJournal.YearMalia = yearid ?? default(int);
+                        newJournal.VoucherId = voucher.InvoiceId;
+                        newJournal.VoucherType = voucher.Type;
+                        newJournal.BranchId = voucher.BranchId ?? 0;
+                        newJournal.AddDate = DateTime.Now;
+                        newJournal.AddUser = newJournal.UserId = UserId;
+                        _TaamerProContext.Journals.Add(newJournal);
+                        foreach (var trans in voucher.TransactionDetails.ToList())
+                        {
+                            trans.IsPost = true;
+                            trans.JournalNo = newJournal.JournalNo;
+                        }
+                        voucher.JournalNumber = newJournal.JournalNo;
+                    }
+                    else
+                    {
+                        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.EnterNewInvoice };
+
+                    }
+                }
+                else
+                {
+                    var VoucherUpdated = _TaamerProContext.Invoices.Where(s => s.InvoiceId == voucher.InvoiceId)?.FirstOrDefault();
+
+
+                    if (VoucherUpdated != null)
+                    {
+                        //if (VoucherUpdated.IsPost == true)
+                        //{
+                        //    //-----------------------------------------------------------------------------------------------------------------
+                        //    string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                        //    string ActionNote2 = "فشل في حفظ امر الشراء";
+                        //    _SystemAction.SaveAction("SaveandPostPurchaseOrderForServices", "VoucherService", 2, Resources.canteditevoucher, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                        //    //-----------------------------------------------------------------------------------------------------------------
+                        //    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.canteditevoucher };
+                        //}
+
+                        VoucherUpdated.Notes = voucher.Notes ?? "";
+                        VoucherUpdated.InvoiceNotes = voucher.InvoiceNotes;
+                        VoucherUpdated.InvoiceValue = voucher.InvoiceValue;
+                        VoucherUpdated.RecevierTxt = voucher.RecevierTxt;
+                        VoucherUpdated.Date = voucher.Date;
+                        VoucherUpdated.HijriDate = voucher.HijriDate;
+                        VoucherUpdated.PayType = voucher.PayType;
+                        VoucherUpdated.InvoiceReference = voucher.InvoiceReference;
+                        VoucherUpdated.CustomerId = voucher.CustomerId;
+                        VoucherUpdated.JournalNumber = voucher.JournalNumber;
+                        VoucherUpdated.TotalValue = voucher.TotalValue ;
+                        VoucherUpdated.TaxAmount = voucher.TaxAmount;
+                        VoucherUpdated.IsTax = voucher?.VoucherDetails?.Where(s => s.TaxType == 2).FirstOrDefault() != null ? true : false;
+                        VoucherUpdated.BranchId = BranchId;
+                        VoucherUpdated.UpdateDate = DateTime.Now;
+                        VoucherUpdated.UpdateUser = UserId;
+                        VoucherUpdated.ToAccountId = voucher.ToAccountId;
+                        VoucherUpdated.InvoiceValueText = ConvertToWord_NEW((voucher.InvoiceValue + voucher.TaxAmount - (voucher.DiscountValue ?? 0)).ToString());
+
+                    }
+                    //delete existing details 
+                    var VoucherDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == VoucherUpdated.InvoiceId).ToList();
+                    var TransactionDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == VoucherUpdated.InvoiceId).ToList();
+
+                    _TaamerProContext.VoucherDetails.RemoveRange(VoucherDetails);
+                    _TaamerProContext.Transactions.RemoveRange(TransactionDetails);
+
+                    // add new details
+                    var ObjList = new List<object>();
+                    foreach (var item in voucher.VoucherDetails.ToList())
+                    {
+                     
+                        ObjList.Add(new { item.AccountId, item.CostCenterId });
+                        item.InvoiceId = voucher.InvoiceId;
+                        item.PayType = voucher.PayType;
+                        item.AddUser = UserId;
+                        item.AddDate = DateTime.Now;
+                        decimal? Depit = item.TotalAmount;
+                        item.TFK = ConvertToWord_NEW(Depit.ToString());
+
+                        //item.TFK = utilDetails.GetNumberAr();
+                        // decimal Credit = item.TotalAmount;
+                        _TaamerProContext.VoucherDetails.Add(item);
+                        //// add transaction
+
+
+
+                        string vouchertypename = voucher.Type == 6 ? "سند قبض" : "سند صرف";
+                        if (String.IsNullOrWhiteSpace(Convert.ToString(item.ToAccountId)) && voucher.Type == 6)
+                        {
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote2 = "فشل في حفظ الامر";
+                            _SystemAction.SaveAction("SaveVoucher", "VoucherService", 1, Resources.ChooseReceiptaccount, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                            //-----------------------------------------------------------------------------------------------------------------
+
+                            return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.ChooseReceiptaccount };
+                        }
+                        else if (String.IsNullOrWhiteSpace(Convert.ToString(item.ToAccountId)) && voucher.Type == 5)
+                        {
+
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote2 = "فشل في حفظ الامر";
+                            _SystemAction.SaveAction("SaveVoucher", "VoucherService", 1, Resources.Chooseexchangeaccount, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                            //-----------------------------------------------------------------------------------------------------------------
+
+                            return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.Chooseexchangeaccount };
+                        }
+                        else if (String.IsNullOrWhiteSpace(Convert.ToString(item.ToAccountId)) && voucher.Type == 2)
+                        {
+
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote2 = "فشل في حفظ الامر";
+                            _SystemAction.SaveAction("SaveVoucher", "VoucherService", 1, Resources.choosecustomeraccount, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                            //-----------------------------------------------------------------------------------------------------------------
+
+                            return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.choosecustomeraccount };
+                        }
+                        //  _TaamerProContext.Transactions.AddRange(voucher.TransactionDetails);
+
+                        //depit 
+
+
+                        var BranchCost = 0;
+                        var CostCenterUpdated = _TaamerProContext.CostCenters.Where(s => s.CostCenterId == item.CostCenterId && s.IsDeleted == false && s.ProjId == 0).FirstOrDefault();
+                        if (CostCenterUpdated != null)
+                        {
+                            var BranchUpdated = _TaamerProContext.Branch.Where(s => s.IsDeleted == false && s.BranchId == CostCenterUpdated.BranchId).FirstOrDefault();
+                            if (BranchUpdated != null)
+                            {
+                                BranchCost = BranchUpdated.BranchId;
+                            }
+                            else
+                            {
+                                BranchCost = BranchId;
+                            }
+                        }
+                        else
+                        {
+                            BranchCost = BranchId;
+                        }
+
+
+                        voucher.TransactionDetails.Add(new Transactions
+                        {
+                            AccTransactionDate = voucher.Date,
+                            AccTransactionHijriDate = voucher.HijriDate,
+                            TransactionDate = voucher.Date,
+                            TransactionHijriDate = voucher.HijriDate,
+                            AccountId = VoucherUpdated.Type == 6 ? item.ToAccountId : item.AccountId,
+                            CostCenterId = item.CostCenterId,
+                            AccountType = _TaamerProContext.Accounts.Where(s => s.AccountId == (VoucherUpdated.Type == 6 ? item.ToAccountId : item.AccountId))?.FirstOrDefault()?.Type,
+                            Type = VoucherUpdated.Type,
+                            LineNumber = 1,
+                            Depit = Depit,
+                            Credit = 0,
+
+
+                            YearId = yearid,
+                            Notes = "" + vouchertypename + " " + "رقم" + " " + VoucherUpdated.InvoiceNumber + "",
+                            Details = "" + vouchertypename + " " + "رقم" + " " + VoucherUpdated.InvoiceNumber + "",
+                            //InvoiceReference = VoucherUpdated.InvoiceNumber.ToString(),
+                            InvoiceReference = "",
+
+                            InvoiceId = item.InvoiceId,
+                            IsPost = false,
+                            BranchId = BranchCost,
+                            AddDate = DateTime.Now,
+                            AddUser = UserId,
+                            IsDeleted = false,
+                        });
+                        //credit 
+                        voucher.TransactionDetails.Add(new Transactions
+                        {
+                            AccTransactionDate = voucher.Date,
+                            AccTransactionHijriDate = voucher.HijriDate,
+                            TransactionDate = voucher.Date,
+                            TransactionHijriDate = voucher.HijriDate,
+                            AccountId = VoucherUpdated.Type == 6 ? item.AccountId : item.ToAccountId,
+                            CostCenterId = item.CostCenterId,
+                            AccountType = _TaamerProContext.Accounts.Where(s => s.AccountId == (VoucherUpdated.Type == 6 ? item.ToAccountId : item.AccountId))?.FirstOrDefault()?.Type,
+                            Type = VoucherUpdated.Type,
+                            LineNumber = 2,
+                            Credit = Depit,
+                            Depit = 0,
+                            YearId = yearid,
+                            Notes = "" + vouchertypename + " " + "رقم" + " " + VoucherUpdated.InvoiceNumber + "",
+                            Details = "" + vouchertypename + " " + "رقم" + " " + VoucherUpdated.InvoiceNumber + "",
+                            //InvoiceReference = VoucherUpdated.InvoiceNumber.ToString(),
+                            InvoiceReference = "",
+
+                            InvoiceId = item.InvoiceId,
+                            IsPost = false,
+                            BranchId = BranchCost,
+                            AddDate = DateTime.Now,
+                            AddUser = UserId,
+                            IsDeleted = false,
+                        });
+                    }
+                    _TaamerProContext.Transactions.AddRange(voucher.TransactionDetails);
+
+                    _TaamerProContext.SaveChanges();
+                    var ExistInvoice = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.Type == 6 && s.YearId == yearid && s.InvoiceNumber == (VoucherUpdated!.InvoiceNumber ?? "0") && s.InvoiceValue == voucher.InvoiceValue && s.BranchId == BranchId && s.Date == voucher.Date).ToList();
+                    if (ExistInvoice.Count() > 1)
+                    {
+                        var invid = ExistInvoice.FirstOrDefault().InvoiceId;
+                        var invid2 = ExistInvoice.LastOrDefault().InvoiceId;
+                        ExistInvoice.FirstOrDefault().IsDeleted = true;
+                        ExistInvoice.FirstOrDefault().DeleteUser = 100000;
+                        var VoucDetails = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == invid).ToList();
+                        var TransaDetails = _TaamerProContext.Transactions.Where(s => s.InvoiceId == invid).ToList();
+                        if (VoucDetails.Count() > 0) _TaamerProContext.VoucherDetails.RemoveRange(VoucDetails);
+                        if (TransaDetails.Count() > 0) _TaamerProContext.Transactions.RemoveRange(TransaDetails);
+                    }
+                    _TaamerProContext.SaveChanges();
+                    //-----------------------------------------------------------------------------------------------------------------
+                    string _ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                    string _ActionNote = " تعديل سند  " + GetVoucherType(voucher.Type) + voucher.InvoiceNumber;
+                    _SystemAction.SaveAction("SaveVoucher", "VoucherService", 2, Resources.General_SavedSuccessfully, "", "", _ActionDate, UserId, BranchId, _ActionNote, 1);
+                    //-----------------------------------------------------------------------------------------------------------------
+
+                    return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully, ReturnedParm = voucher.InvoiceId };
+
+                }
+                _TaamerProContext.SaveChanges();
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = "اضافة  أمر شراء جديد" + " برقم " + voucher.InvoiceNumber; ;
+                _SystemAction.SaveAction("SaveandPostPurchaseOrderForServices", "VoucherService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                //-----------------------------------------------------------------------------------------------------------------
+                List<int> voDetIds = new List<int>();
+                foreach (var itemV in voucher.VoucherDetails)
+                {
+                    voDetIds.Add(itemV.VoucherDetailsId);
+                }
+                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully, ReturnedParm = voucher.InvoiceId, InvoiceIsDeleted = voucher.IsDeleted, voucherDetObj = voDetIds };
+            }
+            catch (Exception ex)
+            {
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = "فشل في حفظ وترحيل امر الشراء";
+                _SystemAction.SaveAction("SaveandPostPurchaseOrderForServices", "VoucherService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                //-----------------------------------------------------------------------------------------------------------------
+
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
+            }
+        }
+
+        public GeneralMessage ConverOrderToInvoice(int voucherId, int UserId, int BranchId, int? yearid, string Con)
+        {
+            try
+            {
+                if (yearid == null)
+                {
+
+                    //-----------------------------------------------------------------------------------------------------------------
+                    string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                    string ActionNote2 = Resources.General_SavedFailed;
+                    _SystemAction.SaveAction("ConverOrderToInvoice", "VoucherService", 2, Resources.choosefinYear, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                    //-----------------------------------------------------------------------------------------------------------------
+
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.choosefinYear };
+                }
+                Invoices? order = _TaamerProContext.Invoices.Where(x => x.InvoiceId == voucherId).Include(x=>x.VoucherDetails).FirstOrDefault();
+                Invoices? order2 = order;
+                if (order != null)
+                {
+                    var orderNum = order.InvoiceNumber;
+                    var orderId = order.InvoiceId;
+
+                    var newInvoiceNumber = GenerateVoucherNumberNewPro(1, BranchId, yearid, 1, Con).Result.ToString();
+
+                    // Detach the original order from the context
+                    _TaamerProContext.Entry(order).State = EntityState.Detached;
+
+                    // Modify as needed and reset ID
+                    order.InvoiceId = 0;
+                    order.Type = (int)VoucherType.Purches;
+                    order.PurchaseOrderNo = orderNum;
+                    order.InvoiceNumber = newInvoiceNumber;
+
+                    // Detach child details if needed
+                    foreach (var detail in order.VoucherDetails)
+                    {
+                        _TaamerProContext.Entry(detail).State = EntityState.Detached;
+                        detail.VoucherDetailsId = 0; // if VoucherDetails has its own identity column
+                    }
+
+                    // Add back as new invoice
+                    _TaamerProContext.Invoices.Add(order);
+                    var result = SaveandPostPurchaseForServices(order, UserId, BranchId, yearid, Con);
+
+                    if (result.StatusCode == HttpStatusCode.OK)
+                    {
+                        // Restore original order if needed
+                        var originalOrder = _TaamerProContext.Invoices.FirstOrDefault(x => x.InvoiceId == orderId);
+                        if (originalOrder != null)
+                        {
+                            originalOrder.Type = (int)VoucherType.PurchesOrder;
+                            originalOrder.PurchaseOrderNo = newInvoiceNumber;
+                            _TaamerProContext.SaveChanges();
+                        }
+                    }
+                }
+
+                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "تم التحويل الي فاتورة مشتريات" };
+
+
+            }
+            catch (Exception ex)
+            { //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = Resources.General_SavedFailed;
+                _SystemAction.SaveAction("ConverOrderToInvoice", "VoucherService", 2, Resources.FailedPosting, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                //-----------------------------------------------------------------------------------------------------------------
+
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "فشل في تحوير الامر الي فاتورة شراء" };
+            }
+        }
+
+        public GeneralMessage SaveandPostPurchaseForServices(Invoices voucher, int UserId, int BranchId, int? yearid, string Con)
         {
             try
             {
@@ -11248,7 +12114,7 @@ namespace TaamerProject.Service.Services
                         ObjList.Add(new { item.AccountId, item.CostCenterId });
                         item.AddUser = UserId;
                         item.PayType = voucher.PayType;
-
+                        item.VoucherDetailsId = 0;
                         item.AddDate = DateTime.Now;
 
                         decimal? TotalWithoutVAT = (item.Amount);
@@ -13246,7 +14112,7 @@ namespace TaamerProject.Service.Services
                     {
                         voDetIds.Add(itemV.VoucherDetailsId);
                     }
-                    return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully, ReturnedParm = voucher.InvoiceId, InvoiceIsDeleted = voucher.IsDeleted, voucherDetObj = voDetIds };
+                    return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully, ReturnedParm = voucher.InvoiceId, InvoiceIsDeleted = voucher.IsDeleted, voucherDetObj = voDetIds,ReturnedStr=voucher.InvoiceNumber };
                 }
                 else
                 {
@@ -16528,7 +17394,7 @@ namespace TaamerProject.Service.Services
 
                 if(voucher!=null)
                 {
-                    if (voucher.IsPost == true)
+                    if (voucher.IsPost == true && voucher.Type !=(int)VoucherType.PurchesOrder)
                     {
                         //-----------------------------------------------------------------------------------------------------------------
                         string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
@@ -17152,7 +18018,14 @@ namespace TaamerProject.Service.Services
             }
             return new List<TransactionsVM>();
         }
-
+        public async Task<IEnumerable<TransactionsVM>> GetAllJournalsByInvIDPurchaseOrder(int? invId, int BranchId, int? yearid)
+        {
+            if (yearid != null)
+            {
+                return await _TransactionsRepository.GetAllJournalsByInvIDPurchaseOrder(invId, yearid, BranchId);
+            }
+            return new List<TransactionsVM>();
+        }
         public async Task<IEnumerable<TransactionsVM>> GetAllJournalsByReVoucherID(int? invId, int BranchId, int? yearid)
         {
             if (yearid != null)
@@ -17472,6 +18345,10 @@ namespace TaamerProject.Service.Services
             else if (vouchertype == 33)
             {
                 TypeName = "إشعار مدين";
+            }
+            else if (vouchertype == 35)
+            {
+                TypeName = "أمر شراء ";
             }
             return TypeName;
         }
