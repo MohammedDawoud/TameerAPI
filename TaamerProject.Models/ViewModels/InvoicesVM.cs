@@ -132,6 +132,8 @@ namespace TaamerProject.Models
         public string? ClauseName { get; set; }
         //public long? InvoiceNoRequest { get; set; }
         public string? DelegateName { get; set; }
+        public string? PurchaseOrderNo { get; set; }
+        public string? PurchaseOrderStatus { get; set; }
 
         public List<VoucherDetailsVM> VoucherDetails { get; set; }
         public List<TransactionsVM> Transactions { get; set; }

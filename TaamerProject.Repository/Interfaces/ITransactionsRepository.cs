@@ -32,7 +32,7 @@ namespace TaamerProject.Repository.Interfaces
         Task<IEnumerable<TransactionsVM>> GetAllJournals(int? FromJournal, int? ToJournal, string FromDate, string ToDate, int YearId, int BranchId);
         Task<IEnumerable<TransactionsVM>> GetAllJournalsByInvID(int? invId,  int? YearId, int BranchId);
         Task<IEnumerable<TransactionsVM>> GetAllJournalsByInvIDPurchase(int? invId, int? YearId, int BranchId);
-
+        Task<IEnumerable<TransactionsVM>> GetAllJournalsByInvIDPurchaseOrder(int? invId, int? YearId, int BranchId);
         Task<IEnumerable<TransactionsVM>> GetAllJournalsByReVoucherID(int? invId, int? YearId, int BranchId);
         Task<IEnumerable<TransactionsVM>> GetAllJournalsByPayVoucherID(int? invId, int? YearId, int BranchId);
         Task<IEnumerable<TransactionsVM>> GetAllJournalsByDailyID(int? invId, int? YearId, int BranchId);
