@@ -3385,467 +3385,484 @@ namespace TaamerProject.API.Controllers
         [HttpGet("ZatcaInvoiceIntegration")]
         private GeneralMessage ZatcaInvoiceIntegration(InvoiceObjDet voucherDet, int Branchid,List<ObjRet> vouDetailsRet, int? InvoiceReqId)
         {
-            //var voucher = voucherDet.voucherDetObj.FirstOrDefault();
-            List<VoucherDetailsVM> VoucherDetailsVM = new List<VoucherDetailsVM>();
-            var invoiceIdV = 0; decimal TotalValueDetailes = 0; int type = 0;
-            if (vouDetailsRet.Count()>0) {
-                foreach (var ii in vouDetailsRet)
+            try
+            {
+                //var voucher = voucherDet.voucherDetObj.FirstOrDefault();
+                List<VoucherDetailsVM> VoucherDetailsVM = new List<VoucherDetailsVM>();
+                var invoiceIdV = 0; decimal TotalValueDetailes = 0; int type = 0;
+                if (vouDetailsRet.Count() > 0)
                 {
-                    var vouDet =new VoucherDetailsVM();
-                    vouDet.InvoiceId=ii.InvoiceId;
-                    vouDet.Qty = ii.Qty;
-                    vouDet.ServicesPriceName = ii.ServicesPriceName;
-                    vouDet.TaxAmount = ii.TaxAmount;
-                    vouDet.Amount = ii.Amount;
-                    vouDet.TotalAmount = ii.TotalAmount;
-                    vouDet.DiscountValue_Det = ii.DiscountValue_Det;
-                    vouDet.DiscountPercentage_Det = ii.DiscountPercentage_Det;
-                    VoucherDetailsVM.Add(vouDet);
-                    invoiceIdV = vouDet.InvoiceId ?? 0;
-                    TotalValueDetailes = TotalValueDetailes + vouDet.TotalAmount ?? 0;
-                    type = ii.Type??0;
+                    foreach (var ii in vouDetailsRet)
+                    {
+                        var vouDet = new VoucherDetailsVM();
+                        vouDet.InvoiceId = ii.InvoiceId;
+                        vouDet.Qty = ii.Qty;
+                        vouDet.ServicesPriceName = ii.ServicesPriceName;
+                        vouDet.TaxAmount = ii.TaxAmount;
+                        vouDet.Amount = ii.Amount;
+                        vouDet.TotalAmount = ii.TotalAmount;
+                        vouDet.DiscountValue_Det = ii.DiscountValue_Det;
+                        vouDet.DiscountPercentage_Det = ii.DiscountPercentage_Det;
+                        VoucherDetailsVM.Add(vouDet);
+                        invoiceIdV = vouDet.InvoiceId ?? 0;
+                        TotalValueDetailes = TotalValueDetailes + vouDet.TotalAmount ?? 0;
+                        type = ii.Type ?? 0;
+                    }
                 }
-            }
-            else
-            {
-                foreach (var ii in voucherDet.voucherDetObj)
+                else
                 {
-                    var vouDet = _voucherService.GetAllDetailsByVoucherDetailsId(ii).Result;
-                    VoucherDetailsVM.Add(vouDet);
-                    invoiceIdV = vouDet.InvoiceId ?? 0;
-                    TotalValueDetailes = TotalValueDetailes + vouDet.TotalAmount ?? 0;
+                    foreach (var ii in voucherDet.voucherDetObj)
+                    {
+                        var vouDet = _voucherService.GetAllDetailsByVoucherDetailsId(ii).Result;
+                        VoucherDetailsVM.Add(vouDet);
+                        invoiceIdV = vouDet.InvoiceId ?? 0;
+                        TotalValueDetailes = TotalValueDetailes + vouDet.TotalAmount ?? 0;
+                    }
                 }
-            }
 
-            //var voucher = new InvoicesVM();
-            if (invoiceIdV == 0)
-            {
-                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "أختر فاتورة" };
-            }
-            //----------------------------------------------
-            InvoicesVM InvoicesVM = _voucherService.GetVoucherById(invoiceIdV).Result;
-            if (type != 0)
-            {
-                InvoicesVM.Type = type;
-            }
-            Invoices VoucherCredit = new Invoices();
-            if (InvoicesVM.Type == 29)
-            {
-                VoucherCredit = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.InvoiceId == InvoicesVM.CreditNotiId)!.FirstOrDefault();
-            }
-            if (InvoicesVM.Type == 4)
-            {
-                VoucherCredit = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.InvoiceId == invoiceIdV)!.FirstOrDefault();
-            }
-            CustomerVM CustomerVM = _customerService.GetCustomersByCustomerIdInvoice(InvoicesVM.CustomerId ?? 0, _globalshared.Lang_G).Result;
+                //var voucher = new InvoicesVM();
+                if (invoiceIdV == 0)
+                {
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "أختر فاتورة" };
+                }
+                //----------------------------------------------
+                InvoicesVM InvoicesVM = _voucherService.GetVoucherById(invoiceIdV).Result;
+                if (type != 0)
+                {
+                    InvoicesVM.Type = type;
+                }
+                Invoices VoucherCredit = new Invoices();
+                if (InvoicesVM.Type == 29)
+                {
+                    VoucherCredit = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.InvoiceId == InvoicesVM.CreditNotiId)!.FirstOrDefault();
+                }
+                if (InvoicesVM.Type == 4)
+                {
+                    VoucherCredit = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.InvoiceId == invoiceIdV)!.FirstOrDefault();
+                }
+                CustomerVM CustomerVM = _customerService.GetCustomersByCustomerIdInvoice(InvoicesVM.CustomerId ?? 0, _globalshared.Lang_G).Result;
 
-            var objBranch = _BranchesService.GetBranchByBranchId("rtl", Branchid).Result.FirstOrDefault() ;
-            var objOrganization = _organizationsservice.GetBranchOrganizationData(objBranch.OrganizationId??1).Result;
-            ZatcaKeys zatcakeys = new ZatcaKeys();
-            var OrgIsRequired = _systemSettingsService.GetSystemSettingsByBranchId(_globalshared.BranchId_G).Result.OrgDataIsRequired;
-            if (OrgIsRequired == true) OrgIsRequired = false; else OrgIsRequired = true;
+                var objBranch = _BranchesService.GetBranchByBranchId("rtl", Branchid).Result.FirstOrDefault();
+                var objOrganization = _organizationsservice.GetBranchOrganizationData(objBranch.OrganizationId ?? 1).Result;
+                ZatcaKeys zatcakeys = new ZatcaKeys();
+                var OrgIsRequired = _systemSettingsService.GetSystemSettingsByBranchId(_globalshared.BranchId_G).Result.OrgDataIsRequired;
+                if (OrgIsRequired == true) OrgIsRequired = false; else OrgIsRequired = true;
 
-            string Address1 = "";
-            string BuildingNumber1 = "";
-            string StreetName1 = "";
-            string Neighborhood1 = "";
-            string CityName1 = "";
-            string Country1 = "";
-            string PostalCode1 = "";
-            string PostalCodeFinal1 = "";
-            string ExternalPhone1 = "";
-            string TaxCode1 = "";
-            if (OrgIsRequired == true)
-            {
-                Address1 = objOrganization.Address!.Trim();
-                BuildingNumber1 = objOrganization.BuildingNumber!.Trim();
-                StreetName1 = objOrganization.StreetName!.Trim();
-                Neighborhood1 = objOrganization.Neighborhood!.Trim();
-                CityName1 = objOrganization.CityName!.Trim();
-                Country1 = objOrganization.Country!.Trim();
-                PostalCode1 = objOrganization.PostalCode!.Trim();
-                PostalCodeFinal1 = objOrganization.PostalCodeFinal!.Trim();
-                ExternalPhone1 = objOrganization.ExternalPhone!.Trim();
-                TaxCode1 = objOrganization.TaxCode!.Trim();
-                zatcakeys.CSR = objOrganization.CSR;
-                zatcakeys.PrivateKey = objOrganization.PrivateKey;
-                zatcakeys.PublicKey = objOrganization.PublicKey;
-                zatcakeys.SecreteKey = objOrganization.SecreteKey;
-            }
-            else
-            {
-
-                Address1 = objBranch.Address!.Trim();
-                BuildingNumber1 = objBranch.BuildingNumber!.Trim();
-                StreetName1 = objBranch.StreetName!.Trim();
-                Neighborhood1 = objBranch.Neighborhood!.Trim();
-                CityName1 = objBranch.CityName!.Trim();
-                Country1 = objBranch.Country!.Trim();
-                PostalCode1 = objBranch.PostalCode!.Trim();
-                PostalCodeFinal1 = objBranch.PostalCodeFinal!.Trim();
-                ExternalPhone1 = objBranch.ExternalPhone!.Trim();
-                TaxCode1 = objBranch.TaxCode!.Trim();
-
-
-                if (objBranch.Address == null || objBranch.Address == "")
-                    Address1= objOrganization.Address!.Trim();
-                if (objBranch.BuildingNumber == null || objBranch.BuildingNumber == "")
+                string Address1 = "";
+                string BuildingNumber1 = "";
+                string StreetName1 = "";
+                string Neighborhood1 = "";
+                string CityName1 = "";
+                string Country1 = "";
+                string PostalCode1 = "";
+                string PostalCodeFinal1 = "";
+                string ExternalPhone1 = "";
+                string TaxCode1 = "";
+                if (OrgIsRequired == true)
+                {
+                    Address1 = objOrganization.Address!.Trim();
                     BuildingNumber1 = objOrganization.BuildingNumber!.Trim();
-                if (objBranch.StreetName == null || objBranch.StreetName == "")
                     StreetName1 = objOrganization.StreetName!.Trim();
-                if (objBranch.Neighborhood == null || objBranch.Neighborhood == "")
                     Neighborhood1 = objOrganization.Neighborhood!.Trim();
-                if (objBranch.CityName == null || objBranch.CityName == "")
                     CityName1 = objOrganization.CityName!.Trim();
-                if (objBranch.Country == null || objBranch.Country == "")
                     Country1 = objOrganization.Country!.Trim();
-                if (objBranch.PostalCode == null || objBranch.PostalCode == "")
                     PostalCode1 = objOrganization.PostalCode!.Trim();
-                if (objBranch.PostalCodeFinal == null || objBranch.PostalCodeFinal == "")
                     PostalCodeFinal1 = objOrganization.PostalCodeFinal!.Trim();
-                if (objBranch.ExternalPhone == null || objBranch.ExternalPhone == "")
-                    ExternalPhone1 = objOrganization.ExternalPhone!.Trim(); 
-                if (objBranch.TaxCode == null || objBranch.TaxCode == "")
-                    TaxCode1 = objOrganization.TaxCode!.Trim(); 
-                zatcakeys.CSR = objBranch.CSR;
-                zatcakeys.PrivateKey = objBranch.PrivateKey;
-                zatcakeys.PublicKey = objBranch.PublicKey;
-                zatcakeys.SecreteKey = objBranch.SecreteKey;
-                if (objBranch.CSR==null || objBranch.CSR == "")
-                {
+                    ExternalPhone1 = objOrganization.ExternalPhone!.Trim();
+                    TaxCode1 = objOrganization.TaxCode!.Trim();
                     zatcakeys.CSR = objOrganization.CSR;
-                }
-                if (objBranch.PrivateKey == null || objBranch.PrivateKey == "")
-                {
                     zatcakeys.PrivateKey = objOrganization.PrivateKey;
-                }
-                if (objBranch.PublicKey == null || objBranch.PublicKey == "")
-                {
                     zatcakeys.PublicKey = objOrganization.PublicKey;
-                }
-                if (objBranch.SecreteKey == null || objBranch.SecreteKey == "")
-                {
                     zatcakeys.SecreteKey = objOrganization.SecreteKey;
                 }
+                else
+                {
 
-            }
-            var invoicetypecode = InvoiceTypeEnums.Standared_Invoice;
-            var invoicetypecodeName = InvoiceTypeNameEnums.Standared_Invoice;
-            if (TotalValueDetailes > 1000)
-            {
-                if (InvoicesVM.Type == 2 )
-                {
-                    invoicetypecode = InvoiceTypeEnums.Standared_Invoice;
-                    invoicetypecodeName = InvoiceTypeNameEnums.Standared_Invoice;
-                }
-                if (InvoicesVM.Type == 29 || InvoicesVM.Type == 4)
-                {
-                    invoicetypecode = InvoiceTypeEnums.Standard_CreditNote;
-                    invoicetypecodeName = InvoiceTypeNameEnums.Standard_CreditNote;
-                }
-                if (InvoicesVM.Type == 30)
-                {
-                    invoicetypecode = InvoiceTypeEnums.Standared_DebitNote;
-                    invoicetypecodeName = InvoiceTypeNameEnums.Standared_DebitNote;
-                }
-            }
-            else
-            {
-                if (InvoicesVM.Type == 2 )
-                {
-                    invoicetypecode = InvoiceTypeEnums.Simplified_Invoice;
-                    invoicetypecodeName = InvoiceTypeNameEnums.Simplified_Invoice;
-                }
-                if (InvoicesVM.Type == 29 || InvoicesVM.Type == 4)
-                {
-                    invoicetypecode = InvoiceTypeEnums.Simplified_CreditNote;
-                    invoicetypecodeName = InvoiceTypeNameEnums.Simplified_CreditNote;
-                }
-                if (InvoicesVM.Type == 30)
-                {
-                    invoicetypecode = InvoiceTypeEnums.Simplified_DebitNote;
-                    invoicetypecodeName = InvoiceTypeNameEnums.Simplified_DebitNote;
-                }
-            }
+                    Address1 = objBranch.Address!.Trim();
+                    BuildingNumber1 = objBranch.BuildingNumber!.Trim();
+                    StreetName1 = objBranch.StreetName!.Trim();
+                    Neighborhood1 = objBranch.Neighborhood!.Trim();
+                    CityName1 = objBranch.CityName!.Trim();
+                    Country1 = objBranch.Country!.Trim();
+                    PostalCode1 = objBranch.PostalCode!.Trim();
+                    PostalCodeFinal1 = objBranch.PostalCodeFinal!.Trim();
+                    ExternalPhone1 = objBranch.ExternalPhone!.Trim();
+                    TaxCode1 = objBranch.TaxCode!.Trim();
 
-            var NationalID = CustomerVM.CustomerNationalId;
-            var schemeID = "NAT";
-            if (CustomerVM.CustomerTypeId == 1)//مواطن
-            {
-                NationalID = CustomerVM.CustomerNationalId??"";
-                schemeID = "NAT";
-                //NAT
-            }
-            else if (CustomerVM.CustomerTypeId == 2)//مستثمر
-            {
-                NationalID = CustomerVM.CommercialRegister??"";
-                schemeID = "CRN";
-                //CRN
-            }
-            else if (CustomerVM.CustomerTypeId == 3)//جهه حكومية
-            {
-                NationalID = "";
-                schemeID = "CRN";
-                //مختلفة
-            }
 
-            var PreviousPIH = "NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ==";
-            int? zatcaVoucherNumber = _voucherService.GenerateVoucherZatcaNumber( _globalshared.BranchId_G, _globalshared.YearId_G)?.Result ?? 0;
-            var prevNum = (zatcaVoucherNumber - 1);
-            if (prevNum > 0)
-            {
-                var prevInvoice = _TaamerProContext.Acc_InvoicesRequests.Where(s => s.InvoiceNoRequest == prevNum && s.BranchId==Branchid);
-                if (prevInvoice.Count()>0)
+                    if (objBranch.Address == null || objBranch.Address == "")
+                        Address1 = objOrganization.Address!.Trim();
+                    if (objBranch.BuildingNumber == null || objBranch.BuildingNumber == "")
+                        BuildingNumber1 = objOrganization.BuildingNumber!.Trim();
+                    if (objBranch.StreetName == null || objBranch.StreetName == "")
+                        StreetName1 = objOrganization.StreetName!.Trim();
+                    if (objBranch.Neighborhood == null || objBranch.Neighborhood == "")
+                        Neighborhood1 = objOrganization.Neighborhood!.Trim();
+                    if (objBranch.CityName == null || objBranch.CityName == "")
+                        CityName1 = objOrganization.CityName!.Trim();
+                    if (objBranch.Country == null || objBranch.Country == "")
+                        Country1 = objOrganization.Country!.Trim();
+                    if (objBranch.PostalCode == null || objBranch.PostalCode == "")
+                        PostalCode1 = objOrganization.PostalCode!.Trim();
+                    if (objBranch.PostalCodeFinal == null || objBranch.PostalCodeFinal == "")
+                        PostalCodeFinal1 = objOrganization.PostalCodeFinal!.Trim();
+                    if (objBranch.ExternalPhone == null || objBranch.ExternalPhone == "")
+                        ExternalPhone1 = objOrganization.ExternalPhone!.Trim();
+                    if (objBranch.TaxCode == null || objBranch.TaxCode == "")
+                        TaxCode1 = objOrganization.TaxCode!.Trim();
+                    zatcakeys.CSR = objBranch.CSR;
+                    zatcakeys.PrivateKey = objBranch.PrivateKey;
+                    zatcakeys.PublicKey = objBranch.PublicKey;
+                    zatcakeys.SecreteKey = objBranch.SecreteKey;
+                    if (objBranch.CSR == null || objBranch.CSR == "")
+                    {
+                        zatcakeys.CSR = objOrganization.CSR;
+                    }
+                    if (objBranch.PrivateKey == null || objBranch.PrivateKey == "")
+                    {
+                        zatcakeys.PrivateKey = objOrganization.PrivateKey;
+                    }
+                    if (objBranch.PublicKey == null || objBranch.PublicKey == "")
+                    {
+                        zatcakeys.PublicKey = objOrganization.PublicKey;
+                    }
+                    if (objBranch.SecreteKey == null || objBranch.SecreteKey == "")
+                    {
+                        zatcakeys.SecreteKey = objOrganization.SecreteKey;
+                    }
+
+                }
+                var invoicetypecode = InvoiceTypeEnums.Standared_Invoice;
+                var invoicetypecodeName = InvoiceTypeNameEnums.Standared_Invoice;
+                if (TotalValueDetailes > 1000)
                 {
-                    PreviousPIH = prevInvoice.FirstOrDefault().InvoiceHash;
+                    if (InvoicesVM.Type == 2)
+                    {
+                        invoicetypecode = InvoiceTypeEnums.Standared_Invoice;
+                        invoicetypecodeName = InvoiceTypeNameEnums.Standared_Invoice;
+                    }
+                    if (InvoicesVM.Type == 29 || InvoicesVM.Type == 4)
+                    {
+                        invoicetypecode = InvoiceTypeEnums.Standard_CreditNote;
+                        invoicetypecodeName = InvoiceTypeNameEnums.Standard_CreditNote;
+                    }
+                    if (InvoicesVM.Type == 30)
+                    {
+                        invoicetypecode = InvoiceTypeEnums.Standared_DebitNote;
+                        invoicetypecodeName = InvoiceTypeNameEnums.Standared_DebitNote;
+                    }
+                }
+                else
+                {
+                    if (InvoicesVM.Type == 2)
+                    {
+                        invoicetypecode = InvoiceTypeEnums.Simplified_Invoice;
+                        invoicetypecodeName = InvoiceTypeNameEnums.Simplified_Invoice;
+                    }
+                    if (InvoicesVM.Type == 29 || InvoicesVM.Type == 4)
+                    {
+                        invoicetypecode = InvoiceTypeEnums.Simplified_CreditNote;
+                        invoicetypecodeName = InvoiceTypeNameEnums.Simplified_CreditNote;
+                    }
+                    if (InvoicesVM.Type == 30)
+                    {
+                        invoicetypecode = InvoiceTypeEnums.Simplified_DebitNote;
+                        invoicetypecodeName = InvoiceTypeNameEnums.Simplified_DebitNote;
+                    }
+                }
+
+                var NationalID = CustomerVM.CustomerNationalId;
+                var schemeID = "NAT";
+                if (CustomerVM.CustomerTypeId == 1)//مواطن
+                {
+                    NationalID = CustomerVM.CustomerNationalId ?? "";
+                    schemeID = "NAT";
+                    //NAT
+                }
+                else if (CustomerVM.CustomerTypeId == 2)//مستثمر
+                {
+                    NationalID = CustomerVM.CommercialRegister ?? "";
+                    schemeID = "CRN";
+                    //CRN
+                }
+                else if (CustomerVM.CustomerTypeId == 3)//جهه حكومية
+                {
+                    NationalID = "";
+                    schemeID = "CRN";
+                    //مختلفة
+                }
+
+                var PreviousPIH = "NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ==";
+                int? zatcaVoucherNumber = _voucherService.GenerateVoucherZatcaNumber(_globalshared.BranchId_G, _globalshared.YearId_G)?.Result ?? 0;
+                var prevNum = (zatcaVoucherNumber - 1);
+                if (prevNum > 0)
+                {
+                    var prevInvoice = _TaamerProContext.Acc_InvoicesRequests.Where(s => s.InvoiceNoRequest == prevNum && s.BranchId == Branchid);
+                    if (prevInvoice.Count() > 0)
+                    {
+                        PreviousPIH = prevInvoice.FirstOrDefault().InvoiceHash;
+                    }
+                    else
+                    {
+                        PreviousPIH = "NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ==";
+                    }
                 }
                 else
                 {
                     PreviousPIH = "NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ==";
                 }
-            }
-            else
-            {
-                PreviousPIH = "NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ==";
-            }
-            //generate
+                //generate
 
-            //----------------------------------------------
-            //DateTime Datet = InvoicesVM.AddDate ?? DateTime.Now;
-            //string ActionDatet = Date.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                //----------------------------------------------
+                //DateTime Datet = InvoicesVM.AddDate ?? DateTime.Now;
+                //string ActionDatet = Date.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
 
 
-            ZatcaIntegrationSDK.UBLXML ubl = new ZatcaIntegrationSDK.UBLXML();
-            ZatcaIntegrationSDK.Invoice inv = new ZatcaIntegrationSDK.Invoice();
-            ZatcaIntegrationSDK.Result res = new ZatcaIntegrationSDK.Result();
-            if (InvoicesVM.Type == 29)
-            {
-                inv.ID = InvoicesVM.InvoiceRetId;
-            }
-            else
-            {
-                inv.ID = InvoicesVM.InvoiceNumber;
-            }
-            inv.UUID = Guid.NewGuid().ToString();
-            //inv.IssueDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-            inv.IssueDate = DateTime.Now.ToString("yyyy-MM-dd");
-            inv.IssueTime = DateTime.Now.ToString("HH:mm:ss");
-
-            inv.invoiceTypeCode.id = invoicetypecode;
-
-            inv.invoiceTypeCode.Name = invoicetypecodeName;
-            inv.DocumentCurrencyCode = "SAR";
-            inv.TaxCurrencyCode = "SAR";
-
-            if (inv.invoiceTypeCode.id == 383 || inv.invoiceTypeCode.id == 381)
-            {
-                // فى حالة ان اشعار دائن او مدين فقط هانكتب رقم الفاتورة اللى اصدرنا الاشعار ليها
-                InvoiceDocumentReference invoiceDocumentReference = new InvoiceDocumentReference();
-                invoiceDocumentReference.ID = "Invoice Number: " + VoucherCredit.InvoiceNumber + "; Invoice Issue Date: " + inv.IssueDate + ""; // اجبارى
-                inv.billingReference.invoiceDocumentReferences.Add(invoiceDocumentReference);
-            }
-            // هنا ممكن اضيف ال pih من قاعدة البيانات  
-            //this is previous invoice hash (the invoice hash of last invoice ) res.InvoiceHash
-            // for the first invoice and because there is no previous hash we must write this code "NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ=="
-
-            inv.AdditionalDocumentReferencePIH.EmbeddedDocumentBinaryObject = PreviousPIH;
-
-            inv.AdditionalDocumentReferenceICV.UUID =Convert.ToInt64(zatcaVoucherNumber);
-
-            if (inv.invoiceTypeCode.Name.Substring(0, 2) == "01")
-            {
-                //supply date mandatory only for standard invoices
-                // فى حالة فاتورة مبسطة وفاتورة ملخصة هانكتب تاريخ التسليم واخر تاريخ التسليم
-                inv.delivery.ActualDeliveryDate = InvoicesVM.Date;
-               // inv.delivery.LatestDeliveryDate = InvoicesVM.Date;
-            }
-            // 
-            // بيانات الدفع 
-            // اكواد معين
-            // اختيارى كود الدفع
-            // payment methods mandatory for return invoice and debit notes and optional for invoices
-            string paymentcode = PaymentMethodEnums.Incash;
-            if (!string.IsNullOrEmpty(paymentcode))
-            {
-                PaymentMeans paymentMeans = new PaymentMeans();
-                paymentMeans.PaymentMeansCode = paymentcode; // optional for invoices - mandatory for return invoice - debit notes
-                if (inv.invoiceTypeCode.id == 383 || inv.invoiceTypeCode.id == 381)
+                ZatcaIntegrationSDK.UBLXML ubl = new ZatcaIntegrationSDK.UBLXML();
+                ZatcaIntegrationSDK.Invoice inv = new ZatcaIntegrationSDK.Invoice();
+                ZatcaIntegrationSDK.Result res = new ZatcaIntegrationSDK.Result();
+                if (InvoicesVM.Type == 29)
                 {
-                    paymentMeans.InstructionNote = "dameged items"; //the reason of return invoice - debit notes // manatory only for return invoice - debit notes 
-                }
-                inv.paymentmeans.Add(paymentMeans);
-            }
-
-            // بيانات البائع 
-            inv.SupplierParty.partyIdentification.ID = PostalCode1 ?? ""; //هنا رقم السجل التجارى للشركة
-            inv.SupplierParty.partyIdentification.schemeID = "CRN";
-            inv.SupplierParty.postalAddress.StreetName = StreetName1 ?? ""; // اجبارى
-            //inv.SupplierParty.postalAddress.AdditionalStreetName = "شارع اضافى"; // اختيارى
-            inv.SupplierParty.postalAddress.BuildingNumber = BuildingNumber1 ?? "0000"; // اجبارى رقم المبنى
-            //inv.SupplierParty.postalAddress.PlotIdentification = "9833";
-            inv.SupplierParty.postalAddress.CityName = CityName1 ?? "";
-            inv.SupplierParty.postalAddress.PostalZone = PostalCodeFinal1 ?? "00000"; // الرقم البريدي
-            inv.SupplierParty.postalAddress.CountrySubentity = CityName1 ?? ""; // اسم المحافظة او المدينة مثال (مكة) اختيارى
-            inv.SupplierParty.postalAddress.CitySubdivisionName = Neighborhood1 ?? ""; // اسم المنطقة او الحى 
-            inv.SupplierParty.postalAddress.country.IdentificationCode = "SA";
-            inv.SupplierParty.partyLegalEntity.RegistrationName = objOrganization.NameAr; // "شركة الصناعات الغذائية المتحده"; // اسم الشركة المسجل فى الهيئة
-            inv.SupplierParty.partyTaxScheme.CompanyID = TaxCode1;// "300518376300003";  // رقم التسجيل الضريبي
-            if (inv.invoiceTypeCode.Name.Substring(0, 2) == "01")
-            {
-                //خدمة تعليمية تقدم للمواطن السعودى - خدمة صحية تقدم للمواطن السعودى
-                if (!(NationalID == null || NationalID == ""))
-                {
-                    inv.CustomerParty.partyIdentification.ID = NationalID ?? ""; // رقم القومى الخاض بالمشترى
-                    inv.CustomerParty.partyIdentification.schemeID = schemeID; // الرقم القومى
-                }
-
-                inv.CustomerParty.postalAddress.StreetName = CustomerVM.StreetName ?? ""; // اجبارى
-                inv.CustomerParty.postalAddress.AdditionalStreetName = "شارع اضافى"; // اختيارى
-                inv.CustomerParty.postalAddress.BuildingNumber = CustomerVM.BuildingNumber ?? "0000"; // اجبارى رقم المبنى
-                inv.CustomerParty.postalAddress.PlotIdentification = "9833"; // اختيارى رقم القطعة
-                inv.CustomerParty.postalAddress.CityName = CustomerVM.CityName ?? ""; // اسم المدينة
-                inv.CustomerParty.postalAddress.PostalZone = CustomerVM.PostalCodeFinal ?? ""; // الرقم البريدي
-                inv.CustomerParty.postalAddress.CountrySubentity = CustomerVM.CityName ?? ""; // اسم المحافظة او المدينة مثال (مكة) اختيارى
-                inv.CustomerParty.postalAddress.CitySubdivisionName = CustomerVM.Neighborhood ?? ""; // اسم المنطقة او الحى 
-                inv.CustomerParty.postalAddress.country.IdentificationCode = "SA";
-                inv.CustomerParty.partyLegalEntity.RegistrationName = CustomerVM.CustomerNameAr; // اسم الشركة المسجل فى الهيئة
-
-                if (!(CustomerVM.CommercialRegInvoice == null || CustomerVM.CommercialRegInvoice == ""))
-                {
-                    inv.CustomerParty.partyTaxScheme.CompanyID = CustomerVM.CommercialRegInvoice; // رقم التسجيل الضريبي
-                }
-            }
-
-
-            decimal invoicediscount = InvoicesVM.DiscountValue ?? 0;
-            if (invoicediscount > 0)
-            {
-                //this code incase of there is a discount in invoice level 
-                AllowanceCharge allowance = new AllowanceCharge();
-                //ChargeIndicator = false means that this is discount
-                //ChargeIndicator = true means that this is charges(like cleaning service - transportation)
-                allowance.ChargeIndicator = false;
-                //write this lines in case you will make discount as percentage
-                allowance.MultiplierFactorNumeric = 0; //dscount percentage like 10
-                allowance.BaseAmount = 0; // the amount we will apply percentage on example (MultiplierFactorNumeric=10 ,BaseAmount=1000 then AllowanceAmount will be 100 SAR)
-
-                // in case we will make discount as Amount 
-                allowance.Amount = invoicediscount; // 
-                                                    // allowance.AllowanceChargeReasonCode = "95"; //discount or charge reason code
-                allowance.AllowanceChargeReason = "discount"; //discount or charge reson
-                allowance.taxCategory.ID = "S";// كود الضريبة tax code (S Z O E )
-                allowance.taxCategory.Percent = 15;// نسبة الضريبة tax percentage (0 - 15 - 5 )
-                //فى حالة عندى اكثر من خصم بعمل loop على الاسطر السابقة
-                inv.allowanceCharges.Add(allowance);
-            }
-
-            //this is the invoice total amount (invoice total with vat) and you can set its value with Zero and i will calculate it from sdk
-            inv.legalMonetaryTotal.PayableAmount = TotalValueDetailes;
-            // فى حالة فى اكتر من منتج فى الفاتورة هانعمل ليست من invoiceline مثال الكود التالى
-            //here we will mention all invoice lines data
-
-
-
-
-
-            foreach (var item in VoucherDetailsVM)
-            {
-                InvoiceLine invline = new InvoiceLine();
-                //Product Quantity
-                invline.InvoiceQuantity = item.Qty ?? 1;
-                //Product Name
-                invline.item.Name = item.ServicesPriceName;
-                //var VatPercentage = objOrganization.VAT?? Convert.ToDecimal(15);
-                var VatPercentage = Convert.ToDecimal(15);
-
-                if (VatPercentage == 0)
-                {
-                    //item Tax code
-                    invline.item.classifiedTaxCategory.ID = "Z"; // كود الضريبة
-                    //item Tax code
-                    invline.taxTotal.TaxSubtotal.taxCategory.ID = "Z"; // كود الضريبة
-                                                                       //item Tax Exemption Reason Code mentioned in zatca pdf page(32-33)
-                    invline.taxTotal.TaxSubtotal.taxCategory.TaxExemptionReasonCode = "VATEX-SA-35"; // كود الضريبة
-                                                                                                     //item Tax Exemption Reason mentioned in zatca pdf page(32-33)
-                    invline.taxTotal.TaxSubtotal.taxCategory.TaxExemptionReason = "Medicines and medical equipment"; // كود الضريبة
-
+                    inv.ID = InvoicesVM.InvoiceRetId;
                 }
                 else
                 {
-                    //item Tax code
-                    invline.item.classifiedTaxCategory.ID = "S"; // كود الضريبة
-                                                                 //item Tax code
-                    invline.taxTotal.TaxSubtotal.taxCategory.ID = "S"; // كود الضريبة
+                    inv.ID = InvoicesVM.InvoiceNumber;
                 }
-                //item Tax percentage
-                invline.item.classifiedTaxCategory.Percent = VatPercentage; // نسبة الضريبة
-                invline.taxTotal.TaxSubtotal.taxCategory.Percent = VatPercentage; // نسبة الضريبة
-                //EncludingVat = false this flag will be false in case you will give me Product Price not including vat
-                //EncludingVat = true this flag will be true in case you will give me Product Price including vat
-                invline.price.EncludingVat = false;
-                //Product Price
-                invline.price.PriceAmount = item.Amount ?? 0;
+                inv.UUID = Guid.NewGuid().ToString();
+                //inv.IssueDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                inv.IssueDate = DateTime.Now.ToString("yyyy-MM-dd");
+                inv.IssueTime = DateTime.Now.ToString("HH:mm:ss");
 
-                if (item.DiscountValue_Det > 0)
+                inv.invoiceTypeCode.id = invoicetypecode;
+
+                inv.invoiceTypeCode.Name = invoicetypecodeName;
+                inv.DocumentCurrencyCode = "SAR";
+                inv.TaxCurrencyCode = "SAR";
+
+                if (inv.invoiceTypeCode.id == 383 || inv.invoiceTypeCode.id == 381)
                 {
-                    // incase there is discount in invoice line level
-                    AllowanceCharge allowanceCharge = new AllowanceCharge();
-                    // فى حالة الرسوم incase of charges
-                    // allowanceCharge.ChargeIndicator = true;
-                    // فى حالة الخصم incase of discount
-                    allowanceCharge.ChargeIndicator = false;
-
-                    allowanceCharge.AllowanceChargeReason = "discount"; // سبب الخصم على مستوى المنتج
-                    // allowanceCharge.AllowanceChargeReasonCode = "90"; // سبب الخصم على مستوى المنتج
-                    allowanceCharge.Amount = item.DiscountValue_Det ?? 0; // قيم الخصم discount amount or charge amount
-
-                    allowanceCharge.MultiplierFactorNumeric = 0;
-                    allowanceCharge.BaseAmount = 0;
-                    invline.allowanceCharges.Add(allowanceCharge);
+                    // فى حالة ان اشعار دائن او مدين فقط هانكتب رقم الفاتورة اللى اصدرنا الاشعار ليها
+                    InvoiceDocumentReference invoiceDocumentReference = new InvoiceDocumentReference();
+                    invoiceDocumentReference.ID = "Invoice Number: " + VoucherCredit.InvoiceNumber + "; Invoice Issue Date: " + inv.IssueDate + ""; // اجبارى
+                    inv.billingReference.invoiceDocumentReferences.Add(invoiceDocumentReference);
                 }
-                inv.InvoiceLines.Add(invline);
+                // هنا ممكن اضيف ال pih من قاعدة البيانات  
+                //this is previous invoice hash (the invoice hash of last invoice ) res.InvoiceHash
+                // for the first invoice and because there is no previous hash we must write this code "NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ=="
+
+                inv.AdditionalDocumentReferencePIH.EmbeddedDocumentBinaryObject = PreviousPIH;
+
+                inv.AdditionalDocumentReferenceICV.UUID = Convert.ToInt64(zatcaVoucherNumber);
+
+                if (inv.invoiceTypeCode.Name.Substring(0, 2) == "01")
+                {
+                    //supply date mandatory only for standard invoices
+                    // فى حالة فاتورة مبسطة وفاتورة ملخصة هانكتب تاريخ التسليم واخر تاريخ التسليم
+                    inv.delivery.ActualDeliveryDate = InvoicesVM.Date;
+                    // inv.delivery.LatestDeliveryDate = InvoicesVM.Date;
+                }
+                // 
+                // بيانات الدفع 
+                // اكواد معين
+                // اختيارى كود الدفع
+                // payment methods mandatory for return invoice and debit notes and optional for invoices
+                string paymentcode = PaymentMethodEnums.Incash;
+                if (!string.IsNullOrEmpty(paymentcode))
+                {
+                    PaymentMeans paymentMeans = new PaymentMeans();
+                    paymentMeans.PaymentMeansCode = paymentcode; // optional for invoices - mandatory for return invoice - debit notes
+                    if (inv.invoiceTypeCode.id == 383 || inv.invoiceTypeCode.id == 381)
+                    {
+                        paymentMeans.InstructionNote = "dameged items"; //the reason of return invoice - debit notes // manatory only for return invoice - debit notes 
+                    }
+                    inv.paymentmeans.Add(paymentMeans);
+                }
+
+                // بيانات البائع 
+                inv.SupplierParty.partyIdentification.ID = PostalCode1 ?? ""; //هنا رقم السجل التجارى للشركة
+                inv.SupplierParty.partyIdentification.schemeID = "CRN";
+                inv.SupplierParty.postalAddress.StreetName = StreetName1 ?? ""; // اجبارى
+                                                                                //inv.SupplierParty.postalAddress.AdditionalStreetName = "شارع اضافى"; // اختيارى
+                inv.SupplierParty.postalAddress.BuildingNumber = BuildingNumber1 ?? "0000"; // اجبارى رقم المبنى
+                                                                                            //inv.SupplierParty.postalAddress.PlotIdentification = "9833";
+                inv.SupplierParty.postalAddress.CityName = CityName1 ?? "";
+                inv.SupplierParty.postalAddress.PostalZone = PostalCodeFinal1 ?? "00000"; // الرقم البريدي
+                inv.SupplierParty.postalAddress.CountrySubentity = CityName1 ?? ""; // اسم المحافظة او المدينة مثال (مكة) اختيارى
+                inv.SupplierParty.postalAddress.CitySubdivisionName = Neighborhood1 ?? ""; // اسم المنطقة او الحى 
+                inv.SupplierParty.postalAddress.country.IdentificationCode = "SA";
+                inv.SupplierParty.partyLegalEntity.RegistrationName = objOrganization.NameAr; // "شركة الصناعات الغذائية المتحده"; // اسم الشركة المسجل فى الهيئة
+                inv.SupplierParty.partyTaxScheme.CompanyID = TaxCode1;// "300518376300003";  // رقم التسجيل الضريبي
+                if (inv.invoiceTypeCode.Name.Substring(0, 2) == "01")
+                {
+                    //خدمة تعليمية تقدم للمواطن السعودى - خدمة صحية تقدم للمواطن السعودى
+                    if (!(NationalID == null || NationalID == ""))
+                    {
+                        inv.CustomerParty.partyIdentification.ID = NationalID ?? ""; // رقم القومى الخاض بالمشترى
+                        inv.CustomerParty.partyIdentification.schemeID = schemeID; // الرقم القومى
+                    }
+
+                    inv.CustomerParty.postalAddress.StreetName = CustomerVM.StreetName ?? ""; // اجبارى
+                    inv.CustomerParty.postalAddress.AdditionalStreetName = "شارع اضافى"; // اختيارى
+                    inv.CustomerParty.postalAddress.BuildingNumber = CustomerVM.BuildingNumber ?? "0000"; // اجبارى رقم المبنى
+                    inv.CustomerParty.postalAddress.PlotIdentification = "9833"; // اختيارى رقم القطعة
+                    inv.CustomerParty.postalAddress.CityName = CustomerVM.CityName ?? ""; // اسم المدينة
+                    inv.CustomerParty.postalAddress.PostalZone = CustomerVM.PostalCodeFinal ?? ""; // الرقم البريدي
+                    inv.CustomerParty.postalAddress.CountrySubentity = CustomerVM.CityName ?? ""; // اسم المحافظة او المدينة مثال (مكة) اختيارى
+                    inv.CustomerParty.postalAddress.CitySubdivisionName = CustomerVM.Neighborhood ?? ""; // اسم المنطقة او الحى 
+                    inv.CustomerParty.postalAddress.country.IdentificationCode = "SA";
+                    inv.CustomerParty.partyLegalEntity.RegistrationName = CustomerVM.CustomerNameAr; // اسم الشركة المسجل فى الهيئة
+
+                    if (!(CustomerVM.CommercialRegInvoice == null || CustomerVM.CommercialRegInvoice == ""))
+                    {
+                        inv.CustomerParty.partyTaxScheme.CompanyID = CustomerVM.CommercialRegInvoice; // رقم التسجيل الضريبي
+                    }
+                }
+
+
+                decimal invoicediscount = InvoicesVM.DiscountValue ?? 0;
+                if (invoicediscount > 0)
+                {
+                    //this code incase of there is a discount in invoice level 
+                    AllowanceCharge allowance = new AllowanceCharge();
+                    //ChargeIndicator = false means that this is discount
+                    //ChargeIndicator = true means that this is charges(like cleaning service - transportation)
+                    allowance.ChargeIndicator = false;
+                    //write this lines in case you will make discount as percentage
+                    allowance.MultiplierFactorNumeric = 0; //dscount percentage like 10
+                    allowance.BaseAmount = 0; // the amount we will apply percentage on example (MultiplierFactorNumeric=10 ,BaseAmount=1000 then AllowanceAmount will be 100 SAR)
+
+                    // in case we will make discount as Amount 
+                    allowance.Amount = invoicediscount; // 
+                                                        // allowance.AllowanceChargeReasonCode = "95"; //discount or charge reason code
+                    allowance.AllowanceChargeReason = "discount"; //discount or charge reson
+                    allowance.taxCategory.ID = "S";// كود الضريبة tax code (S Z O E )
+                    allowance.taxCategory.Percent = 15;// نسبة الضريبة tax percentage (0 - 15 - 5 )
+                                                       //فى حالة عندى اكثر من خصم بعمل loop على الاسطر السابقة
+                    inv.allowanceCharges.Add(allowance);
+                }
+
+                //this is the invoice total amount (invoice total with vat) and you can set its value with Zero and i will calculate it from sdk
+                inv.legalMonetaryTotal.PayableAmount = TotalValueDetailes;
+                // فى حالة فى اكتر من منتج فى الفاتورة هانعمل ليست من invoiceline مثال الكود التالى
+                //here we will mention all invoice lines data
+
+
+
+
+
+                foreach (var item in VoucherDetailsVM)
+                {
+                    InvoiceLine invline = new InvoiceLine();
+                    //Product Quantity
+                    invline.InvoiceQuantity = item.Qty ?? 1;
+                    //Product Name
+                    invline.item.Name = item.ServicesPriceName;
+                    //var VatPercentage = objOrganization.VAT?? Convert.ToDecimal(15);
+                    var VatPercentage = Convert.ToDecimal(15);
+
+                    if (VatPercentage == 0)
+                    {
+                        //item Tax code
+                        invline.item.classifiedTaxCategory.ID = "Z"; // كود الضريبة
+                                                                     //item Tax code
+                        invline.taxTotal.TaxSubtotal.taxCategory.ID = "Z"; // كود الضريبة
+                                                                           //item Tax Exemption Reason Code mentioned in zatca pdf page(32-33)
+                        invline.taxTotal.TaxSubtotal.taxCategory.TaxExemptionReasonCode = "VATEX-SA-35"; // كود الضريبة
+                                                                                                         //item Tax Exemption Reason mentioned in zatca pdf page(32-33)
+                        invline.taxTotal.TaxSubtotal.taxCategory.TaxExemptionReason = "Medicines and medical equipment"; // كود الضريبة
+
+                    }
+                    else
+                    {
+                        //item Tax code
+                        invline.item.classifiedTaxCategory.ID = "S"; // كود الضريبة
+                                                                     //item Tax code
+                        invline.taxTotal.TaxSubtotal.taxCategory.ID = "S"; // كود الضريبة
+                    }
+                    //item Tax percentage
+                    invline.item.classifiedTaxCategory.Percent = VatPercentage; // نسبة الضريبة
+                    invline.taxTotal.TaxSubtotal.taxCategory.Percent = VatPercentage; // نسبة الضريبة
+                                                                                      //EncludingVat = false this flag will be false in case you will give me Product Price not including vat
+                                                                                      //EncludingVat = true this flag will be true in case you will give me Product Price including vat
+                    invline.price.EncludingVat = false;
+                    //Product Price
+                    invline.price.PriceAmount = item.Amount ?? 0;
+
+                    if (item.DiscountValue_Det > 0)
+                    {
+                        // incase there is discount in invoice line level
+                        AllowanceCharge allowanceCharge = new AllowanceCharge();
+                        // فى حالة الرسوم incase of charges
+                        // allowanceCharge.ChargeIndicator = true;
+                        // فى حالة الخصم incase of discount
+                        allowanceCharge.ChargeIndicator = false;
+
+                        allowanceCharge.AllowanceChargeReason = "discount"; // سبب الخصم على مستوى المنتج
+                                                                            // allowanceCharge.AllowanceChargeReasonCode = "90"; // سبب الخصم على مستوى المنتج
+                        allowanceCharge.Amount = item.DiscountValue_Det ?? 0; // قيم الخصم discount amount or charge amount
+
+                        allowanceCharge.MultiplierFactorNumeric = 0;
+                        allowanceCharge.BaseAmount = 0;
+                        invline.allowanceCharges.Add(allowanceCharge);
+                    }
+                    inv.InvoiceLines.Add(invline);
+                }
+
+                //inv.cSIDInfo.CertPem = @"MIICoTCCAkegAwIBAgIGAZGd+J7KMAoGCCqGSM49BAMCMBUxEzARBgNVBAMMCmVJbnZvaWNpbmcwHhcNMjQwODI5MTE0OTU3WhcNMjkwODI4MjEwMDAwWjCBljELMAkGA1UEBhMCU0ExIzAhBgNVBAsMGtin2YTZgdix2LkgINin2YTYsdim2YrYs9mJMU8wTQYDVQQKDEbYtNix2YPYqSDYp9io2K/Yp9i5INin2YTYqtmF2YrYsiDZhNmE2KfYs9iq2LTYp9ix2KfYqiDYp9mE2YfZhtiv2LPZitipMREwDwYDVQQDDAhDb21wYW55MTBWMBAGByqGSM49AgEGBSuBBAAKA0IABEHHq9d2AmkGJBm8csZTCKzwpKLtoJS7CrvyEkWDFCQH75FbqY5pSvX34bUA+8X3iL3BvPXnPex/I6Ns4jRWt+ujggECMIH/MAwGA1UdEwEB/wQCMAAwge4GA1UdEQSB5jCB46SB4DCB3TFHMEUGA1UEBAw+MS1UYW1lZXJ8Mi12ZXJzaW9uMi4wLjF8My01ZGQ3Nzk1My0wY2ZjLTQ3NGItOTU3ZS0xNjViNDk4MzEzNTkxHzAdBgoJkiaJk/IsZAEBDA8zMTEzNjg3MTUxMDAwMDMxDTALBgNVBAwMBDExMDAxQTA/BgNVBBoMONin2YTYr9mF2KfZhSAtINi32LHZitmCINin2YTZhdmE2YMg2YHZh9ivIC0g2K3ZiiDYo9it2K8gMR8wHQYDVQQPDBZFbmdpbmVlcmluZyBjb25zdWx0YW50MAoGCCqGSM49BAMCA0gAMEUCIEIkC/sl/Tr7LmtJhBcvn2du9KqXjJUs1kqS81CKcIJ5AiEApIaqOKqdUCBkfwNsiTQBuAk0yNEbINMyd0cg0WxQ2Vo=";
+                //inv.cSIDInfo.PrivateKey = @"MHQCAQEEIO2JfpYk9bQmscmEdy41bML3muCylfxsZndFvoncay3GoAcGBSuBBAAKoUQDQgAEQcer13YCaQYkGbxyxlMIrPCkou2glLsKu/ISRYMUJAfvkVupjmlK9ffhtQD7xfeIvcG89ec97H8jo2ziNFa36w==";
+                inv.cSIDInfo.CertPem = zatcakeys.PublicKey;
+                inv.cSIDInfo.PrivateKey = zatcakeys.PrivateKey;
+
+                // InvoiceTotal CalculateInvoiceTotal = ubl.CalculateInvoiceTotal(inv.InvoiceLines, inv.allowanceCharges);
+                bool savexml = true;
+                var path = Path.Combine("Invoices");
+                res = ubl.GenerateInvoiceXML(inv, path, savexml);
+                //res = ubl.GenerateInvoiceXML(inv, Directory.GetCurrentDirectory(),true);
+                var result = new GeneralMessage();
+
+
+                if (res.IsValid)
+                {
+                    result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId ?? 0, invoiceIdV, InvoicesVM.Type, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, zatcaVoucherNumber ?? 0, false, null, null, null, null, null, Branchid);
+                    //-----------------------------------------------------------------------------------------------------------------
+                    string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                    string ActionNote = "GenerateInvoiceXML Valid";
+                    _SystemAction.SaveAction("ZatcaInvoiceIntegration", "VoucherController", 3, "GenerateInvoiceXML Valid", "", "", ActionDate, 1, 1, ActionNote, 1);
+                    //-----------------------------------------------------------------------------------------------------------------
+                }
+                else
+                {
+                    var errormsg = res.ErrorMessage;
+                    result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId ?? 0, invoiceIdV, InvoicesVM.Type, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, zatcaVoucherNumber ?? 0, false,400, null, null, null, errormsg, Branchid);
+                    //-----------------------------------------------------------------------------------------------------------------
+                    string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                    string ActionNote = "GenerateInvoiceXML InValid";
+                    _SystemAction.SaveAction("ZatcaInvoiceIntegration", "VoucherController", 1, errormsg, "", "", ActionDate, 1, 1, ActionNote, 0);
+                    //-----------------------------------------------------------------------------------------------------------------
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = errormsg };
+
+                }
+                invReqCl invReqClobj = new invReqCl();
+                invReqClobj.InvoiceReqId = result.ReturnedParm ?? 0;
+                invReqClobj.InvoiceId = invoiceIdV;
+                invReqClobj.Type = InvoicesVM.Type;
+
+                var resultSend = SendToZatcaAPI(inv, res, objOrganization, invReqClobj, zatcakeys, Branchid);
+                return resultSend;
             }
-
-            //inv.cSIDInfo.CertPem = @"MIICoTCCAkegAwIBAgIGAZGd+J7KMAoGCCqGSM49BAMCMBUxEzARBgNVBAMMCmVJbnZvaWNpbmcwHhcNMjQwODI5MTE0OTU3WhcNMjkwODI4MjEwMDAwWjCBljELMAkGA1UEBhMCU0ExIzAhBgNVBAsMGtin2YTZgdix2LkgINin2YTYsdim2YrYs9mJMU8wTQYDVQQKDEbYtNix2YPYqSDYp9io2K/Yp9i5INin2YTYqtmF2YrYsiDZhNmE2KfYs9iq2LTYp9ix2KfYqiDYp9mE2YfZhtiv2LPZitipMREwDwYDVQQDDAhDb21wYW55MTBWMBAGByqGSM49AgEGBSuBBAAKA0IABEHHq9d2AmkGJBm8csZTCKzwpKLtoJS7CrvyEkWDFCQH75FbqY5pSvX34bUA+8X3iL3BvPXnPex/I6Ns4jRWt+ujggECMIH/MAwGA1UdEwEB/wQCMAAwge4GA1UdEQSB5jCB46SB4DCB3TFHMEUGA1UEBAw+MS1UYW1lZXJ8Mi12ZXJzaW9uMi4wLjF8My01ZGQ3Nzk1My0wY2ZjLTQ3NGItOTU3ZS0xNjViNDk4MzEzNTkxHzAdBgoJkiaJk/IsZAEBDA8zMTEzNjg3MTUxMDAwMDMxDTALBgNVBAwMBDExMDAxQTA/BgNVBBoMONin2YTYr9mF2KfZhSAtINi32LHZitmCINin2YTZhdmE2YMg2YHZh9ivIC0g2K3ZiiDYo9it2K8gMR8wHQYDVQQPDBZFbmdpbmVlcmluZyBjb25zdWx0YW50MAoGCCqGSM49BAMCA0gAMEUCIEIkC/sl/Tr7LmtJhBcvn2du9KqXjJUs1kqS81CKcIJ5AiEApIaqOKqdUCBkfwNsiTQBuAk0yNEbINMyd0cg0WxQ2Vo=";
-            //inv.cSIDInfo.PrivateKey = @"MHQCAQEEIO2JfpYk9bQmscmEdy41bML3muCylfxsZndFvoncay3GoAcGBSuBBAAKoUQDQgAEQcer13YCaQYkGbxyxlMIrPCkou2glLsKu/ISRYMUJAfvkVupjmlK9ffhtQD7xfeIvcG89ec97H8jo2ziNFa36w==";
-            inv.cSIDInfo.CertPem = zatcakeys.PublicKey;
-            inv.cSIDInfo.PrivateKey = zatcakeys.PrivateKey;
-
-           // InvoiceTotal CalculateInvoiceTotal = ubl.CalculateInvoiceTotal(inv.InvoiceLines, inv.allowanceCharges);
-            bool savexml = true;
-            var path = Path.Combine("Invoices");
-            res = ubl.GenerateInvoiceXML(inv, path, savexml);
-            //res = ubl.GenerateInvoiceXML(inv, Directory.GetCurrentDirectory(),true);
-            var result = new GeneralMessage();
-
-
-            if (res.IsValid)
+            catch (Exception ex)
             {
-                result = _invoicesRequestsService.SaveInvoicesRequest(InvoiceReqId ?? 0, invoiceIdV, InvoicesVM.Type, res.InvoiceHash, "", res.EncodedInvoice, res.UUID, res.QRCode, res.PIH, res.SingedXMLFileName, zatcaVoucherNumber ?? 0, false, null, null, null, null, null, Branchid);
-                //-----------------------------------------------------------------------------------------------------------------
-                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                string ActionNote = "GenerateInvoiceXML Valid";
-                _SystemAction.SaveAction("SetNotificationStatus", "NotificationService", 3, "GenerateInvoiceXML Valid", "", "", ActionDate, 1, 1, ActionNote, 1);
-                //-----------------------------------------------------------------------------------------------------------------
-            }
-            else
-            {
-                var errormsg = res.ErrorMessage;
+
+                var errormsg = ex.Message;
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = "GenerateInvoiceXML InValid";
-                _SystemAction.SaveAction("SaveNotification", "NotificationService", 1, errormsg, "", "", ActionDate, 1, 1, ActionNote, 0);
+                _SystemAction.SaveAction("ZatcaInvoiceIntegration", "VoucherController", 1, errormsg, "", "", ActionDate, 1, 1, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = errormsg };
-
             }
-            invReqCl invReqClobj = new invReqCl();
-            invReqClobj.InvoiceReqId = result.ReturnedParm ?? 0;
-            invReqClobj.InvoiceId = invoiceIdV;
-            invReqClobj.Type = InvoicesVM.Type;
 
-            var resultSend =SendToZatcaAPI(inv, res, objOrganization, invReqClobj, zatcakeys, Branchid);
-            return resultSend;
 
         }
 
@@ -4135,6 +4152,87 @@ namespace TaamerProject.API.Controllers
                 InvoiceObjDet.voucherDetObjRet = ObjDet;
             }
             var Result = ZatcaInvoiceIntegration(InvoiceObjDet, _globalshared.BranchId_G, InvoiceObjDet.voucherDetObjRet ?? new List<ObjRet>(), InvoiceReqId);
+            return Ok(Result);
+        }
+
+        [HttpPost("ReSendZatcaInvoiceIntegrationFuncByInvoiceId")]
+        public IActionResult ReSendZatcaInvoiceIntegrationFuncByInvoiceId(int InvoiceId)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var org = _organizationsservice.GetBranchOrganization().Result;
+            var InvoiceReqData = _voucherService.GetInvoiceDateById(InvoiceId).Result;
+            InvoiceObjDet InvoiceObjDet = new InvoiceObjDet();
+
+            if (InvoiceReqData.Type == 2 || InvoiceReqData.Type == 29)
+            {
+                var voucherDet = _TaamerProContext.VoucherDetails.Where(s => s.IsDeleted == false && s.InvoiceId == InvoiceReqData.InvoiceId).ToList();
+                List<int> voDetIds = new List<int>();
+                foreach (var itemV in voucherDet)
+                {
+                    voDetIds.Add(itemV.VoucherDetailsId);
+                }
+                InvoiceObjDet.voucherDetObj = voDetIds;
+            }
+            else if (InvoiceReqData.Type == 4)
+            {
+                var VoucherDetailsV = _voucherService.GetAllDetailsByInvoiceId(InvoiceReqData.InvoiceId).Result;
+                var ObjDet = new List<ObjRet>();
+                var VoucherDetCredit = new List<VoucherDetails>();
+                var VoucherCredit = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.CreditNotiId == InvoiceReqData.InvoiceId).ToList();
+                if (VoucherCredit.Count() > 0)
+                {
+                    VoucherDetCredit = _TaamerProContext.VoucherDetails.Where(s => s.InvoiceId == VoucherCredit.FirstOrDefault().InvoiceId).ToList();
+                }
+                if (VoucherDetCredit.Count() > 0)
+                {
+                    foreach (var item in VoucherDetailsV)
+                    {
+                        var ObjDetInst = new ObjRet();
+                        foreach (var itemC in VoucherDetCredit)
+                        {
+                            if (item.ServicesPriceId == itemC.ServicesPriceId)
+                            {
+
+                                item.TaxAmount = item.TaxAmount - itemC.TaxAmount;
+                                item.Amount = item.Amount - itemC.Amount;
+                                item.TotalAmount = item.TotalAmount - itemC.TotalAmount;
+
+                            }
+                        }
+                        ObjDetInst.TaxAmount = item.TaxAmount;
+                        ObjDetInst.Amount = item.Amount;
+                        ObjDetInst.TotalAmount = item.TotalAmount;
+                        ObjDetInst.Qty = item.Qty;
+                        ObjDetInst.ServicesPriceName = item.ServicesPriceName;
+                        ObjDetInst.DiscountValue_Det = item.DiscountValue_Det;
+                        ObjDetInst.DiscountPercentage_Det = item.DiscountPercentage_Det;
+                        ObjDetInst.InvoiceId = item.InvoiceId;
+                        ObjDetInst.VoucherDetailsId = item.VoucherDetailsId;
+                        ObjDetInst.Type = 4;
+                        ObjDet.Add(ObjDetInst);
+                    }
+                }
+                else
+                {
+                    foreach (var item in VoucherDetailsV)
+                    {
+                        var ObjDetInst = new ObjRet();
+                        ObjDetInst.TaxAmount = item.TaxAmount;
+                        ObjDetInst.Amount = item.Amount;
+                        ObjDetInst.TotalAmount = item.TotalAmount;
+                        ObjDetInst.Qty = item.Qty;
+                        ObjDetInst.ServicesPriceName = item.ServicesPriceName;
+                        ObjDetInst.DiscountValue_Det = item.DiscountValue_Det;
+                        ObjDetInst.DiscountPercentage_Det = item.DiscountPercentage_Det;
+                        ObjDetInst.InvoiceId = item.InvoiceId;
+                        ObjDetInst.VoucherDetailsId = item.VoucherDetailsId;
+                        ObjDetInst.Type = 4;
+                        ObjDet.Add(ObjDetInst);
+                    }
+                }
+                InvoiceObjDet.voucherDetObjRet = ObjDet;
+            }
+            var Result = ZatcaInvoiceIntegration(InvoiceObjDet, _globalshared.BranchId_G, InvoiceObjDet.voucherDetObjRet ?? new List<ObjRet>(), null);
             return Ok(Result);
         }
 
