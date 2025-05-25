@@ -18,6 +18,8 @@ using TaamerProject.Repository.Repositories;
 using TaamerProject.Service.IGeneric;   //dd
 using TaamerProject.Service.Interfaces;
 using TaamerProject.Service.LocalResources;
+using Twilio.TwiML.Voice;
+
 //using static iTextSharp.text.pdf.AcroFields;
 using static System.Runtime.InteropServices.JavaScript.JSType;  
 
@@ -1585,7 +1587,7 @@ namespace TaamerProject.Service.Services
         public GeneralMessage SaveProjectPhasesTasksPart1(Project Project, int UserId, int BranchId, string Url, string ImgUrl)
         {
             var WhichPart = "Part Phase(1)";
-
+            string VacMsg = "";
             var projSubTypeSett2 = _TaamerProContext.Settings.Where(s => s.IsDeleted == false && s.ProjSubTypeId == Project.SubProjectTypeId).ToList();
             if (projSubTypeSett2.Count() != 0)
             {
@@ -1603,6 +1605,22 @@ namespace TaamerProject.Service.Services
                             //-----------------------------------------------------------------------------------------------------------------
                             return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.Save_Faild_Check_users };
                         }
+
+                        var UserVacation = _TaamerProContext.Vacation.AsEnumerable().Where(s => s.IsDeleted == false && s.UserId == item.UserId && s.VacationStatus == 2 && s.DecisionType == 1 && (s.BackToWorkDate == null || (s.BackToWorkDate ?? "") == "")).ToList();
+                        UserVacation = UserVacation.Where(s =>
+                        // أو عنده إجازة في نفس وقت المهمة
+                        ((!(s.StartDate == null || s.StartDate.Equals("")) && !(Project.ProjectDate == null || Project.ProjectDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(Project.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                            (!(s.StartDate == null || s.StartDate.Equals("")) && !(Project.ProjectExpireDate == null || Project.ProjectExpireDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(Project.ProjectExpireDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                            ||
+                            ((!(s.EndDate == null || s.EndDate.Equals("")) && !(Project.ProjectDate == null || Project.ProjectDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(Project.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                            (!(s.EndDate == null || s.EndDate.Equals("")) && !(Project.ProjectExpireDate == null || Project.ProjectExpireDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(Project.ProjectExpireDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                        ).ToList();
+
+                        if (UserVacation.Count() != 0)
+                        {
+                            VacMsg = " ولكن يوجد متستخدمين في اجازة في نفس فترة المشروع موجودين علي السير ";
+                        }
+
 
                         //var UserVacation = _TaamerProContext.Vacation.AsEnumerable().Where(s => s.IsDeleted == false && s.UserId == item.UserId && s.VacationStatus == 2 && s.DecisionType == 1 && (s.BackToWorkDate == null || (s.BackToWorkDate ?? "") == "")).ToList();
                         //UserVacation = UserVacation.Where(s =>
@@ -1827,7 +1845,7 @@ namespace TaamerProject.Service.Services
                 _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
 
-                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.ProjectSaved, ReturnedStr = Project.ProjectId.ToString() };
+                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.ProjectSaved, ReturnedStrExtra = VacMsg, ReturnedStr = Project.ProjectId.ToString() };
             }
             catch (Exception ex)
             {
@@ -2994,6 +3012,7 @@ namespace TaamerProject.Service.Services
         public GeneralMessage SaveProjectPhasesTasksNewPart1(Project Project, int UserId, int BranchId, string Url, string ImgUrl)
         {
             var WhichPart = "Part Phase(1)";
+            string VacMsg = "";
             var projSubTypeSett2 = _TaamerProContext.SettingsNew.Where(s => s.IsDeleted == false && s.ProjSubTypeId == Project.SubProjectTypeId).ToList();
             if (projSubTypeSett2.Count() != 0)
             {
@@ -3011,6 +3030,23 @@ namespace TaamerProject.Service.Services
                             //-----------------------------------------------------------------------------------------------------------------
                             return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.Save_Faild_Check_users };
                         }
+
+                        var UserVacation = _TaamerProContext.Vacation.AsEnumerable().Where(s => s.IsDeleted == false && s.UserId == item.UserId && s.VacationStatus == 2 && s.DecisionType == 1 && (s.BackToWorkDate == null || (s.BackToWorkDate ?? "") == "")).ToList();
+                        UserVacation = UserVacation.Where(s =>
+                        // أو عنده إجازة في نفس وقت المهمة
+                        ((!(s.StartDate == null || s.StartDate.Equals("")) && !(Project.ProjectDate == null || Project.ProjectDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(Project.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                            (!(s.StartDate == null || s.StartDate.Equals("")) && !(Project.ProjectExpireDate == null || Project.ProjectExpireDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(Project.ProjectExpireDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                            ||
+                            ((!(s.EndDate == null || s.EndDate.Equals("")) && !(Project.ProjectDate == null || Project.ProjectDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(Project.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                            (!(s.EndDate == null || s.EndDate.Equals("")) && !(Project.ProjectExpireDate == null || Project.ProjectExpireDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(Project.ProjectExpireDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                        ).ToList();
+
+                        if (UserVacation.Count() != 0)
+                        {
+                            VacMsg = " ولكن يوجد متستخدمين في اجازة في نفس فترة المشروع موجودين علي السير ";
+                        }
+
+
                         //var StartDateV = (item.StartDate ?? DateTime.Now).ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                         //var EndDateV = (item.EndDate ?? DateTime.Now).ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
 
@@ -3236,7 +3272,7 @@ namespace TaamerProject.Service.Services
                 _SystemAction.SaveAction("SaveProjectPhasesTasks", "ProjectPhasesTasksService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
 
-                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.ProjectSaved, ReturnedStr = Project.ProjectId.ToString() };
+                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.ProjectSaved, ReturnedStrExtra = VacMsg , ReturnedStr = Project.ProjectId.ToString() };
             }
             catch (Exception ex)
             {
