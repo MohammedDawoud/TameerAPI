@@ -3227,7 +3227,7 @@ namespace TaamerProject.API.Controllers
             }
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             int orgId = _branchesService.GetOrganizationId(_globalshared.BranchId_G).Result;
-            var org = _organizationsservice.GetComDomainLink_Org(orgId).Result.ComDomainLink;
+            var org = _organizationsservice.GetComDomainLink_Org(orgId).Result.ApiBaseUri;
             var qrstring = org;
 
 
