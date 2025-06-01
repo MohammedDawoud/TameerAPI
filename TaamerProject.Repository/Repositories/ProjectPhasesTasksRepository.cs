@@ -7755,6 +7755,7 @@ namespace TaamerProject.Repository.Repositories
             convertReason =acc.convertReason,
             PlusTimeReason_admin =acc.PlusTimeReason_admin,
             convertReason_admin =acc.convertReason_admin,
+            TaskNo=acc.TaskNo??null,
             
             }).ToList().Select(s => new ProjectPhasesTasksVM()
             {
@@ -7833,6 +7834,7 @@ namespace TaamerProject.Repository.Repositories
                 PlusTimeReason_admin =s.PlusTimeReason_admin,
                 convertReason=s.convertReason,
                 convertReason_admin =s.convertReason_admin,
+                TaskNo = s.TaskNo,
             }).FirstOrDefault()!;
 
         }
@@ -10491,6 +10493,28 @@ namespace TaamerProject.Repository.Repositories
             return _TaamerProContext.ProjectPhasesTasks.Where(where).ToList<ProjectPhasesTasks>();
 
         }
+        public async Task<IEnumerable<Pro_TaskOperationsVM>> GetTaskOperationsByTaskId(int PhasesTaskId)
+        {
+            var projectPhasesTasks = _TaamerProContext.Pro_TaskOperations.Where(s => s.IsDeleted == false && s.PhaseTaskId == PhasesTaskId).Select(x => new Pro_TaskOperationsVM
+            {
+                TaskOperationId = x.TaskOperationId,
+                PhaseTaskId = x.PhaseTaskId,
+                Type = x.Type,
+                OperationName = x.OperationName,
+                Date = x.Date,
+                UserId = x.UserId,
+                BranchId = x.BranchId,
+                Note = x.Note,
+                TaskNo= x.ProjectPhasesTasks != null ? x.ProjectPhasesTasks.TaskNo ?? null : null,
+                DescriptionAr = x.ProjectPhasesTasks != null ? x.ProjectPhasesTasks.DescriptionAr ?? null : null,
+                ExtraNote=x.UserId!=null? x.Users!=null?" تم تحويلها الي :  " + (x.Users.FullNameAr??x.Users.FullName):null:null,
+                AddUserName = x.AddUsers != null ? (x.AddUsers.FullNameAr ?? x.AddUsers.FullName) ?? null : null,
+            }).ToList();
+
+            return projectPhasesTasks;
+        }
+
+
 
 
         public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasks_Costs(int? UserId, int BranchId, string Lang, string DateFrom, string DateTo)
@@ -10677,6 +10701,46 @@ namespace TaamerProject.Repository.Repositories
                 _ => (decimal)timeMinutes * 720   // Default: Month -> Convert to Hours (30 days * 24 hours)
             };
         }
+
+        public async Task<int> GenerateNextTaskNumber(int BranchId, string codePrefix, int? ProjectId)
+        {
+            if (_TaamerProContext.ProjectPhasesTasks != null)
+            {
+                var lastRow = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.TaskNoType == 1 && s.TaskNo!.Contains(codePrefix)).OrderByDescending(u => u.PhaseTaskId).Take(1).FirstOrDefault();
+                if (lastRow != null)
+                {
+                    try
+                    {
+
+                        var TaskNumber = 0;
+
+                        if (codePrefix == "")
+                        {
+                            TaskNumber = int.Parse(lastRow!.TaskNo!) + 1;
+                        }
+                        else
+                        {
+                            TaskNumber = int.Parse(lastRow!.TaskNo!.Replace(codePrefix, "").Trim()) + 1;
+                        }
+
+                        return TaskNumber;
+                    }
+                    catch (Exception)
+                    {
+                        return 1;
+                    }
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+            else
+            {
+                return 1;
+            }
+        }
+
 
     }
 }

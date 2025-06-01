@@ -1812,5 +1812,29 @@ namespace TaamerProject.API.Controllers
         }
 
 
+        [HttpGet("GetTaskOperationsByTaskId")]
+        public IActionResult GetTaskOperationsByTaskId(int PhasesTaskId)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var AllTasks = _projectPhasesTasksservice.GetTaskOperationsByTaskId(PhasesTaskId);
+            return Ok(AllTasks);
+        }
+
+        [HttpGet("GetnextTaskNo")]
+
+        public ActionResult GetnextTaskNo()
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var result = _projectPhasesTasksservice.GenerateNextTaskNumber(_globalshared.BranchId_G,0);
+            return Ok(result);
+        }
+        [HttpGet("GetTaskCode_S")]
+        public IActionResult GetTaskCode_S()
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            return Ok(_projectPhasesTasksservice.GetTaskCode_S(_globalshared.BranchId_G,0));
+        }
+
+
     }
 }

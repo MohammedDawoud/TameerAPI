@@ -202,8 +202,9 @@ namespace TaamerProject.Service.Services
                         BranchesUpdated.PostalCode = branches.PostalCode;
                         BranchesUpdated.ProjectStartCode = branches.ProjectStartCode;
                         BranchesUpdated.OfferStartCode = branches.OfferStartCode;
+                        BranchesUpdated.TaskStartCode = branches.TaskStartCode;
                         //BranchesUpdated.InvoiceStartCode = branches.InvoiceStartCode;
-                        if((branches.TaxCode!??"").Trim() == (Org.TaxCode! ?? "").Trim())
+                        if ((branches.TaxCode!??"").Trim() == (Org.TaxCode! ?? "").Trim())
                         {
                             BranchesUpdated.InvoiceBranchSeparated = false;
                         }

@@ -201,5 +201,9 @@ namespace TaamerProject.Service.Interfaces
         Task<IEnumerable<ProjectPhasesTasksVM>> GetInProgressProjectPhasesTasks_Branches(int BranchId, string Lang, int? CustomerId);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetInProgressProjectPhasesTasks_Branches(int BranchId, string Lang, int? CustomerId, string? SearchText);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasks_Costs(int? UserId, int BranchId, string Lang, string DateFrom, string DateTo);
+        Task<IEnumerable<Pro_TaskOperationsVM>> GetTaskOperationsByTaskId(int PhasesTaskId);
+        GeneralMessage SaveTaskOperations(Pro_TaskOperations TaskOperations, int UserId, int BranchId);
+        Task<string> GenerateNextTaskNumber(int BranchId,int? ProjectId);
+        Task<string> GetTaskCode_S(int BranchId, int? ProjectId);
     }
 }

@@ -13,6 +13,7 @@ namespace TaamerProject.Service.IGeneric
     {
         public void SaveAction(string FunctionName, string ServiceName, int ActionType, string MessageName,
             string ModuleName, string PageName, string ActionDate, int UserId, int BranchId, string Note, int Success);
+        public void SaveTaskOperations(Pro_TaskOperations TaskOperations, int UserId, int BranchId);
 
     }
 }

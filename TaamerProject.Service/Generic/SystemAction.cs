@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,5 +50,22 @@ namespace TaamerProject.Service.Generic
 
         }
 
+        public void SaveTaskOperations(Pro_TaskOperations TaskOperations, int UserId, int BranchId)
+        {
+            try
+            {
+                TaskOperations.Date = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                TaskOperations.BranchId = BranchId;
+                TaskOperations.AddUser = UserId;
+                TaskOperations.AddDate = DateTime.Now;
+                _TaamerProContext.Pro_TaskOperations.Add(TaskOperations);
+                _TaamerProContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                var exx = ex.Message;
+            }
+
+        }
     }
 }

@@ -87,7 +87,9 @@ namespace TaamerProject.Models
         public string? convertReason_admin { get; set; }
         public decimal? Totalhourstask { get; set; }
         public decimal? Totaltaskcost { get; set; }
-
+        public string? TaskNo { get; set; }
+        public int? TaskNoType { get; set; }
+        public virtual List<Pro_TaskOperations>? TaskOperationsList { get; set; }
 
     }
 }

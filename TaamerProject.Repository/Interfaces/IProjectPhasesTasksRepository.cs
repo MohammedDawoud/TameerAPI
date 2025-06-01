@@ -135,5 +135,9 @@ namespace TaamerProject.Repository.Interfaces
         Task<IEnumerable<ProjectPhasesTasksVM>> GetInProgressProjectPhasesTasks_Branchesfilterd(int BranchId, string Lang, int? CustomerId);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetInProgressProjectPhasesTasks_Branchesfilterd(int BranchId, string Lang, int? CustomerId, string? SearchText);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasks_Costs(int? UserId, int BranchId, string Lang, string DateFrom, string DateTo);
+        Task<int> GenerateNextTaskNumber(int BranchId, string codePrefix,int? ProjectId);
+        Task<IEnumerable<Pro_TaskOperationsVM>> GetTaskOperationsByTaskId(int PhasesTaskId);
+
+
     }
 }

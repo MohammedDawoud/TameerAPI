@@ -162,6 +162,7 @@ namespace TaamerProject.Models.DBContext
         public virtual DbSet<ProjectFiles> ProjectFiles { get; set; }
         public virtual DbSet<ProjectPhasesTasks> ProjectPhasesTasks { get; set; }     
         public virtual DbSet<Pro_projectsReasons> Pro_projectsReasons { get; set; }
+        public virtual DbSet<Pro_TaskOperations> Pro_TaskOperations { get; set; }
         public virtual DbSet<Pro_tasksReasons> Pro_tasksReasons { get; set; }
         public virtual DbSet<Pro_DestinationDepartments> Pro_DestinationDepartments { get; set; }
         public virtual DbSet<Pro_DestinationTypes> Pro_DestinationTypes { get; set; }
@@ -788,6 +789,7 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 entity.Property(t => t.BoxAccId2).HasColumnName("BoxAccId2");
                 entity.Property(t => t.ProjectStartCode).HasColumnName("ProjectStartCode");
                 entity.Property(t => t.OfferStartCode).HasColumnName("OfferStartCode");
+                entity.Property(t => t.TaskStartCode).HasColumnName("TaskStartCode");
                 entity.Property(t => t.InvoiceStartCode).HasColumnName("InvoiceStartCode");
                 entity.Property(t => t.InvoiceBranchSeparated).HasColumnName("InvoiceBranchSeparated");
                 entity.Property(t => t.Engineering_License).HasColumnName("Engineering_License");
@@ -2956,8 +2958,7 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 modelBuilder.Entity<ProjectPhasesTasks>().HasOne(s => s.TaskTypeModel).WithMany().HasForeignKey(e => e.TaskType);
                 modelBuilder.Entity<ProjectPhasesTasks>().HasOne(s => s.department).WithMany().HasForeignKey(e => e.DepartmentId);
                 modelBuilder.Entity<ProjectPhasesTasks>().HasMany<ContactList>(s => s.ContactLists).WithOne(g => g.ProjectPhasesTasks).HasForeignKey(s => s.TaskId);
-
-
+                modelBuilder.Entity<ProjectPhasesTasks>().HasMany<Pro_TaskOperations>(s => s.TaskOperationsList).WithOne(g => g.ProjectPhasesTasks).HasForeignKey(s => s.PhaseTaskId);
             });
 
             //--------------------------------END--------------------------------------------------
@@ -3319,6 +3320,16 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
             {
                 entity.HasKey(e => e.DestinationTypeId);
                 entity.ToTable("Pro_DestinationTypes");
+            });
+
+            //--------------------------------END--------------------------------------------------
+            modelBuilder.Entity<Pro_TaskOperations>(entity =>
+            {
+                entity.HasKey(e => e.TaskOperationId);
+                entity.ToTable("Pro_TaskOperations");
+                modelBuilder.Entity<Pro_TaskOperations>().HasOne(s => s.AddUsers).WithMany().HasForeignKey(e => e.AddUser);
+                modelBuilder.Entity<Pro_TaskOperations>().HasOne(s => s.Users).WithMany().HasForeignKey(e => e.UserId);
+
             });
 
             //--------------------------------END--------------------------------------------------
