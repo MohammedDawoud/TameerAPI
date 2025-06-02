@@ -72,6 +72,7 @@ namespace TaamerProject.Models
         public string? ProjectStartCode { get; set; }
         public string? OfferStartCode { get; set; }
         public string? TaskStartCode { get; set; }
+        public string? OrderStartCode { get; set; }
         public string? InvoiceStartCode { get; set; }
         public bool? InvoiceBranchSeparated { get; set; }
         public string? Engineering_License { get; set; }

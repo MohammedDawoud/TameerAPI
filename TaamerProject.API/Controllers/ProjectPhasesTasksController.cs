@@ -1821,7 +1821,6 @@ namespace TaamerProject.API.Controllers
         }
 
         [HttpGet("GetnextTaskNo")]
-
         public ActionResult GetnextTaskNo()
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);

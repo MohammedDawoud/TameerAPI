@@ -10493,26 +10493,6 @@ namespace TaamerProject.Repository.Repositories
             return _TaamerProContext.ProjectPhasesTasks.Where(where).ToList<ProjectPhasesTasks>();
 
         }
-        public async Task<IEnumerable<Pro_TaskOperationsVM>> GetTaskOperationsByTaskId(int PhasesTaskId)
-        {
-            var projectPhasesTasks = _TaamerProContext.Pro_TaskOperations.Where(s => s.IsDeleted == false && s.PhaseTaskId == PhasesTaskId).Select(x => new Pro_TaskOperationsVM
-            {
-                TaskOperationId = x.TaskOperationId,
-                PhaseTaskId = x.PhaseTaskId,
-                Type = x.Type,
-                OperationName = x.OperationName,
-                Date = x.Date,
-                UserId = x.UserId,
-                BranchId = x.BranchId,
-                Note = x.Note,
-                TaskNo= x.ProjectPhasesTasks != null ? x.ProjectPhasesTasks.TaskNo ?? null : null,
-                DescriptionAr = x.ProjectPhasesTasks != null ? x.ProjectPhasesTasks.DescriptionAr ?? null : null,
-                ExtraNote=x.UserId!=null? x.Users!=null?" تم تحويلها الي :  " + (x.Users.FullNameAr??x.Users.FullName):null:null,
-                AddUserName = x.AddUsers != null ? (x.AddUsers.FullNameAr ?? x.AddUsers.FullName) ?? null : null,
-            }).ToList();
-
-            return projectPhasesTasks;
-        }
 
 
 
@@ -10700,6 +10680,27 @@ namespace TaamerProject.Repository.Repositories
                 3 => (decimal)timeMinutes * 168,  // Weeks -> Convert to Hours (7 days * 24 hours)
                 _ => (decimal)timeMinutes * 720   // Default: Month -> Convert to Hours (30 days * 24 hours)
             };
+        }
+        public async Task<IEnumerable<Pro_TaskOperationsVM>> GetTaskOperationsByTaskId(int PhasesTaskId)
+        {
+            var projectPhasesTasks = _TaamerProContext.Pro_TaskOperations.Where(s => s.IsDeleted == false && s.PhaseTaskId == PhasesTaskId).Select(x => new Pro_TaskOperationsVM
+            {
+                TaskOperationId = x.TaskOperationId,
+                PhaseTaskId = x.PhaseTaskId,
+                WorkOrderId = x.WorkOrderId,
+                Type = x.Type,
+                OperationName = x.OperationName,
+                Date = x.Date,
+                UserId = x.UserId,
+                BranchId = x.BranchId,
+                Note = x.Note,
+                TaskNo = x.ProjectPhasesTasks != null ? x.ProjectPhasesTasks.TaskNo ?? null : null,
+                DescriptionAr = x.ProjectPhasesTasks != null ? x.ProjectPhasesTasks.DescriptionAr ?? null : null,
+                ExtraNote = x.UserId != null ? x.Users != null ? " تم تحويلها الي :  " + (x.Users.FullNameAr ?? x.Users.FullName) : null : null,
+                AddUserName = x.AddUsers != null ? (x.AddUsers.FullNameAr ?? x.AddUsers.FullName) ?? null : null,
+            }).ToList();
+
+            return projectPhasesTasks;
         }
 
         public async Task<int> GenerateNextTaskNumber(int BranchId, string codePrefix, int? ProjectId)

@@ -55,6 +55,11 @@ namespace TaamerProject.Service.Interfaces
         GeneralMessage PlustimeTask(WorkOrders WorkOrders, int UserId, int BranchId, string Url, string ImgUrl);
         GeneralMessage RefusePlustimeTask(WorkOrders WorkOrders, int UserId, int BranchId);
 
+        Task<IEnumerable<Pro_TaskOperationsVM>> GetTaskOperationsByTaskId(int WorkOrderId);
+        GeneralMessage SaveTaskOperations(Pro_TaskOperations TaskOperations, int UserId, int BranchId);
+        Task<string> GenerateNextOrderNumber(int BranchId, int? ProjectId);
+        Task<string> GetOrderCode_S(int BranchId, int? ProjectId);
+
 
     }
 }

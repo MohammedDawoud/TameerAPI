@@ -8386,8 +8386,8 @@ namespace TaamerProject.Service.Services
         {
             try
             {
-                ProjectPhasesTasks projectPhasesTasks = _ProjectPhasesTasksRepository.GetById(PhaseTaskId);
-                if (projectPhasesTasks.Status == 4)
+                ProjectPhasesTasks ProTaskUpdated = _ProjectPhasesTasksRepository.GetById(PhaseTaskId);
+                if (ProTaskUpdated.Status == 4)
                 {
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
@@ -8398,13 +8398,20 @@ namespace TaamerProject.Service.Services
                 }
                 else
                 {
-                    projectPhasesTasks.IsTemp = true;
+                    ProTaskUpdated.IsTemp = true;
                     _TaamerProContext.SaveChanges();
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                     string ActionNote = " تحديد مهمة الفاتورة رقم " + PhaseTaskId;
                    _SystemAction.SaveAction("VoucherTaskStop", "ProjectPhasesTasksService", 3, "تم توقف حركة سير المشروع عند هذه المهمة لحين سداد الفاتورة بنجاح", "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                     //-----------------------------------------------------------------------------------------------------------------
+                    #region
+                    //SaveOperationsForTask
+                    Pro_TaskOperations Pro_TaskOperation = new Pro_TaskOperations();
+                    Pro_TaskOperation.PhaseTaskId = ProTaskUpdated!.PhaseTaskId;
+                    Pro_TaskOperation.OperationName = "توقف حركة المهمة لسداد فاتورة";
+                    _SystemAction.SaveTaskOperations(Pro_TaskOperation, UserId, BranchId);
+                    #endregion
                     return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
                 }
 
@@ -8423,15 +8430,22 @@ namespace TaamerProject.Service.Services
         {
             try
             {
-                ProjectPhasesTasks projectPhasesTasks = _ProjectPhasesTasksRepository.GetById(PhaseTaskId);
+                ProjectPhasesTasks ProTaskUpdated = _ProjectPhasesTasksRepository.GetById(PhaseTaskId);
 
-                projectPhasesTasks.IsTemp = false;
+                ProTaskUpdated.IsTemp = false;
                 _TaamerProContext.SaveChanges();
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = " تحديد مهمة الفاتورة رقم " + PhaseTaskId;
                _SystemAction.SaveAction("VoucherTaskStopR", "ProjectPhasesTasksService", 3, "تم استمرار حركة سير المشروع عند هذه المهمة وتم سداد الفاتورة بنجاح", "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
+                #region
+                //SaveOperationsForTask
+                Pro_TaskOperations Pro_TaskOperation = new Pro_TaskOperations();
+                Pro_TaskOperation.PhaseTaskId = ProTaskUpdated!.PhaseTaskId;
+                Pro_TaskOperation.OperationName = "استمرار حركة المهمة لفاتورة";
+                _SystemAction.SaveTaskOperations(Pro_TaskOperation, UserId, BranchId);
+                #endregion
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
             }
             catch (Exception)
@@ -8449,16 +8463,16 @@ namespace TaamerProject.Service.Services
         {
             try
             {
-                ProjectPhasesTasks projectPhasesTasks = _ProjectPhasesTasksRepository.GetById(PhaseTaskId);
+                ProjectPhasesTasks ProTaskUpdated = _ProjectPhasesTasksRepository.GetById(PhaseTaskId);
 
                 if (SubSelectId > 1)
                 {
-                    projectPhasesTasks.ParentId = SubSelectId;
+                    ProTaskUpdated.ParentId = SubSelectId;
 
                 }
                 else if (MainSelectId > 1)
                 {
-                    projectPhasesTasks.ParentId = MainSelectId;
+                    ProTaskUpdated.ParentId = MainSelectId;
 
                 }
                 else
@@ -8476,6 +8490,13 @@ namespace TaamerProject.Service.Services
                 string ActionNote = "  نقل المهمة بنجاح رقم " + PhaseTaskId;
                _SystemAction.SaveAction("VoucherTaskStopR", "ProjectPhasesTasksService", 3, Resources.task_successfully_transferred, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
+                #region
+                //SaveOperationsForTask
+                Pro_TaskOperations Pro_TaskOperation = new Pro_TaskOperations();
+                Pro_TaskOperation.PhaseTaskId = ProTaskUpdated!.PhaseTaskId;
+                Pro_TaskOperation.OperationName = "نقل المهمة";
+                _SystemAction.SaveTaskOperations(Pro_TaskOperation, UserId, BranchId);
+                #endregion
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.task_successfully_transferred };
             }
             catch (Exception ex)
@@ -8512,6 +8533,13 @@ namespace TaamerProject.Service.Services
                _SystemAction.SaveAction("RestartTask", "ProjectPhasesTasksService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
                 //SendMailFinishTask(ProTaskUpdated, BranchId, UserId);
+                #region
+                //SaveOperationsForTask
+                Pro_TaskOperations Pro_TaskOperation = new Pro_TaskOperations();
+                Pro_TaskOperation.PhaseTaskId = ProTaskUpdated!.PhaseTaskId;
+                Pro_TaskOperation.OperationName = "اعادة تشغيل المهمه";
+                _SystemAction.SaveTaskOperations(Pro_TaskOperation, UserId, BranchId);
+                #endregion
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
             }
             catch (Exception ex)

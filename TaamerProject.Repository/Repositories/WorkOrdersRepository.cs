@@ -2367,7 +2367,68 @@ namespace TaamerProject.Repository.Repositories
             }
 
         }
+        public async Task<IEnumerable<Pro_TaskOperationsVM>> GetTaskOperationsByTaskId(int WorkOrderId)
+        {
+            var projectPhasesTasks = _TaamerProContext.Pro_TaskOperations.Where(s => s.IsDeleted == false && s.WorkOrderId == WorkOrderId).Select(x => new Pro_TaskOperationsVM
+            {
+                TaskOperationId = x.TaskOperationId,
+                PhaseTaskId = x.PhaseTaskId,
+                WorkOrderId = x.WorkOrderId,
+                Type = x.Type,
+                OperationName = x.OperationName,
+                Date = x.Date,
+                UserId = x.UserId,
+                BranchId = x.BranchId,
+                Note = x.Note,
+                TaskNo = x.ProjectPhasesTasks != null ? x.ProjectPhasesTasks.TaskNo ?? null : null,
+                DescriptionAr = x.ProjectPhasesTasks != null ? x.ProjectPhasesTasks.DescriptionAr ?? null : null,
+                ExtraNote = x.UserId != null ? x.Users != null ? " تم تحويلها الي :  " + (x.Users.FullNameAr ?? x.Users.FullName) : null : null,
+                AddUserName = x.AddUsers != null ? (x.AddUsers.FullNameAr ?? x.AddUsers.FullName) ?? null : null,
+            }).ToList();
 
-   
+            return projectPhasesTasks;
+        }
+
+        public async Task<int> GenerateNextOrderNumber(int BranchId, string codePrefix, int? ProjectId)
+        {
+            if (_TaamerProContext.ProjectPhasesTasks != null)
+            {
+                var lastRow = _TaamerProContext.WorkOrders.Where(s => s.IsDeleted == false && s.OrderNoType == 1 && s.OrderNo!.Contains(codePrefix)).OrderByDescending(u => u.WorkOrderId).Take(1).FirstOrDefault();
+                if (lastRow != null)
+                {
+                    try
+                    {
+
+                        var TaskNumber = 0;
+
+                        if (codePrefix == "")
+                        {
+                            TaskNumber = int.Parse(lastRow!.OrderNo!) + 1;
+                        }
+                        else
+                        {
+                            TaskNumber = int.Parse(lastRow!.OrderNo!.Replace(codePrefix, "").Trim()) + 1;
+                        }
+
+                        return TaskNumber;
+                    }
+                    catch (Exception)
+                    {
+                        return 1;
+                    }
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+            else
+            {
+                return 1;
+            }
+        }
+
+
+
     }
 }

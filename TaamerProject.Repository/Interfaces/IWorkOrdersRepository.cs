@@ -54,6 +54,7 @@ namespace TaamerProject.Repository.Interfaces
         Task<IEnumerable<WorkOrdersVM>> GetAllWorkOrdersForAdminByCustomer(int BranchId, int? CustomerId, string? SearchText);
         Task<IEnumerable<WorkOrdersVM>> GetAllWorkOrdersByCustomer(int BranchId, int? CustomerId);
         Task<IEnumerable<WorkOrdersVM>> GetAllWorkOrdersByCustomer(int BranchId, int? CustomerId, string? SearchText);
-
+        Task<int> GenerateNextOrderNumber(int BranchId, string codePrefix, int? ProjectId);
+        Task<IEnumerable<Pro_TaskOperationsVM>> GetTaskOperationsByTaskId(int PhasesTaskId);
     }
 }

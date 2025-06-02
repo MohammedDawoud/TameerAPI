@@ -203,6 +203,7 @@ namespace TaamerProject.Service.Services
                         BranchesUpdated.ProjectStartCode = branches.ProjectStartCode;
                         BranchesUpdated.OfferStartCode = branches.OfferStartCode;
                         BranchesUpdated.TaskStartCode = branches.TaskStartCode;
+                        BranchesUpdated.OrderStartCode = branches.OrderStartCode;
                         //BranchesUpdated.InvoiceStartCode = branches.InvoiceStartCode;
                         if ((branches.TaxCode!??"").Trim() == (Org.TaxCode! ?? "").Trim())
                         {
