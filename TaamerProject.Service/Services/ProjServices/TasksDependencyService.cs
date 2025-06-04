@@ -30,10 +30,11 @@ namespace TaamerProject.Service.Services
         private readonly ISystemAction _SystemAction;
         private readonly IUsersRepository _UsersRepository;
         private readonly IDepartmentRepository _departmentRepository;
+        private readonly IBranchesRepository _BranchesRepository;
 
         public TasksDependencyService(TaamerProjectContext dataContext, ISystemAction systemAction, IDepartmentRepository departmentRepository,
             IUsersRepository usersRepository,ITasksDependencyRepository tasksDependencyRepository, IProjectPhasesTasksRepository projectPhasesTasksRepository,
-            IProjectRepository projectRepository, INodeLocationsRepository  nodeLocationsRepository)
+            IProjectRepository projectRepository, IBranchesRepository branchesRepository, INodeLocationsRepository  nodeLocationsRepository)
         {
             _TasksDependencyRepository = tasksDependencyRepository;
             _ProjectPhasesTasksRepository = projectPhasesTasksRepository;
@@ -43,6 +44,7 @@ namespace TaamerProject.Service.Services
             _SystemAction = systemAction;
             _UsersRepository = usersRepository;
             _departmentRepository = departmentRepository;
+            _BranchesRepository = branchesRepository;
 
         }
         public Task<IEnumerable<TasksDependencyVM>> GetAllTasksDependencies(int BranchId)
@@ -233,6 +235,15 @@ namespace TaamerProject.Service.Services
                 project.UpdateUser = UserId;
                 project.UpdateDate = DateTime.Now;
 
+                var codePrefix = "";
+                var prostartcode = _BranchesRepository.GetById(BranchId).TaskStartCode;
+                if (prostartcode != null && prostartcode != "")
+                {
+                    codePrefix = prostartcode;
+                }
+                var Value = _ProjectPhasesTasksRepository.GenerateNextTaskNumber(BranchId, codePrefix, 0).Result;
+                Value = Value - 1;
+
                 var existingphases = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.ProjectId == ProjectId).ToList(); ;
 
                 if (existingphases != null && existingphases.Count() > 0)
@@ -246,10 +257,16 @@ namespace TaamerProject.Service.Services
                     {
                         phases.IsConverted = phases.IsConverted ?? 0;
                         phases.IsMerig = phases.IsMerig ?? -1;
+                        string? NewValue = null;
 
                         if (phases.Type == 3)
                         {
-
+                            Value = Value + 1;
+                            NewValue = string.Format("{0:000000}", Value);
+                            if (codePrefix != "")
+                            {
+                                NewValue = codePrefix + NewValue;
+                            }
                             phases.Status = phases.Status ?? 1;
 
                             Users? BranchIdOfUser = _TaamerProContext.Users.Where(s => s.UserId == phases.UserId).FirstOrDefault();
@@ -300,7 +317,8 @@ namespace TaamerProject.Service.Services
                                 BranchIdOfUserOrDepartment = project.BranchId;
                             }
 
-
+                            phases.TaskNo = NewValue;
+                            phases.TaskNoType = 1;
                             phases.TaskTimeFrom = (phases.StartDateNew ?? DateTime.Now).ToString("hh:mm tt", CultureInfo.InvariantCulture);
                             phases.TaskTimeTo = (phases.EndDateNew ?? DateTime.Now).ToString("hh:mm tt", CultureInfo.InvariantCulture);
 
@@ -359,6 +377,7 @@ namespace TaamerProject.Service.Services
                         else
                         {
                             phases.BranchId = project.BranchId;
+                            NewValue = null;
 
                         }
 

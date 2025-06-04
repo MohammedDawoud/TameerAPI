@@ -333,7 +333,7 @@ namespace TaamerProject.API.Controllers
 
                     return Ok(AllTasks );
                 }
-            }
+         }
 
         [HttpGet("GetAllLateProjectPhasesByuser_rpt_paging")]
         public IActionResult GetAllLateProjectPhasesByuser_rpt_paging(int? UserId, int? status, string? DateFrom, string? DateTo, string? SearchText, int? page, int? pageSize)

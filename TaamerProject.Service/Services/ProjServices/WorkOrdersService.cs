@@ -214,7 +214,7 @@ namespace TaamerProject.Service.Services
                     UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")); ;
                     UserNotification.SendUserId = UserId;
                     UserNotification.Type = 1; // notification
-                    UserNotification.Description = "لديك امر عمل : " + workOrders.Required;
+                    UserNotification.Description = "لديك امر عمل : " + workOrders.Required + " رقم " + workOrders.OrderNo;
                     UserNotification.AllUsers = false;
                     UserNotification.SendDate = DateTime.Now;
                     UserNotification.AddUser = UserId;

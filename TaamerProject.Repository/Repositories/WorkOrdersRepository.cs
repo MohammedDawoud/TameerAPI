@@ -1905,6 +1905,7 @@ namespace TaamerProject.Repository.Repositories
                     TimeStr = x.NoOfDays + "يوم",
                     IsConverted = x.IsConverted ?? 0,
                     PlusTime = x.PlusTime ?? false,
+                    TaskNo=x.OrderNo??null,
 
                     // TimeStr=((DateTime.ParseExact(x.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) - (DateTime.ParseExact(x.OrderDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))).TotalDays == 0 ? 1 +"يوم" : ((DateTime.ParseExact(x.OrderDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) - (DateTime.ParseExact(x.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))).TotalDays  + "يوم",
 
@@ -1979,6 +1980,7 @@ namespace TaamerProject.Repository.Repositories
                     TimeStr = x.NoOfDays + "يوم",
                     IsConverted = x.IsConverted ?? 0,
                     PlusTime = x.PlusTime ?? false,
+                    TaskNo = x.OrderNo ?? null,
                     // TimeStr=((DateTime.ParseExact(x.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) - (DateTime.ParseExact(x.OrderDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))).TotalDays == 0 ? 1 +"يوم" : ((DateTime.ParseExact(x.OrderDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) - (DateTime.ParseExact(x.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))).TotalDays  + "يوم",
 
 
@@ -2047,7 +2049,7 @@ namespace TaamerProject.Repository.Repositories
                     EndDateCalc = x.EndDate,
                     TaskTimeFrom = "",
                     TaskTimeTo = "",
-
+                    TaskNo = x.OrderNo ?? null,
                     // TimeStr=((DateTime.ParseExact(x.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) - (DateTime.ParseExact(x.OrderDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))).TotalDays == 0 ? 1 +"يوم" : ((DateTime.ParseExact(x.OrderDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) - (DateTime.ParseExact(x.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))).TotalDays  + "يوم",
 
 
@@ -2102,6 +2104,7 @@ namespace TaamerProject.Repository.Repositories
                     EndDateCalc = x.EndDate,
                     TaskTimeFrom = "",
                     TaskTimeTo = "",
+                    TaskNo = x.OrderNo ?? null,
                     // TimeStr=((DateTime.ParseExact(x.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) - (DateTime.ParseExact(x.OrderDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))).TotalDays == 0 ? 1 +"يوم" : ((DateTime.ParseExact(x.OrderDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) - (DateTime.ParseExact(x.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))).TotalDays  + "يوم",
 
 
@@ -2161,6 +2164,7 @@ namespace TaamerProject.Repository.Repositories
                     EndDateCalc = x.EndDate,
                     TaskTimeFrom = "",
                     TaskTimeTo = "",
+                    TaskNo = x.OrderNo ?? null,
                     // TimeStr=((DateTime.ParseExact(x.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) - (DateTime.ParseExact(x.OrderDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))).TotalDays == 0 ? 1 +"يوم" : ((DateTime.ParseExact(x.OrderDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) - (DateTime.ParseExact(x.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))).TotalDays  + "يوم",
 
 
@@ -2222,6 +2226,7 @@ namespace TaamerProject.Repository.Repositories
                     TaskTimeFrom = "",
                     TaskTimeTo = "",
                     TimeStr=x.NoOfDays +"يوم",
+                    TaskNo=x.OrderNo??null,
                     // TimeStr=((DateTime.ParseExact(x.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) - (DateTime.ParseExact(x.OrderDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))).TotalDays == 0 ? 1 +"يوم" : ((DateTime.ParseExact(x.OrderDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) - (DateTime.ParseExact(x.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))).TotalDays  + "يوم",
 
 
@@ -2259,6 +2264,7 @@ namespace TaamerProject.Repository.Repositories
                     EndDateCalc = x.EndDate,
                     TaskTimeFrom = "",
                     TaskTimeTo = "",
+                    TaskNo = x.OrderNo ?? null,
                 }).ToList();
                 return emp;
             }
@@ -2357,6 +2363,7 @@ namespace TaamerProject.Repository.Repositories
                     EndDateCalc = x.EndDate,
                     TaskTimeFrom = "",
                     TaskTimeTo = "",
+                    TaskNo = x.OrderNo ?? null,
                 }).ToList().Where(m => (string.IsNullOrEmpty(Today) || (!string.IsNullOrEmpty(Today) && DateTime.ParseExact(m.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) < DateTime.ParseExact(Today, "yyyy-MM-dd", CultureInfo.InvariantCulture))));
                 return emp.ToList();
             }
