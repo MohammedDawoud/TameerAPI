@@ -222,31 +222,20 @@ namespace TaamerProject.Service.Services
                                 ||
                                 ((!(s.EndDate == null || s.EndDate.Equals("")) && !(settings.StartDate == null || settings.StartDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(StartDateV, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
                                 (!(s.EndDate == null || s.EndDate.Equals("")) && !(settings.EndDate == null || settings.EndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(EndDateV, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                                ||
+
+                                ((!(s.StartDate == null || s.StartDate.Equals("")) && !(settings.StartDate == null || settings.StartDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(StartDateV, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                                (!(s.EndDate == null || s.EndDate.Equals("")) && !(settings.StartDate == null || settings.StartDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(StartDateV, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                                ||
+                                ((!(s.StartDate == null || s.StartDate.Equals("")) && !(settings.EndDate == null || settings.EndDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(EndDateV, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                                (!(s.EndDate == null || s.EndDate.Equals("")) && !(settings.EndDate == null || settings.EndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(EndDateV, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+
                             ).ToList();
                             if (UserVacation.Count() != 0)
                             {
                                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.Proj_SaveFailedUserVacationProSetting };
                             }
 
-
-                            //var UserVacation = _TaamerProContext.Vacation.AsEnumerable().Where(s => s.IsDeleted == false && s.UserId == settings.UserId && s.VacationStatus == 2 && s.DecisionType == 1 && (s.BackToWorkDate == null || (s.BackToWorkDate??"")=="")).ToList();
-                            //var UserVacation = _TaamerProContext.Vacation.AsEnumerable().Where(s => s.IsDeleted == false && s.UserId == item.UserId && s.VacationStatus == 2 && s.DecisionType == 1 && (s.BackToWorkDate == null || (s.BackToWorkDate ?? "") == "")).ToList();
-
-                            //var UserVacation2 = _TaamerProContext.Vacation.AsEnumerable().Where(s => s.IsDeleted == false && s.UserId == settings.UserId && s.VacationStatus == 2 && s.DecisionType == 1
-                            //&&
-                            //((s.BackToWorkDate == null || s.BackToWorkDate.Equals("")) || // لسه مرجعش من إجازة 
-                            //(
-                            //    // أو عنده إجازة في نفس وقت المهمة
-                            //    ((!(s.StartDate == null || s.StartDate.Equals("")) && !(settings.StartDate == null || settings.StartDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= settings.StartDate) &&
-                            //    (!(s.StartDate == null || s.StartDate.Equals("")) && !(settings.EndDate == null || settings.EndDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= settings.EndDate)))
-                            //    ||
-                            //    ((!(s.EndDate == null || s.EndDate.Equals("")) && !(settings.StartDate == null || settings.StartDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= settings.StartDate) &&
-                            //    (!(s.EndDate == null || s.EndDate.Equals("")) && !(settings.EndDate == null || settings.EndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= settings.EndDate)))                           
-                            //).ToList();
-                            //if (UserVacation.Count() != 0)
-                            //{
-                            //    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.UserVac };
-                            //}
 
                             var DateDiff = ((settings.EndDate??new DateTime()) - (settings.StartDate ?? new DateTime()));
                             var TimeType = 1;

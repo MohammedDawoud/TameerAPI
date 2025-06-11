@@ -116,6 +116,26 @@ namespace TaamerProject.Service.Services
 
                 //var BranchIdOfUser = _UsersRepository.GetById(workOrders.ExecutiveEng);
                 var BranchIdOfUser =  _TaamerProContext.Users.Where(s => s.UserId == workOrders.ExecutiveEng).FirstOrDefault()!.BranchId??0;
+                var UserVacation = _TaamerProContext.Vacation.AsEnumerable().Where(s => s.IsDeleted == false && s.UserId == workOrders.ExecutiveEng && s.VacationStatus == 2 && s.DecisionType == 1 && (s.BackToWorkDate == null || (s.BackToWorkDate ?? "") == "")).ToList();
+                UserVacation = UserVacation.Where(s =>
+                // أو عنده إجازة في نفس وقت المهمة
+                ((!(s.StartDate == null || s.StartDate.Equals("")) && !(workOrders.OrderDate == null || workOrders.OrderDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(workOrders.OrderDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                (!(s.StartDate == null || s.StartDate.Equals("")) && !(workOrders.EndDate == null || workOrders.EndDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(workOrders.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                ||
+                ((!(s.EndDate == null || s.EndDate.Equals("")) && !(workOrders.OrderDate == null || workOrders.OrderDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(workOrders.OrderDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                (!(s.EndDate == null || s.EndDate.Equals("")) && !(workOrders.EndDate == null || workOrders.EndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(workOrders.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                ||
+                ((!(s.StartDate == null || s.StartDate.Equals("")) && !(workOrders.OrderDate == null || workOrders.OrderDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(workOrders.OrderDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                (!(s.EndDate == null || s.EndDate.Equals("")) && !(workOrders.OrderDate == null || workOrders.OrderDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(workOrders.OrderDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                ||
+                ((!(s.StartDate == null || s.StartDate.Equals("")) && !(workOrders.EndDate == null || workOrders.EndDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(workOrders.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                (!(s.EndDate == null || s.EndDate.Equals("")) && !(workOrders.EndDate == null || workOrders.EndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(workOrders.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                ).ToList();
+
+                if (UserVacation.Count() != 0)
+                {
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.UserVac };
+                }
 
                 // Users? BranchIdOfUser = _TaamerProContext.Users.Where(s => s.ExecutiveEng == ).FirstOrDefault();
                 var totaldays = 0.0;
@@ -127,8 +147,9 @@ namespace TaamerProject.Service.Services
                     BranchIdOfUser = project.BranchId;
                 }
 
-                    
-                if (project != null && project.StopProjectType == 1)
+
+
+                    if (project != null && project.StopProjectType == 1)
                 {
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));

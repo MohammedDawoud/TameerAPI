@@ -1615,27 +1615,18 @@ namespace TaamerProject.Service.Services
                             ||
                             ((!(s.EndDate == null || s.EndDate.Equals("")) && !(Project.ProjectDate == null || Project.ProjectDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(Project.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
                             (!(s.EndDate == null || s.EndDate.Equals("")) && !(Project.ProjectExpireDate == null || Project.ProjectExpireDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(Project.ProjectExpireDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                        ||
+                        ((!(s.StartDate == null || s.StartDate.Equals("")) && !(Project.ProjectDate == null || Project.ProjectDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(Project.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                        (!(s.EndDate == null || s.EndDate.Equals("")) && !(Project.ProjectDate == null || Project.ProjectDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(Project.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                        ||
+                        ((!(s.StartDate == null || s.StartDate.Equals("")) && !(Project.ProjectExpireDate == null || Project.ProjectExpireDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(Project.ProjectExpireDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                        (!(s.EndDate == null || s.EndDate.Equals("")) && !(Project.ProjectExpireDate == null || Project.ProjectExpireDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(Project.ProjectExpireDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
                         ).ToList();
 
                         if (UserVacation.Count() != 0)
                         {
                             VacMsg = " ولكن يوجد متستخدمين في اجازة في نفس فترة المشروع موجودين علي السير ";
                         }
-
-
-                        //var UserVacation = _TaamerProContext.Vacation.AsEnumerable().Where(s => s.IsDeleted == false && s.UserId == item.UserId && s.VacationStatus == 2 && s.DecisionType == 1 && (s.BackToWorkDate == null || (s.BackToWorkDate ?? "") == "")).ToList();
-                        //UserVacation = UserVacation.Where(s =>
-
-                        //((!(s.StartDate == null || s.StartDate.Equals("")) && !(item.StartDate == null || item.StartDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(item.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
-                        //    (!(s.StartDate == null || s.StartDate.Equals("")) && !(item.EndDate == null || item.EndDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(item.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
-                        //    ||
-                        //    ((!(s.EndDate == null || s.EndDate.Equals("")) && !(item.StartDate == null || item.StartDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(item.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
-                        //    (!(s.EndDate == null || s.EndDate.Equals("")) && !(item.EndDate == null || item.EndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(item.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
-                        //).ToList();
-                        //if (UserVacation.Count() != 0)
-                        //{
-                        //    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.Proj_SaveFailedUserVacationProSetting };
-                        //}
 
                     }
                 }
@@ -3069,31 +3060,18 @@ namespace TaamerProject.Service.Services
                             ||
                             ((!(s.EndDate == null || s.EndDate.Equals("")) && !(Project.ProjectDate == null || Project.ProjectDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(Project.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
                             (!(s.EndDate == null || s.EndDate.Equals("")) && !(Project.ProjectExpireDate == null || Project.ProjectExpireDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(Project.ProjectExpireDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
-                        ).ToList();
+                        ||
+                        ((!(s.StartDate == null || s.StartDate.Equals("")) && !(Project.ProjectDate == null || Project.ProjectDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(Project.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                        (!(s.EndDate == null || s.EndDate.Equals("")) && !(Project.ProjectDate == null || Project.ProjectDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(Project.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                        ||
+                        ((!(s.StartDate == null || s.StartDate.Equals("")) && !(Project.ProjectExpireDate == null || Project.ProjectExpireDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(Project.ProjectExpireDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                        (!(s.EndDate == null || s.EndDate.Equals("")) && !(Project.ProjectExpireDate == null || Project.ProjectExpireDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(Project.ProjectExpireDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                            ).ToList();
 
                         if (UserVacation.Count() != 0)
                         {
                             VacMsg = " ولكن يوجد متستخدمين في اجازة في نفس فترة المشروع موجودين علي السير ";
                         }
-
-
-                        //var StartDateV = (item.StartDate ?? DateTime.Now).ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                        //var EndDateV = (item.EndDate ?? DateTime.Now).ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-
-                        //var UserVacation = _TaamerProContext.Vacation.AsEnumerable().Where(s => s.IsDeleted == false && s.UserId == item.UserId && s.VacationStatus == 2 && s.DecisionType == 1 && (s.BackToWorkDate == null || (s.BackToWorkDate ?? "") == "")).ToList();
-                        //UserVacation = UserVacation.Where(s =>
-
-                        //((!(s.StartDate == null || s.StartDate.Equals("")) && !(item.StartDate == null || item.StartDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(StartDateV, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
-                        //    (!(s.StartDate == null || s.StartDate.Equals("")) && !(item.EndDate == null || item.EndDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(EndDateV, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
-                        //    ||
-                        //    ((!(s.EndDate == null || s.EndDate.Equals("")) && !(item.StartDate == null || item.StartDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(StartDateV, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
-                        //    (!(s.EndDate == null || s.EndDate.Equals("")) && !(item.EndDate == null || item.EndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(EndDateV, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
-                        //).ToList();
-                        //if (UserVacation.Count() != 0)
-                        //{
-                        //    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.Proj_SaveFailedUserVacationProSetting };
-                        //}
-
 
                     }
                 }
@@ -5567,6 +5545,13 @@ namespace TaamerProject.Service.Services
                     ||
                     ((!(s.EndDate == null || s.EndDate.Equals("")) && !(ProjectPhasesTasks.ExcpectedStartDate == null || ProjectPhasesTasks.ExcpectedStartDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(ProjectPhasesTasks.ExcpectedStartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
                     (!(s.EndDate == null || s.EndDate.Equals("")) && !(ProjectPhasesTasks.ExcpectedEndDate == null || ProjectPhasesTasks.ExcpectedEndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(ProjectPhasesTasks.ExcpectedEndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                 ||
+                ((!(s.StartDate == null || s.StartDate.Equals("")) && !(ProjectPhasesTasks.ExcpectedStartDate == null || ProjectPhasesTasks.ExcpectedStartDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(ProjectPhasesTasks.ExcpectedStartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                (!(s.EndDate == null || s.EndDate.Equals("")) && !(ProjectPhasesTasks.ExcpectedStartDate == null || ProjectPhasesTasks.ExcpectedStartDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(ProjectPhasesTasks.ExcpectedStartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                ||
+                ((!(s.StartDate == null || s.StartDate.Equals("")) && !(ProjectPhasesTasks.ExcpectedEndDate == null || ProjectPhasesTasks.ExcpectedEndDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(ProjectPhasesTasks.ExcpectedEndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                (!(s.EndDate == null || s.EndDate.Equals("")) && !(ProjectPhasesTasks.ExcpectedEndDate == null || ProjectPhasesTasks.ExcpectedEndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(ProjectPhasesTasks.ExcpectedEndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+
                 ).ToList();
 
                 if (UserVacation.Count() != 0)
