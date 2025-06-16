@@ -30,10 +30,11 @@ namespace TaamerProject.Service.Services
         private readonly ISystemAction _SystemAction;
         private readonly IUsersRepository _UsersRepository;
         private readonly IDepartmentRepository _departmentRepository;
+        private readonly IBranchesRepository _BranchesRepository;
 
         public TasksDependencyService(TaamerProjectContext dataContext, ISystemAction systemAction, IDepartmentRepository departmentRepository,
             IUsersRepository usersRepository,ITasksDependencyRepository tasksDependencyRepository, IProjectPhasesTasksRepository projectPhasesTasksRepository,
-            IProjectRepository projectRepository, INodeLocationsRepository  nodeLocationsRepository)
+            IProjectRepository projectRepository, IBranchesRepository branchesRepository, INodeLocationsRepository  nodeLocationsRepository)
         {
             _TasksDependencyRepository = tasksDependencyRepository;
             _ProjectPhasesTasksRepository = projectPhasesTasksRepository;
@@ -43,6 +44,7 @@ namespace TaamerProject.Service.Services
             _SystemAction = systemAction;
             _UsersRepository = usersRepository;
             _departmentRepository = departmentRepository;
+            _BranchesRepository = branchesRepository;
 
         }
         public Task<IEnumerable<TasksDependencyVM>> GetAllTasksDependencies(int BranchId)
@@ -233,6 +235,15 @@ namespace TaamerProject.Service.Services
                 project.UpdateUser = UserId;
                 project.UpdateDate = DateTime.Now;
 
+                var codePrefix = "";
+                var prostartcode = _BranchesRepository.GetById(BranchId).TaskStartCode;
+                if (prostartcode != null && prostartcode != "")
+                {
+                    codePrefix = prostartcode;
+                }
+                var Value = _ProjectPhasesTasksRepository.GenerateNextTaskNumber(BranchId, codePrefix, 0).Result;
+                Value = Value - 1;
+
                 var existingphases = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.ProjectId == ProjectId).ToList(); ;
 
                 if (existingphases != null && existingphases.Count() > 0)
@@ -246,27 +257,19 @@ namespace TaamerProject.Service.Services
                     {
                         phases.IsConverted = phases.IsConverted ?? 0;
                         phases.IsMerig = phases.IsMerig ?? -1;
+                        string? NewValue = null;
 
                         if (phases.Type == 3)
                         {
-
+                            Value = Value + 1;
+                            NewValue = string.Format("{0:000000}", Value);
+                            if (codePrefix != "")
+                            {
+                                NewValue = codePrefix + NewValue;
+                            }
                             phases.Status = phases.Status ?? 1;
 
                             Users? BranchIdOfUser = _TaamerProContext.Users.Where(s => s.UserId == phases.UserId).FirstOrDefault();
-
-                            //var UserVacation = _TaamerProContext.Vacation.AsEnumerable().Where(s => s.IsDeleted == false && s.UserId == phases.UserId && s.VacationStatus == 2 && s.DecisionType == 1 && (s.BackToWorkDate == null || (s.BackToWorkDate ?? "") == "")).ToList();
-                            //UserVacation = UserVacation.Where(s =>                             
-                            //        // أو عنده إجازة في نفس وقت المهمة
-                            //        (!(s.StartDate == null || s.StartDate.Equals("")) && !(phases.ExcpectedStartDate == null || phases.ExcpectedStartDate.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(phases.ExcpectedStartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
-                            //        (!(s.EndDate == null || s.EndDate.Equals("")) && !(phases.ExcpectedEndDate == null || phases.ExcpectedEndDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(phases.ExcpectedEndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))
-                            //).ToList();
-
-
-                            //if (UserVacation.Count() != 0)
-                            //{
-                            //    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.UserVac };
-                            //}
-
                             var StartDateV = (phases.StartDateNew ?? DateTime.Now).ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                             var EndDateV = (phases.EndDateNew ?? DateTime.Now).ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
 
@@ -276,8 +279,15 @@ namespace TaamerProject.Service.Services
                             ((!(s.StartDate == null || s.StartDate.Equals("")) && !(phases.StartDateNew == null || phases.StartDateNew.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(StartDateV, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
                                 (!(s.StartDate == null || s.StartDate.Equals("")) && !(phases.EndDateNew == null || phases.EndDateNew.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(EndDateV, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
                                 ||
-                                ((!(s.EndDate == null || s.EndDate.Equals("")) && !(phases.StartDateNew == null || phases.StartDate.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(StartDateV, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                                ((!(s.EndDate == null || s.EndDate.Equals("")) && !(phases.StartDateNew == null || phases.StartDateNew.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(StartDateV, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
                                 (!(s.EndDate == null || s.EndDate.Equals("")) && !(phases.EndDateNew == null || phases.EndDateNew.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(EndDateV, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+
+                                ||
+                                ((!(s.StartDate == null || s.StartDate.Equals("")) && !(phases.StartDateNew == null || phases.StartDateNew.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(StartDateV, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                                (!(s.EndDate == null || s.EndDate.Equals("")) && !(phases.StartDateNew == null || phases.StartDateNew.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(StartDateV, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                                ||
+                                ((!(s.StartDate == null || s.StartDate.Equals("")) && !(phases.EndDateNew == null || phases.EndDateNew.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(EndDateV, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                                (!(s.EndDate == null || s.EndDate.Equals("")) && !(phases.EndDateNew == null || phases.EndDateNew.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(EndDateV, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
                             ).ToList();
                             if (UserVacation.Count() != 0)
                             {
@@ -300,7 +310,8 @@ namespace TaamerProject.Service.Services
                                 BranchIdOfUserOrDepartment = project.BranchId;
                             }
 
-
+                            phases.TaskNo = NewValue;
+                            phases.TaskNoType = 1;
                             phases.TaskTimeFrom = (phases.StartDateNew ?? DateTime.Now).ToString("hh:mm tt", CultureInfo.InvariantCulture);
                             phases.TaskTimeTo = (phases.EndDateNew ?? DateTime.Now).ToString("hh:mm tt", CultureInfo.InvariantCulture);
 
@@ -359,6 +370,7 @@ namespace TaamerProject.Service.Services
                         else
                         {
                             phases.BranchId = project.BranchId;
+                            NewValue = null;
 
                         }
 

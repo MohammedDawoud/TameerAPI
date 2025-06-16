@@ -790,6 +790,7 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 entity.Property(t => t.ProjectStartCode).HasColumnName("ProjectStartCode");
                 entity.Property(t => t.OfferStartCode).HasColumnName("OfferStartCode");
                 entity.Property(t => t.TaskStartCode).HasColumnName("TaskStartCode");
+                entity.Property(t => t.OrderStartCode).HasColumnName("OrderStartCode");
                 entity.Property(t => t.InvoiceStartCode).HasColumnName("InvoiceStartCode");
                 entity.Property(t => t.InvoiceBranchSeparated).HasColumnName("InvoiceBranchSeparated");
                 entity.Property(t => t.Engineering_License).HasColumnName("Engineering_License");
@@ -4382,6 +4383,7 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 modelBuilder.Entity<WorkOrders>().HasOne(s => s.ExecutiveEngineer).WithMany(x => x.WorkOrdersEx).HasForeignKey(e => e.ExecutiveEng);
                 modelBuilder.Entity<WorkOrders>().HasOne(s => s.Customer).WithMany().HasForeignKey(e => e.CustomerId);
                 modelBuilder.Entity<WorkOrders>().HasMany<ContactList>(s => s.ContactLists).WithOne(g => g.WorkOrders).HasForeignKey(s => s.OrderId);
+                modelBuilder.Entity<WorkOrders>().HasMany<Pro_TaskOperations>(s => s.TaskOperationsList).WithOne(g => g.WorkOrders).HasForeignKey(s => s.WorkOrderId);
 
 
             });

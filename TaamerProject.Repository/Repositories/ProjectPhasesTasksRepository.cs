@@ -975,7 +975,8 @@ namespace TaamerProject.Repository.Repositories
                     StopProjectType = x.Project.StopProjectType ?? 0,
                     TaskTimeFrom = x.TaskTimeFrom ?? "",
                     TaskTimeTo = x.TaskTimeTo ?? "",
-                    PercentComplete = x.PercentComplete
+                    PercentComplete = x.PercentComplete,
+                    TaskNo=x.TaskNo??null,
                     //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
                 }).ToList().Where(m => (string.IsNullOrEmpty(DateFrom) || (!string.IsNullOrEmpty(m.TaskStart) && DateTime.ParseExact(m.TaskStart, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))) && (string.IsNullOrEmpty(DateTo) || string.IsNullOrEmpty(m.EndDateCalc) || DateTime.ParseExact(m.EndDateCalc, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture))).Select(s => new ProjectPhasesTasksVM()
                 {
@@ -1044,6 +1045,7 @@ namespace TaamerProject.Repository.Repositories
                     StopProjectType = s.StopProjectType,
                     TaskTimeFrom = s.TaskTimeFrom ?? "",
                     TaskTimeTo = s.TaskTimeTo ?? "",
+                    TaskNo = s.TaskNo,
                 });
 
 
@@ -1112,7 +1114,8 @@ namespace TaamerProject.Repository.Repositories
                     StopProjectType = x.Project.StopProjectType ?? 0,
                     TaskTimeFrom = x.TaskTimeFrom ?? "",
                     TaskTimeTo = x.TaskTimeTo ?? "",
-                    PercentComplete = x.PercentComplete
+                    PercentComplete = x.PercentComplete,
+                    TaskNo = x.TaskNo ?? null,
                     //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
                 }).ToList().Where(m => (string.IsNullOrEmpty(DateFrom) || (!string.IsNullOrEmpty(m.TaskStart) && DateTime.ParseExact(m.TaskStart, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))) && (string.IsNullOrEmpty(DateTo) || string.IsNullOrEmpty(m.EndDateCalc) || DateTime.ParseExact(m.EndDateCalc, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture))).Select(s => new ProjectPhasesTasksVM()
                 {
@@ -1181,6 +1184,7 @@ namespace TaamerProject.Repository.Repositories
                     StopProjectType = s.StopProjectType,
                     TaskTimeFrom = s.TaskTimeFrom ?? "",
                     TaskTimeTo = s.TaskTimeTo ?? "",
+                    TaskNo = s.TaskNo,
                 });
 
 
@@ -1258,9 +1262,10 @@ namespace TaamerProject.Repository.Repositories
                     StopProjectType = x.Project.StopProjectType ?? 0,
                     TaskTimeFrom = x.TaskTimeFrom ?? "",
                     TaskTimeTo = x.TaskTimeTo ?? "",
-                    PercentComplete = x.PercentComplete
-                    //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
-                }).ToList().Where(m => (string.IsNullOrEmpty(DateFrom) || (!string.IsNullOrEmpty(m.TaskStart) && DateTime.ParseExact(m.TaskStart, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))) && (string.IsNullOrEmpty(DateTo) || string.IsNullOrEmpty(m.EndDateCalc) || DateTime.ParseExact(m.EndDateCalc, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture))).Select(s => new ProjectPhasesTasksVM()
+                    PercentComplete = x.PercentComplete,
+                    TaskNo = x.TaskNo ?? null,
+                //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
+            }).ToList().Where(m => (string.IsNullOrEmpty(DateFrom) || (!string.IsNullOrEmpty(m.TaskStart) && DateTime.ParseExact(m.TaskStart, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))) && (string.IsNullOrEmpty(DateTo) || string.IsNullOrEmpty(m.EndDateCalc) || DateTime.ParseExact(m.EndDateCalc, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture))).Select(s => new ProjectPhasesTasksVM()
                 {
                     PhaseTaskId = s.PhaseTaskId,
                     DescriptionAr = s.DescriptionAr,
@@ -1327,7 +1332,8 @@ namespace TaamerProject.Repository.Repositories
                     StopProjectType = s.StopProjectType,
                     TaskTimeFrom = s.TaskTimeFrom ?? "",
                     TaskTimeTo = s.TaskTimeTo ?? "",
-                });
+                    TaskNo = s.TaskNo,
+            });
 
 
                 return projectPhasesTasks;
@@ -1399,9 +1405,10 @@ namespace TaamerProject.Repository.Repositories
                     StopProjectType = x.Project.StopProjectType ?? 0,
                     TaskTimeFrom = x.TaskTimeFrom ?? "",
                     TaskTimeTo = x.TaskTimeTo ?? "",
-                    PercentComplete = x.PercentComplete
-                    //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
-                }).ToList().Where(m => (string.IsNullOrEmpty(DateFrom) || (!string.IsNullOrEmpty(m.TaskStart) && DateTime.ParseExact(m.TaskStart, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))) && (string.IsNullOrEmpty(DateTo) || string.IsNullOrEmpty(m.EndDateCalc) || DateTime.ParseExact(m.EndDateCalc, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture))).Select(s => new ProjectPhasesTasksVM()
+                    PercentComplete = x.PercentComplete,
+                    TaskNo = x.TaskNo ?? null,
+                //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
+            }).ToList().Where(m => (string.IsNullOrEmpty(DateFrom) || (!string.IsNullOrEmpty(m.TaskStart) && DateTime.ParseExact(m.TaskStart, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))) && (string.IsNullOrEmpty(DateTo) || string.IsNullOrEmpty(m.EndDateCalc) || DateTime.ParseExact(m.EndDateCalc, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture))).Select(s => new ProjectPhasesTasksVM()
                 {
                     PhaseTaskId = s.PhaseTaskId,
                     DescriptionAr = s.DescriptionAr,
@@ -1468,7 +1475,8 @@ namespace TaamerProject.Repository.Repositories
                     StopProjectType = s.StopProjectType,
                     TaskTimeFrom = s.TaskTimeFrom ?? "",
                     TaskTimeTo = s.TaskTimeTo ?? "",
-                });
+                    TaskNo = s.TaskNo ?? null,
+            });
 
 
                 return projectPhasesTasks;
@@ -1542,7 +1550,8 @@ namespace TaamerProject.Repository.Repositories
                     StopProjectType = x.Project.StopProjectType ?? 0,
                     TaskTimeFrom = x.TaskTimeFrom ?? "",
                     TaskTimeTo = x.TaskTimeTo ?? "",
-                    PercentComplete = x.PercentComplete
+                    PercentComplete = x.PercentComplete,
+                    TaskNo=x.TaskNo??null,
                     //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
                 }).ToList().Where(m => (string.IsNullOrEmpty(DateFrom) || (!string.IsNullOrEmpty(m.TaskStart) && DateTime.ParseExact(m.TaskStart, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))) && (string.IsNullOrEmpty(DateTo) || string.IsNullOrEmpty(m.EndDateCalc) || DateTime.ParseExact(m.EndDateCalc, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture))).Select(s => new ProjectPhasesTasksVM()
                 {
@@ -1612,6 +1621,7 @@ namespace TaamerProject.Repository.Repositories
                     StopProjectType = s.StopProjectType,
                     TaskTimeFrom = s.TaskTimeFrom ?? "",
                     TaskTimeTo = s.TaskTimeTo ?? "",
+                    TaskNo = s.TaskNo,
                 });
 
 
@@ -1680,9 +1690,10 @@ namespace TaamerProject.Repository.Repositories
                 StopProjectType = x.Project.StopProjectType ?? 0,
                     TaskTimeFrom = x.TaskTimeFrom ?? "",
                     TaskTimeTo = x.TaskTimeTo ?? "",
-                    PercentComplete = x.PercentComplete
-                //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
-            }).ToList().Where(m => (string.IsNullOrEmpty(DateFrom) || (!string.IsNullOrEmpty(m.TaskStart) && DateTime.ParseExact(m.TaskStart, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))) && (string.IsNullOrEmpty(DateTo) || string.IsNullOrEmpty(m.EndDateCalc) || DateTime.ParseExact(m.EndDateCalc, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture))).Select(s => new ProjectPhasesTasksVM()
+                    PercentComplete = x.PercentComplete,
+                    TaskNo = x.TaskNo ?? null,
+                    //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
+                }).ToList().Where(m => (string.IsNullOrEmpty(DateFrom) || (!string.IsNullOrEmpty(m.TaskStart) && DateTime.ParseExact(m.TaskStart, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))) && (string.IsNullOrEmpty(DateTo) || string.IsNullOrEmpty(m.EndDateCalc) || DateTime.ParseExact(m.EndDateCalc, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture))).Select(s => new ProjectPhasesTasksVM()
             {
                 PhaseTaskId = s.PhaseTaskId,
                 DescriptionAr = s.DescriptionAr,
@@ -1749,7 +1760,8 @@ namespace TaamerProject.Repository.Repositories
                 StopProjectType = s.StopProjectType,
                 TaskTimeFrom = s.TaskTimeFrom ?? "",
                 TaskTimeTo = s.TaskTimeTo ?? "",
-            });
+                TaskNo = s.TaskNo,
+                });
            
 
             return projectPhasesTasks;
@@ -1825,7 +1837,8 @@ namespace TaamerProject.Repository.Repositories
                     StopProjectType = x.Project.StopProjectType ?? 0,
                     TaskTimeFrom = x.TaskTimeFrom ?? "",
                     TaskTimeTo = x.TaskTimeTo ?? "",
-                    PercentComplete = x.PercentComplete
+                    PercentComplete = x.PercentComplete,
+                    TaskNo=x.TaskNo??null,
                     //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
                 }).ToList().Where(m => (string.IsNullOrEmpty(DateFrom) || (!string.IsNullOrEmpty(m.TaskStart) && DateTime.ParseExact(m.TaskStart, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))) && (string.IsNullOrEmpty(DateTo) || string.IsNullOrEmpty(m.EndDateCalc) || DateTime.ParseExact(m.EndDateCalc, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture))).Select(s => new ProjectPhasesTasksVM()
                 {
@@ -1895,6 +1908,7 @@ namespace TaamerProject.Repository.Repositories
                     StopProjectType = s.StopProjectType,
                     TaskTimeFrom = s.TaskTimeFrom ?? "",
                     TaskTimeTo = s.TaskTimeTo ?? "",
+                    TaskNo = s.TaskNo,
                 });
 
 
@@ -1967,9 +1981,10 @@ namespace TaamerProject.Repository.Repositories
                     StopProjectType = x.Project.StopProjectType ?? 0,
                     TaskTimeFrom = x.TaskTimeFrom ?? "",
                     TaskTimeTo = x.TaskTimeTo ?? "",
-                    PercentComplete = x.PercentComplete
-                    //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
-                }).ToList().Where(m => (string.IsNullOrEmpty(DateFrom) || (!string.IsNullOrEmpty(m.TaskStart) && DateTime.ParseExact(m.TaskStart, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))) && (string.IsNullOrEmpty(DateTo) || string.IsNullOrEmpty(m.EndDateCalc) || DateTime.ParseExact(m.EndDateCalc, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture))).Select(s => new ProjectPhasesTasksVM()
+                    PercentComplete = x.PercentComplete,
+                    TaskNo = x.TaskNo ?? null,
+                //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
+            }).ToList().Where(m => (string.IsNullOrEmpty(DateFrom) || (!string.IsNullOrEmpty(m.TaskStart) && DateTime.ParseExact(m.TaskStart, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))) && (string.IsNullOrEmpty(DateTo) || string.IsNullOrEmpty(m.EndDateCalc) || DateTime.ParseExact(m.EndDateCalc, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture))).Select(s => new ProjectPhasesTasksVM()
                 {
                     PhaseTaskId = s.PhaseTaskId,
                     DescriptionAr = s.DescriptionAr,
@@ -2036,6 +2051,7 @@ namespace TaamerProject.Repository.Repositories
                     StopProjectType = s.StopProjectType,
                     TaskTimeFrom = s.TaskTimeFrom ?? "",
                     TaskTimeTo = s.TaskTimeTo ?? "",
+                    TaskNo = s.TaskNo,
                 });
 
 
@@ -2109,7 +2125,8 @@ namespace TaamerProject.Repository.Repositories
                 StopProjectType = x.Project.StopProjectType ?? 0,
                 TaskTimeFrom = x.TaskTimeFrom ?? "",
                 TaskTimeTo = x.TaskTimeTo ?? "",
-                PercentComplete = x.PercentComplete
+                PercentComplete = x.PercentComplete,
+                TaskNo=x.TaskNo??null,
                 //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
             }).ToList().Select(s => new ProjectPhasesTasksVM()
             {
@@ -2177,6 +2194,7 @@ namespace TaamerProject.Repository.Repositories
                 StopProjectType = s.StopProjectType,
                 TaskTimeFrom = s.TaskTimeFrom ?? "",
                 TaskTimeTo = s.TaskTimeTo ?? "",
+                TaskNo = s.TaskNo,
             });
 
             return projectPhasesTasks;
@@ -2542,6 +2560,7 @@ namespace TaamerProject.Repository.Repositories
                                 x.TimeType == 3 ? (x.TimeMinutes) + " أسبوع " : (x.TimeMinutes) + " ساعة ",
                 StartDateNew=x.StartDateNew,
                 EndDateNew=x.EndDateNew,
+                TaskNo=x.TaskNo??null,
 
                 //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
                 //           }).ToList().Where(a => DateTime.ParseExact(a.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture)).Select(s => new ProjectPhasesTasksVM()
@@ -2610,6 +2629,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeTo = s.TaskTimeTo ?? "",
                 StartDateNew = s.StartDateNew,
                 EndDateNew = s.EndDateNew,
+                TaskNo = s.TaskNo,
                 //order by Status desc, orderNOO, PhasePriority desc, Remaining
             }).ToList().OrderByDescending(x => x.Status).ThenBy(x => x.OrderNo).ThenByDescending(x => x.PhasePriority).ThenBy(x => x.Remaining);
             return projectPhasesTasks;
@@ -2688,6 +2708,7 @@ namespace TaamerProject.Repository.Repositories
                 IsRetrieved = x.IsRetrieved,
                 StartDateNew = x.StartDateNew,
                 EndDateNew = x.EndDateNew,
+                TaskNo = x.TaskNo ?? null,
                 //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
             }).ToList().Select(s => new ProjectPhasesTasksVM()//.Where(s => (DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) == DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture) && DateTime.ParseExact(s.EndTime, "h:mm", CultureInfo.InvariantCulture) < DateTime.ParseExact(DateTime.Now.ToString("h:mm"), "h:mm", CultureInfo.InvariantCulture)) || DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) < DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture)).Select(s => new ProjectPhasesTasksVM()
             {
@@ -2754,6 +2775,7 @@ namespace TaamerProject.Repository.Repositories
                 PlusTime = s.PlusTime,
                 StartDateNew = s.StartDateNew,
                 EndDateNew = s.EndDateNew,
+                TaskNo = s.TaskNo,
             }).ToList();
             return projectPhasesTasks;
         }
@@ -2823,6 +2845,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeTo = x.TaskTimeTo ?? "",
                 StartDateNew = x.StartDateNew,
                 EndDateNew = x.EndDateNew,
+                TaskNo = x.TaskNo ?? null,
                 //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
                 //           }).ToList().Where(a => DateTime.ParseExact(a.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture)).Select(s => new ProjectPhasesTasksVM()
             }).ToList().Select(s => new ProjectPhasesTasksVM()//.Where(a => (DateTime.ParseExact(a.ExcpectedEndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) == DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture) && DateTime.ParseExact(a.EndTime, "h:mm", CultureInfo.InvariantCulture) > DateTime.ParseExact(DateTime.Now.ToString("h:mm"), "h:mm", CultureInfo.InvariantCulture)) || DateTime.ParseExact(a.ExcpectedEndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) > DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture)).Select(s => new ProjectPhasesTasksVM()
@@ -2887,6 +2910,7 @@ namespace TaamerProject.Repository.Repositories
                 PlusTime = s.PlusTime,
                 StartDateNew = s.StartDateNew,
                 EndDateNew = s.EndDateNew,
+                TaskNo = s.TaskNo,
                 //order by Status desc, orderNOO, PhasePriority desc, Remaining
             }).ToList().OrderByDescending(x => x.Status).ThenBy(x => x.OrderNo).ThenByDescending(x => x.PhasePriority).ThenBy(x => x.Remaining);
             return projectPhasesTasks;
@@ -2964,7 +2988,8 @@ namespace TaamerProject.Repository.Repositories
                 EndTime = x.EndTime,
                 TaskTimeFrom = x.TaskTimeFrom ?? "",
                 TaskTimeTo = x.TaskTimeTo ?? "",
-                IsRetrieved =x.IsRetrieved
+                IsRetrieved =x.IsRetrieved,
+                TaskNo = x.TaskNo ?? null,
                 //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
                 //           }).ToList().Where(a => DateTime.ParseExact(a.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture)).Select(s => new ProjectPhasesTasksVM()
             }).ToList().Select(s => new ProjectPhasesTasksVM()//.Where(a => (DateTime.ParseExact(a.ExcpectedEndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) == DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture) && DateTime.ParseExact(a.EndTime, "h:mm", CultureInfo.InvariantCulture) > DateTime.ParseExact(DateTime.Now.ToString("h:mm"), "h:mm", CultureInfo.InvariantCulture)) || DateTime.ParseExact(a.ExcpectedEndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) > DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture)).Select(s => new ProjectPhasesTasksVM()
@@ -3028,7 +3053,8 @@ namespace TaamerProject.Repository.Repositories
                 PlusTime = s.PlusTime,
                 TaskTimeFrom = s.TaskTimeFrom ?? "",
                 TaskTimeTo = s.TaskTimeTo ?? "",
-                IsRetrieved = s.IsRetrieved
+                IsRetrieved = s.IsRetrieved,
+                TaskNo = s.TaskNo,
             }).ToList();
             return projectPhasesTasks;
         }
@@ -3094,7 +3120,8 @@ namespace TaamerProject.Repository.Repositories
                 PlayingTime = x.TimeMinutes - x.Remaining,
                 PercentComplete = x.PercentComplete,
                 EndTime = x.EndTime,
-                IsRetrieved=x.IsRetrieved
+                IsRetrieved=x.IsRetrieved,
+                TaskNo = x.TaskNo ?? null,
                 //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
             }).ToList().Select(s => new ProjectPhasesTasksVM()//.Where(s => (DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) == DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture) && DateTime.ParseExact(s.EndTime, "h:mm", CultureInfo.InvariantCulture) < DateTime.ParseExact(DateTime.Now.ToString("h:mm"), "h:mm", CultureInfo.InvariantCulture)) || DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) < DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture)).Select(s => new ProjectPhasesTasksVM()
             {
@@ -3154,7 +3181,8 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeTo = s.TaskTimeTo ?? "",
                 PlayingTime = s.PlayingTime,
                 EndTime = s.EndTime,
-                IsRetrieved=s.IsRetrieved
+                IsRetrieved=s.IsRetrieved,
+                TaskNo = s.TaskNo,
             }).ToList();
             return projectPhasesTasks;
         }
@@ -3221,7 +3249,8 @@ namespace TaamerProject.Repository.Repositories
                 EndTime = x.EndTime,
                 IsConverted = x.IsConverted,
                 PlusTime = x.PlusTime,
-                IsRetrieved=x.IsRetrieved
+                IsRetrieved=x.IsRetrieved,
+                TaskNo = x.TaskNo ?? null,
                 //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
             }).ToList().Select(s => new ProjectPhasesTasksVM()//.Where(s => (DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) == DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture) && DateTime.ParseExact(s.EndTime, "h:mm", CultureInfo.InvariantCulture) < DateTime.ParseExact(DateTime.Now.ToString("h:mm"), "h:mm", CultureInfo.InvariantCulture)) || DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) < DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture)).Select(s => new ProjectPhasesTasksVM()
             {
@@ -3282,7 +3311,8 @@ namespace TaamerProject.Repository.Repositories
                 PlayingTime = s.PlayingTime,
                 EndTime = s.EndTime,
                 IsConverted = s.IsConverted,
-                PlusTime = s.PlusTime
+                PlusTime = s.PlusTime,
+                TaskNo = s.TaskNo,
             }).ToList();
             return projectPhasesTasks;
         }
@@ -3352,7 +3382,8 @@ namespace TaamerProject.Repository.Repositories
                     StopProjectType = x.Project.StopProjectType ?? 0,
                 TaskTimeFrom = x.TaskTimeFrom ?? "",
                 TaskTimeTo = x.TaskTimeTo ?? "",
-                PercentComplete = x.PercentComplete
+                PercentComplete = x.PercentComplete,
+                TaskNo=x.TaskNo??null,
                 //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
             }).ToList().Select(s => new ProjectPhasesTasksVM()//.Where(s => (DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) == DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture) && DateTime.ParseExact(s.EndTime, "h:mm", CultureInfo.InvariantCulture) < DateTime.ParseExact(DateTime.Now.ToString("h:mm"), "h:mm", CultureInfo.InvariantCulture)) || DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) < DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture)).Select(s => new ProjectPhasesTasksVM()
             {
@@ -3422,6 +3453,7 @@ namespace TaamerProject.Repository.Repositories
                 StopProjectType = s.StopProjectType,
                 TaskTimeFrom = s.TaskTimeFrom ?? "",
                 TaskTimeTo = s.TaskTimeTo ?? "",
+                TaskNo = s.TaskNo,
             }).ToList();
             return projectPhasesTasks;
         }
@@ -3491,7 +3523,8 @@ namespace TaamerProject.Repository.Repositories
                 StopProjectType = x.Project.StopProjectType ?? 0,
                 TaskTimeFrom = x.TaskTimeFrom ?? "",
                 TaskTimeTo = x.TaskTimeTo ?? "",
-                PercentComplete = x.PercentComplete
+                PercentComplete = x.PercentComplete,
+                TaskNo=x.TaskNo??null,
                 //PercentComplete = (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100 ) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100)  : 100,
             }).ToList().Select(s => new ProjectPhasesTasksVM()//.Where(s => (DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) == DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture) && DateTime.ParseExact(s.EndTime, "h:mm", CultureInfo.InvariantCulture) < DateTime.ParseExact(DateTime.Now.ToString("h:mm"), "h:mm", CultureInfo.InvariantCulture)) || DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) < DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture)).Select(s => new ProjectPhasesTasksVM()
             {
@@ -3561,6 +3594,7 @@ namespace TaamerProject.Repository.Repositories
                 StopProjectType = s.StopProjectType,
                 TaskTimeFrom = s.TaskTimeFrom ?? "",
                 TaskTimeTo = s.TaskTimeTo ?? "",
+                TaskNo = s.TaskNo,
             }).ToList();
             return projectPhasesTasks;
         }
@@ -3626,6 +3660,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeFrom = x.TaskTimeFrom ?? "",
                 TaskTimeTo = x.TaskTimeTo ?? "",
                 PercentComplete = x.TimeMinutes != 0 ? x.TimeMinutes != null ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) : 100 : 0 : 0,
+                TaskNo = x.TaskNo ?? null,
             }).ToList().Select(s => new ProjectPhasesTasksVM()
             {
                 PhaseTaskId = s.PhaseTaskId,
@@ -3683,6 +3718,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeFrom = s.TaskTimeFrom ?? "",
                 TaskTimeTo = s.TaskTimeTo ?? "",
                 PlayingTime = s.PlayingTime,
+                TaskNo = s.TaskNo,
             });
             if (searchtext != "")
             {
@@ -3753,7 +3789,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeTo = x.TaskTimeTo ?? "",
                 PlayingTime = x.TimeMinutes - x.Remaining,
                 PercentComplete =x.TimeMinutes!=0?x.TimeMinutes!=null?(((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) : 100:0:0,
-
+                TaskNo = x.TaskNo ?? null,
             }).ToList().Select(s => new ProjectPhasesTasksVM()
             {
                 PhaseTaskId = s.PhaseTaskId,
@@ -3817,6 +3853,7 @@ namespace TaamerProject.Repository.Repositories
                 StopProjectType = s.StopProjectType,
                 TaskTimeFrom = s.TaskTimeFrom ?? "",
                 TaskTimeTo = s.TaskTimeTo ?? "",
+                TaskNo = s.TaskNo,
             });
             if (searchtext != "")
             {
@@ -3892,7 +3929,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeTo = x.TaskTimeTo ?? "",
                 PlayingTime = x.TimeMinutes - x.Remaining,
                 PercentComplete = x.TimeMinutes != 0 ? x.TimeMinutes != null ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) : 100 : 0 : 0,
-
+                TaskNo=x.TaskNo??null,
             }).ToList().Select(s => new ProjectPhasesTasksVM()
             {
                 PhaseTaskId = s.PhaseTaskId,
@@ -3956,6 +3993,7 @@ namespace TaamerProject.Repository.Repositories
                 StopProjectType = s.StopProjectType,
                 TaskTimeFrom = s.TaskTimeFrom ?? "",
                 TaskTimeTo = s.TaskTimeTo ?? "",
+                TaskNo = s.TaskNo,
             });
             var running = projectPhasesTasks.Where(x => x.Status == 2 || x.Status == 1).ToList().OrderByDescending(x => x.Status).ThenBy(x => x.OrderNo).ThenByDescending(x => x.PhasePriority).ThenBy(x => x.Remaining);
             var stopped = projectPhasesTasks.Where(x => x.Status == 3 || x.Status == 4).ToList().OrderBy(x => x.Status).ThenBy(x => x.OrderNo).ThenByDescending(x => x.PhasePriority).ThenBy(x => x.Remaining);
@@ -5054,6 +5092,7 @@ namespace TaamerProject.Repository.Repositories
                           x.TimeType == 3 ? (x.TimeMinutes) + " أسبوع " : (x.TimeMinutes) + " ساعة ",
                   StartDateNew = x.StartDateNew,
                   EndDateNew = x.EndDateNew,
+                  TaskNo = x.TaskNo ?? null,
               }).ToList().OrderByDescending(x => x.Status).ThenBy(x => x.OrderNo).ThenByDescending(x => x.PhasePriority).ThenBy(x => x.Remaining);
             //projectPhasesTasks = projectPhasesTasks.OrderBy(s => s.Remaining).ToList();
             return projectPhasesTasks;
@@ -5132,7 +5171,8 @@ namespace TaamerProject.Repository.Repositories
                           x.TimeType == 3 ? (x.TimeMinutes) + " أسبوع " : (x.TimeMinutes) + " ساعة ",
                  StartDateNew=x.StartDateNew,
                  EndDateNew=x.EndDateNew,
-             }).ToList();
+                  TaskNo = x.TaskNo ?? null,
+              }).ToList();
             projectPhasesTasks = projectPhasesTasks.OrderBy(s => s.Remaining).ToList();
             return projectPhasesTasks;
         }
@@ -5672,6 +5712,7 @@ namespace TaamerProject.Repository.Repositories
                  IsRetrieved=x.IsRetrieved,
                  TaskTimeFrom = x.TaskTimeFrom ?? "",
                  TaskTimeTo = x.TaskTimeTo ?? "",
+                 TaskNo = x.TaskNo ?? null,
              }).ToList();
             projectPhasesTasks = projectPhasesTasks.OrderBy(s => s.Remaining).ToList();
             return projectPhasesTasks;
@@ -5750,6 +5791,7 @@ namespace TaamerProject.Repository.Repositories
                IsNew = x.IsNew ?? 0,
                TaskTimeFrom = x.TaskTimeFrom ?? "",
                TaskTimeTo = x.TaskTimeTo ?? "",
+                TaskNo = x.TaskNo ?? null,
                 //TimeStr = (DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture) - DateTime.ParseExact(x.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)).TotalDays + "Day",
             }).ToList();//.Where(s => (DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) == DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture) && DateTime.ParseExact(s.EndTime, "h:mm", CultureInfo.InvariantCulture) < DateTime.ParseExact(DateTime.Now.ToString("h:mm"), "h:mm", CultureInfo.InvariantCulture)) || DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) < DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture));
             return projectPhasesTasks;
@@ -5833,6 +5875,7 @@ namespace TaamerProject.Repository.Repositories
                 IsNew = x.IsNew ?? 0,
                 TaskTimeFrom = x.TaskTimeFrom ?? "",
                 TaskTimeTo = x.TaskTimeTo ?? "",
+                TaskNo = x.TaskNo ?? null,
                 //TimeStr = (DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture) - DateTime.ParseExact(x.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)).TotalDays + "Day",
             }).ToList();//.Where(s => (DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) == DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture) && DateTime.ParseExact(s.EndTime, "h:mm", CultureInfo.InvariantCulture) < DateTime.ParseExact(DateTime.Now.ToString("h:mm"), "h:mm", CultureInfo.InvariantCulture)) || DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) < DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture));
             return projectPhasesTasks;
@@ -5919,6 +5962,7 @@ namespace TaamerProject.Repository.Repositories
                 IsNew = x.IsNew ?? 0,
                 TaskTimeFrom = x.TaskTimeFrom ?? "",
                 TaskTimeTo = x.TaskTimeTo ?? "",
+                TaskNo=x.TaskNo??null,
                 ContactLists = x.ContactLists.Where(x => x.IsDeleted == false).ToList(),
                 //TimeStr = (DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture) - DateTime.ParseExact(x.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)).TotalDays + "Day",
             }).ToList();//.Where(s => (DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) == DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture) && DateTime.ParseExact(s.EndTime, "h:mm", CultureInfo.InvariantCulture) < DateTime.ParseExact(DateTime.Now.ToString("h:mm"), "h:mm", CultureInfo.InvariantCulture)) || DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) < DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture));
@@ -5958,6 +6002,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskLongDesc = x.TaskLongDesc,
                 TaskTimeFrom = x.TaskTimeFrom ?? "",
                 TaskTimeTo = x.TaskTimeTo ?? "",
+                TaskNo = x.TaskNo ?? null,
                 //TimeStr = (DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture) - DateTime.ParseExact(x.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)).TotalDays + "Day",
             }).ToList().Where(s => (string.IsNullOrEmpty(s.EndDateCalc) || (!string.IsNullOrEmpty(s.EndDateCalc) && (DateTime.ParseExact(s.EndDateCalc, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(Search.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) ) ) )&&
                                    (string.IsNullOrEmpty(s.StartDate) || (!string.IsNullOrEmpty(s.StartDate) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(Search.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture))));
@@ -6247,6 +6292,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeTo = x.TaskTimeTo ?? "",
                 TaskLongDesc = x.TaskLongDesc,
                 PlayingTime = x.TimeMinutes - x.Remaining,
+                TaskNo = x.TaskNo ?? null,
                 PercentComplete = x.TimeMinutes != 0 ? x.TimeMinutes != null ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) : 100 : 0 : 0,
             }).ToList().Where(m => DateTime.ParseExact(m.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) && DateTime.ParseExact(m.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)).Select(s => new ProjectPhasesTasksVM()
             {
@@ -6306,6 +6352,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeTo = s.TaskTimeTo ?? "",
                 TaskLongDesc = s.TaskLongDesc,
                 PlayingTime = s.PlayingTime,
+                TaskNo = s.TaskNo,
             }); ;
             return projectPhasesTasks;
         }
@@ -6368,6 +6415,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeTo = x.TaskTimeTo ?? "",
                 TaskLongDesc = x.TaskLongDesc,
                 PlayingTime = x.TimeMinutes - x.Remaining,
+                TaskNo = x.TaskNo ?? null,
                 PercentComplete = x.TimeMinutes != 0 ? x.TimeMinutes != null ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) : 100 : 0 : 0,
             }).ToList().Where(m => DateTime.ParseExact(m.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) && DateTime.ParseExact(m.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)).Select(s => new ProjectPhasesTasksVM()
             {
@@ -6427,6 +6475,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeTo = s.TaskTimeTo ?? "",
                 TaskLongDesc = s.TaskLongDesc,
                 PlayingTime = s.PlayingTime,
+                TaskNo = s.TaskNo,
             });
             return projectPhasesTasks;
         }
@@ -6504,6 +6553,7 @@ namespace TaamerProject.Repository.Repositories
                IsNew = x.IsNew ?? 0,
                TaskTimeFrom = x.TaskTimeFrom ?? "",
                TaskTimeTo = x.TaskTimeTo ?? "",
+               TaskNo = x.TaskNo ?? null,
            })
                 .ToList().OrderByDescending(x => x.IsNew).ThenBy(x => x.Status).ThenBy(x => x.OrderNo).ThenByDescending(x => x.PhasePriority).ThenBy(x => x.Remaining); 
             return projectPhasesTasks;
@@ -6586,6 +6636,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeFrom = x.TaskTimeFrom ?? "",
                 TaskTimeTo = x.TaskTimeTo ?? "",
                 ProjectDescription=x.Project.ProjectDescription??"",
+                TaskNo=x.TaskNo??null,
                 
             })
                  .ToList().OrderByDescending(x => x.IsNew).ThenBy(x => x.Status).ThenBy(x => x.OrderNo).ThenByDescending(x => x.PhasePriority).ThenBy(x => x.Remaining);
@@ -6677,6 +6728,7 @@ namespace TaamerProject.Repository.Repositories
                 ContactLists=x.ContactLists.Where(x=>x.IsDeleted==false).ToList(),
                 StartDateNew=x.StartDateNew,
                 EndDateNew=x.EndDateNew,
+                TaskNo = x.TaskNo ?? null,
             })
                  .ToList().OrderByDescending(x => x.IsNew).ThenByDescending(x => x.Status).ThenBy(x => x.OrderNo).ThenByDescending(x => x.PhasePriority).ThenBy(x => x.Remaining);
             return projectPhasesTasks;
@@ -6757,6 +6809,7 @@ namespace TaamerProject.Repository.Repositories
                 IsNew = x.IsNew ?? 0,
                 TaskTimeFrom = x.TaskTimeFrom ?? "",
                 TaskTimeTo = x.TaskTimeTo ?? "",
+                TaskNo = x.TaskNo ?? null,
             })
                  .ToList().OrderByDescending(x => x.IsNew).ThenBy(x => x.Status).ThenBy(x => x.OrderNo).ThenByDescending(x => x.PhasePriority).ThenBy(x => x.Remaining);
             return projectPhasesTasks;
@@ -8282,7 +8335,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskLongDesc = x.TaskLongDesc,
                 PlayingTime = x.TimeMinutes - x.Remaining,
                 PercentComplete = x.TimeMinutes != 0 ? x.TimeMinutes != null ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) : 100 : 0 : 0,
-                FullTaskDescription = x.DescriptionAr + "/" + x.Users!.FullName + "/" + x.Project!.ProjectNo + "/" + x.Project!.customer!.CustomerNameAr
+                FullTaskDescription = x.TaskNo + "  " + x.DescriptionAr + "/" + x.Users!.FullName + "/" + x.Project!.ProjectNo + "/" + x.Project!.customer!.CustomerNameAr
             }).ToList();
             return projectPhasesTasks;
         }
@@ -8352,7 +8405,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskLongDesc = x.TaskLongDesc,
                 PlayingTime = x.TimeMinutes - x.Remaining,
                 PercentComplete = x.TimeMinutes != 0 ? x.TimeMinutes != null ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) : 100 : 0 : 0,
-                FullTaskDescription = x.DescriptionAr + "/" + x.Users!.FullName + "/" + x.Project!.ProjectNo + "/" + x.Project!.customer!.CustomerNameAr
+                FullTaskDescription = x.TaskNo + "  " + x.DescriptionAr + "/" + x.Users!.FullName + "/" + x.Project!.ProjectNo + "/" + x.Project!.customer!.CustomerNameAr
             }).ToList();
             return projectPhasesTasks;
         }
@@ -8434,7 +8487,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskLongDesc = x.TaskLongDesc,
                 PlayingTime = x.TimeMinutes - x.Remaining,
                 PercentComplete = x.TimeMinutes != 0 ? x.TimeMinutes != null ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) : 100 : 0 : 0,
-                FullTaskDescription = x.DescriptionAr + "/" + x.Users!.FullName + "/" + x.Project!.ProjectNo + "/" + x.Project!.customer!.CustomerNameAr
+                FullTaskDescription = x.TaskNo + "  " + x.DescriptionAr + "/" + x.Users!.FullName + "/" + x.Project!.ProjectNo + "/" + x.Project!.customer!.CustomerNameAr
             }).ToList().Where(m =>(string.IsNullOrEmpty(DateFrom)|| (!string.IsNullOrEmpty(m.TaskStart) && DateTime.ParseExact(m.TaskStart, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))) && (string.IsNullOrEmpty(DateTo) || string.IsNullOrEmpty(m.EndDateCalc) || DateTime.ParseExact(m.EndDateCalc, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture)));
             return projectPhasesTasks;
         }
@@ -8512,8 +8565,8 @@ namespace TaamerProject.Repository.Repositories
                 TaskLongDesc = x.TaskLongDesc,
                 PlayingTime = x.TimeMinutes - x.Remaining,
                 PercentComplete = x.TimeMinutes != 0 ? x.TimeMinutes != null ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) : 100 : 0 : 0,
-                FullTaskDescription = x.DescriptionAr + "/" + x.Users!.FullName + "/" + x.Project!.ProjectNo + "/" + x.Project!.customer!.CustomerNameAr
-            }).ToList().Where(m => (string.IsNullOrEmpty(DateFrom) || (!string.IsNullOrEmpty(m.TaskStart) && DateTime.ParseExact(m.TaskStart, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))) && (string.IsNullOrEmpty(DateTo) || string.IsNullOrEmpty(m.EndDateCalc) || DateTime.ParseExact(m.EndDateCalc, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture)));
+                FullTaskDescription = x.TaskNo + "  "+ x.DescriptionAr + "/" + x.Users!.FullName + "/" + x.Project!.ProjectNo + "/" + x.Project!.customer!.CustomerNameAr,            
+                }).ToList().Where(m => (string.IsNullOrEmpty(DateFrom) || (!string.IsNullOrEmpty(m.TaskStart) && DateTime.ParseExact(m.TaskStart, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))) && (string.IsNullOrEmpty(DateTo) || string.IsNullOrEmpty(m.EndDateCalc) || DateTime.ParseExact(m.EndDateCalc, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture)));
             return projectPhasesTasks;
         }
 
@@ -8586,7 +8639,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskLongDesc = x.TaskLongDesc,
                 PlayingTime = x.TimeMinutes - x.Remaining,
                 PercentComplete = x.TimeMinutes != 0 ? x.TimeMinutes != null ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) : 100 : 0 : 0,
-                FullTaskDescription = x.DescriptionAr + "/" + x.Users!.FullName + "/" + x.Project!.ProjectNo + "/" + x.Project!.customer!.CustomerNameAr
+                FullTaskDescription = x.TaskNo + "  " + x.DescriptionAr + "/" + x.Users!.FullName + "/" + x.Project!.ProjectNo + "/" + x.Project!.customer!.CustomerNameAr
             }).ToList();
             return projectPhasesTasks;
         }
@@ -8659,7 +8712,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeFrom = x.TaskTimeFrom ?? "",
                 TaskTimeTo = x.TaskTimeTo ?? "",
                 PercentComplete = x.TimeMinutes != 0 ? x.TimeMinutes != null ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) : 100 : 0 : 0,
-                FullTaskDescription = x.DescriptionAr + "/" + x.Users!.FullName + "/" + x.Project!.ProjectNo + "/" + x.Project!.customer!.CustomerNameAr
+                FullTaskDescription = x.TaskNo + "  " + x.DescriptionAr + "/" + x.Users!.FullName + "/" + x.Project!.ProjectNo + "/" + x.Project!.customer!.CustomerNameAr
             }).ToList().Where(m => (string.IsNullOrEmpty(DateFrom) || (!string.IsNullOrEmpty(m.TaskStart) && DateTime.ParseExact(m.TaskStart, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))) && (string.IsNullOrEmpty(DateTo) || string.IsNullOrEmpty(m.EndDateCalc) || DateTime.ParseExact(m.EndDateCalc, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture)));
             return projectPhasesTasks;
         }
@@ -8736,7 +8789,7 @@ namespace TaamerProject.Repository.Repositories
                 TaskTimeFrom = x.TaskTimeFrom ?? "",
                 TaskTimeTo = x.TaskTimeTo ?? "",
                 PercentComplete = x.TimeMinutes != 0 ? x.TimeMinutes != null ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) : 100 : 0 : 0,
-                FullTaskDescription = x.DescriptionAr + "/" + x.Users!.FullName + "/" + x.Project!.ProjectNo + "/" + x.Project!.customer!.CustomerNameAr
+                FullTaskDescription = x.TaskNo + "  " + x.DescriptionAr + "/" + x.Users!.FullName + "/" + x.Project!.ProjectNo + "/" + x.Project!.customer!.CustomerNameAr
             }).ToList();
             return projectPhasesTasks;
         }
@@ -8810,7 +8863,7 @@ namespace TaamerProject.Repository.Repositories
                 NodeLocation = x.NodeLocations!.Location ?? x.Settings!.NodeLocations!.Location,
                 PlayingTime = x.TimeMinutes - x.Remaining,
                 PercentComplete = x.TimeMinutes != 0 ? x.TimeMinutes != null ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) : 100 : 0 : 0,
-                FullTaskDescription = x.DescriptionAr + "/" + x.Users!.FullName + "/" + x.Project!.ProjectNo + "/" + x.Project!.customer!.CustomerNameAr,
+                FullTaskDescription = x.TaskNo + "  " + x.DescriptionAr + "/" + x.Users!.FullName + "/" + x.Project!.ProjectNo + "/" + x.Project!.customer!.CustomerNameAr,
                 indentation=x.indentation,
                 taskindex = x.taskindex,
                 StartDateNew = x.StartDateNew,
@@ -8893,7 +8946,7 @@ namespace TaamerProject.Repository.Repositories
                 NodeLocation = x.NodeLocations!.Location ?? x.Settings!.NodeLocations!.Location,
                 PlayingTime = x.TimeMinutes - x.Remaining,
                 PercentComplete = x.TimeMinutes != 0 ? x.TimeMinutes != null ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) <= 100 ? (((x.TimeMinutes - x.Remaining) / x.TimeMinutes) * 100) : 100 : 0 : 0,
-                FullTaskDescription = x.DescriptionAr + "/" + x.Users!.FullName + "/" + x.Project!.ProjectNo + "/" + x.Project!.customer!.CustomerNameAr
+                FullTaskDescription = x.TaskNo + "  " + x.DescriptionAr + "/" + x.Users!.FullName + "/" + x.Project!.ProjectNo + "/" + x.Project!.customer!.CustomerNameAr
             }).ToList();
             return projectPhasesTasks;
         }
@@ -10008,7 +10061,8 @@ namespace TaamerProject.Repository.Repositories
                                 x.TimeType == 3 ? (x.TimeMinutes) + " أسبوع " : (x.TimeMinutes) + " ساعة ",
        
 
-                PercentComplete = x.PercentComplete
+                PercentComplete = x.PercentComplete,
+                TaskNo=x.TaskNo??null,
                 //TimeStr = (DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture) - DateTime.ParseExact(x.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)).TotalDays + "Day",
             }).ToList().Where(s => (string.IsNullOrEmpty(s.EndDate) || (!string.IsNullOrEmpty(s.EndDate) && (DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture)))) &&
                                    (string.IsNullOrEmpty(s.StartDate) || (!string.IsNullOrEmpty(s.StartDate) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))));
@@ -10089,7 +10143,8 @@ namespace TaamerProject.Repository.Repositories
                                 x.TimeType == 3 ? (x.TimeMinutes) + " أسبوع " : (x.TimeMinutes) + " ساعة ",
 
 
-                PercentComplete = x.PercentComplete
+                PercentComplete = x.PercentComplete,
+                TaskNo=x.TaskNo??null,
                 //TimeStr = (DateTime.ParseExact(EndDateP, "yyyy-MM-dd", CultureInfo.InvariantCulture) - DateTime.ParseExact(x.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)).TotalDays + "Day",
             }).ToList().Where(s => (string.IsNullOrEmpty(s.EndDate) || (!string.IsNullOrEmpty(s.EndDate) && (DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture)))) &&
                                    (string.IsNullOrEmpty(s.StartDate) || (!string.IsNullOrEmpty(s.StartDate) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))));
@@ -10493,26 +10548,6 @@ namespace TaamerProject.Repository.Repositories
             return _TaamerProContext.ProjectPhasesTasks.Where(where).ToList<ProjectPhasesTasks>();
 
         }
-        public async Task<IEnumerable<Pro_TaskOperationsVM>> GetTaskOperationsByTaskId(int PhasesTaskId)
-        {
-            var projectPhasesTasks = _TaamerProContext.Pro_TaskOperations.Where(s => s.IsDeleted == false && s.PhaseTaskId == PhasesTaskId).Select(x => new Pro_TaskOperationsVM
-            {
-                TaskOperationId = x.TaskOperationId,
-                PhaseTaskId = x.PhaseTaskId,
-                Type = x.Type,
-                OperationName = x.OperationName,
-                Date = x.Date,
-                UserId = x.UserId,
-                BranchId = x.BranchId,
-                Note = x.Note,
-                TaskNo= x.ProjectPhasesTasks != null ? x.ProjectPhasesTasks.TaskNo ?? null : null,
-                DescriptionAr = x.ProjectPhasesTasks != null ? x.ProjectPhasesTasks.DescriptionAr ?? null : null,
-                ExtraNote=x.UserId!=null? x.Users!=null?" تم تحويلها الي :  " + (x.Users.FullNameAr??x.Users.FullName):null:null,
-                AddUserName = x.AddUsers != null ? (x.AddUsers.FullNameAr ?? x.AddUsers.FullName) ?? null : null,
-            }).ToList();
-
-            return projectPhasesTasks;
-        }
 
 
 
@@ -10700,6 +10735,27 @@ namespace TaamerProject.Repository.Repositories
                 3 => (decimal)timeMinutes * 168,  // Weeks -> Convert to Hours (7 days * 24 hours)
                 _ => (decimal)timeMinutes * 720   // Default: Month -> Convert to Hours (30 days * 24 hours)
             };
+        }
+        public async Task<IEnumerable<Pro_TaskOperationsVM>> GetTaskOperationsByTaskId(int PhasesTaskId)
+        {
+            var projectPhasesTasks = _TaamerProContext.Pro_TaskOperations.Where(s => s.IsDeleted == false && s.PhaseTaskId == PhasesTaskId).Select(x => new Pro_TaskOperationsVM
+            {
+                TaskOperationId = x.TaskOperationId,
+                PhaseTaskId = x.PhaseTaskId,
+                WorkOrderId = x.WorkOrderId,
+                Type = x.Type,
+                OperationName = x.OperationName,
+                Date = x.Date,
+                UserId = x.UserId,
+                BranchId = x.BranchId,
+                Note = x.Note,
+                TaskNo = x.ProjectPhasesTasks != null ? x.ProjectPhasesTasks.TaskNo ?? null : null,
+                DescriptionAr = x.ProjectPhasesTasks != null ? x.ProjectPhasesTasks.DescriptionAr ?? null : null,
+                ExtraNote = x.UserId != null ? x.Users != null ? " تم تحويلها الي :  " + (x.Users.FullNameAr ?? x.Users.FullName) : null : null,
+                AddUserName = x.AddUsers != null ? (x.AddUsers.FullNameAr ?? x.AddUsers.FullName) ?? null : null,
+            }).ToList();
+
+            return projectPhasesTasks;
         }
 
         public async Task<int> GenerateNextTaskNumber(int BranchId, string codePrefix, int? ProjectId)

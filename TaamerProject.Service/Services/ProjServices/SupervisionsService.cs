@@ -123,7 +123,17 @@ namespace TaamerProject.Service.Services
         {
             try
             {
+                var UserVacation = _TaamerProContext.Vacation.AsEnumerable().Where(s => s.IsDeleted == false && s.UserId == supervisions.ReceivedEmpId && s.VacationStatus == 2 && s.DecisionType == 1 && (s.BackToWorkDate == null || (s.BackToWorkDate ?? "") == "")).ToList();
+                UserVacation = UserVacation.Where(s =>
+                // أو عنده إجازة في نفس وقت المهمة
+                ((!(s.StartDate == null || s.StartDate.Equals("")) && !(supervisions.Date == null || supervisions.Date.Equals("")) && DateTime.ParseExact(s.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(supervisions.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture)) &&
+                (!(s.EndDate == null || s.EndDate.Equals("")) && !(supervisions.Date == null || supervisions.Date.Equals("")) && DateTime.ParseExact(s.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(supervisions.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+                ).ToList();
 
+                if (UserVacation.Count() != 0)
+                {
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "المستخدم في اجازة لا يمكنك عمل طلعة عليه" };
+                }
                 if (supervisions.SupervisionId == 0)
                 {
                     //var PhaseDetBefore = _Pro_SupervisionDetailsRepository.GetMatching(s => s.SupervisionId == supervisions.SupervisionId).ToList();

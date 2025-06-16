@@ -48,7 +48,8 @@ namespace TaamerProject.Models
         public int? IsConverted { get; set; }
         public bool? PlusTime { get; set; }
         public int? PhasePriority { get; set; }
-
+        public int? OrderNoType { get; set; }
+        public virtual List<Pro_TaskOperations>? TaskOperationsList { get; set; }
         public virtual Project? Project { get; set; }
         public virtual Users? User { get; set; }
 

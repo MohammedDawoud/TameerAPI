@@ -10,6 +10,7 @@ namespace TaamerProject.Models
     {
         public int TaskOperationId { get; set; }
         public int? PhaseTaskId { get; set; }
+        public int? WorkOrderId { get; set; }
         public int? Type { get; set; }
         public string? OperationName { get; set; }
         public string? Date { get; set; }

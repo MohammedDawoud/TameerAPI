@@ -30,7 +30,7 @@ namespace TaamerProject.API.Controllers
         _globalshared = new GlobalShared(httpContext);
         }
         [HttpPost("SaveWorkOrder")]
-        public IActionResult SaveWorkOrder([FromForm]string? WorkOrderId, [FromForm] string? OrderNo, [FromForm] string? OrderDate
+        public IActionResult SaveWorkOrder([FromForm]string? WorkOrderId, [FromForm] string? OrderNo, [FromForm] string? OrderNoType, [FromForm] string? OrderDate
             , [FromForm] string? OrderHijriDate, [FromForm] string? ExecutiveEng, [FromForm] string? ResponsibleEng
             , [FromForm] string? CustomerId, [FromForm] string? Required, [FromForm] string? Note
             ,[FromForm] string? EndDate, [FromForm] string? WOStatus, [FromForm] string? AgentId, [FromForm] string? PhasePriority, [FromForm] string? ProjectId,
@@ -43,7 +43,7 @@ namespace TaamerProject.API.Controllers
             {
                 if (OrderNo == null || OrderNo == "null" || OrderNo == "[object Object]")
                 {
-                    workOrders.OrderNo = _workOrdersservice.GetMaxOrderNumber(_globalshared.BranchId_G).Result.ToString();
+                    workOrders.OrderNo = _workOrdersservice.GenerateNextOrderNumber(_globalshared.BranchId_G,0).Result.ToString();
                 }
                 else
                 {
@@ -54,7 +54,7 @@ namespace TaamerProject.API.Controllers
             {
                 workOrders.OrderNo = OrderNo;
             }
-
+            workOrders.OrderNoType = Convert.ToInt32(OrderNoType);
             workOrders.OrderDate = OrderDate;
             workOrders.OrderHijriDate = OrderHijriDate;
             workOrders.ExecutiveEng = Convert.ToInt32(ExecutiveEng);
@@ -385,6 +385,27 @@ namespace TaamerProject.API.Controllers
             var result = _workOrdersservice.GetDayWeekMonth_Orders(_globalshared.UserId_G, 0, _globalshared.BranchId_G, flag, startdate, enddate).Result.Count();
             return result;
         }
+        [HttpGet("GetTaskOperationsByTaskId")]
+        public IActionResult GetTaskOperationsByTaskId(int WorkOrderId)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var AllTasks = _workOrdersservice.GetTaskOperationsByTaskId(WorkOrderId);
+            return Ok(AllTasks);
+        }
+        [HttpGet("GetnextOrderNo")]
+        public ActionResult GetnextTaskNo()
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var result = _workOrdersservice.GenerateNextOrderNumber(_globalshared.BranchId_G, 0);
+            return Ok(result);
+        }
+        [HttpGet("GetOrderCode_S")]
+        public IActionResult GetTaskCode_S()
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            return Ok(_workOrdersservice.GetOrderCode_S(_globalshared.BranchId_G, 0));
+        }
+
         [HttpPost("GenerateRandomNo")]
         public int GenerateRandomNo()
         {
