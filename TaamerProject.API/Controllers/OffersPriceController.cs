@@ -327,7 +327,26 @@ namespace TaamerProject.API.Controllers
             }
 
 
+        [HttpPost("CertifyOffer")]
+        public ActionResult CertifyOffer(int OffersPricesId)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var url = Path.Combine("Email/MailStampOfferPrice.html");
 
+            var result = _offersPricesService.CertifyOffer(OffersPricesId, _globalshared.UserId_G, _globalshared.BranchId_G, url);
+
+            return Ok(result);
+        }
+
+        [HttpPost("ConfirmCertifyOffer")]
+        public ActionResult ConfirmCertifyOffer(int OffersPricesId,string Code)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+
+            var result = _offersPricesService.ConfirmCertifyOffer(OffersPricesId, _globalshared.UserId_G, _globalshared.BranchId_G, Code);
+
+            return Ok(result);
+        }
 
 
         //public ActionResult PrintOfferPrices(int offerId, string isinclude)

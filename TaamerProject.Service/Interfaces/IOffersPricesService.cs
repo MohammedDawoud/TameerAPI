@@ -19,7 +19,8 @@ namespace TaamerProject.Service.Interfaces
         Task<string> GenerateNextOfferNumber(int BranchId);
         Task<IEnumerable<OffersPricesVM>> GetOfferByid(int offerid);
         Task<string> GetOfferCode_S(int BranchId);
-
+        GeneralMessage CertifyOffer(int offerpriceid, int UserId, int BranchId, string Url);
+        GeneralMessage ConfirmCertifyOffer(int offerpriceid, int UserId, int BranchId, string Code);
         Task<IEnumerable<OffersPricesVM>> GetOfferByCustomerData(int offerid, string NationalId, int ActivationCode);
 
         IEnumerable<OffersPricesVM> GetOfferByCustomerId(int CustomerId);

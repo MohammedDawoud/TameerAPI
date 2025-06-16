@@ -2497,6 +2497,11 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 entity.Property(t => t.Introduction).HasColumnName("Introduction");
                 entity.Property(t => t.NotDisCustPrint).HasColumnName("NotDisCustPrint");
                 entity.Property(t => t.CustomerMailCode).HasColumnName("CustomerMailCode");
+                entity.Property(t => t.IsCertified).HasColumnName("IsCertified");
+                entity.Property(t => t.CertifiedCode).HasColumnName("CertifiedCode");
+                entity.Property(t => t.ProjectName).HasColumnName("ProjectName");
+                entity.Property(t => t.ImplementationDuration).HasColumnName("ImplementationDuration");
+                entity.Property(t => t.OfferValidity).HasColumnName("OfferValidity");
 
 
 
