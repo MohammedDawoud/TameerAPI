@@ -951,7 +951,9 @@ namespace TaamerProject.Service.Services
                                              <head></head>
                                             <body  style='direction: rtl;'>
                                     
-                                           <label style='font-size:23px;'>  رقم المرجع هو : <input type='text' name='name' value=" + offer.OffersPricesId + @" disabled style='margin-right: 19%;width: 38%;font-size: 30px;text-align: center;border-radius: 17px;'/></label>
+                                           <label style='font-size:23px;'>  رقم عرض السعر : <input type='text' name='name' value=" + offer.OfferNo + @" disabled style='margin-right: 19%;width: 38%;font-size: 30px;text-align: center;border-radius: 17px;'/></label>
+                                                                    <br/>
+                                           <label style='font-size:23px;'>   مقدم للعميل  : <span>"+offer.CustomerName+@"</span></label>
                                                                     <br/>
                                            <label style='font-size:23px;'>  كود الاعتماد هو : <input type='text' name='name' value=" + code + @" disabled style='margin-right: 18%;width: 40%;font-weight: bold;color: red;font-size: 30px;text-align: center;border-radius: 17px;'/></label>
                                                                     <br/>
@@ -965,7 +967,7 @@ namespace TaamerProject.Service.Services
                 var user = _TaamerProContext.Users.Where(x => x.UserId == UserId).FirstOrDefault();
                 if(user !=null && user.Email != null)
                 {
-                  message="تم ارسال كود الاعتماد علي البريد" +"  " +  MaskEmail(user.Email);
+                  message="لإعتماد عرض السعر يرجي ادخال كود التحقق المرسل إلي البريد " +"  " +  MaskEmail(user.Email);
                 }
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = message };
             }
