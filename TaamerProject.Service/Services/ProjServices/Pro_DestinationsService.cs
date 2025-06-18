@@ -426,7 +426,7 @@ namespace TaamerProject.Service.Services
                 var title = "لقد طلبت رفع ملف لجهة خارجية";
                 var body = "";
                 title = "";
-                body = PopulateBody(textBody, _IUsersRepository.GetUserById(ReceivedUser, "rtl").Result.FullName, title, "مع تمنياتنا لكم بالتوفيق", Url, org.NameAr);
+                body = PopulateBody(textBody, _IUsersRepository.GetUserById(ReceivedUser, "rtl").Result!.FullName??"", title, "مع تمنياتنا لكم بالتوفيق", Url, org.NameAr);
 
 
                 LinkedResource logo = new LinkedResource(ImgUrl);

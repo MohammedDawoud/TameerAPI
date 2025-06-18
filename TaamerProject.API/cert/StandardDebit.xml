@@ -2,9 +2,9 @@
 <Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2">
   <cbc:ProfileID>reporting:1.0</cbc:ProfileID>
   <cbc:ID>INV00001</cbc:ID>
-  <cbc:UUID>37e44af6-d33f-4631-860d-4ccf80bb8a8f</cbc:UUID>
-  <cbc:IssueDate>2025-05-07</cbc:IssueDate>
-  <cbc:IssueTime>16:33:59</cbc:IssueTime>
+  <cbc:UUID>a48dcd89-c46a-4d76-a63b-874b8205d064</cbc:UUID>
+  <cbc:IssueDate>2025-06-12</cbc:IssueDate>
+  <cbc:IssueTime>13:56:17</cbc:IssueTime>
   <cbc:InvoiceTypeCode name="0100000">383</cbc:InvoiceTypeCode>
   <cbc:DocumentCurrencyCode>SAR</cbc:DocumentCurrencyCode>
   <cbc:TaxCurrencyCode>SAR</cbc:TaxCurrencyCode>
@@ -22,29 +22,29 @@
   <cac:AccountingSupplierParty>
     <cac:Party>
       <cac:PartyIdentification>
-        <cbc:ID schemeID="CRN">1010465872</cbc:ID>
+        <cbc:ID schemeID="CRN">5850068675</cbc:ID>
       </cac:PartyIdentification>
       <cac:PostalAddress>
-        <cbc:StreetName>الطريق الدائري الشمالي</cbc:StreetName>
+        <cbc:StreetName>وسط البلد</cbc:StreetName>
         <cbc:AdditionalStreetName>شارع اضافى</cbc:AdditionalStreetName>
-        <cbc:BuildingNumber>19</cbc:BuildingNumber>
+        <cbc:BuildingNumber>3594</cbc:BuildingNumber>
         <cbc:PlotIdentification>9833</cbc:PlotIdentification>
-        <cbc:CitySubdivisionName>حي الوادي</cbc:CitySubdivisionName>
-        <cbc:CityName>الرياض</cbc:CityName>
-        <cbc:PostalZone>13313</cbc:PostalZone>
-        <cbc:CountrySubentity>الرياض</cbc:CountrySubentity>
+        <cbc:CitySubdivisionName>وسط المدينه</cbc:CitySubdivisionName>
+        <cbc:CityName>عسير</cbc:CityName>
+        <cbc:PostalZone>62521</cbc:PostalZone>
+        <cbc:CountrySubentity>عسير</cbc:CountrySubentity>
         <cac:Country>
           <cbc:IdentificationCode>SA</cbc:IdentificationCode>
         </cac:Country>
       </cac:PostalAddress>
       <cac:PartyTaxScheme>
-        <cbc:CompanyID>311671205200003</cbc:CompanyID>
+        <cbc:CompanyID>310061120400003</cbc:CompanyID>
         <cac:TaxScheme>
           <cbc:ID>VAT</cbc:ID>
         </cac:TaxScheme>
       </cac:PartyTaxScheme>
       <cac:PartyLegalEntity>
-        <cbc:RegistrationName>شركة أكنان البناء للاستشارات الهندسية</cbc:RegistrationName>
+        <cbc:RegistrationName>شركة البراهين للاستشارات الهندسية وشريكه</cbc:RegistrationName>
       </cac:PartyLegalEntity>
     </cac:Party>
   </cac:AccountingSupplierParty>

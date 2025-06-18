@@ -1031,8 +1031,13 @@ namespace TaamerProject.API.Controllers
         {
 
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var AllUserBranch = 0;
+            if(ProjectsSearch.BranchId==-1)
+            {
+                AllUserBranch = 1;
+            }
             ProjectsSearch.BranchId = _globalshared.BranchId_G;
-            var AllPojects = _projectservice.GetAllProjectsNew(Con ?? "", ProjectsSearch, _globalshared.UserId_G, 0, ProjectsSearch.FilterType??0, _globalshared.BranchId_G).Result.ToList();
+            var AllPojects = _projectservice.GetAllProjectsNew(Con ?? "", ProjectsSearch, _globalshared.UserId_G, AllUserBranch, ProjectsSearch.FilterType??0, _globalshared.BranchId_G).Result.ToList();
             return Ok(AllPojects);
         }
 

@@ -175,7 +175,7 @@ namespace TaamerProject.API.Controllers
 
             if (UploadType == 1)
             {
-                var DestinationsUpdated = _TaamerProContext.Pro_Destinations.Where(s => s.ProjectId == ProjectId && (s.Status == 1 || s.Status == 0 || s.Status == null)).ToList();
+                var DestinationsUpdated = _TaamerProContext.Pro_Destinations.Where(s => s.IsDeleted==false && s.ProjectId == ProjectId && (s.Status == 1 || s.Status == 0 || s.Status == null)).ToList();
                 if (DestinationsUpdated.Count > 0)
                 {
                     var msg = new GeneralMessage();
