@@ -51,6 +51,9 @@ namespace TaamerProject.Models
         public int? CustomerMailCode { get; set; }
         public int? ProjectId { get; set; }
 
-
+        public bool? IsCertified { get; set; }
+        public string? ProjectName { get; set; }
+        public int? ImplementationDuration { get; set; }
+        public int? OfferValidity { get; set; }
     }
 }
