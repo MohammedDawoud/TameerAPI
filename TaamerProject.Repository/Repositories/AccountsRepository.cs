@@ -2383,7 +2383,7 @@ namespace TaamerProject.Repository.Repositories
                     using (SqlCommand command = new SqlCommand())
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        command.CommandText = "rptGetTrailBalanceAllWithLevel";
+                        command.CommandText = "rptGetGeneralBudgetWithLevel";
                         command.Connection = con;
                         string from = null;
                         string to = null;
@@ -2475,10 +2475,27 @@ namespace TaamerProject.Repository.Repositories
                         {
                             counter++;
                             double EndTotalDebit, EndTotalCredit;
-                            double PeriodDebit, PeriodCredit, DebitOP, CreditOP;
+                            double AhlakDebit, AhlakCredit, PeriodDebit, PeriodCredit, DebitOP, CreditOP;
                             try
                             {
-                                PeriodDebit = double.Parse(dr[6].ToString());
+                                AhlakDebit = double.Parse(dr[6].ToString());
+                            }
+                            catch (Exception)
+                            {
+                                AhlakDebit = 0;
+                            }
+                            try
+                            {
+                                AhlakCredit = double.Parse(dr[7].ToString());
+                            }
+                            catch (Exception)
+                            {
+                                AhlakCredit = 0;
+                            }
+
+                            try
+                            {
+                                PeriodDebit = double.Parse(dr[8].ToString());
                             }
                             catch (Exception)
                             {
@@ -2486,7 +2503,7 @@ namespace TaamerProject.Repository.Repositories
                             }
                             try
                             {
-                                PeriodCredit = double.Parse(dr[7].ToString());
+                                PeriodCredit = double.Parse(dr[9].ToString());
                             }
                             catch (Exception)
                             {
@@ -2514,7 +2531,7 @@ namespace TaamerProject.Repository.Repositories
 
                             try
                             {
-                                EndTotalDebit = double.Parse(dr[10].ToString());
+                                EndTotalDebit = double.Parse(dr[12].ToString());
                             }
                             catch (Exception)
                             {
@@ -2522,7 +2539,7 @@ namespace TaamerProject.Repository.Repositories
                             }
                             try
                             {
-                                EndTotalCredit = double.Parse(dr[11].ToString());
+                                EndTotalCredit = double.Parse(dr[13].ToString());
                             }
                             catch (Exception)
                             {
@@ -2538,14 +2555,14 @@ namespace TaamerProject.Repository.Repositories
                             double NetDepit;
                             double NetCreditOP;
                             double NetDebitOP;
-
+                            double TotalFinalSum;
                             if (Convert.ToInt32((dr[0]).ToString()) != 0)
                             {
                                 if (DebitOP >= CreditOP)
                                 {
                                     NetDebitOP = Convert.ToDouble(Convert.ToDecimal(DebitOP) - Convert.ToDecimal(CreditOP));
                                     NetCreditOP = 0;
-                                    if ((dr[12]).ToString() == "1")
+                                    if ((dr[14]).ToString() == "1")
                                     {
                                         NetDebitOPSum = Convert.ToDouble(Convert.ToDecimal(NetDebitOPSum) + Convert.ToDecimal(NetDebitOP));
                                         NetCreditOPSum = Convert.ToDouble(Convert.ToDecimal(NetCreditOPSum) + Convert.ToDecimal(NetCreditOP));
@@ -2556,7 +2573,7 @@ namespace TaamerProject.Repository.Repositories
                                 {
                                     NetCreditOP = Convert.ToDouble(Convert.ToDecimal(CreditOP) - Convert.ToDecimal(DebitOP));
                                     NetDebitOP = 0;
-                                    if ((dr[12]).ToString() == "1")
+                                    if ((dr[14]).ToString() == "1")
                                     {
                                         NetDebitOPSum = Convert.ToDouble(Convert.ToDecimal(NetDebitOPSum) + Convert.ToDecimal(NetDebitOP));
                                         NetCreditOPSum = Convert.ToDouble(Convert.ToDecimal(NetCreditOPSum) + Convert.ToDecimal(NetCreditOP));
@@ -2580,7 +2597,7 @@ namespace TaamerProject.Repository.Repositories
 
                             try
                             {
-                                NetDepit = double.Parse(dr[8].ToString());
+                                NetDepit = double.Parse(dr[10].ToString());
                             }
                             catch (Exception)
                             {
@@ -2588,7 +2605,7 @@ namespace TaamerProject.Repository.Repositories
                             }
                             try
                             {
-                                NetCredit = double.Parse(dr[9].ToString());
+                                NetCredit = double.Parse(dr[11].ToString());
                             }
                             catch (Exception)
                             {
@@ -2596,7 +2613,8 @@ namespace TaamerProject.Repository.Repositories
                             }
 
 
-
+                            //TotalFinalSum = NetDepit - NetCredit - AhlakDebit - AhlakCredit;
+                            TotalFinalSum = NetDepit - NetCredit;
 
                             if (ZeroCheck == 1)
                             {
@@ -2615,12 +2633,18 @@ namespace TaamerProject.Repository.Repositories
                                         DebitTotal = PeriodDebit.ToString(),
                                         OpCredit = NetCreditOP.ToString(),
                                         OpDipet = NetDebitOP.ToString(),
+                                        AhCredit = AhlakCredit.ToString(),
+                                        AhDipet = AhlakDebit.ToString(),
                                         TotalDebitEnd = EndTotalDebit.ToString(),
                                         TotalCriditEnd = EndTotalCredit.ToString(),
-                                        Level = (dr[12]).ToString(),
+                                        Level = (dr[14]).ToString(),
+                                        Classification = Convert.ToInt32(dr[15].ToString()),
+                                        AccountIdAhlak = Convert.ToInt32(dr[16].ToString()),
+                                        ParentId = Convert.ToInt32(dr[17].ToString()),
                                         NetCreditTotal = NetCredit.ToString(),
                                         NetDebitTotal = NetDepit.ToString(),
                                         LineNumber = counter,
+                                        TotalFinal= TotalFinalSum.ToString(),
                                     });
 
                                 }
@@ -2636,12 +2660,18 @@ namespace TaamerProject.Repository.Repositories
                                     DebitTotal = PeriodDebit.ToString(),
                                     OpCredit = NetCreditOP.ToString(),
                                     OpDipet = NetDebitOP.ToString(),
+                                    AhCredit = AhlakCredit.ToString(),
+                                    AhDipet = AhlakDebit.ToString(),
                                     TotalDebitEnd = EndTotalDebit.ToString(),
                                     TotalCriditEnd = EndTotalCredit.ToString(),
-                                    Level = (dr[12]).ToString(),
+                                    Level = (dr[14]).ToString(),
+                                    Classification = Convert.ToInt32(dr[15].ToString()),
+                                    AccountIdAhlak = Convert.ToInt32(dr[16].ToString()),
+                                    ParentId = Convert.ToInt32(dr[17].ToString()),
                                     NetCreditTotal = NetCredit.ToString(),
                                     NetDebitTotal = NetDepit.ToString(),
                                     LineNumber = counter,
+                                    TotalFinal = TotalFinalSum.ToString(),
                                 });
 
                             }
