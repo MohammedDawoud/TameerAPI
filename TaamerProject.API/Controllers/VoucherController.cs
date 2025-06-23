@@ -1461,7 +1461,13 @@ namespace TaamerProject.API.Controllers
         public IActionResult SaveInvoiceForServicesRetNEW(Invoices voucher)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-
+            var Acc_voucher = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.InvoiceId == voucher.InvoiceId).FirstOrDefault();
+            //var VoucherDatetime = DateTime.ParseExact(voucher.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            if (DateTime.Now.Year != Acc_voucher!.YearId)
+            {
+                var Msg = new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يمكن حفظ تاريخ في سنة مختلفة" };
+                return Ok(Msg);
+            }
             var result = _voucherService.SaveInvoiceForServicesRetNEW_func(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, _globalshared.Lang_G, Con);
 
             return Ok(result);
