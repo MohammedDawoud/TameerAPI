@@ -2614,8 +2614,10 @@ namespace TaamerProject.Repository.Repositories
 
 
                             //TotalFinalSum = NetDepit - NetCredit - AhlakDebit - AhlakCredit;
-                            TotalFinalSum = NetDepit - NetCredit;
+                           // TotalFinalSum = NetDepit - NetCredit;
+                            TotalFinalSum = EndTotalDebit - EndTotalCredit;
 
+                            
                             if (ZeroCheck == 1)
                             {
                                 if (NetCredit == 0 && NetDepit == 0 && NetCreditOP == 0 && NetDebitOP == 0 /*&& EndTotalDebit == 0 && EndTotalCredit == 0*/)
