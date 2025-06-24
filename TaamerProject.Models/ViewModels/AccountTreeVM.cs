@@ -142,7 +142,7 @@ namespace TaamerProject.Models
 
 
         public string? AccID { get; set; }
-        public string? ParentID { get; set; }
+        //public string? ParentID { get; set; }
         public string? Level { get; set; }
         public int? LineNumber { get; set; }
         public int? Classification { get; set; }

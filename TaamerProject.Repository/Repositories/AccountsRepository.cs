@@ -2432,6 +2432,7 @@ namespace TaamerProject.Repository.Repositories
                         }
 
                         command.Parameters.Add(new SqlParameter("@YearId", YearId));
+                        command.Parameters.Add(new SqlParameter("@BranchId", BranchId));
 
                         command.Parameters.Add(new SqlParameter("@dir", lang));
 
