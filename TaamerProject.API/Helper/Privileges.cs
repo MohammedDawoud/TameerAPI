@@ -307,6 +307,7 @@ namespace TaamerProject.API.Helper
 
                            new Privilege { Id = 1117 , ParentId = 11 , Name = "التحكم في ايقاف وتشيغل المشروع" , Description = "التحكم في ايقاف وتشيغل المشروع"},
                            new Privilege { Id = 1118 , ParentId = 11 , Name = " admin  مشاريع" , Description = " admin  مشاريع"},
+                           new Privilege { Id = 1125 , ParentId = 11 , Name = "بحث بجميع الفروع في التقارير" , Description = "بحث بجميع الفروع في التقارير"},
 
                            //new Privilege { Id = 1122 , ParentId = 11 , Name =  "إلغاء المهام وحذف المشروع" , Description = "إلغاء المهام وحذف المشروع"},
                            new Privilege { Id = 1123 , ParentId = 11 , Name =  "التحكم في بداية المشروع" , Description = "التحكم في بداية المشروع"},

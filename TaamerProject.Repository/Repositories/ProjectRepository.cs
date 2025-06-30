@@ -2299,7 +2299,7 @@ namespace TaamerProject.Repository.Repositories
 
         public async Task< IEnumerable<ProjectVM>> GetUserProjectsReport(int? UserId, int? CustomerId, int BranchId, string DateFrom, string DateTo)
         {
-            var projects = _TaamerProContext.Project.Where(s => s.IsDeleted == false &&s.BranchId==BranchId && s.Status == 0 && (UserId == null || UserId == 0 || s.MangerId == UserId) && (CustomerId == null || CustomerId == 0 || s.CustomerId == CustomerId)
+            var projects = _TaamerProContext.Project.Where(s => s.IsDeleted == false && (s.BranchId == BranchId || BranchId == 0) && s.Status == 0 && (UserId == null || UserId == 0 || s.MangerId == UserId) && (CustomerId == null || CustomerId == 0 || s.CustomerId == CustomerId)
             ).Select(x => new ProjectVM
             {
                 ProjectId = x.ProjectId,

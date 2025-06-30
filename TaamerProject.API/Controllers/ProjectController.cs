@@ -1179,11 +1179,14 @@ namespace TaamerProject.API.Controllers
 
             }
         [HttpGet("GetUserProjectsReportS")]
-        public IActionResult GetUserProjectsReportS(int? UserId, int? CustomerId, string? DateFrom, string? DateTo)
+        public IActionResult GetUserProjectsReportS(int? UserId, int? CustomerId, string? DateFrom, string? DateTo,int? BranchId)
         {
         if (UserId == 0) UserId = null;
         HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-        var AllPojects = _projectservice.GetUserProjectsReport(UserId, CustomerId,  _globalshared.BranchId_G, DateFrom??"", DateTo??"").Result.ToList();
+            var AllUserBranch = 0;
+            if (BranchId == -1) AllUserBranch = 0;
+            else AllUserBranch = _globalshared.BranchId_G;
+            var AllPojects = _projectservice.GetUserProjectsReport(UserId, CustomerId, AllUserBranch, DateFrom??"", DateTo??"").Result.ToList();
 
             return Ok(AllPojects );
         }

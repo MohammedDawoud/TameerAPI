@@ -34,12 +34,16 @@ namespace TaamerProject.API.Controllers
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             _organizationsservice = organizationsService;
         }
-        [HttpGet("GetAllDestinations")]
+        [HttpPost("GetAllDestinations")]
 
-        public IActionResult GetAllDestinations()
+        public IActionResult GetAllDestinations(ProjectVM ProjectsSearch)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            var result = _Pro_DestinationsService.GetAllDestinations(_globalshared.BranchId_G);
+            var AllUserBranch = 0;
+            if (ProjectsSearch.BranchId == -1) AllUserBranch = 0;
+            else AllUserBranch = _globalshared.BranchId_G;
+            
+            var result = _Pro_DestinationsService.GetAllDestinations(AllUserBranch);
             return Ok(result);
         }
         [HttpGet("GetDestinationByProjectId")]

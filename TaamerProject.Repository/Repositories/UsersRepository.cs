@@ -1583,7 +1583,11 @@ namespace TaamerProject.Repository.Repositories
                         else
                             command.Parameters.Add(new SqlParameter("@To_Search", Search.EndDate));
 
-                        command.Parameters.Add(new SqlParameter("@BranchId", BranchId));
+
+                        if (BranchId == 0)
+                            command.Parameters.Add(new SqlParameter("@BranchId", DBNull.Value));
+                        else
+                            command.Parameters.Add(new SqlParameter("@BranchId", BranchId));
 
 
                         con.Open();

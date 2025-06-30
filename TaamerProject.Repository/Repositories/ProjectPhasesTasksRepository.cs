@@ -913,7 +913,7 @@ namespace TaamerProject.Repository.Repositories
         {
             if (status == 7)
             {
-                var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && s.BranchId == BranchId && s.IsMerig == -1 && s.IsRetrieved == 1 && (UserId == null || s.UserId == UserId)).Select(x => new ProjectPhasesTasksVM
+                var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && (s.BranchId == BranchId || BranchId == 0) && s.IsMerig == -1 && s.IsRetrieved == 1 && (UserId == null || s.UserId == UserId)).Select(x => new ProjectPhasesTasksVM
                 {
                     PhaseTaskId = x.PhaseTaskId,
                     DescriptionAr = x.DescriptionAr,
@@ -1054,7 +1054,7 @@ namespace TaamerProject.Repository.Repositories
             }
             else
             {
-                var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && s.BranchId == BranchId && s.IsMerig == -1 && (status == null|| s.Status == status) && (UserId == null || s.UserId == UserId)).Select(x => new ProjectPhasesTasksVM
+                var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && (s.BranchId == BranchId || BranchId == 0) && s.IsMerig == -1 && (status == null|| s.Status == status) && (UserId == null || s.UserId == UserId)).Select(x => new ProjectPhasesTasksVM
                 {
                     PhaseTaskId = x.PhaseTaskId,
                     DescriptionAr = x.DescriptionAr,
@@ -1489,7 +1489,7 @@ namespace TaamerProject.Repository.Repositories
         {
             if (status == 7)
             {
-                var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && (BranchId==0 || s.BranchId == BranchId) && s.IsMerig == -1 && s.IsRetrieved == 1 && (UserId == null || s.UserId == UserId)).Select(x => new ProjectPhasesTasksVM
+                var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && (s.BranchId == BranchId || BranchId == 0) && s.IsMerig == -1 && s.IsRetrieved == 1 && (UserId == null || s.UserId == UserId)).Select(x => new ProjectPhasesTasksVM
                 {
                     PhaseTaskId = x.PhaseTaskId,
                     DescriptionAr = x.DescriptionAr,
@@ -1629,7 +1629,7 @@ namespace TaamerProject.Repository.Repositories
 
             }
             else { 
-                var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && s.BranchId == BranchId && s.IsMerig == -1 && s.Status == status && (UserId == null || s.UserId == UserId)).Select(x => new ProjectPhasesTasksVM
+                var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && (s.BranchId == BranchId || BranchId == 0) && s.IsMerig == -1 && s.Status == status && (UserId == null || s.UserId == UserId)).Select(x => new ProjectPhasesTasksVM
             {
                 PhaseTaskId = x.PhaseTaskId,
                 DescriptionAr = x.DescriptionAr,
@@ -3322,7 +3322,7 @@ namespace TaamerProject.Repository.Repositories
 
          public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllLateProjectPhasesTasksbyUserId2(string EndDateP, int BranchId, int? UserId,string Lang)
         {
-            var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false &&s.BranchId==BranchId && s.Type == 3 && s.IsMerig == -1 && s.Status != 4 && ( UserId==null || s.UserId == UserId) && s.Remaining < 0).Select(x => new ProjectPhasesTasksVM
+            var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && (s.BranchId == BranchId || BranchId == 0) && s.Type == 3 && s.IsMerig == -1 && s.Status != 4 && ( UserId==null || s.UserId == UserId) && s.Remaining < 0).Select(x => new ProjectPhasesTasksVM
             {
              PhaseTaskId = x.PhaseTaskId,
                     DescriptionAr = x.DescriptionAr,
@@ -9994,7 +9994,7 @@ namespace TaamerProject.Repository.Repositories
 
          public async Task<IEnumerable<ProjectPhasesTasksVM>> GetLateTasksByUserIdrptsearch(int? UserId, int? status, string DateFrom, string DateTo, string Lang,int BranchId)
         {
-            var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false &&s.BranchId == BranchId && s.Type == 3 && (UserId == null || s.UserId == UserId) && s.IsMerig == -1 && s.Remaining < 0 && s.Status != 4).Select(x => new ProjectPhasesTasksVM
+            var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && (s.BranchId == BranchId || BranchId == 0) && s.Type == 3 && (UserId == null || s.UserId == UserId) && s.IsMerig == -1 && s.Remaining < 0 && s.Status != 4).Select(x => new ProjectPhasesTasksVM
             {
                 PhaseTaskId = x.PhaseTaskId,
                 DescriptionAr = x.DescriptionAr,
@@ -10556,7 +10556,7 @@ namespace TaamerProject.Repository.Repositories
         {
             try
             {
-                var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && s.BranchId == BranchId && s.IsMerig == -1 && s.Status == 4 && s.UserId == UserId).Select(x => new ProjectPhasesTasksVM
+                var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && (s.BranchId == BranchId || BranchId == 0) && s.IsMerig == -1 && s.Status == 4 && s.UserId == UserId).Select(x => new ProjectPhasesTasksVM
                 {
                     PhaseTaskId = x.PhaseTaskId,
                     DescriptionAr = x.DescriptionAr,

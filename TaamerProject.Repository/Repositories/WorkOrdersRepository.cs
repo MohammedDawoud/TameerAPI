@@ -1867,7 +1867,7 @@ namespace TaamerProject.Repository.Repositories
                 {
                     statusS = status;
                 }
-                var emp =  _TaamerProContext.WorkOrders.Where(s => s.IsDeleted == false &&s.BranchId==BranchId && (UserId == null || s.UserId == UserId) && (statusS == 0 || s.WOStatus == statusS)).Select(x => new ProjectPhasesTasksVM
+                var emp =  _TaamerProContext.WorkOrders.Where(s => s.IsDeleted == false && (s.BranchId == BranchId || BranchId == 0) && (UserId == null || s.UserId == UserId) && (statusS == 0 || s.WOStatus == statusS)).Select(x => new ProjectPhasesTasksVM
                 {
                     DescriptionAr = "امر عمل",
                     UserId = x.UserId,
