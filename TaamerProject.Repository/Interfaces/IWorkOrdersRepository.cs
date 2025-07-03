@@ -32,7 +32,7 @@ namespace TaamerProject.Repository.Interfaces
         Task<int?> GetUserWorkOrderCount(int? UserId, int BranchId);
         Task<IEnumerable<WorkOrdersVM>> GetAllWorkOrdersyProjectId(int ProjectId);
 
-        Task<IEnumerable<ProjectPhasesTasksVM>> GetWorkOrderReport(int? UserId, int BranchId, string lang, int status, string DateFrom, string DateTo);
+        Task<IEnumerable<ProjectPhasesTasksVM>> GetWorkOrderReport(int? UserId, int BranchId, string lang, int status, string DateFrom, string DateTo, List<int> BranchesList);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetWorkOrderReport(int? UserId, int BranchId, string lang, int status, string DateFrom, string DateTo, string? SearchText);
         Task<List<ProjectPhasesTasksVM>> GetWorkOrderReport_print(int? UserId, int BranchId, string lang, int status, string DateFrom, string DateTo);
 

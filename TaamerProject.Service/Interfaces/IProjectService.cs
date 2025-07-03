@@ -61,7 +61,7 @@ namespace TaamerProject.Service.Interfaces
        Task<IEnumerable<ProjectVM>>GetUserProjects(int UserId, int BranchId, string DateNow);
        Task<IEnumerable<ProjectVM>>GetUserProjects2(int UserId, int BranchId, string DateNow);
        Task<IEnumerable<ProjectVM>>GetUserProjectsReport(int UserId, int BranchId, string DateNow);
-       Task<IEnumerable<ProjectVM>>GetUserProjectsReport(int? UserId, int? CustomerId, int BranchId, string DateFrom, string DateTo);
+       Task<IEnumerable<ProjectVM>>GetUserProjectsReport(int? UserId, int? CustomerId, int BranchId, string DateFrom, string DateTo, List<int> BranchesList);
         Task<IEnumerable<ProjectVM>> GetUserProjectsReport(int? UserId, int? CustomerId, int BranchId, string DateFrom, string DateTo, string? Searchtext);
        Task<IEnumerable<ProjectVM>>GetUserProjectsReportW(int BranchId, string DateNow);
        Task<IEnumerable<ProjectVM>>GetProjectsSearch(ProjectVM ProjectsSearch, int BranchId, string Con, string lang);

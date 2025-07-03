@@ -36,9 +36,9 @@ namespace TaamerProject.Service.Services
             _notificationService = notificationService;
         }
 
-        public Task<IEnumerable<Pro_DestinationsVM>> GetAllDestinations(int BranchId)
+        public Task<IEnumerable<Pro_DestinationsVM>> GetAllDestinations(int BranchId, List<int> BranchesList)
         {
-            var Destinations = _Pro_DestinationsRepository.GetAllDestinations(BranchId);
+            var Destinations = _Pro_DestinationsRepository.GetAllDestinations(BranchId, BranchesList);
             return Destinations;
         }
         public Task<Pro_DestinationsVM> GetDestinationByProjectId(int projectId)

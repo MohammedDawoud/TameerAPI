@@ -145,6 +145,7 @@ namespace TaamerProject.Models
         public string? EndDate { get; set; }
         public int? BranchId { get; set; }
         public string? SearchUserIdStr { get; set; }
+        public string? SearchBranchIdStr { get; set; }
         public int? AccBranchId { get; set; }
 
     }

@@ -17,9 +17,9 @@ namespace TaamerProject.Repository.Repositories
             _TaamerProContext = dataContext;
         }
 
-        public async Task<IEnumerable<Pro_DestinationsVM>> GetAllDestinations(int BranchId)
+        public async Task<IEnumerable<Pro_DestinationsVM>> GetAllDestinations(int BranchId,List<int> BranchesList)
         {
-            var Reasons = _TaamerProContext.Pro_Destinations.Where(s => s.IsDeleted == false && (s.BranchId== BranchId || BranchId==0)).Select(x => new Pro_DestinationsVM
+            var Reasons = _TaamerProContext.Pro_Destinations.Where(s => s.IsDeleted == false && BranchesList.Contains(s.BranchId??0)).Select(x => new Pro_DestinationsVM
             {
                 DestinationId = x.DestinationId,
                 ProjectId = x.ProjectId,

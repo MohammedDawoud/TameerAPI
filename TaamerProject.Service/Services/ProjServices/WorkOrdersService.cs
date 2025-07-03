@@ -563,9 +563,9 @@ namespace TaamerProject.Service.Services
             return WorkOrders;
         }
 
-        public Task<IEnumerable<ProjectPhasesTasksVM>> GetWorkOrderReport(int? UserId, int Status, int BranchId, string Lang, string StartDate, string EndDate)
+        public Task<IEnumerable<ProjectPhasesTasksVM>> GetWorkOrderReport(int? UserId, int Status, int BranchId, string Lang, string StartDate, string EndDate, List<int> BranchesList)
         {
-            var WorkOrders = _workordersRepository.GetWorkOrderReport(UserId,  BranchId, Lang, Status, StartDate, EndDate);
+            var WorkOrders = _workordersRepository.GetWorkOrderReport(UserId,  BranchId, Lang, Status, StartDate, EndDate, BranchesList);
             return WorkOrders;
         }
         public Task<IEnumerable<ProjectPhasesTasksVM>> GetWorkOrderReport(int? UserId, int Status, int BranchId, string Lang, string StartDate, string EndDate,string? Searchtext)

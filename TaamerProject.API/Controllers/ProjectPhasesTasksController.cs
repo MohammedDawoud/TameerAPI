@@ -182,18 +182,24 @@ namespace TaamerProject.API.Controllers
         public IActionResult GetAllProjectPhasesTasksS(int? UserId, int? status, string? DateFrom, string? DateTo)
             {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            //var AccBranchesList = BranchesList ?? new List<int>();
+            var AccBranchesList = new List<int>();
+            if (AccBranchesList.Count() == 0)
+            {
+                AccBranchesList.Add(_globalshared.BranchId_G);
+            }
             if (status == 8)
                 {
                     
                 if ((DateFrom == "" && DateTo == "") || (DateFrom == null && DateTo == null))
                 {
-                    var atasks = _projectPhasesTasksservice.GetAllLateProjectPhasesTasksbyUserId2(DateTo, _globalshared.BranchId_G, _globalshared.UserId_G, _globalshared.Lang_G);
+                    var atasks = _projectPhasesTasksservice.GetAllLateProjectPhasesTasksbyUserId2(DateTo, _globalshared.BranchId_G, _globalshared.UserId_G, _globalshared.Lang_G, AccBranchesList);
 
                     return Ok(atasks );
                 }
                 else
                 {
-                    var AllTasks1 = _projectPhasesTasksservice.GetLateTasksByUserIdrptsearch(_globalshared.UserId_G, status, _globalshared.Lang_G, DateFrom, DateTo, _globalshared.BranchId_G).Result.ToList();
+                    var AllTasks1 = _projectPhasesTasksservice.GetLateTasksByUserIdrptsearch(_globalshared.UserId_G, status, _globalshared.Lang_G, DateFrom, DateTo, _globalshared.BranchId_G, AccBranchesList).Result.ToList();
 
                     return Ok(AllTasks1 );
                 }
@@ -204,7 +210,7 @@ namespace TaamerProject.API.Controllers
             return Ok(AllTasks );
             }
         [HttpGet("GetAllProjectPhasesTasksS_whithworkorder")]
-        public IActionResult GetAllProjectPhasesTasksS_whithworkorder(int? UserId, int? status, string? DateFrom, string? DateTo, int? BranchId)       
+        public IActionResult GetAllProjectPhasesTasksS_whithworkorder(int? UserId, int? status, string? DateFrom, string? DateTo, int? BranchId, [FromQuery] List<int> BranchesList)       
         {
             if (UserId == 0)UserId = null;
             if (status == 0) status = null;
@@ -214,29 +220,33 @@ namespace TaamerProject.API.Controllers
             if (BranchId == -1) AllUserBranch = 0;
             else AllUserBranch = _globalshared.BranchId_G;
 
-
+            var AccBranchesList = BranchesList ?? new List<int>();
+            if (AccBranchesList.Count() == 0)
+            {
+                AccBranchesList.Add(_globalshared.BranchId_G);
+            }
 
             if (status == 8)
                 {
                     if (DateFrom == "" && DateTo == "")
                     {
-                        var atasks = _projectPhasesTasksservice.GetAllLateProjectPhasesTasksbyUserId2(DateTo, AllUserBranch, _globalshared.UserId_G, _globalshared.Lang_G).Result;
-                        var wo2 = _workOrdersService.GetWorkOrderReport(UserId, status ?? 0, AllUserBranch, _globalshared.Lang_G, DateFrom, DateTo).Result;
+                        var atasks = _projectPhasesTasksservice.GetAllLateProjectPhasesTasksbyUserId2(DateTo, AllUserBranch, _globalshared.UserId_G, _globalshared.Lang_G, AccBranchesList).Result;
+                        var wo2 = _workOrdersService.GetWorkOrderReport(UserId, status ?? 0, AllUserBranch, _globalshared.Lang_G, DateFrom, DateTo, AccBranchesList).Result;
 
 
                         return Ok(atasks.Union(wo2) );
                     }
                     else
                     {
-                        var AllTasks1 = _projectPhasesTasksservice.GetLateTasksByUserIdrptsearch(UserId, status, _globalshared.Lang_G, DateFrom, DateTo, AllUserBranch).Result.ToList();
-                        var wo3 = _workOrdersService.GetWorkOrderReport(UserId, status ?? 0, AllUserBranch, _globalshared.Lang_G, DateFrom, DateTo).Result;
+                        var AllTasks1 = _projectPhasesTasksservice.GetLateTasksByUserIdrptsearch(UserId, status, _globalshared.Lang_G, DateFrom, DateTo, AllUserBranch, AccBranchesList).Result.ToList();
+                        var wo3 = _workOrdersService.GetWorkOrderReport(UserId, status ?? 0, AllUserBranch, _globalshared.Lang_G, DateFrom, DateTo, AccBranchesList).Result;
 
 
                         return Ok(AllTasks1.Union(wo3) );
                     }
                 }
 
-                var wo = _workOrdersService.GetWorkOrderReport(UserId, status ?? 0, AllUserBranch, _globalshared.Lang_G, DateFrom, DateTo).Result;
+                var wo = _workOrdersService.GetWorkOrderReport(UserId, status ?? 0, AllUserBranch, _globalshared.Lang_G, DateFrom, DateTo, AccBranchesList).Result;
 
                 var AllTasks = _projectPhasesTasksservice.GetAllProjectPhasesTasksS(UserId, AllUserBranch, status, _globalshared.Lang_G, DateFrom, DateTo).Result.ToList();
 
@@ -321,7 +331,7 @@ namespace TaamerProject.API.Controllers
 
 
         [HttpGet("GetAllLateProjectPhasesByuser_rpt")]
-        public IActionResult GetAllLateProjectPhasesByuser_rpt(int? UserId, int? status, string? DateFrom, string? DateTo, int? BranchId)          
+        public IActionResult GetAllLateProjectPhasesByuser_rpt(int? UserId, int? status, string? DateFrom, string? DateTo, int? BranchId, [FromQuery] List<int> BranchesList)          
         {
             if (UserId == 0)UserId = null;
             if (status == 0) status = null;
@@ -330,16 +340,20 @@ namespace TaamerProject.API.Controllers
             var AllUserBranch = 0;
             if (BranchId == -1) AllUserBranch = 0;
             else AllUserBranch = _globalshared.BranchId_G;
-
+            var AccBranchesList = BranchesList ?? new List<int>();
+            if (AccBranchesList.Count() == 0)
+            {
+                AccBranchesList.Add(_globalshared.BranchId_G);
+            }
             if ((DateFrom == "" && DateTo == "") || (DateFrom == null && DateTo == null))
                 {
-                    var atasks = _projectPhasesTasksservice.GetAllLateProjectPhasesTasksbyUserId2(DateTo, AllUserBranch, UserId, _globalshared.Lang_G);
+                    var atasks = _projectPhasesTasksservice.GetAllLateProjectPhasesTasksbyUserId2(DateTo, AllUserBranch, UserId, _globalshared.Lang_G,AccBranchesList);
 
                     return Ok(atasks );
                 }
                 else
                 {
-                    var AllTasks = _projectPhasesTasksservice.GetLateTasksByUserIdrptsearch(UserId, status, _globalshared.Lang_G, DateFrom, DateTo, AllUserBranch).Result.ToList();
+                    var AllTasks = _projectPhasesTasksservice.GetLateTasksByUserIdrptsearch(UserId, status, _globalshared.Lang_G, DateFrom, DateTo, AllUserBranch,AccBranchesList).Result.ToList();
 
                     return Ok(AllTasks );
                 }
@@ -392,14 +406,19 @@ namespace TaamerProject.API.Controllers
         {
             if (UserId == 0)UserId = null;
             if (status == 0) status = null;
-
+            //var AccBranchesList = BranchesList ?? new List<int>();
+            var AccBranchesList = new List<int>();
+            if (AccBranchesList.Count() == 0)
+            {
+                AccBranchesList.Add(_globalshared.BranchId_G);
+            }
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            var AllTasks = _projectPhasesTasksservice.GetAllProjectPhasesTasksbystatus(UserId, _globalshared.BranchId_G, status, _globalshared.Lang_G, DateFrom, DateTo).Result.ToList();
+            var AllTasks = _projectPhasesTasksservice.GetAllProjectPhasesTasksbystatus(UserId, _globalshared.BranchId_G, status, _globalshared.Lang_G, DateFrom, DateTo, AccBranchesList).Result.ToList();
 
                 return Ok(AllTasks );           
         }
         [HttpGet("GetAllProjectPhasesTasksbystatus_WithworkOrder")]
-        public IActionResult GetAllProjectPhasesTasksbystatus_WithworkOrder(int? UserId, int? status, string? DateFrom, string? DateTo, int? BranchId)
+        public IActionResult GetAllProjectPhasesTasksbystatus_WithworkOrder(int? UserId, int? status, string? DateFrom, string? DateTo, int? BranchId, [FromQuery] List<int> BranchesList)
         {
             if (UserId == 0)UserId = null;
             if (status == 0) status = null;
@@ -409,9 +428,15 @@ namespace TaamerProject.API.Controllers
             var AllUserBranch = 0;
             if (BranchId == -1) AllUserBranch = 0;
             else AllUserBranch = _globalshared.BranchId_G;
+            var AccBranchesList = BranchesList ?? new List<int>();
+            if (AccBranchesList.Count() == 0)
+            {
+                AccBranchesList.Add(_globalshared.BranchId_G);
+            }
 
-            var AllTasks = _projectPhasesTasksservice.GetAllProjectPhasesTasksbystatus(UserId, AllUserBranch, status, _globalshared.Lang_G, DateFrom, DateTo).Result.ToList();
-                var wo = _workOrdersService.GetWorkOrderReport(UserId, status ?? 0, AllUserBranch, _globalshared.Lang_G, DateFrom, DateTo).Result;
+
+            var AllTasks = _projectPhasesTasksservice.GetAllProjectPhasesTasksbystatus(UserId, AllUserBranch, status, _globalshared.Lang_G, DateFrom, DateTo,AccBranchesList).Result.ToList();
+                var wo = _workOrdersService.GetWorkOrderReport(UserId, status ?? 0, AllUserBranch, _globalshared.Lang_G, DateFrom, DateTo,AccBranchesList).Result;
                 return Ok(AllTasks.Union(wo));
         }
 
@@ -1821,7 +1846,7 @@ namespace TaamerProject.API.Controllers
         //    return Content(FilePathReturn);
         //}
         [HttpGet("GetAllProjectPhasesTasks_Costs")]
-        public IActionResult GetAllProjectPhasesTasks_Costs(int? UserId, string? DateFrom, string? DateTo, int? BranchId)
+        public IActionResult GetAllProjectPhasesTasks_Costs(int? UserId, string? DateFrom, string? DateTo, int? BranchId, [FromQuery] List<int> BranchesList)
         {
             if (UserId == 0) UserId = null;
 
@@ -1829,7 +1854,14 @@ namespace TaamerProject.API.Controllers
             var AllUserBranch = 0;
             if (BranchId == -1) AllUserBranch = 0;
             else AllUserBranch = _globalshared.BranchId_G;
-            var AllTasks = _projectPhasesTasksservice.GetAllProjectPhasesTasks_Costs(UserId, AllUserBranch, _globalshared.Lang_G, DateFrom, DateTo).Result.ToList();
+            var AccBranchesList = BranchesList ?? new List<int>();
+            if (AccBranchesList.Count() == 0)
+            {
+                AccBranchesList.Add(_globalshared.BranchId_G);
+            }
+
+
+            var AllTasks = _projectPhasesTasksservice.GetAllProjectPhasesTasks_Costs(UserId, AllUserBranch, _globalshared.Lang_G, DateFrom, DateTo, AccBranchesList).Result.ToList();
 
             return Ok(AllTasks);
         }

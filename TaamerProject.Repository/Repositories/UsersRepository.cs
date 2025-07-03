@@ -1561,6 +1561,16 @@ namespace TaamerProject.Repository.Repositories
                         {
                             command.Parameters.Add(new SqlParameter("@UserId_SearchStr", Search.SearchUserIdStr));
                         }
+                        if (Search.SearchBranchIdStr == "" || Search.SearchBranchIdStr == null || Search.SearchBranchIdStr == "null" || Search.SearchBranchIdStr == "0")
+                        {
+                            command.Parameters.Add(new SqlParameter("@BranchId_SearchStr", DBNull.Value));
+                        }
+                        else
+                        {
+                            command.Parameters.Add(new SqlParameter("@BranchId_SearchStr", Search.SearchBranchIdStr));
+                        }
+
+
 
                         if (Search.UserId == 0)
                             command.Parameters.Add(new SqlParameter("@UserId_Search",DBNull.Value));

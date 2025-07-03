@@ -9,7 +9,7 @@ namespace TaamerProject.Repository.Interfaces
 {
     public interface IPro_DestinationsRepository
     {
-        Task<IEnumerable<Pro_DestinationsVM>> GetAllDestinations(int BranchId);
+        Task<IEnumerable<Pro_DestinationsVM>> GetAllDestinations(int BranchId, List<int> BranchesList);
         Task<Pro_DestinationsVM> GetDestinationByProjectId(int projectId);
         Task<Pro_DestinationsVM> GetDestinationByProjectIdToReplay(int projectId);
 
