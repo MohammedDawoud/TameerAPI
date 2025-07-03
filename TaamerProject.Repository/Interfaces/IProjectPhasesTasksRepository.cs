@@ -21,7 +21,7 @@ namespace TaamerProject.Repository.Interfaces
 
         //IEnumerable<ProjectPhasesTasksVM>  GetAllProjectPhasesTasksS(int? UserId, int BranchId, string Lang, string DateFrom, string DateTo);
 
-        Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksS(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo);
+        Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksS(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo, List<int> BranchesList);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksS(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo, string? SearchText);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksW(int BranchId, string Lang);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAllTasksPhasesByProjectId(int ProjectId, int BranchId);

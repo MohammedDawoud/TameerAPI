@@ -205,7 +205,7 @@ namespace TaamerProject.API.Controllers
                 }
             
             }
-            var AllTasks = _projectPhasesTasksservice.GetAllProjectPhasesTasksS(_globalshared.UserId_G, _globalshared.BranchId_G, status, _globalshared.Lang_G, DateFrom, DateTo).Result.ToList();
+            var AllTasks = _projectPhasesTasksservice.GetAllProjectPhasesTasksS(_globalshared.UserId_G, _globalshared.BranchId_G, status, _globalshared.Lang_G, DateFrom, DateTo, AccBranchesList).Result.ToList();
 
             return Ok(AllTasks );
             }
@@ -248,7 +248,7 @@ namespace TaamerProject.API.Controllers
 
                 var wo = _workOrdersService.GetWorkOrderReport(UserId, status ?? 0, AllUserBranch, _globalshared.Lang_G, DateFrom, DateTo, AccBranchesList).Result;
 
-                var AllTasks = _projectPhasesTasksservice.GetAllProjectPhasesTasksS(UserId, AllUserBranch, status, _globalshared.Lang_G, DateFrom, DateTo).Result.ToList();
+                var AllTasks = _projectPhasesTasksservice.GetAllProjectPhasesTasksS(UserId, AllUserBranch, status, _globalshared.Lang_G, DateFrom, DateTo, AccBranchesList).Result.ToList();
 
                 return Ok(AllTasks.Union(wo) );
             }

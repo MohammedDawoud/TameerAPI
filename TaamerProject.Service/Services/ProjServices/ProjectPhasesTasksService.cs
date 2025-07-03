@@ -143,10 +143,10 @@ namespace TaamerProject.Service.Services
             var Tasks = await _ProjectPhasesTasksRepository.GetAllProjectPhasesTasksUPage(UserId, BranchId, lang);
             return Tasks;
         }
-        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksS(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo)
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksS(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo, List<int> BranchesList)
         {
 
-            var Tasks = await _ProjectPhasesTasksRepository.GetAllProjectPhasesTasksS(UserId, BranchId, status, Lang, DateFrom, DateTo);
+            var Tasks = await _ProjectPhasesTasksRepository.GetAllProjectPhasesTasksS(UserId, BranchId, status, Lang, DateFrom, DateTo,BranchesList);
             return Tasks;
         }
 

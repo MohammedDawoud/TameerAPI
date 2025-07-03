@@ -909,11 +909,11 @@ namespace TaamerProject.Repository.Repositories
         }
 
 
-         public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksS(int? UserId, int BranchId,int? status, string Lang, string DateFrom, string DateTo)
+         public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksS(int? UserId, int BranchId,int? status, string Lang, string DateFrom, string DateTo, List<int> BranchesList)
         {
             if (status == 7)
             {
-                var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && (s.BranchId == BranchId || BranchId == 0) && s.IsMerig == -1 && s.IsRetrieved == 1 && (UserId == null || s.UserId == UserId)).Select(x => new ProjectPhasesTasksVM
+                var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && BranchesList.Contains(s.BranchId ?? 0) && s.IsMerig == -1 && s.IsRetrieved == 1 && (UserId == null || s.UserId == UserId)).Select(x => new ProjectPhasesTasksVM
                 {
                     PhaseTaskId = x.PhaseTaskId,
                     DescriptionAr = x.DescriptionAr,
@@ -1054,7 +1054,7 @@ namespace TaamerProject.Repository.Repositories
             }
             else
             {
-                var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && (s.BranchId == BranchId || BranchId == 0) && s.IsMerig == -1 && (status == null|| s.Status == status) && (UserId == null || s.UserId == UserId)).Select(x => new ProjectPhasesTasksVM
+                var projectPhasesTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.Type == 3 && BranchesList.Contains(s.BranchId ?? 0) && s.IsMerig == -1 && (status == null|| s.Status == status) && (UserId == null || s.UserId == UserId)).Select(x => new ProjectPhasesTasksVM
                 {
                     PhaseTaskId = x.PhaseTaskId,
                     DescriptionAr = x.DescriptionAr,
