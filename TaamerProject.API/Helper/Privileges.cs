@@ -919,7 +919,14 @@ namespace TaamerProject.API.Helper
                                         new Privilege { Id = 1712310 , ParentId = 17123 , Name =  Resources.General_Add, Description = Resources.General_Add },
                                         new Privilege { Id = 1712311 , ParentId = 17123 , Name =  Resources.General_Edit, Description = Resources.General_Edit },
                                         new Privilege { Id = 1712312 , ParentId = 17123 , Name =  @Resources.General_Delete , Description = Resources.General_Delete},
+
+
+
+                                           new Privilege { Id = 17124, ParentId = 17 , Name =  "اعدادات  إدارة الاشعارات", Description =  "اعدادات  إدارة الاشعارات" },
+                                        new Privilege { Id = 171241 , ParentId = 17124 , Name =  Resources.General_Edit, Description = Resources.General_Edit },
+                                        new Privilege { Id = 171242 , ParentId = 17124 , Name =  @Resources.General_Delete , Description = Resources.General_Delete},
                                        
+             
              
             //////////////////////////////////////////////////////////////////
             new Privilege { Id = 1714 , ParentId = 17 , Name =  "تنبيه لجميع المستخدمين" },

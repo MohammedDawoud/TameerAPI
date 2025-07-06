@@ -234,6 +234,8 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
         public virtual DbSet<Permissions> Permissions { get; set; }
         public virtual DbSet<PermissionType> PermissionTypes { get; set; }
         public virtual DbSet<CommercialActivity> CommercialActivities { get; set; }
+        public virtual DbSet<NotificationConfiguration> NotificationConfigurations { get; set; }
+        public virtual DbSet<NotificationConfigurationsAssines> NotificationConfigurationsAssines { get; set; }
 
         public string GetDatabaseName()
         {
@@ -4501,6 +4503,23 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
             {
                 entity.HasKey(e => e.CommercialActivityId);
                 entity.ToTable("Acc_CommercialActivity");
+            });
+
+            //--------------------------------END--------------------------------------------------
+            modelBuilder.Entity<NotificationConfiguration>(entity =>
+            {
+                entity.HasKey(e => e.ConfigurationId);
+                entity.ToTable("Sys_NotificationConfigurations");
+                modelBuilder.Entity<NotificationConfiguration>().HasMany<NotificationConfigurationsAssines>(s => s.NotificationConfigurationsAssines).WithOne(g => g.NotificationConfiguration).HasForeignKey(s => s.ConfigurationId);
+
+            });
+
+            //--------------------------------END--------------------------------------------------
+            modelBuilder.Entity<NotificationConfigurationsAssines>(entity =>
+            {
+                entity.HasKey(e => e.ConfigurationAssinesId);
+                entity.ToTable("Sys_NotificationConfigurationsAssines");
+
             });
 
             //--------------------------------END--------------------------------------------------
