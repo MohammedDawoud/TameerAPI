@@ -245,6 +245,9 @@ namespace TaamerProject.Service.Services
                         Proj.ProjectExpireDate = AccProDate;
                         Proj.FirstProjectExpireDate = AccProDate;
                         Proj.DestinationsUpload = null;
+                        var ProjectDays = Math.Ceiling((Convert.ToDateTime(Proj.ProjectExpireDate) - Convert.ToDateTime(Proj.ProjectDate)).TotalDays)+1;
+                        Proj.NoOfDays = Convert.ToInt32(ProjectDays);
+
                     }
                     _TaamerProContext.SaveChanges();
                     
