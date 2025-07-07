@@ -1294,6 +1294,46 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
+        public GeneralMessage SaveEmplocationList(List<int> EmpList, int LocationId, int UserId, string Lang, int BranchId)
+        {
+            try
+            {
+
+                foreach (var EmpId in EmpList)
+                {
+                    var Emploc = _TaamerProContext.EmpLocations.Where(x => x.EmpId == EmpId && x.LocationId == LocationId && x.IsDeleted == false).ToList();
+                    if (Emploc.Count() > 0)
+                    {
+                        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "يوجد موظف موجود من قبل علي هذا الموقع" };
+
+                    }
+                    EmpLocations empLocations = new EmpLocations();
+                    empLocations.EmpLocationId = 0;
+                    empLocations.EmpId = EmpId;
+                    empLocations.LocationId = LocationId;
+                    _TaamerProContext.EmpLocations.Add(empLocations);
+                }
+                _TaamerProContext.SaveChanges();
+
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = "حفظ موظفيين علي موقع";
+                _SystemAction.SaveAction("SaveEmplocationList", "EmployeeService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                //-----------------------------------------------------------------------------------------------------------------
+                return new GeneralMessage() { StatusCode = HttpStatusCode.OK, ReasonPhrase = "تم حفظ موظفيين علي موقع بنجاح" };
+
+            }
+            catch (Exception ex)
+            {
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = "فشل في حفظ الموظفيين علي الموقع";
+                _SystemAction.SaveAction("SaveEmplocationList", "EmployeeService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                //-----------------------------------------------------------------------------------------------------------------
+
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
+            }
+        }
 
         public GeneralMessage CheckifCodeIsExist(string empCode, int UserId, int BranchId)
         {

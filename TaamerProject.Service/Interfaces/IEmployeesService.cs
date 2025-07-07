@@ -34,6 +34,7 @@ namespace TaamerProject.Service.Interfaces
 
         GeneralMessage ConvertEmplocation(int EmpId, int oldLocationId, int newLocationId, int User, string Lang, int BranchId);
         GeneralMessage SaveEmplocation(int EmpId, int LocationId, int User, string Lang, int BranchId);
+        GeneralMessage SaveEmplocationList(List<int> EmpList, int LocationId, int User, string Lang, int BranchId);
 
 
         GeneralMessage CheckifCodeIsExist(string empCode, int UserId, int BranchId);

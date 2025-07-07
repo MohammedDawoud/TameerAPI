@@ -351,7 +351,18 @@ namespace TaamerProject.API.Controllers
 
             return Ok(_employesService.SaveEmplocation(EmpId, LocationId, _globalshared.UserId_G, _globalshared.Lang_G, _globalshared.BranchId_G));
         }
+        [HttpPost("SaveEmplocationList")]
+        public IActionResult SaveEmplocationList(LocationDataNew locationDataNew)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
+            return Ok(_employesService.SaveEmplocationList(locationDataNew!.EmpList??new List<int>(), locationDataNew.LocationId, _globalshared.UserId_G, _globalshared.Lang_G, _globalshared.BranchId_G));
+        }
+        public class LocationDataNew
+        {
+            public int LocationId { get; set; }
+            public List<int>? EmpList { get; set; }
+        }
         //public IActionResult Changecompanyresponsive(int EmpId)
         //{
         //    return Ok(_employesService.Changecompanyresponsive(EmpId, _globalshared.UserId_G, Lang, _globalshared.BranchId_G), OkRequestBehavior.AllowGet);
