@@ -36,7 +36,7 @@ namespace TaamerProject.Repository.Repositories
                     ymax = x.ymax,
                     ymin = x.ymin,
                     //EmployeeCount = x.Employees==null?0: x.Employees.Count(),
-                    EmployeeCount = x.EmpLocations == null ? 0 : x.EmpLocations.Count(),
+                    EmployeeCount = x.EmpLocations == null ? 0 : x.EmpLocations.Where(s=>s.IsDeleted==false).Count(),
 
                 });
                 if (SearchText != "")
@@ -67,7 +67,7 @@ namespace TaamerProject.Repository.Repositories
                     ymax = x.ymax,
                     ymin = x.ymin,
                     //EmployeeCount = x.Employees==null?0: x.Employees.Count(),
-                    EmployeeCount = x.EmpLocations == null ? 0 : x.EmpLocations.Count(),
+                    EmployeeCount = x.EmpLocations == null ? 0 : x.EmpLocations.Where(s => s.IsDeleted == false).Count(),
                 }).ToList().FirstOrDefault();
                 return locations;
             }

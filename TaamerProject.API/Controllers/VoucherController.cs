@@ -3154,6 +3154,8 @@ namespace TaamerProject.API.Controllers
         [HttpGet("FillFilteringSelect")]
         public IActionResult FillFilteringSelect(int Param)
         {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+
             if (Param == 2)
             {
                 var Customers = _customerService.GetAllCustomerForDrop(_globalshared.Lang_G).Result.Select(s => new {
@@ -3164,7 +3166,7 @@ namespace TaamerProject.API.Controllers
             }
             else if (Param == 3)
             {
-                var Suppliers = _acc_SuppliersService.GetAllSuppliers("").Result.Select(s => new {
+                var Suppliers = _acc_SuppliersService.GetAllSuppliers("", _globalshared.BranchId_G, _globalshared.YearId_G).Result.Select(s => new {
                     Id = s.SupplierId,
                     Name = s.NameAr
                 });
@@ -3214,6 +3216,8 @@ namespace TaamerProject.API.Controllers
         [HttpGet("FillFilteringIncomeStateSelect")]
         public IActionResult FillFilteringIncomeStateSelect(int Param)
         {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+
             if (Param > 0 && Param <= 10)
             {
                 var PeriodCounterList = GetPeriodCounterList();
@@ -3229,7 +3233,7 @@ namespace TaamerProject.API.Controllers
             }
             else if (Param == 13)
             {
-                var Suppliers = _acc_SuppliersService.GetAllSuppliers("").Result.Select(s => new {
+                var Suppliers = _acc_SuppliersService.GetAllSuppliers("", _globalshared.BranchId_G, _globalshared.YearId_G).Result.Select(s => new {
                     Id = s.SupplierId,
                     Name = s.NameAr
                 });

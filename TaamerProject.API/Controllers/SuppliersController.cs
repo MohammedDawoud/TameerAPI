@@ -34,7 +34,8 @@ namespace TaamerProject.API.Controllers
 
         public IActionResult GetAllSuppliers(string? SearchText)
         {
-            return Ok(_Acc_SuppliersService.GetAllSuppliers(SearchText??"").Result);
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            return Ok(_Acc_SuppliersService.GetAllSuppliers(SearchText??"", _globalshared.BranchId_G, _globalshared.YearId_G).Result);
         }
         [HttpPost("SaveSupplier")]
 
@@ -56,7 +57,8 @@ namespace TaamerProject.API.Controllers
 
         public IActionResult FillSuppliersSelect(string? SearchText)
         {
-            return Ok(_Acc_SuppliersService.GetAllSuppliers(SearchText??"").Result.Select(s => new {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            return Ok(_Acc_SuppliersService.GetAllSuppliers(SearchText??"", _globalshared.BranchId_G, _globalshared.YearId_G).Result.Select(s => new {
                 Id = s.SupplierId,
                 Name = s.NameAr
             }));
@@ -65,7 +67,8 @@ namespace TaamerProject.API.Controllers
         [HttpGet("FillSuppliersSelect2")]
         public IActionResult FillSuppliersSelect2()
         {
-            return Ok(_Acc_SuppliersService.GetAllSuppliers("").Result.Select(s => new {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            return Ok(_Acc_SuppliersService.GetAllSuppliers("", _globalshared.BranchId_G, _globalshared.YearId_G).Result.Select(s => new {
                 Id = s.SupplierId,
                 Name = s.NameAr
             }));

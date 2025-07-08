@@ -15,7 +15,6 @@ namespace TaamerProject.Models
         public string? TaxNo { get; set; }
         public string? PhoneNo { get; set; }
         public int? AccountId { get; set; }
-
         public string? CompAddress { get; set; }
         public string? PostalCodeFinal { get; set; }
         public string? ExternalPhone { get; set; }
@@ -26,7 +25,7 @@ namespace TaamerProject.Models
         public int? CityId { get; set; }
 
         public virtual City? city { get; set; }
-
+        public virtual Accounts? account { get; set; }
 
     }
 }

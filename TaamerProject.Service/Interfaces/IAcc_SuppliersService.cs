@@ -11,7 +11,7 @@ namespace TaamerProject.Service.Interfaces
     public interface IAcc_SuppliersService
     {
 
-        Task<IEnumerable<Acc_SuppliersVM>> GetAllSuppliers(string SearchText);
+        Task<IEnumerable<Acc_SuppliersVM>> GetAllSuppliers(string SearchText, int BranchId, int? yearid);
         IEnumerable<Acc_SuppliersVM> GetAllSuppliersAllNoti(string SearchText, string lang, int BranchId, int? yearid);
 
         Task<Acc_SuppliersVM> GetSupplierByID(int SupplierId);
