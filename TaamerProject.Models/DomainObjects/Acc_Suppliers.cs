@@ -23,9 +23,6 @@ namespace TaamerProject.Models
         public string? StreetName { get; set; }
         public string? BuildingNumber { get; set; }
         public int? CityId { get; set; }
-
         public virtual City? city { get; set; }
-        public virtual Accounts? account { get; set; }
-
     }
 }

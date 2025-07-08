@@ -383,7 +383,6 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 entity.Property(e => e.BuildingNumber).HasColumnName("BuildingNumber");
                 entity.Property(e => e.CityId).HasColumnName("CityId");
                 modelBuilder.Entity<Acc_Suppliers>().HasOne(s => s.city).WithMany().HasForeignKey(e => e.CityId);
-                modelBuilder.Entity<Acc_Suppliers>().HasOne(s => s.account).WithMany().HasForeignKey(e => e.AccountId);
             });
 
             //--------------------------------END--------------------------------------------------

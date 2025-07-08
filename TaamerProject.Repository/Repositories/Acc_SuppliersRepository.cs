@@ -45,8 +45,8 @@ namespace TaamerProject.Repository.Repositories
                     BuildingNumber = x.BuildingNumber??"",
                     CityId = x.CityId??0,
                     CityName = x.city != null ? x.city.NameAr : "",
-                    TotalCredit = x.account!=null? x.account.Transactions != null ? x.account.Transactions!.Where(c => c.IsDeleted == false && c.YearId == YearId && c.IsPost == true && c.BranchId == BranchId && c.Type != 12 ).Sum(s => s.Credit) ?? 0 : 0 : 0,
-                    TotalDepit = x.account != null ? x.account.Transactions != null ? x.account.Transactions!.Where(c => c.IsDeleted == false && c.YearId == YearId && c.IsPost == true && c.BranchId == BranchId && c.Type != 12).Sum(s => s.Depit) ?? 0 : 0 : 0,
+                    TotalBalance = (_TaamerProContext.Transactions.Where(c => c.IsDeleted == false && c.AccountId==x.AccountId && c.YearId == YearId && c.IsPost == true && c.BranchId == BranchId && c.Type != 12).Sum(s => s.Depit)) - (_TaamerProContext.Transactions.Where(c => c.IsDeleted == false && c.AccountId == x.AccountId && c.YearId == YearId && c.IsPost == true && c.BranchId == BranchId && c.Type != 12).Sum(s => s.Credit)),
+
                 }).ToList();
                 return Suppliers;
             }
@@ -70,8 +70,8 @@ namespace TaamerProject.Repository.Repositories
                     BuildingNumber = x.BuildingNumber ?? "",
                     CityId = x.CityId ?? 0,
                     CityName = x.city != null ? x.city.NameAr : "",
-                    TotalCredit = x.account != null ? x.account.Transactions != null ? x.account.Transactions!.Where(c => c.IsDeleted == false && c.YearId == YearId && c.IsPost == true && c.BranchId == BranchId && c.Type != 12).Sum(s => s.Credit) ?? 0 : 0 : 0,
-                    TotalDepit = x.account != null ? x.account.Transactions != null ? x.account.Transactions!.Where(c => c.IsDeleted == false && c.YearId == YearId && c.IsPost == true && c.BranchId == BranchId && c.Type != 12).Sum(s => s.Depit) ?? 0 : 0 : 0,
+                    TotalBalance = (_TaamerProContext.Transactions.Where(c => c.IsDeleted == false && c.AccountId == x.AccountId && c.YearId == YearId && c.IsPost == true && c.BranchId == BranchId && c.Type != 12).Sum(s => s.Depit)) - (_TaamerProContext.Transactions.Where(c => c.IsDeleted == false && c.AccountId == x.AccountId && c.YearId == YearId && c.IsPost == true && c.BranchId == BranchId && c.Type != 12).Sum(s => s.Credit)),
+
                 }).ToList();
                 return Suppliers;
             }
