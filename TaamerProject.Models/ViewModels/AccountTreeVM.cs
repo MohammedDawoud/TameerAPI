@@ -122,6 +122,9 @@ namespace TaamerProject.Models
         public string? OpDipet { get; set; }
 
         public string?  OpCredit { get; set; }
+        public string? AhDipet { get; set; }
+
+        public string? AhCredit { get; set; }
 
         public string? CreditTotal { get; set; }
 
@@ -135,12 +138,16 @@ namespace TaamerProject.Models
         public string? TotalDebitEnd { get; set; }
 
         public string? TotalCriditEnd { get; set; }
+        public string? TotalFinal { get; set; }
 
 
         public string? AccID { get; set; }
-        public string? ParentID { get; set; }
+        //public string? ParentID { get; set; }
         public string? Level { get; set; }
         public int? LineNumber { get; set; }
+        public int? Classification { get; set; }
+        public int? AccountIdAhlak { get; set; }
+        public int? ParentId { get; set; }
 
 
     }

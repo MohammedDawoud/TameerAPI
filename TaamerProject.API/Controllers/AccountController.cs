@@ -1003,7 +1003,6 @@ namespace TaamerProject.API.Controllers
             return Ok(result );
         }
         [HttpPost("GetTrailBalanceDGV")]
-
         public IActionResult GetTrailBalanceDGV([FromForm]string? FromDate, [FromForm] string? ToDate, [FromForm] string? CostCenter, [FromForm] bool? isCheckedYear, [FromForm] int? ZeroCheck, [FromForm] string? AccountCode, [FromForm] string LVL, [FromForm] int FilteringType, [FromForm] string? FilteringTypeStr, [FromForm] string AccountIds)
         {                     
             int costID = Convert.ToInt32(CostCenter??"0");
@@ -1013,6 +1012,19 @@ namespace TaamerProject.API.Controllers
 
             var result = _accountsService.GetTrailBalanceDGVNew(FromDate??"", ToDate??"", costID, _globalshared.BranchId_G,_globalshared.Lang_G, Con, YearIDCheck, ZeroCheck??0, AccountCode ?? "", LVL, FilteringType, FilteringTypeStr??"", AccountIds);
             return Ok(result );
+        }
+        [HttpPost("GetGeneralBudgetAMRDGVNew")]
+        public IActionResult GetGeneralBudgetAMRDGVNew([FromForm] string? FromDate, [FromForm] string? ToDate, [FromForm] string? CostCenter, [FromForm] bool? isCheckedYear, [FromForm] bool? isCheckedBranch, [FromForm] int? ZeroCheck, [FromForm] string? AccountCode, [FromForm] string LVL, [FromForm] int FilteringType, [FromForm] string? FilteringTypeStr, [FromForm] string AccountIds)
+        {
+            int costID = Convert.ToInt32(CostCenter ?? "0");
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            int YearIDCheck = _globalshared.YearId_G;
+            if (isCheckedYear == true) YearIDCheck = 0;
+            int BranchIDCheck = _globalshared.BranchId_G;
+            if (isCheckedBranch == false) BranchIDCheck = 0;
+
+            var result = _accountsService.GetGeneralBudgetAMRDGVNew(FromDate ?? "", ToDate ?? "", costID, BranchIDCheck, _globalshared.Lang_G, Con, YearIDCheck, ZeroCheck ?? 0, AccountCode ?? "", LVL, FilteringType, FilteringTypeStr ?? "", AccountIds);
+            return Ok(result);
         }
         [HttpGet("GetTrailBalanceDGV2")]
 

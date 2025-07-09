@@ -2373,6 +2373,325 @@ namespace TaamerProject.Repository.Repositories
 
         }
 
+        public async Task<IEnumerable<TrainBalanceVM>> GetGeneralBudgetAMRDGVNew(string FromDate, string ToDate, int CCID, int YearId, int BranchId, string lang, string Con, int ZeroCheck, string AccountCode, string LVL, int FilteringType, string FilteringTypeStr, string AccountIds)
+        {
+            try
+            {
+                List<TrainBalanceVM> lmd = new List<TrainBalanceVM>();
+                using (SqlConnection con = new SqlConnection(Con))
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.CommandText = "rptGetGeneralBudgetWithLevel";
+                        command.Connection = con;
+                        string from = null;
+                        string to = null;
+                        if (FromDate == "")
+                        {
+                            from = null;
+                            command.Parameters.Add(new SqlParameter("@From", DBNull.Value));
+
+                        }
+                        else
+                        {
+                            from = FromDate;
+                            command.Parameters.Add(new SqlParameter("@From", from));
+                        }
+                        if (ToDate == "")
+                        {
+                            to = null;
+                            command.Parameters.Add(new SqlParameter("@to", DBNull.Value));
+
+                        }
+                        else
+                        {
+                            to = ToDate;
+                            command.Parameters.Add(new SqlParameter("@to", to));
+                        }
+
+
+                        command.Parameters.Add(new SqlParameter("@CCID", CCID));
+
+                        //dawoud
+
+                        if (LVL == "")
+                        {
+                            LVL = null;
+                            command.Parameters.Add(new SqlParameter("@lvl", DBNull.Value));
+                        }
+
+                        else if (int.Parse(LVL) < 2)
+                        {
+                            command.Parameters.Add(new SqlParameter("@lvl", int.Parse(LVL)));
+                        }
+
+                        else
+                        {
+                            command.Parameters.Add(new SqlParameter("@lvl", int.Parse(LVL)));
+                        }
+
+                        command.Parameters.Add(new SqlParameter("@YearId", YearId));
+                        command.Parameters.Add(new SqlParameter("@BranchId", BranchId));
+
+                        command.Parameters.Add(new SqlParameter("@dir", lang));
+
+                        if (FilteringTypeStr == "")
+                        {
+                            FilteringTypeStr = "0";
+                        }
+                        var valfiltertype = 0;
+                        if (FilteringType == 1 || FilteringType == 2 || FilteringType == 3 || FilteringType == 4 || FilteringType == 5 || FilteringType == 6)
+                        {
+                            valfiltertype = FilteringType;
+                            command.Parameters.Add(new SqlParameter("@FillterData", FilteringTypeStr));
+                        }
+                        else
+                        {
+                            valfiltertype = 0;
+                            command.Parameters.Add(new SqlParameter("@FillterData", "0"));
+                        }
+                        command.Parameters.Add(new SqlParameter("@FillterType", valfiltertype));
+
+                        if (AccountIds != "")
+                        {
+                            command.Parameters.Add(new SqlParameter("@AccountIDS", AccountIds));
+                        }
+                        else
+                        {
+                            command.Parameters.Add(new SqlParameter("@AccountIDS", "0"));
+                        }
+
+                        con.Open();
+
+                        SqlDataAdapter a = new SqlDataAdapter(command);
+                        DataSet ds = new DataSet();
+                        a.Fill(ds);
+                        DataTable dt = new DataTable();
+                        dt = ds.Tables[0];
+                        double NetCreditOPSum = 0;
+                        double NetDebitOPSum = 0;
+                        int counter = 0;
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            counter++;
+                            double EndTotalDebit, EndTotalCredit;
+                            double AhlakDebit, AhlakCredit, PeriodDebit, PeriodCredit, DebitOP, CreditOP;
+                            try
+                            {
+                                AhlakDebit = double.Parse(dr[6].ToString());
+                            }
+                            catch (Exception)
+                            {
+                                AhlakDebit = 0;
+                            }
+                            try
+                            {
+                                AhlakCredit = double.Parse(dr[7].ToString());
+                            }
+                            catch (Exception)
+                            {
+                                AhlakCredit = 0;
+                            }
+
+                            try
+                            {
+                                PeriodDebit = double.Parse(dr[8].ToString());
+                            }
+                            catch (Exception)
+                            {
+                                PeriodDebit = 0;
+                            }
+                            try
+                            {
+                                PeriodCredit = double.Parse(dr[9].ToString());
+                            }
+                            catch (Exception)
+                            {
+                                PeriodCredit = 0;
+                            }
+
+                            try
+                            {
+                                DebitOP = double.Parse(dr[4].ToString());
+                            }
+                            catch (Exception)
+                            {
+                                DebitOP = 0;
+                            }
+
+                            try
+                            {
+                                CreditOP = double.Parse(dr[5].ToString());
+                            }
+                            catch (Exception)
+                            {
+                                CreditOP = 0;
+                            }
+
+
+                            try
+                            {
+                                EndTotalDebit = double.Parse(dr[12].ToString());
+                            }
+                            catch (Exception)
+                            {
+                                EndTotalDebit = 0;
+                            }
+                            try
+                            {
+                                EndTotalCredit = double.Parse(dr[13].ToString());
+                            }
+                            catch (Exception)
+                            {
+                                EndTotalCredit = 0;
+                            }
+
+
+                            var checkValueDEPIT = DebitOP + PeriodDebit;
+                            var checkValueCREDIT = CreditOP + PeriodCredit;
+
+
+                            double NetCredit;
+                            double NetDepit;
+                            double NetCreditOP;
+                            double NetDebitOP;
+                            double TotalFinalSum;
+                            if (Convert.ToInt32((dr[0]).ToString()) != 0)
+                            {
+                                if (DebitOP >= CreditOP)
+                                {
+                                    NetDebitOP = Convert.ToDouble(Convert.ToDecimal(DebitOP) - Convert.ToDecimal(CreditOP));
+                                    NetCreditOP = 0;
+                                    if ((dr[14]).ToString() == "1")
+                                    {
+                                        NetDebitOPSum = Convert.ToDouble(Convert.ToDecimal(NetDebitOPSum) + Convert.ToDecimal(NetDebitOP));
+                                        NetCreditOPSum = Convert.ToDouble(Convert.ToDecimal(NetCreditOPSum) + Convert.ToDecimal(NetCreditOP));
+                                    }
+
+                                }
+                                else
+                                {
+                                    NetCreditOP = Convert.ToDouble(Convert.ToDecimal(CreditOP) - Convert.ToDecimal(DebitOP));
+                                    NetDebitOP = 0;
+                                    if ((dr[14]).ToString() == "1")
+                                    {
+                                        NetDebitOPSum = Convert.ToDouble(Convert.ToDecimal(NetDebitOPSum) + Convert.ToDecimal(NetDebitOP));
+                                        NetCreditOPSum = Convert.ToDouble(Convert.ToDecimal(NetCreditOPSum) + Convert.ToDecimal(NetCreditOP));
+                                    }
+
+                                }
+                            }
+                            else
+                            {
+                                //var NetDebitOPSum_2 = NetDebitOPSum;
+                                //var NetCreditOPSum_2 = NetCreditOPSum;
+
+                                //NetDebitOP = Convert.ToDouble(Convert.ToDecimal(DebitOP));
+                                //NetCreditOP = Convert.ToDouble(Convert.ToDecimal(CreditOP));
+
+                                NetDebitOP = Convert.ToDouble(Convert.ToDecimal(NetDebitOPSum));
+                                NetCreditOP = Convert.ToDouble(Convert.ToDecimal(NetCreditOPSum));
+                            }
+
+
+
+                            try
+                            {
+                                NetDepit = double.Parse(dr[10].ToString());
+                            }
+                            catch (Exception)
+                            {
+                                NetDepit = 0;
+                            }
+                            try
+                            {
+                                NetCredit = double.Parse(dr[11].ToString());
+                            }
+                            catch (Exception)
+                            {
+                                NetCredit = 0;
+                            }
+
+
+                            //TotalFinalSum = NetDepit - NetCredit - AhlakDebit - AhlakCredit;
+                           // TotalFinalSum = NetDepit - NetCredit;
+                            TotalFinalSum = EndTotalDebit - EndTotalCredit;
+
+                            
+                            if (ZeroCheck == 1)
+                            {
+                                if (NetCredit == 0 && NetDepit == 0 && NetCreditOP == 0 && NetDebitOP == 0 /*&& EndTotalDebit == 0 && EndTotalCredit == 0*/)
+                                {
+
+                                }
+                                else
+                                {
+                                    lmd.Add(new TrainBalanceVM
+                                    {
+                                        AccountId = Convert.ToInt32((dr[0]).ToString()),
+                                        AccCode = (dr[1]).ToString(),
+                                        Acc_NameAr = (dr[3]).ToString(),
+                                        CreditTotal = PeriodCredit.ToString(),
+                                        DebitTotal = PeriodDebit.ToString(),
+                                        OpCredit = NetCreditOP.ToString(),
+                                        OpDipet = NetDebitOP.ToString(),
+                                        AhCredit = AhlakCredit.ToString(),
+                                        AhDipet = AhlakDebit.ToString(),
+                                        TotalDebitEnd = EndTotalDebit.ToString(),
+                                        TotalCriditEnd = EndTotalCredit.ToString(),
+                                        Level = (dr[14]).ToString(),
+                                        Classification = Convert.ToInt32(dr[15].ToString()),
+                                        AccountIdAhlak = Convert.ToInt32(dr[16].ToString()),
+                                        ParentId = Convert.ToInt32(dr[17].ToString()),
+                                        NetCreditTotal = NetCredit.ToString(),
+                                        NetDebitTotal = NetDepit.ToString(),
+                                        LineNumber = counter,
+                                        TotalFinal= TotalFinalSum.ToString(),
+                                    });
+
+                                }
+                            }
+                            else
+                            {
+                                lmd.Add(new TrainBalanceVM
+                                {
+                                    AccountId = Convert.ToInt32(dr[0].ToString()),
+                                    Acc_NameAr = (dr[3]).ToString(),
+                                    AccCode = (dr[1]).ToString(),
+                                    CreditTotal = PeriodCredit.ToString(),
+                                    DebitTotal = PeriodDebit.ToString(),
+                                    OpCredit = NetCreditOP.ToString(),
+                                    OpDipet = NetDebitOP.ToString(),
+                                    AhCredit = AhlakCredit.ToString(),
+                                    AhDipet = AhlakDebit.ToString(),
+                                    TotalDebitEnd = EndTotalDebit.ToString(),
+                                    TotalCriditEnd = EndTotalCredit.ToString(),
+                                    Level = (dr[14]).ToString(),
+                                    Classification = Convert.ToInt32(dr[15].ToString()),
+                                    AccountIdAhlak = Convert.ToInt32(dr[16].ToString()),
+                                    ParentId = Convert.ToInt32(dr[17].ToString()),
+                                    NetCreditTotal = NetCredit.ToString(),
+                                    NetDebitTotal = NetDepit.ToString(),
+                                    LineNumber = counter,
+                                    TotalFinal = TotalFinalSum.ToString(),
+                                });
+
+                            }
+                            //}
+                        }
+                    }
+                }
+                return lmd;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                List<TrainBalanceVM> lmd = new List<TrainBalanceVM>();
+                return lmd;
+            }
+
+        }
 
         public async Task<IEnumerable<TrainBalanceVM>> GetTrailBalanceDGVNew2(string FromDate, string ToDate, int CCID, int YearId, int BranchId, string lang, string Con, int ZeroCheck, string AccountCode, string LVL, int FilteringType,string FilteringTypeStr,string AccountIds)
         {

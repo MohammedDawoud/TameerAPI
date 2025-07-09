@@ -385,7 +385,6 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 entity.Property(e => e.BuildingNumber).HasColumnName("BuildingNumber");
                 entity.Property(e => e.CityId).HasColumnName("CityId");
                 modelBuilder.Entity<Acc_Suppliers>().HasOne(s => s.city).WithMany().HasForeignKey(e => e.CityId);
-
             });
 
             //--------------------------------END--------------------------------------------------
@@ -4077,6 +4076,7 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 modelBuilder.Entity<Transactions>().HasOne(s => s.Customer).WithMany(s => s.Transactions).HasForeignKey(e => e.CustomerId);
                 modelBuilder.Entity<Transactions>().HasOne(s => s.Contracts).WithMany(s => s.TransactionDetails).HasForeignKey(e => e.ContractId);
                 modelBuilder.Entity<Transactions>().HasOne(s => s.DiscountReward).WithMany(s => s.TransactionDetails).HasForeignKey(e => e.DiscountRewardId);
+
             });
 
             //--------------------------------END--------------------------------------------------

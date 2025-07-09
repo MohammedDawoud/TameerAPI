@@ -320,5 +320,7 @@ namespace TaamerProject.Models
         public string? ProjectExpireDateF { get; set; }
         public List<ProjectWorkersVM>? ProjectWorkers { get; set; }
         public List<ProjectPhasesTasksVM>? ProjectPhasesTasks { get; set; }
+        public List<int>? BranchesList { get; set; }
+
     }
 }

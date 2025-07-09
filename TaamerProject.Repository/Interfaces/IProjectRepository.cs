@@ -38,7 +38,7 @@ namespace TaamerProject.Repository.Interfaces
         Task<IEnumerable<ProjectVM>> GetUserProjectsReport(int UserId, int BranchId, string DateNow);
         Task<IEnumerable<ProjectVM>> GetUserProjectsReportW( int BranchId, string DateNow);
 
-        Task<IEnumerable<ProjectVM>> GetUserProjectsReport(int? UserId, int? CustomerId, int BranchId, string DateFrom, string DateTo);
+        Task<IEnumerable<ProjectVM>> GetUserProjectsReport(int? UserId, int? CustomerId, int BranchId, string DateFrom, string DateTo, List<int> BranchesList);
         Task<IEnumerable<ProjectVM>> GetUserProjectsReport(int? UserId, int? CustomerId, int BranchId, string DateFrom, string DateTo, string? SearchText);
 
         Task<decimal?> GetProjectCountByStatus(int? UserId, int BranchId);

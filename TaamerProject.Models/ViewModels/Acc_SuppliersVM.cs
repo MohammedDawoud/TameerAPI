@@ -23,6 +23,10 @@ namespace TaamerProject.Models
         public string? BuildingNumber { get; set; }
         public int? CityId { get; set; }
         public string? CityName { get; set; }
+        public decimal? TotalCredit { get; set; }
+        public decimal? TotalDepit { get; set; }
+        public decimal? TotalBalance { get; set; }
+
 
     }
 }

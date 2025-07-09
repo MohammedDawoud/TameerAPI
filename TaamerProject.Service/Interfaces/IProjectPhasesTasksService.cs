@@ -22,7 +22,7 @@ namespace TaamerProject.Service.Interfaces
         // IEnumerable<ProjectPhasesTasksVM> GetAllProjectPhasesTasksS(int? UserId, int BranchId, string Lang, string DateFrom, string DateTo);
 
 
-        Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksS(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo);
+        Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksS(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo, List<int> BranchesList);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksS(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo, string? Searchtext);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksW(int BranchId, string lang);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAllTasksPhasesByProjectId(int ProjectId, int BranchId);
@@ -174,7 +174,7 @@ namespace TaamerProject.Service.Interfaces
       Task<IEnumerable<ProjectPhasesTasksVM>>GetProjectsWithoutProSettingVM();
         GeneralMessage RestartTask(int id, string RestartTaskReason, int UserId, int BranchId);
       Task<IEnumerable<ProjectPhasesTasksVM>>GetAllProjectPhasesTasksU2(int UserId, int BranchId, string lang, string DateFrom, string DateTo);
-      Task<IEnumerable<ProjectPhasesTasksVM>>GetAllProjectPhasesTasksbystatus(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo);
+      Task<IEnumerable<ProjectPhasesTasksVM>>GetAllProjectPhasesTasksbystatus(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo, List<int> BranchesList);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksbystatus(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo, string? Searchtext);
         RptAllEmpPerformance getempdata(ProjectPhasesTasksVM Search, string Lang, string Con);
         List<RptAllEmpPerformance> getempdataNew(ProjectPhasesTasksVM Search, string Lang, string Con, int BranchId);
@@ -182,9 +182,9 @@ namespace TaamerProject.Service.Interfaces
 
 
         // List<RptAllEmpPerformance> getempdata(ProjectPhasesTasksVM Search, string Lang, string Con);
-        Task<IEnumerable<ProjectPhasesTasksVM>>GetLateTasksByUserIdrptsearch(int? UserId, int? status, string Lang, string DateFrom, string DateTo, int BranchId);
+        Task<IEnumerable<ProjectPhasesTasksVM>>GetLateTasksByUserIdrptsearch(int? UserId, int? status, string Lang, string DateFrom, string DateTo, int BranchId, List<int> BranchesList);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetLateTasksByUserIdrptsearch(int? UserId, int? status, string Lang, string DateFrom, string DateTo, int BranchId, string? SearchText);
-      Task<IEnumerable<ProjectPhasesTasksVM>>GetAllLateProjectPhasesTasksbyUserId2(string EndDateP, int BranchId, int? UserId, string Lang);
+      Task<IEnumerable<ProjectPhasesTasksVM>>GetAllLateProjectPhasesTasksbyUserId2(string EndDateP, int BranchId, int? UserId, string Lang, List<int> BranchesList);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAllLateProjectPhasesTasksbyUserId2(string EndDateP, int BranchId, int? UserId, string Lang, string? SearchText);
         GeneralMessage UpdateprojectphaseRequirment(int projectphaseid, int status, int UserId, int BranchId);
 
@@ -200,7 +200,7 @@ namespace TaamerProject.Service.Interfaces
         Task<IEnumerable<ProjectPhasesTasksVM>> GetLateTasksByUserIdHomefilterd(int? UserId, string Lang, int? ProjectId, int? CustomerId, string? Searchtext);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetInProgressProjectPhasesTasks_Branches(int BranchId, string Lang, int? CustomerId);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetInProgressProjectPhasesTasks_Branches(int BranchId, string Lang, int? CustomerId, string? SearchText);
-        Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasks_Costs(int? UserId, int BranchId, string Lang, string DateFrom, string DateTo);
+        Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasks_Costs(int? UserId, int BranchId, string Lang, string DateFrom, string DateTo, List<int> BranchesList);
         Task<IEnumerable<Pro_TaskOperationsVM>> GetTaskOperationsByTaskId(int PhasesTaskId);
         GeneralMessage SaveTaskOperations(Pro_TaskOperations TaskOperations, int UserId, int BranchId);
         Task<string> GenerateNextTaskNumber(int BranchId,int? ProjectId);

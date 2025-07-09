@@ -1802,9 +1802,9 @@ namespace TaamerProject.Service.Services
             var projects = await _ProjectRepository.GetUserProjectsReport(UserId, BranchId, DateNow);
             return projects;
         }
-        public async Task<IEnumerable<ProjectVM>> GetUserProjectsReport(int? UserId, int? CustomerId, int BranchId, string DateFrom, string DateTo)
+        public async Task<IEnumerable<ProjectVM>> GetUserProjectsReport(int? UserId, int? CustomerId, int BranchId, string DateFrom, string DateTo, List<int> BranchesList)
         {
-            var projects = await _ProjectRepository.GetUserProjectsReport(UserId, CustomerId, BranchId, DateFrom, DateTo);
+            var projects = await _ProjectRepository.GetUserProjectsReport(UserId, CustomerId, BranchId, DateFrom, DateTo,BranchesList);
             return projects;
         }
 

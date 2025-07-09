@@ -9,7 +9,7 @@ namespace TaamerProject.Repository.Interfaces
 {
     public interface IAcc_SuppliersRepository : IRepository<Acc_Suppliers>
     {
-        Task<IEnumerable<Acc_SuppliersVM>> GetAllSuppliers(string SearchText);
+        Task<IEnumerable<Acc_SuppliersVM>> GetAllSuppliers(string SearchText, int BranchId, int? yearid);
         Task<Acc_SuppliersVM> GetSupplierByID(int SupplierId);
 
 

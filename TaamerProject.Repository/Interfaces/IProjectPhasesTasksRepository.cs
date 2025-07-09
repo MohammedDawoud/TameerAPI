@@ -21,7 +21,7 @@ namespace TaamerProject.Repository.Interfaces
 
         //IEnumerable<ProjectPhasesTasksVM>  GetAllProjectPhasesTasksS(int? UserId, int BranchId, string Lang, string DateFrom, string DateTo);
 
-        Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksS(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo);
+        Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksS(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo, List<int> BranchesList);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksS(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo, string? SearchText);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksW(int BranchId, string Lang);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAllTasksPhasesByProjectId(int ProjectId, int BranchId);
@@ -109,17 +109,17 @@ namespace TaamerProject.Repository.Interfaces
         Task<IEnumerable<rptGetDelayedWorkOrdersByExecEmpVM>> GetEmpDelayedWOsDGV(int UserID, string Con);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksU2(int UserId, int BranchId, string Lang, string DateFrom, string DateTo);
 
-        Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksbystatus(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo);
+        Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksbystatus(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo, List<int> BranchesList);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksbystatus(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo, string? SearchText);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksReport(int? UserId, int BranchId, string Lang, string DateFrom, string DateTo);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAlmostLateTasksByUserId(int userid, string startdate, string enddate,int BranchId, string Lang);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetLateTasksByUserIdreport(string startdate, string EndDateP, int? UserId, int BranchId, string Lang);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetNewTasksByUserIdReport(string startdate, string EndDateP, int? UserId, int BranchId, string Lang, bool? AllStatusExptEnd = null);
-        Task<IEnumerable<ProjectPhasesTasksVM>> GetLateTasksByUserIdrptsearch(int? UserId, int? status, string DateFrom, string DateTo, string Lang, int BranchId);
+        Task<IEnumerable<ProjectPhasesTasksVM>> GetLateTasksByUserIdrptsearch(int? UserId, int? status, string DateFrom, string DateTo, string Lang, int BranchId, List<int> BranchesList);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetLateTasksByUserIdrptsearch(int? UserId, int? status, string DateFrom, string DateTo, string Lang, int BranchId, string? SearchText);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetTasksINprogressByUserIdUser(int? UserId, string lang, int Status, int BranchId, string startdate, string enddate);
 
-        Task<IEnumerable<ProjectPhasesTasksVM>> GetAllLateProjectPhasesTasksbyUserId2(string EndDateP, int BranchId, int? UserId, string Lang);
+        Task<IEnumerable<ProjectPhasesTasksVM>> GetAllLateProjectPhasesTasksbyUserId2(string EndDateP, int BranchId, int? UserId, string Lang, List<int> BranchesList);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAllLateProjectPhasesTasksbyUserId2(string EndDateP, int BranchId, int? UserId, string Lang, string? SearchText);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetAllNewProjectPhasesTasksbyprojectid(string EndDateP, int BranchId, int projectid);
 
@@ -134,7 +134,7 @@ namespace TaamerProject.Repository.Interfaces
         Task<IEnumerable<ProjectPhasesTasksVM>> GetLateTasksByUserIdHomefilterd(int? UserId, string Lang, int? ProjectId, int? CustomerId, string? Searchtext);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetInProgressProjectPhasesTasks_Branchesfilterd(int BranchId, string Lang, int? CustomerId);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetInProgressProjectPhasesTasks_Branchesfilterd(int BranchId, string Lang, int? CustomerId, string? SearchText);
-        Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasks_Costs(int? UserId, int BranchId, string Lang, string DateFrom, string DateTo);
+        Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasks_Costs(int? UserId, int BranchId, string Lang, string DateFrom, string DateTo, List<int> BranchesList);
         Task<int> GenerateNextTaskNumber(int BranchId, string codePrefix,int? ProjectId);
         Task<IEnumerable<Pro_TaskOperationsVM>> GetTaskOperationsByTaskId(int PhasesTaskId);
 

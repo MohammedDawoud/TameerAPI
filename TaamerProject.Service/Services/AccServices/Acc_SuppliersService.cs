@@ -48,15 +48,15 @@ namespace TaamerProject.Service.Services
         }
 
 
-        public async Task<IEnumerable<Acc_SuppliersVM>> GetAllSuppliers(string SearchText)
+        public async Task<IEnumerable<Acc_SuppliersVM>> GetAllSuppliers(string SearchText, int BranchId, int? yearid)
         {
-            var Suppliers =await _Acc_SuppliersRepository.GetAllSuppliers(SearchText);
+            var Suppliers =await _Acc_SuppliersRepository.GetAllSuppliers(SearchText, BranchId, yearid);
             return Suppliers;
         }
         public IEnumerable<Acc_SuppliersVM> GetAllSuppliersAllNoti(string SearchText, string lang, int BranchId, int? yearid)
         {
             var AllSuppliersInvoices = _TaamerProContext.Invoices.Where(s => s.IsDeleted == false && s.YearId == yearid && (s.Type == 32 || s.Type == 33)).Where(w => !(w.SupplierId == null || w.SupplierId.Equals(""))).Select(s => s.SupplierId);
-            var Supp = _Acc_SuppliersRepository.GetAllSuppliers(SearchText).Result.Where(w => AllSuppliersInvoices.Contains(w.SupplierId));
+            var Supp = _Acc_SuppliersRepository.GetAllSuppliers(SearchText, BranchId, yearid).Result.Where(w => AllSuppliersInvoices.Contains(w.SupplierId));
             return Supp;
         }
         public async Task<Acc_SuppliersVM> GetSupplierByID(int SupplierId)

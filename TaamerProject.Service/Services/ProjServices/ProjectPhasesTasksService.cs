@@ -144,10 +144,10 @@ namespace TaamerProject.Service.Services
             var Tasks = await _ProjectPhasesTasksRepository.GetAllProjectPhasesTasksUPage(UserId, BranchId, lang);
             return Tasks;
         }
-        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksS(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo)
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksS(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo, List<int> BranchesList)
         {
 
-            var Tasks = await _ProjectPhasesTasksRepository.GetAllProjectPhasesTasksS(UserId, BranchId, status, Lang, DateFrom, DateTo);
+            var Tasks = await _ProjectPhasesTasksRepository.GetAllProjectPhasesTasksS(UserId, BranchId, status, Lang, DateFrom, DateTo,BranchesList);
             return Tasks;
         }
 
@@ -160,9 +160,9 @@ namespace TaamerProject.Service.Services
         }
 
 
-        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetLateTasksByUserIdrptsearch(int? UserId, int? status, string Lang, string DateFrom, string DateTo, int BranchId)
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetLateTasksByUserIdrptsearch(int? UserId, int? status, string Lang, string DateFrom, string DateTo, int BranchId, List<int> BranchesList)
         {
-            var Tasks = await _ProjectPhasesTasksRepository.GetLateTasksByUserIdrptsearch(UserId, status, Lang, DateFrom, DateTo, BranchId);
+            var Tasks = await _ProjectPhasesTasksRepository.GetLateTasksByUserIdrptsearch(UserId, status, Lang, DateFrom, DateTo, BranchId,BranchesList);
 
             return Tasks;
         }
@@ -174,9 +174,9 @@ namespace TaamerProject.Service.Services
             return Tasks;
         }
 
-        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksbystatus(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo)
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksbystatus(int? UserId, int BranchId, int? status, string Lang, string DateFrom, string DateTo, List<int> BranchesList)
         {
-            var Tasks = await _ProjectPhasesTasksRepository.GetAllProjectPhasesTasksbystatus(UserId, BranchId, status, Lang, DateFrom, DateTo);
+            var Tasks = await _ProjectPhasesTasksRepository.GetAllProjectPhasesTasksbystatus(UserId, BranchId, status, Lang, DateFrom, DateTo,BranchesList);
             return Tasks;
         }
 
@@ -187,9 +187,9 @@ namespace TaamerProject.Service.Services
         }
 
 
-        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasks_Costs(int? UserId, int BranchId, string Lang, string DateFrom, string DateTo)
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasks_Costs(int? UserId, int BranchId, string Lang, string DateFrom, string DateTo, List<int> BranchesList)
         {
-            var Tasks = await _ProjectPhasesTasksRepository.GetAllProjectPhasesTasks_Costs(UserId, BranchId, Lang, DateFrom, DateTo);
+            var Tasks = await _ProjectPhasesTasksRepository.GetAllProjectPhasesTasks_Costs(UserId, BranchId, Lang, DateFrom, DateTo, BranchesList);
             return Tasks;
         }
         public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllProjectPhasesTasksW(int BranchId, string lang)
@@ -427,9 +427,9 @@ namespace TaamerProject.Service.Services
             return ProjectPhasesTasks;
         }
 
-        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllLateProjectPhasesTasksbyUserId2(string EndDateP, int BranchId, int? UserId, string Lang)
+        public async Task<IEnumerable<ProjectPhasesTasksVM>> GetAllLateProjectPhasesTasksbyUserId2(string EndDateP, int BranchId, int? UserId, string Lang, List<int> BranchesList)
         {
-            var ProjectPhasesTasks = await _ProjectPhasesTasksRepository.GetAllLateProjectPhasesTasksbyUserId2(EndDateP, BranchId, UserId, Lang);
+            var ProjectPhasesTasks = await _ProjectPhasesTasksRepository.GetAllLateProjectPhasesTasksbyUserId2(EndDateP, BranchId, UserId, Lang,BranchesList);
             return ProjectPhasesTasks;
         }
 
@@ -9612,14 +9612,19 @@ namespace TaamerProject.Service.Services
                 }
                 string Today = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 bool? AllStatusExptEnd = null;
-
+                //var AccBranchesList = BranchesList ?? new List<int>();
+                var AccBranchesList = new List<int>();
+                if (AccBranchesList.Count() == 0)
+                {
+                    AccBranchesList.Add(Search.BranchId??0);
+                }
 
                 RptAllEmpPerformance rptAll = new RptAllEmpPerformance();
                 rptAll.Latetask = _ProjectPhasesTasksRepository.GetLateTasksByUserIdreport(Search.StartDate, Search.EndDate, Search.UserId, (int)Search.BranchId, Lang).Result.Count().ToString();
                 rptAll.Inprogress = _ProjectPhasesTasksRepository.GetTasksINprogressByUserIdUser(Search.UserId, Lang, 2, (int)Search.BranchId, Search.StartDate, Search.EndDate).Result.Count().ToString();
                 rptAll.Notstarted = _ProjectPhasesTasksRepository.GetNewTasksByUserIdReport(Search.StartDate, Search.EndDate ?? "", Search.UserId, (int)Search.BranchId, Lang, AllStatusExptEnd).Result.Count().ToString();
                 rptAll.Completed = GetEmpDoneWOsDGV((int)Search.UserId, Con).Result.Count().ToString();
-                rptAll.Retrived = GetAllProjectPhasesTasksbystatus(Search.UserId, (int)Search.BranchId, 7, Lang, Search.StartDate, Search.EndDate).Result.Count().ToString();
+                rptAll.Retrived = GetAllProjectPhasesTasksbystatus(Search.UserId, (int)Search.BranchId, 7, Lang, Search.StartDate, Search.EndDate, AccBranchesList).Result.Count().ToString();
                 rptAll.UserName = _UsersRepository.GetById((int)Search.UserId).FullName;
                 rptAll.CompletePercentage = (_homerservice.GetAllUserStatistics((int)Search.UserId, (int)Search.BranchId, Lang).Result.TotalInProressCount).ToString();
                 rptAll.LatePercentage = (_homerservice.GetAllUserStatistics((int)Search.UserId, (int)Search.BranchId, Lang).Result.TotalLateCount).ToString();

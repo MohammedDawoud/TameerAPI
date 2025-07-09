@@ -24,7 +24,7 @@ namespace TaamerProject.Repository.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Acc_SuppliersVM>> GetAllSuppliers(string SearchText)
+        public async Task<IEnumerable<Acc_SuppliersVM>> GetAllSuppliers(string SearchText, int BranchId, int? YearId)
         {
             if (SearchText == "")
             {
@@ -45,6 +45,8 @@ namespace TaamerProject.Repository.Repositories
                     BuildingNumber = x.BuildingNumber??"",
                     CityId = x.CityId??0,
                     CityName = x.city != null ? x.city.NameAr : "",
+                    TotalBalance = (_TaamerProContext.Transactions.Where(c => c.IsDeleted == false && c.AccountId==x.AccountId && c.YearId == YearId && c.IsPost == true && c.BranchId == BranchId && c.Type != 12).Sum(s => s.Depit)) - (_TaamerProContext.Transactions.Where(c => c.IsDeleted == false && c.AccountId == x.AccountId && c.YearId == YearId && c.IsPost == true && c.BranchId == BranchId && c.Type != 12).Sum(s => s.Credit)),
+
                 }).ToList();
                 return Suppliers;
             }
@@ -68,6 +70,8 @@ namespace TaamerProject.Repository.Repositories
                     BuildingNumber = x.BuildingNumber ?? "",
                     CityId = x.CityId ?? 0,
                     CityName = x.city != null ? x.city.NameAr : "",
+                    TotalBalance = (_TaamerProContext.Transactions.Where(c => c.IsDeleted == false && c.AccountId == x.AccountId && c.YearId == YearId && c.IsPost == true && c.BranchId == BranchId && c.Type != 12).Sum(s => s.Depit)) - (_TaamerProContext.Transactions.Where(c => c.IsDeleted == false && c.AccountId == x.AccountId && c.YearId == YearId && c.IsPost == true && c.BranchId == BranchId && c.Type != 12).Sum(s => s.Credit)),
+
                 }).ToList();
                 return Suppliers;
             }

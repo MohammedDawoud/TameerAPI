@@ -34,12 +34,21 @@ namespace TaamerProject.API.Controllers
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             _organizationsservice = organizationsService;
         }
-        [HttpGet("GetAllDestinations")]
+        [HttpPost("GetAllDestinations")]
 
-        public IActionResult GetAllDestinations()
+        public IActionResult GetAllDestinations(ProjectVM ProjectsSearch)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            var result = _Pro_DestinationsService.GetAllDestinations(_globalshared.BranchId_G);
+            var AllUserBranch = 0;
+            if (ProjectsSearch.BranchId == -1) AllUserBranch = 0;
+            else AllUserBranch = _globalshared.BranchId_G;
+            var AccBranchesList = ProjectsSearch.BranchesList ?? new List<int>();
+            if (AccBranchesList.Count()==0)
+            {
+                AccBranchesList.Add(_globalshared.BranchId_G);
+            }
+            
+            var result = _Pro_DestinationsService.GetAllDestinations(AllUserBranch, AccBranchesList);
             return Ok(result);
         }
         [HttpGet("GetDestinationByProjectId")]
@@ -61,7 +70,13 @@ namespace TaamerProject.API.Controllers
         public IActionResult GetAllDestinationsProjects()
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            var result = _Pro_DestinationsService.GetAllDestinations(_globalshared.BranchId_G);
+            var AccBranchesList = new List<int>();
+            if (AccBranchesList.Count() == 0)
+            {
+                AccBranchesList.Add(_globalshared.BranchId_G);
+            }
+            AccBranchesList.Add(_globalshared.BranchId_G);
+            var result = _Pro_DestinationsService.GetAllDestinations(_globalshared.BranchId_G, AccBranchesList);
             var List=result.Result.Select(s => new
             {
                 ProjectId = s.ProjectId,
@@ -135,7 +150,12 @@ namespace TaamerProject.API.Controllers
         public IActionResult FillDestinationsSelect()
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            var act = _Pro_DestinationsService.GetAllDestinations(_globalshared.BranchId_G).Result.Select(s => new
+            var AccBranchesList = new List<int>();
+            if (AccBranchesList.Count() == 0)
+            {
+                AccBranchesList.Add(_globalshared.BranchId_G);
+            }
+            var act = _Pro_DestinationsService.GetAllDestinations(_globalshared.BranchId_G, AccBranchesList).Result.Select(s => new
             {
                 Id = s.DestinationId,
                 TransactionNumber = s.TransactionNumber,

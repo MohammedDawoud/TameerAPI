@@ -41,9 +41,9 @@ namespace TaamerProject.Service.Services
             _projectService = projectService;
         }
 
-        public Task<IEnumerable<Pro_DestinationsVM>> GetAllDestinations(int BranchId)
+        public Task<IEnumerable<Pro_DestinationsVM>> GetAllDestinations(int BranchId, List<int> BranchesList)
         {
-            var Destinations = _Pro_DestinationsRepository.GetAllDestinations(BranchId);
+            var Destinations = _Pro_DestinationsRepository.GetAllDestinations(BranchId, BranchesList);
             return Destinations;
         }
         public Task<Pro_DestinationsVM> GetDestinationByProjectId(int projectId)
@@ -275,6 +275,9 @@ namespace TaamerProject.Service.Services
                         Proj.ProjectExpireDate = AccProDate;
                         Proj.FirstProjectExpireDate = AccProDate;
                         Proj.DestinationsUpload = null;
+                        var ProjectDays = Math.Ceiling((Convert.ToDateTime(Proj.ProjectExpireDate) - Convert.ToDateTime(Proj.ProjectDate)).TotalDays)+1;
+                        Proj.NoOfDays = Convert.ToInt32(ProjectDays);
+
                     }
                     _TaamerProContext.SaveChanges();
                     
@@ -456,7 +459,7 @@ namespace TaamerProject.Service.Services
                 var title = "لقد طلبت رفع ملف لجهة خارجية";
                 var body = "";
                 title = "";
-                body = PopulateBody(textBody, _IUsersRepository.GetUserById(ReceivedUser, "rtl").Result.FullName, title, "مع تمنياتنا لكم بالتوفيق", Url, org.NameAr);
+                body = PopulateBody(textBody, _IUsersRepository.GetUserById(ReceivedUser, "rtl").Result!.FullName??"", title, "مع تمنياتنا لكم بالتوفيق", Url, org.NameAr);
 
 
                 LinkedResource logo = new LinkedResource(ImgUrl);

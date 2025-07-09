@@ -34,7 +34,7 @@ namespace TaamerProject.Service.Interfaces
         Task<IEnumerable<WorkOrdersVM>> GetWorkOrdersByUserIdandtask2(string task, int? UserId, int BranchId);
         Task<IEnumerable<WorkOrdersVM>> GetDayWeekMonth_Orders(int? UserId, int Status, int BranchId, int Flag, string StartDate, string EndDate);
         Task<IEnumerable<WorkOrdersVM>> GetAllWorkOrdersyProjectId(int ProjectId);
-        Task<IEnumerable<ProjectPhasesTasksVM>> GetWorkOrderReport(int? UserId, int Status, int BranchId, string Lang, string StartDate, string EndDate);
+        Task<IEnumerable<ProjectPhasesTasksVM>> GetWorkOrderReport(int? UserId, int Status, int BranchId, string Lang, string StartDate, string EndDate, List<int> BranchesList);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetWorkOrderReport(int? UserId, int Status, int BranchId, string Lang, string StartDate, string EndDate, string? Searchtext);
         Task<List<ProjectPhasesTasksVM>> GetWorkOrderReport_print(int? UserId, int Status, int BranchId, string Lang, string StartDate, string EndDate);
         Task<IEnumerable<ProjectPhasesTasksVM>> GetALlWorkOrderReport(string Lang, int BranchId);

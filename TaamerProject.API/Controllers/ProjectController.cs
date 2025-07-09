@@ -1031,8 +1031,21 @@ namespace TaamerProject.API.Controllers
         {
 
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var AllUserBranch = 0;
+            //if(ProjectsSearch.BranchId==-1)
+            //{
+            //    AllUserBranch = 1;
+            //}
+            AllUserBranch = 1;
+            var AccBranchesList = ProjectsSearch.BranchesList ?? new List<int>();
+            if (AccBranchesList.Count() == 0)
+            {
+                AccBranchesList.Add(_globalshared.BranchId_G);
+            }
+
             ProjectsSearch.BranchId = _globalshared.BranchId_G;
-            var AllPojects = _projectservice.GetAllProjectsNew(Con ?? "", ProjectsSearch, _globalshared.UserId_G, 0, ProjectsSearch.FilterType??0, _globalshared.BranchId_G).Result.ToList();
+            var AllPojects = _projectservice.GetAllProjectsNew(Con ?? "", ProjectsSearch, _globalshared.UserId_G, AllUserBranch, ProjectsSearch.FilterType??0, _globalshared.BranchId_G).Result.ToList();
+            AllPojects = AllPojects.Where(s => AccBranchesList.Contains(s.BranchId ?? 0)).ToList();
             return Ok(AllPojects);
         }
 
@@ -1174,11 +1187,19 @@ namespace TaamerProject.API.Controllers
 
             }
         [HttpGet("GetUserProjectsReportS")]
-        public IActionResult GetUserProjectsReportS(int? UserId, int? CustomerId, string? DateFrom, string? DateTo)
+        public IActionResult GetUserProjectsReportS(int? UserId, int? CustomerId, string? DateFrom, string? DateTo,int? BranchId, [FromQuery] List<int> BranchesList)
         {
         if (UserId == 0) UserId = null;
         HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-        var AllPojects = _projectservice.GetUserProjectsReport(UserId, CustomerId,  _globalshared.BranchId_G, DateFrom??"", DateTo??"").Result.ToList();
+            var AllUserBranch = 0;
+            if (BranchId == -1) AllUserBranch = 0;
+            else AllUserBranch = _globalshared.BranchId_G;
+            var AccBranchesList = BranchesList ?? new List<int>();
+            if (AccBranchesList.Count() == 0)
+            {
+                AccBranchesList.Add(_globalshared.BranchId_G);
+            }
+            var AllPojects = _projectservice.GetUserProjectsReport(UserId, CustomerId, AllUserBranch, DateFrom??"", DateTo??"", AccBranchesList).Result.ToList();
 
             return Ok(AllPojects );
         }
