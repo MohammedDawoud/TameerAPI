@@ -313,72 +313,99 @@ namespace TaamerProject.Service.Services
                 {
 
                     var Proj = _TaamerProContext.Project.Where(s => s.ProjectId == Destination.ProjectId).FirstOrDefault();
-                    #region  sending email and notifications
-                    var strbody = "";
-                    var distinationtype = _TaamerProContext.Pro_DestinationTypes.Where(x => x.DestinationTypeId == DestinationsUpdated.DestinationTypeId).FirstOrDefault();
+                   
 
-                    var headertxt = "تم رد  " + distinationtype.NameAr;
-                    var subject = "رد" + distinationtype.NameAr + " علي المشروع";
-                    var customer = _TaamerProContext.Customer.Where(x => x.CustomerId == Proj.CustomerId).FirstOrDefault();
-                    var Manager = _TaamerProContext.Users.Where(x => x.UserId == Proj.MangerId).FirstOrDefault();
-                    var branch = _TaamerProContext.Branch.Where(x => x.BranchId == Proj.BranchId).FirstOrDefault();
-                    //var listusers = new List<int>();
-                    var listusers = _TaamerProContext.ProjectWorkers.Where(x => x.IsDeleted == false && x.ProjectId == Proj.ProjectId).ToList().Select(x => x.UserId).Distinct().ToList();
-                    var tasksuser = _TaamerProContext.ProjectPhasesTasks.Where(x => x.IsDeleted == false && x.ProjectId == Proj.ProjectId && x.Type == 3 && x.Status != 4).Distinct().ToList().Select(x => x.UserId).ToList();
+                    #region إرسال بريد إلكتروني وإشعارات عند الرد من الجهة الخارجية
+
+                    var distinationtype = _TaamerProContext.Pro_DestinationTypes
+                        .FirstOrDefault(x => x.DestinationTypeId == DestinationsUpdated.DestinationTypeId);
+
+                    var customer = _TaamerProContext.Customer.FirstOrDefault(x => x.CustomerId == Proj.CustomerId);
+                    var Manager = _TaamerProContext.Users.FirstOrDefault(x => x.UserId == Proj.MangerId);
+                    var branch = _TaamerProContext.Branch.FirstOrDefault(x => x.BranchId == Proj.BranchId);
 
                     var status = DestinationsUpdated.Status == 2 ? "موافقة" : "رفض";
-                    var notitxt = " تم رد  " + distinationtype.NameAr + "بال " + status + "علي مشروع رقم" + Proj.ProjectNo;
 
-                    strbody = @"<!DOCTYPE html><html lang = '' ><head>
-                                                <style>
-                                                .square {
-                                                    height: 35px;width: 35px;background-color: #ffffff;border: ridge;
-                                                    text-align: center;align-content: center;font-size: 28px;}
-                                                </style>
-                                                </ head >
-                            <body>                  
-                            <h3 style = 'text-align:center;' > " + notitxt + @"</h3>
-                     
-                            <table align = 'center' border = '1' ><tr> <td>  رقم المشروع</td><td>" + Proj.ProjectNo + @"</td> </tr> <tr> <td> اسم العميل  </td> <td>" + customer.CustomerNameAr + @"</td>
-                             </tr>  <tr> <td> الفرع</td> <td>" + branch.NameAr + @"</td></tr><tr> <td> مدير المشروع</td> <td>" + Manager.FullNameAr + @"</td></tr><tr> <td> إسم الجهة الخارجية</td> <td>" + distinationtype.NameAr + @"</td></tr><tr> <td> حالة الرد </td> <td>" + status + @"</td></tr></table> <h7> مع تحيات قسم ادارة المشاريع</h7>                         
-                            </ body ></ html > ";
-                    listusers.AddRange(tasksuser);
+                    var subject = $"رد {distinationtype?.NameAr} على المشروع";
+                    var headertxt = $"تم رد {distinationtype?.NameAr}";
+                    var notitxt = $"تم رد {distinationtype?.NameAr} بـ {status} على مشروع رقم {Proj.ProjectNo}";
 
-                    if (listusers != null && listusers.Count() > 0)
+                    // HTML body
+                    var strbody = $@"<!DOCTYPE html><html lang='ar'><head>
+                                <style>
+                                .square {{
+                                    height: 35px; width: 35px; background-color: #ffffff; border: ridge;
+                                    text-align: center; align-content: center; font-size: 28px;
+                                }}
+                                </style></head>
+                                <body>
+                                <h3 style='text-align:center;'>{notitxt}</h3>
+                                <table align='center' border='1'>
+                                <tr><td>رقم المشروع</td><td>{Proj.ProjectNo}</td></tr>
+                                <tr><td>اسم العميل</td><td>{customer?.CustomerNameAr}</td></tr>
+                                <tr><td>الفرع</td><td>{branch?.NameAr}</td></tr>
+                                <tr><td>مدير المشروع</td><td>{Manager?.FullNameAr}</td></tr>
+                                <tr><td>اسم الجهة الخارجية</td><td>{distinationtype?.NameAr}</td></tr>
+                                <tr><td>حالة الرد</td><td>{status}</td></tr>
+                                </table>
+                                <h7>مع تحيات قسم إدارة المشاريع</h7>
+                                </body></html>";
+
+                    var (usersList, description) =_projectService.GetNotificationRecipients(NotificationCode.Project_ReplyFromExternal, Proj.ProjectId);
+
+                    if (usersList == null || usersList.Count == 0)
                     {
-                        foreach (var usr in listusers)
-                        {
 
+                        var listusers = _TaamerProContext.ProjectWorkers.Where(x => !x.IsDeleted && x.ProjectId == Proj.ProjectId && x.UserId.HasValue).Select(x => x.UserId.Value).Distinct().ToList();
 
-                            var issent = SendMail_Destination(Organization, branch, UserId, usr.Value, subject, strbody, Url, ImgUrl, 1, true).Result;
-
-                            //var ListOfPrivNotify = new List<Notification>();
-                            //ListOfPrivNotify.Add(new Notification
-                            //{
-                            //    ReceiveUserId = usr.Value,
-                            //    Name = subject,
-                            //    Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
-                            //    HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
-                            //    SendUserId = 1,
-                            //    Type = 1,
-                            //    Description = notitxt,
-                            //    AllUsers = false,
-                            //    SendDate = DateTime.Now,
-                            //    ProjectId = Proj.ProjectId,
-                            //    TaskId = 0,
-                            //    AddUser = UserId,
-                            //    BranchId = branch.BranchId,
-                            //    AddDate = DateTime.Now,
-                            //    IsHidden = false,
-                            //    NextTime = null,
-                            //});
-                            //_TaamerProContext.Notification.AddRange(ListOfPrivNotify);
-                            // _TaamerProContext.SaveChanges();
-                            // _notificationService.sendmobilenotification(usr.Value, subject, notitxt);
-
-                        }
+                        var tasksuser = _TaamerProContext.ProjectPhasesTasks.Where(x => !x.IsDeleted && x.ProjectId == Proj.ProjectId && x.Type == 3 && x.Status != 4 && x.UserId.HasValue).Select(x => x.UserId.Value).Distinct().ToList();
+                        if (listusers != null && listusers.Count() > 0)
+                            usersList.AddRange(listusers);
+                        if (tasksuser != null && tasksuser.Count() > 0)
+                            usersList.AddRange(tasksuser);
                     }
+                    if (description != null && description != "")
+                    {
+                        subject = description;
+                    }
+                    foreach (var userId in usersList.Distinct())
+                    {
+                        try
+                        {
+                            var issent =  SendMail_Destination(Organization, branch, UserId, userId, subject, strbody, Url, ImgUrl, 1, true);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"فشل إرسال البريد للمستخدم {userId}: {ex.Message}");
+                        }
+
+                        _TaamerProContext.Notification.Add(new Notification
+                        {
+                            ReceiveUserId = userId,
+                            Name = subject,
+                            Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                            HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
+                            SendUserId = 1,
+                            Type = 1,
+                            Description = notitxt,
+                            AllUsers = false,
+                            SendDate = DateTime.Now,
+                            ProjectId = Proj.ProjectId,
+                            TaskId = 0,
+                            AddUser = UserId,
+                            BranchId = branch?.BranchId ?? 0,
+                            AddDate = DateTime.Now,
+                            IsHidden = false,
+                            NextTime = null,
+                        });
+
+                        _TaamerProContext.SaveChanges();
+
+                        _notificationService.sendmobilenotification(userId, subject, notitxt);
+                    }
+
                     #endregion
+
 
                 }
 
