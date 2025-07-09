@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Models.DBContext;
+using TaamerProject.Models.Enums;
 using TaamerProject.Models.ViewModels;
 using TaamerProject.Repository.Interfaces;
 using TaamerProject.Repository.Repositories;
@@ -1233,21 +1235,29 @@ namespace TaamerProject.Service.Services
                     phase.StopCount += 1;
                     usersnote.Add(phase.UserId.Value);
                 }
-                var ListOfPrivNotify = new List<Notification>();
 
+                #region Notifications
 
                 try
                 {
-                    usersnote.Add(proj.MangerId.Value);
-                    var worker = _TaamerProContext.ProUserPrivileges
-                         .Where(x => x.ProjectID == projectId)
-                         .Select(x => x.UserId)
-                         .Where(id => id.HasValue)  // Filters non-null values if UserId is int?
-                         .Select(id => id.Value)    // Converts int? to int
-                         .ToList();
 
-                    usersnote.AddRange(worker);
-                    //var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(proj.MangerId ?? 0).Result;
+                    var beneficiary = GetNotificationRecipients(NotificationCode.Project_Stopped, proj.ProjectId);
+                    if (beneficiary.Users.Count() > 0)
+                    {
+                        usersnote = beneficiary.Users;
+
+                    }
+                    else {
+                        usersnote.Add(proj.MangerId.Value);
+                        var worker = _TaamerProContext.ProUserPrivileges
+                             .Where(x => x.ProjectID == projectId)
+                             .Select(x => x.UserId)
+                             .Where(id => id.HasValue)  // Filters non-null values if UserId is int?
+                             .Select(id => id.Value)
+                             .ToList();
+
+                        usersnote.AddRange(worker);
+                    }
                     if (usersnote.Count() != 0)
                     {
                         var manager = _usersRepository.GetById(proj.MangerId.Value);
@@ -1279,15 +1289,11 @@ namespace TaamerProject.Service.Services
                             _TaamerProContext.Notification.Add(UserNotification);
                             _TaamerProContext.SaveChanges();
 
-                            _notificationService.sendmobilenotification(usr, "ايقاف مشروع", "  تم ايقاف مشروع رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + " فرع  " + branch.NameAr + " مدير المشروع  " + manager.FullNameAr + "");
-
+                            _notificationService.sendmobilenotification(usr, beneficiary.Description ??"ايقاف مشروع", "  تم ايقاف مشروع رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + " فرع  " + branch.NameAr + " مدير المشروع  " + manager.FullNameAr + "");
 
                             var htmlBody = "";
 
-                            //if (UserNotifPriv.Contains(331))
-                            //{
                             var Desc = "السيد / ة  " + user.FullName + "المحترم  " + "<br/>" + "السلام عليكم ورحمة الله وبركاتة " + "<br/>" + "<h2> نشعركم بايقاف المشروع </h2>" + " رقم المشروع  " + proj.ProjectNo + "<br/>" + " للعميل  " + customer.CustomerNameAr + "<br/>" + "مع تحيات قسم ادارة المشاريع";
-
 
                             htmlBody = @"<!DOCTYPE html>
                                             <html>
@@ -1323,20 +1329,14 @@ namespace TaamerProject.Service.Services
                                                 </table>
                                             </body>
                                             </html>";
-                            //SendMailNoti(projectId, Desc, "ايقاف مشروع", BranchId, UserId, proj.MangerId ?? 0);
-                            SendMail_ProjectStamp(BranchId, UserId, usr, "ايقاف مشروع", htmlBody, Url, ImgUrl, 1, true);
+                            SendMail_ProjectStamp(BranchId, UserId, usr, beneficiary.Description?? "ايقاف مشروع", htmlBody, Url, ImgUrl, 1, true);
 
 
-                            //}
-                            //if (UserNotifPriv.Contains(333))
-                            //{
-                            //var userObj = _usersRepository.GetById(proj.MangerId);
                             var NotStr = "Dear : " + user.FullName + " Project No " + proj.ProjectNo + " For Customer " + customer.CustomerNameAr + " has Stopped ";
                             if (user.Mobile != null && user.Mobile != "")
                             {
                                 var result = _userNotificationPrivilegesService.SendSMS(user.Mobile, NotStr, UserId, BranchId);
                             }
-                            //}
                         }
                     }
 
@@ -1346,6 +1346,8 @@ namespace TaamerProject.Service.Services
 
                     throw;
                 }
+
+                #endregion
                 if (whichClickDesc != 0)
                 {
                     SendGeneralCustomerEmailandSMS(customer, proj, TypeId, UserId, BranchId, whichClickDesc);
@@ -3764,5 +3766,83 @@ namespace TaamerProject.Service.Services
             var loc = _ProjectRepository.GetProjectLocation(ProjectId);
             return loc;
         }
+
+        public (List<int> Users, string Description) GetNotificationRecipients(NotificationCode code, int projectId)
+        {
+            var usersnote = new List<int>();
+
+            var config = _TaamerProContext.NotificationConfigurations.Include(x => x.NotificationConfigurationsAssines)
+                .FirstOrDefault(x => x.ConfigurationId == (int)code);
+
+            if (config == null || config.To == 0)
+                return (usersnote,config.Description??"");
+
+            var proj = _TaamerProContext.Project.Include(X=>X.ProjectWorkers)
+                .Include(x=>x.ProjectPhasesTasks).FirstOrDefault(p => p.ProjectId == projectId);
+            if (proj == null)
+                return (usersnote, config.Description??"");
+
+            var to = (Beneficiary_type)config.To;
+
+
+            switch (to)
+            {
+                case Beneficiary_type.مستخدمين:
+                    if(config.NotificationConfigurationsAssines !=null && config.NotificationConfigurationsAssines.Count()>0)
+                    usersnote.AddRange((List<int>)config.NotificationConfigurationsAssines.Select(x=>x.UserId));
+                    break;
+
+                case Beneficiary_type.مدير_المشروع:
+                    if (proj.MangerId.HasValue)
+                        usersnote.Add(proj.MangerId.Value);
+                    break;
+
+                case Beneficiary_type.مدير_المشروع_و_المحاسب:
+                    if (proj.MangerId.HasValue)
+                        usersnote.Add(proj.MangerId.Value);
+                    break;
+
+                case Beneficiary_type.مدير_المشروع_و_المشاركين:
+                    if (proj.MangerId.HasValue)
+                        usersnote.Add(proj.MangerId.Value);
+                    if (proj.ProjectWorkers != null && proj.ProjectWorkers.Count() > 0)
+                    usersnote.AddRange(proj.ProjectWorkers
+.Where(x => x.UserId.HasValue)
+.Select(x => x.UserId.Value)
+.ToList());
+                    break;
+
+                case Beneficiary_type.مدير_المشروع_و_المشاركين_و_كل_من_لديه_مهمة:
+                    if (proj.MangerId.HasValue)
+                        usersnote.Add(proj.MangerId.Value);
+                    if (proj.ProjectWorkers != null && proj.ProjectWorkers.Count() > 0)
+                    usersnote.AddRange(proj.ProjectWorkers
+     .Where(x => x.UserId.HasValue)
+     .Select(x => x.UserId.Value)
+     .ToList());
+                    if (proj.ProjectPhasesTasks != null && proj.ProjectPhasesTasks.Count() > 0)
+                    usersnote.AddRange(proj.ProjectPhasesTasks
+     .Where(x => x.UserId.HasValue)
+     .Select(x => x.UserId.Value)
+     .ToList());
+                    break;
+                case Beneficiary_type.مشاركين:
+                    if (proj.ProjectWorkers != null && proj.ProjectWorkers.Count() > 0)
+                        usersnote.AddRange(proj.ProjectWorkers
+                        .Where(x => x.UserId.HasValue)
+                        .Select(x => x.UserId.Value));
+                    break;
+                default:
+                    if (proj.MangerId.HasValue)
+                        usersnote.Add(proj.MangerId.Value);
+                    break;
+
+
+
+            }
+
+            return (usersnote.Distinct().ToList(), config.Description ?? ""); // remove duplicates
+        }
+
     }
 }

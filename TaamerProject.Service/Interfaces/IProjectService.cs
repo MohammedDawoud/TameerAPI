@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TaamerProject.Models.Common;
 using TaamerProject.Models;
 using TaamerProject.Models.ViewModels;
+using TaamerProject.Models.Enums;
 
 namespace TaamerProject.Service.Interfaces
 {
@@ -155,5 +156,6 @@ namespace TaamerProject.Service.Interfaces
         GeneralMessage deleteProjectLocation(int projectId);
 
         rptProjectStatus_phases GetTaskData_phases(int projectId, string con);
+        (List<int> Users, string Description) GetNotificationRecipients(NotificationCode code, int projectId);
     }
 }

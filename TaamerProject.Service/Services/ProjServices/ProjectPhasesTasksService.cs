@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Models.DBContext;
+using TaamerProject.Models.Enums;
 using TaamerProject.Repository.Interfaces;
 using TaamerProject.Repository.Repositories;
 using TaamerProject.Service.IGeneric;   //dd
@@ -7028,32 +7029,35 @@ namespace TaamerProject.Service.Services
                                     _TaamerProContext.ProjectArchivesRe.Add(Pro);
 
 
-                                    var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(projectData.MangerId ?? 0).Result;
-                                    if (UserNotifPriv.Count() != 0)
+
+                                    var result =_projectService.GetNotificationRecipients(NotificationCode.Project_SubStageCompleted, ActiveSubPhaseProject.ProjectId);
+
+                                    string desc = result.Description;
+                                    if (string.IsNullOrWhiteSpace(desc))
                                     {
+                                        desc = formattedDate + " بتاريخ " + ParentPhaseForTask.DescriptionAr + " انتهاء مرحلة فرعية ";
+                                    }
 
-                                        if (UserNotifPriv.Contains(3141))
+                                    var users = result.Users;
+                                    if (users == null || !users.Any())
+                                    {
+                                        var managerId = projectData.MangerId ?? 0;
+                                        if (managerId > 0)
                                         {
-                                            var Desc = formattedDate + " بتاريخ " + ParentPhaseForTask.DescriptionAr + " انتهاء مرحلة فرعية ";
-
-                                            try
-                                            {
-                                                SendMailNoti(ActiveSubPhaseProject.ProjectId, Desc, "انتهاء مرحلة فرعية", BranchId, UserId, projectData.MangerId ?? 0);
-                                            }
-                                            catch (Exception)
-                                            {
-                                            }
-
+                                            users = new List<int> { managerId };
                                         }
-                                        if (UserNotifPriv.Contains(3143))
-                                        {
-                                            var userObj = _UsersRepository.GetById(projectData.MangerId ?? 0);
-                                            var NotStr = formattedDate + " بتاريخ " + ParentPhaseForTask.DescriptionAr + " انتهاء مرحلة فرعية ";
-                                            if (userObj.Mobile != null && userObj.Mobile != "")
-                                            {
-                                                var result = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
-                                            }
+                                    }
 
+                                    foreach (var userId in users)
+                                    {
+                                        try
+                                        {
+                                            SendMailNoti(ActiveSubPhaseProject.ProjectId, desc, "انتهاء مرحلة فرعية", BranchId, UserId, userId);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            // Log if needed
+                                            Console.WriteLine($"Mail failed for user {userId}: {ex.Message}");
                                         }
 
                                     }
@@ -7085,33 +7089,37 @@ namespace TaamerProject.Service.Services
 
 
 
-                                            var UserNotifPriv2 = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(projectData.MangerId ?? 0).Result;
-                                            if (UserNotifPriv2.Count() != 0)
+                                            var result2 =_projectService.GetNotificationRecipients(NotificationCode.Project_MainStageCompleted, ActiveSubPhaseProject.ProjectId);
+
+                                            string desc2 = string.IsNullOrWhiteSpace(result2.Description)
+                                                ? formattedDate + " بتاريخ " + ParentPhaseForTask.DescriptionAr + " انتهاء مرحلة رئيسية"
+                                                : result2.Description;
+
+                                            var users2 = result2.Users;
+                                            if (users2 == null || !users2.Any())
                                             {
+                                                var managerId = projectData.MangerId ?? 0;
+                                                if (managerId > 0)
+                                                    users2 = new List<int> { managerId };
+                                            }
 
-                                                if (UserNotifPriv2.Contains(3141))
+                                            foreach (var userId in users2)
+                                            {
+                                                try
                                                 {
-                                                    var Desc2 = formattedDate + " بتاريخ " + ParentPhaseForTask.DescriptionAr + "انتهاء مرحلة رئيسية";
-
-                                                    try
-                                                    {
-                                                        SendMailNoti(ActiveSubPhaseProject.ProjectId, Desc2, "انتهاء مرحلة رئيسية", BranchId, UserId, projectData.MangerId ?? 0);
-                                                    }
-                                                    catch (Exception)
-                                                    {
-                                                    }
+                                                    SendMailNoti(ActiveSubPhaseProject.ProjectId, desc2, "انتهاء مرحلة رئيسية", BranchId, UserId, userId);
                                                 }
-                                                if (UserNotifPriv2.Contains(3143))
+                                                catch (Exception ex)
                                                 {
-                                                    var userObj2 = _UsersRepository.GetById(projectData.MangerId ?? 0);
-                                                    var NotStr2 = formattedDate + " بتاريخ " + ParentPhaseForTask.DescriptionAr + "انتهاء مرحلة رئيسية";
-                                                    if (userObj2.Mobile != null && userObj2.Mobile != "")
-                                                    {
-                                                        var result = _userNotificationPrivilegesService.SendSMS(userObj2.Mobile, NotStr2, UserId, BranchId);
-                                                    }
-
+                                                    Console.WriteLine($"Mail failed for user {userId}: {ex.Message}");
                                                 }
 
+                                                var userObj2 = _UsersRepository.GetById(userId);
+                                                if (!string.IsNullOrEmpty(userObj2?.Mobile))
+                                                {
+                                                    var NotStr2 = formattedDate + " بتاريخ " + ParentPhaseForTask.DescriptionAr + " انتهاء مرحلة رئيسية";
+                                                    var result_2 = _userNotificationPrivilegesService.SendSMS(userObj2.Mobile, NotStr2, UserId, BranchId);
+                                                }
                                             }
 
                                         }
@@ -7141,35 +7149,39 @@ namespace TaamerProject.Service.Services
 
 
 
-                                        var UserNotifPriv3 = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(projectData.MangerId ?? 0).Result;
-                                        if (UserNotifPriv3.Count() != 0)
+                                        var result2 =_projectService.GetNotificationRecipients(NotificationCode.Project_MainStageCompleted, ActiveSubPhaseProject.ProjectId);
+
+                                        string desc2 = string.IsNullOrWhiteSpace(result2.Description)
+                                            ? formattedDate + " بتاريخ " + ParentPhaseForTask.DescriptionAr + " انتهاء مرحلة رئيسية"
+                                            : result2.Description;
+
+                                        var users2 = result2.Users;
+                                        if (users2 == null || !users2.Any())
                                         {
-
-                                            if (UserNotifPriv3.Contains(3141))
-                                            {
-                                                var Desc2 = formattedDate + " بتاريخ " + ParentPhaseForTask.DescriptionAr + "انتهاء مرحلة رئيسية";
-                                                try
-                                                {
-                                                    SendMailNoti(ActiveMainPhaseProject.ProjectId, Desc2, "انتهاء مرحلة رئيسية", BranchId, UserId, projectData.MangerId ?? 0);
-
-                                                }
-                                                catch (Exception)
-                                                {
-                                                }
-
-                                            }
-                                            if (UserNotifPriv3.Contains(3143))
-                                            {
-                                                var userObj2 = _UsersRepository.GetById(projectData.MangerId ?? 0);
-                                                var NotStr2 = formattedDate + " بتاريخ " + ParentPhaseForTask.DescriptionAr + "انتهاء مرحلة رئيسية";
-                                                if (userObj2.Mobile != null && userObj2.Mobile != "")
-                                                {
-                                                    var result = _userNotificationPrivilegesService.SendSMS(userObj2.Mobile, NotStr2, UserId, BranchId);
-                                                }
-
-                                            }
-
+                                            var managerId = projectData.MangerId ?? 0;
+                                            if (managerId > 0)
+                                                users2 = new List<int> { managerId };
                                         }
+
+                                        foreach (var userId in users2)
+                                        {
+                                            try
+                                            {
+                                                SendMailNoti(ActiveSubPhaseProject.ProjectId, desc2, "انتهاء مرحلة رئيسية", BranchId, UserId, userId);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Console.WriteLine($"Mail failed for user {userId}: {ex.Message}");
+                                            }
+
+                                            var userObj2 = _UsersRepository.GetById(userId);
+                                            if (!string.IsNullOrEmpty(userObj2?.Mobile))
+                                            {
+                                                var NotStr2 = formattedDate + " بتاريخ " + ParentPhaseForTask.DescriptionAr + " انتهاء مرحلة رئيسية";
+                                                var result = _userNotificationPrivilegesService.SendSMS(userObj2.Mobile, NotStr2, UserId, BranchId);
+                                            }
+                                        }
+
 
                                         //End
                                     }

@@ -258,6 +258,7 @@ namespace TaamerProject.API
             builder.Services.AddTransient<IPermissionService, PermissionService>();
             builder.Services.AddTransient<IPermissionTypeService, PermissionTypeService>();
             builder.Services.AddTransient<ICommercialActivityService, CommercialActivityService>();
+            builder.Services.AddTransient<INotificationConfigurationService, NotificationConfigurationService>();
             
 
             #endregion
@@ -458,6 +459,7 @@ namespace TaamerProject.API
             builder.Services.AddTransient<IPermissionsRepository, PermissionsRepository>();
             builder.Services.AddTransient<IPermissionTypeRepository, PermissionTypeRepository>();
             builder.Services.AddTransient<ICommercialActivityRepository, CommercialActivityRepository>();
+            builder.Services.AddTransient<INotificationConfigurationRepository, NotificationConfigurationRepository>();
             #endregion
 
          builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
