@@ -923,8 +923,8 @@ namespace TaamerProject.API.Helper
 
 
                                            new Privilege { Id = 17124, ParentId = 17 , Name =  "اعدادات  إدارة الاشعارات", Description =  "اعدادات  إدارة الاشعارات" },
-                                        new Privilege { Id = 171241 , ParentId = 17124 , Name =  Resources.General_Edit, Description = Resources.General_Edit },
-                                        new Privilege { Id = 171242 , ParentId = 17124 , Name =  @Resources.General_Delete , Description = Resources.General_Delete},
+                                        new Privilege { Id = 171241 , ParentId = 17124 , Name =  @Resources.General_Show , Description = Resources.General_Show},
+                                        new Privilege { Id = 171242 , ParentId = 17124 , Name =  Resources.General_Edit, Description = Resources.General_Edit },
                                        
              
              

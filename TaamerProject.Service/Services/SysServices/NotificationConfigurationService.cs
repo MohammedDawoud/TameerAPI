@@ -72,7 +72,7 @@ namespace TaamerProject.Service.Services
                             .RemoveRange(existing.NotificationConfigurationsAssines);
 
                         // إضافة المعينين الجدد
-                        if (config.Assignees != null && config.Assignees.Any())
+                        if (config.Assignees != null && config.Assignees.Any() && config.To==1)
                         {
                             existing.NotificationConfigurationsAssines = config.Assignees
                                 .Select(a => new NotificationConfigurationsAssines
