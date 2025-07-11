@@ -10762,7 +10762,7 @@ namespace TaamerProject.Repository.Repositories
         {
             if (_TaamerProContext.ProjectPhasesTasks != null)
             {
-                var lastRow = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.TaskNoType == 1 && s.TaskNo!.Contains(codePrefix)).OrderByDescending(u => u.PhaseTaskId).Take(1).FirstOrDefault();
+                var lastRow = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && s.BranchId == BranchId && s.TaskNoType == 1 && s.TaskNo!.Contains(codePrefix)).OrderByDescending(u => u.PhaseTaskId).Take(1).FirstOrDefault();
                 if (lastRow != null)
                 {
                     try
