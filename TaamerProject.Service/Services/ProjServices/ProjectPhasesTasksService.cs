@@ -1861,12 +1861,12 @@ namespace TaamerProject.Service.Services
             var projectPhasesTaskObj = new ProjectPhasesTasks();
             var ListOfTaskNotify = new List<Notification>();
 
-            var codePrefix = "";
-            var prostartcode = _BranchesRepository.GetById(BranchId).TaskStartCode;
-            if (prostartcode != null && prostartcode != "")
-            {
-                codePrefix = prostartcode;
-            }
+            var codePrefix = "TSK#";
+            //var prostartcode = _BranchesRepository.GetById(BranchId).TaskStartCode;
+            //if (prostartcode != null && prostartcode != "")
+            //{
+            //    codePrefix = prostartcode;
+            //}
             var Value = _ProjectPhasesTasksRepository.GenerateNextTaskNumber(BranchId, codePrefix, 0).Result;
             Value = Value - 1;
 
@@ -3306,12 +3306,12 @@ namespace TaamerProject.Service.Services
             var ListOfTaskNotify = new List<Notification>();
 
 
-            var codePrefix = "";
-            var prostartcode = _BranchesRepository.GetById(BranchId).TaskStartCode;
-            if (prostartcode != null && prostartcode != "")
-            {
-                codePrefix = prostartcode;
-            }
+            var codePrefix = "TSK#";
+            //var prostartcode = _BranchesRepository.GetById(BranchId).TaskStartCode;
+            //if (prostartcode != null && prostartcode != "")
+            //{
+            //    codePrefix = prostartcode;
+            //}
             var Value = _ProjectPhasesTasksRepository.GenerateNextTaskNumber(BranchId, codePrefix, 0).Result;
             Value = Value - 1;
 
@@ -4315,12 +4315,12 @@ namespace TaamerProject.Service.Services
                     var projectWorkersPriv = new List<UserPrivileges>();
                     var ListOfTaskNotify = new List<Notification>();
 
-                    var codePrefix = "";
-                    var prostartcode = _BranchesRepository.GetById(BranchId).TaskStartCode;
-                    if (prostartcode != null && prostartcode != "")
-                    {
-                        codePrefix = prostartcode;
-                    }
+                    var codePrefix = "TSK#";
+                    //var prostartcode = _BranchesRepository.GetById(BranchId).TaskStartCode;
+                    //if (prostartcode != null && prostartcode != "")
+                    //{
+                    //    codePrefix = prostartcode;
+                    //}
                     var Value = _ProjectPhasesTasksRepository.GenerateNextTaskNumber(BranchId, codePrefix, 0).Result;
                     Value = Value - 1;
 
@@ -4761,12 +4761,12 @@ namespace TaamerProject.Service.Services
                     var projectWorkersPriv = new List<UserPrivileges>();
                     var ListOfTaskNotify = new List<Notification>();
 
-                    var codePrefix = "";
-                    var prostartcode = _BranchesRepository.GetById(BranchId).TaskStartCode;
-                    if (prostartcode != null && prostartcode != "")
-                    {
-                        codePrefix = prostartcode;
-                    }
+                    var codePrefix = "TSK#";
+                    //var prostartcode = _BranchesRepository.GetById(BranchId).TaskStartCode;
+                    //if (prostartcode != null && prostartcode != "")
+                    //{
+                    //    codePrefix = prostartcode;
+                    //}
                     var Value = _ProjectPhasesTasksRepository.GenerateNextTaskNumber(BranchId, codePrefix, 0).Result;
                     Value = Value - 1;
 
@@ -5595,17 +5595,21 @@ namespace TaamerProject.Service.Services
                         BranchIdOfUserOrDepartment = project.BranchId;
                     }
 
-                    var codeExist = _ProjectPhasesTasksRepository.GetMatching(s => s.IsDeleted == false && s.BranchId == BranchId && s.TaskNo == ProjectPhasesTasks.TaskNo && s.PhaseTaskId != ProjectPhasesTasks.PhaseTaskId).FirstOrDefault();
-                    if (codeExist != null)
+                    if(ProjectPhasesTasks.TaskNo!="" && ProjectPhasesTasks.TaskNo!=null)
                     {
+                        var codeExist = _ProjectPhasesTasksRepository.GetMatching(s => s.IsDeleted == false /*&& s.BranchId == BranchId*/ && s.TaskNo == ProjectPhasesTasks.TaskNo && s.PhaseTaskId != ProjectPhasesTasks.PhaseTaskId).FirstOrDefault();
+                        if (codeExist != null)
+                        {
 
-                        //-----------------------------------------------------------------------------------------------------------------
-                        string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                        string ActionNote2 = "فشل في حفظ المهمة الكود موجود مسبقا";
-                        _SystemAction.SaveAction("SaveNewProjectPhasesTasks_E", "ProjectPhasesTasksService", 1, "رقم المهمة موجود من قبل", "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
-                        //-----------------------------------------------------------------------------------------------------------------
-                        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "رقم المهمة موجود من قبل" };
+                            //-----------------------------------------------------------------------------------------------------------------
+                            string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                            string ActionNote2 = "فشل في حفظ المهمة الكود موجود مسبقا";
+                            _SystemAction.SaveAction("SaveNewProjectPhasesTasks_E", "ProjectPhasesTasksService", 1, "رقم المهمة موجود من قبل", "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                            //-----------------------------------------------------------------------------------------------------------------
+                            return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "رقم المهمة موجود من قبل" };
+                        }
                     }
+
 
 
                     if (project != null)
@@ -6558,10 +6562,19 @@ namespace TaamerProject.Service.Services
                 if (ProTaskUpdated != null)
                 {
                     var project = _ProjectRepository.GetById(ProTaskUpdated.ProjectId??0);
-                    
+                    var codePrefix = "TSK#";
+                    var Value = _ProjectPhasesTasksRepository.GenerateNextTaskNumber(BranchId, codePrefix, 0).Result;
+                    var NewValue = string.Format("{0:000000}", Value);
+                    if (codePrefix != "")
+                    {
+                        NewValue = codePrefix + NewValue;
+                    }
+                    ProjectPhasesTasks.TaskNo = NewValue;
+
                     ProTaskUpdated.UserId = ProjectPhasesTasks.UserId;
                     ProTaskUpdated.UpdateUser = UserId;
                     ProTaskUpdated.UpdateDate = DateTime.Now;
+                    ProTaskUpdated.TaskNo = ProjectPhasesTasks.TaskNo;
 
 
                     var branch = _BranchesRepository.GetById(BranchId);
@@ -9818,19 +9831,24 @@ namespace TaamerProject.Service.Services
 
         public async Task<string> GenerateNextTaskNumber(int BranchId, int? ProjectId)
         {
-            var codePrefix = "";
-            var prostartcode = _BranchesRepository.GetById(BranchId).TaskStartCode;
-            if (prostartcode != null && prostartcode != "")
-            {
-                codePrefix = prostartcode;
-            }
+            var codePrefix = "TSK#";
+            //var prostartcode = _BranchesRepository.GetById(BranchId).TaskStartCode;
+            //if (prostartcode != null && prostartcode != "")
+            //{
+            //    codePrefix = prostartcode;
+            //}
+
+            //var Value = _ProjectPhasesTasksRepository.GenerateNextTaskNumber(BranchId, codePrefix, 0).Result;
+            //var NewValue = string.Format("{0:000000}", Value);
+            //if (codePrefix != "")
+            //{
+            //    NewValue = codePrefix + NewValue;
+            //}
+
 
             var Value = _ProjectPhasesTasksRepository.GenerateNextTaskNumber(BranchId, codePrefix, 0).Result;
             var NewValue = string.Format("{0:000000}", Value);
-            if (codePrefix != "")
-            {
-                NewValue = codePrefix + NewValue;
-            }
+            NewValue = codePrefix + NewValue;
             return (NewValue);
         }
 
