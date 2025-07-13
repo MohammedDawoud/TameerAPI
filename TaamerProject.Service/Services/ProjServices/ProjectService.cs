@@ -21,6 +21,7 @@ using TaamerProject.Repository.Repositories;
 using TaamerProject.Service.IGeneric;
 using TaamerProject.Service.Interfaces;
 using TaamerProject.Service.LocalResources;
+using static Dropbox.Api.UsersCommon.AccountType;
 
 namespace TaamerProject.Service.Services
 {
@@ -251,62 +252,56 @@ namespace TaamerProject.Service.Services
                     var ListOfPrivNotify = new List<Notification>();
                     var branch = _BranchesRepository.GetById(BranchId);
                     var customer = _CustomerRepository.GetById(project.CustomerId ?? 0);
-                    //var UserNotifPriv = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(3252).Result;
-                    //if (UserNotifPriv.Count() != 0)
-                    //{
-                        //foreach (var userCounter in UserNotifPriv)
-                        //{
-
-                            try
-                            {
-                                ListOfPrivNotify.Add(new Notification
-                                {
-                                    ReceiveUserId = project.MangerId,
-                                    Name = @Resources.MNAcc_Invoice,
-                                    Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
-                                    HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
-                                    SendUserId = 1,
-                                    Type = 1, // notification
-                                    Description = " يوجد فاتورة جديدة علي مشروع رقم   : " + project.ProjectNo + " للعميل " + customer.CustomerNameAr + " فرع " + branch.NameAr + "",
-                                    AllUsers = false,
-                                    SendDate = DateTime.Now,
-                                    ProjectId = 0,
-                                    TaskId = 0,
-                                    AddUser = UserId,
-                                    AddDate = DateTime.Now,
-                                    IsHidden = false
-                                });
-                        _TaamerProContext.Notification.AddRange(ListOfPrivNotify);
-
-                        _notificationService.sendmobilenotification((int)project.MangerId, "أضافة فاتورة علي مشروع", " يوجد فاتورة جديدة علي مشروع رقم   : " + project.ProjectNo + " للعميل " + customer.CustomerNameAr + " فرع " + branch.NameAr + "");
-
-                            }
-                            catch (Exception ex)
-                            {
-                                //-----------------------------------------------------------------------------------------------------------------
-                                string ActionDate4 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                                string ActionNote4 = "فشل في ارسال اشعار لمن لدية صلاحية فاتورة";
-                                _SystemAction.SaveAction("SaveProject", "ProjectService", 1, Resources.General_SavedFailed, "", "", ActionDate4, UserId, BranchId, ActionNote4, 0);
-                                //-----------------------------------------------------------------------------------------------------------------
-                            }
-
-                    //}
-                    //}
-
-                    //var UserNotifPriv_email = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(3251).Result;
-                    //if (UserNotifPriv_email.Count() != 0)
-                    //{
-                    //foreach (var userCounter in UserNotifPriv_email)
-                    //{
-                    var manager = _TaamerProContext.Users.Where(x => x.UserId == project.MangerId).FirstOrDefault();
-
+                    List<int> usersnote = new List<int>();
                     try
                     {
-                                var htmlBody = "";
-                                var Desc = " السيد /ة " + manager.FullNameAr + "المحترم " + "<br/>" + "السلام عليكم ورحمة الله وبركاتة " + "<br/>" + "<h2> تم اصدار فاتورة أثناء انشاء المشروع</h2>" + "<br/>" + " للعميل " + customer.CustomerNameAr + "<br/>" + " تابع لفرع " + branch.NameAr + "<br/>" + "مع تحيات قسم ادارة المشاريع ";
+                        var beneficiary = GetNotificationRecipients(NotificationCode.Project_ServiceInvoiceIssued, project.ProjectId);
+                    if (beneficiary.Users.Count() > 0)
+                    {
+                        usersnote = beneficiary.Users;
+
+                    }
+                    else
+                    {
+                        usersnote.Add(project.MangerId.Value);
+                    }
+
+                        foreach (var usr in usersnote)
+                        {
 
 
-                                htmlBody = @"<!DOCTYPE html>
+                            ListOfPrivNotify.Add(new Notification
+                            {
+                                ReceiveUserId = usr,
+                                Name = @Resources.MNAcc_Invoice,
+                                Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
+                                HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
+                                SendUserId = 1,
+                                Type = 1, // notification
+                                Description = " يوجد فاتورة جديدة علي مشروع رقم   : " + project.ProjectNo + " للعميل " + customer.CustomerNameAr + " فرع " + branch.NameAr + "",
+                                AllUsers = false,
+                                SendDate = DateTime.Now,
+                                ProjectId = 0,
+                                TaskId = 0,
+                                AddUser = UserId,
+                                AddDate = DateTime.Now,
+                                IsHidden = false
+                            });
+                            _TaamerProContext.Notification.AddRange(ListOfPrivNotify);
+
+                            _notificationService.sendmobilenotification((int)usr, string.IsNullOrWhiteSpace(beneficiary.Description) ? "أضافة فاتورة علي مشروع" : beneficiary.Description, " يوجد فاتورة جديدة علي مشروع رقم   : " + project.ProjectNo + " للعميل " + customer.CustomerNameAr + " فرع " + branch.NameAr + "");
+
+
+
+
+                            var manager = _TaamerProContext.Users.Where(x => x.UserId == usr).FirstOrDefault();
+
+
+                            var htmlBody = "";
+                            var Desc = " السيد /ة " + manager.FullNameAr + "المحترم " + "<br/>" + "السلام عليكم ورحمة الله وبركاتة " + "<br/>" + "<h2> تم اصدار فاتورة أثناء انشاء المشروع</h2>" + "<br/>" + " للعميل " + customer.CustomerNameAr + "<br/>" + " تابع لفرع " + branch.NameAr + "<br/>" + "مع تحيات قسم ادارة المشاريع ";
+
+
+                            htmlBody = @"<!DOCTYPE html>
                                             <html>
                                              <head></head>
                                             <body  style='direction: rtl;'>
@@ -325,11 +320,9 @@ namespace TaamerProject.Service.Services
                                                 </table>
                                             </body>
                                             </html>";
-                                //SendMailNoti(projectId, Desc, "ايقاف مشروع", BranchId, UserId, proj.MangerId ?? 0);
-                                SendMail_ProjectStamp(BranchId, UserId, project.MangerId ?? 0, "صدور فاتورة جديدة علي مشروع", htmlBody, Url, ImgUrl, 6, true);
+                            SendMail_ProjectStamp(BranchId, UserId, usr ,string.IsNullOrWhiteSpace(beneficiary.Description) ? "صدور فاتورة جديدة علي مشروع" : beneficiary.Description, htmlBody, Url, ImgUrl, 6, true);
 
-
-                                // SendMailNoti(0, Desc, "صدور فاتورة جديدة علي مشروع", BranchId, UserId, userCounter.UserId ?? 0);
+                        }
                             }
                             catch (Exception ex2)
                             {
@@ -351,7 +344,9 @@ namespace TaamerProject.Service.Services
                             try
                             {
                         if (project.MangerId != null) {
-                                    var userObj = _usersRepository.GetById(project.MangerId ?? 0);
+                            var manager = _TaamerProContext.Users.Where(x => x.UserId == project.MangerId).FirstOrDefault();
+
+                            var userObj = _usersRepository.GetById(project.MangerId ?? 0);
                             var NotStr = " المستخدم " + manager.FullNameAr + " تم اصدار فاتورة لمشروع رقم " + project.ProjectNo + " للعميل " + customer.CustomerNameAr + " فرع " + branch.NameAr;
                             if (userObj.Mobile != null && userObj.Mobile != "")
                             {
@@ -1233,7 +1228,7 @@ namespace TaamerProject.Service.Services
                 {
                     phase.Status = 3;
                     phase.StopCount += 1;
-                    usersnote.Add(phase.UserId.Value);
+                    //usersnote.Add(phase.UserId.Value);
                 }
 
                 #region Notifications
@@ -1248,6 +1243,11 @@ namespace TaamerProject.Service.Services
 
                     }
                     else {
+                        foreach (var phase in phasesTasks)
+                        {
+                            usersnote.Add(phase.UserId.Value);
+
+                        }
                         usersnote.Add(proj.MangerId.Value);
                         var worker = _TaamerProContext.ProUserPrivileges
                              .Where(x => x.ProjectID == projectId)
@@ -1289,7 +1289,7 @@ namespace TaamerProject.Service.Services
                             _TaamerProContext.Notification.Add(UserNotification);
                             _TaamerProContext.SaveChanges();
 
-                            _notificationService.sendmobilenotification(usr, beneficiary.Description ??"ايقاف مشروع", "  تم ايقاف مشروع رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + " فرع  " + branch.NameAr + " مدير المشروع  " + manager.FullNameAr + "");
+                            _notificationService.sendmobilenotification(usr, string.IsNullOrWhiteSpace(beneficiary.Description) ? "ايقاف مشروع" : beneficiary.Description, "  تم ايقاف مشروع رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + " فرع  " + branch.NameAr + " مدير المشروع  " + manager.FullNameAr + "");
 
                             var htmlBody = "";
 
@@ -1329,7 +1329,7 @@ namespace TaamerProject.Service.Services
                                                 </table>
                                             </body>
                                             </html>";
-                            SendMail_ProjectStamp(BranchId, UserId, usr, beneficiary.Description?? "ايقاف مشروع", htmlBody, Url, ImgUrl, 1, true);
+                            SendMail_ProjectStamp(BranchId, UserId, usr, string.IsNullOrWhiteSpace(beneficiary.Description) ? "ايقاف مشروع" : beneficiary.Description, htmlBody, Url, ImgUrl, 1, true);
 
 
                             var NotStr = "Dear : " + user.FullName + " Project No " + proj.ProjectNo + " For Customer " + customer.CustomerNameAr + " has Stopped ";
@@ -1451,24 +1451,37 @@ namespace TaamerProject.Service.Services
                 foreach (var phase in phasesTasks)
                 {
                     phase.Status = 2;
-                    usersnote.Add(phase.UserId.Value);
+                    //usersnote.Add(phase.UserId.Value);
 
                 }
 
                 try
                 {
                     var ListOfPrivNotify = new List<Notification>();
-                    //var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(proj.MangerId ?? 0).Result;
-                    usersnote.Add(proj.MangerId.Value);
-                    var worker = _TaamerProContext.ProUserPrivileges
-                         .Where(x => x.ProjectID == projectId)
-                         .Select(x => x.UserId)
-                         .Where(id => id.HasValue)  // Filters non-null values if UserId is int?
-                         .Select(id => id.Value)    // Converts int? to int
-                         .ToList();
+                    var beneficiary = GetNotificationRecipients(NotificationCode.Project_Reactivated, proj.ProjectId);
+                    if (beneficiary.Users.Count() > 0)
+                    {
+                        usersnote = beneficiary.Users;
 
-                    usersnote.AddRange(worker);
-                    //var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(proj.MangerId ?? 0).Result;
+                    }
+                    else
+                    {
+                        foreach (var phase in phasesTasks)
+                        {
+                           // phase.Status = 2;
+                            usersnote.Add(phase.UserId.Value);
+
+                        }
+                        usersnote.Add(proj.MangerId.Value);
+                        var worker = _TaamerProContext.ProUserPrivileges
+                             .Where(x => x.ProjectID == projectId)
+                             .Select(x => x.UserId)
+                             .Where(id => id.HasValue)  // Filters non-null values if UserId is int?
+                             .Select(id => id.Value)
+                             .ToList();
+
+                        usersnote.AddRange(worker);
+                    }
                     if (usersnote.Count() != 0)
                     {
                         var manager = _usersRepository.GetById(proj.MangerId.Value);
@@ -1501,7 +1514,7 @@ namespace TaamerProject.Service.Services
                             _TaamerProContext.Notification.Add(UserNotification);
                             _TaamerProContext.SaveChanges();
 
-                            _notificationService.sendmobilenotification(usr, "اعادة تشغيل مشروع", " تم تشغيل مشروع رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + " فرع  " + branch.NameAr + "");
+                            _notificationService.sendmobilenotification(usr, string.IsNullOrWhiteSpace(beneficiary.Description)? "اعادة تشغيل مشروع" : beneficiary.Description, " تم تشغيل مشروع رقم  : " + proj.ProjectNo + " للعميل " + customer.CustomerNameAr + " " + " فرع  " + branch.NameAr + "");
 
                             var htmlBody = "";
 
@@ -1544,22 +1557,16 @@ namespace TaamerProject.Service.Services
                                                 </table>
                                             </body>
                                             </html>";
-                            //SendMailNoti(projectId, Desc, "ايقاف مشروع", BranchId, UserId, proj.MangerId ?? 0);
-                            SendMail_ProjectStamp(BranchId, UserId, usr, "اعادة تشغيل مشروع", htmlBody, Url, ImgUrl, 2, true);
+                            SendMail_ProjectStamp(BranchId, UserId, usr, string.IsNullOrWhiteSpace(beneficiary.Description) ? "اعادة تشغيل مشروع" : beneficiary.Description, htmlBody, Url, ImgUrl, 2, true);
 
 
 
-                            //SendMailNoti(projectId, Desc, "تشغيل مشروع", BranchId, UserId, proj.MangerId ?? 0);
-                            //}
-                            //if (UserNotifPriv.Contains(343))
-                            //{
-                            //var userObj = _usersRepository.GetById(userCounter.UserId);
-                            var NotStr = "Dear : " + user.FullName + " Project No " + proj.ProjectNo + " For Customer " + customer.CustomerNameAr + " has working ";
+                             var NotStr = "Dear : " + user.FullName + " Project No " + proj.ProjectNo + " For Customer " + customer.CustomerNameAr + " has working ";
                             if (user.Mobile != null && user.Mobile != "")
                             {
                                 var result = _userNotificationPrivilegesService.SendSMS(user.Mobile, NotStr, UserId, BranchId);
                             }
-                            //}
+                           
                         }
                     }
 
@@ -3775,13 +3782,15 @@ namespace TaamerProject.Service.Services
                 .FirstOrDefault(x => x.ConfigurationId == (int)code);
 
             if (config == null || config.To == 0)
-                return (usersnote,config.Description??"");
+                return (usersnote,config.Description);
 
             var proj = _TaamerProContext.Project.Include(X=>X.ProjectWorkers)
                 .Include(x=>x.ProjectPhasesTasks).FirstOrDefault(p => p.ProjectId == projectId);
             if (proj == null)
-                return (usersnote, config.Description??"");
+                return (usersnote, config.Description);
 
+            if (config.To == null || config.To == 0)
+                return (usersnote, config.Description);
             var to = (Beneficiary_type)config.To;
 
 
@@ -3841,7 +3850,7 @@ namespace TaamerProject.Service.Services
 
             }
 
-            return (usersnote.Distinct().ToList(), config.Description ?? ""); // remove duplicates
+            return (usersnote.Distinct().ToList(), config.Description ); // remove duplicates
         }
 
     }
