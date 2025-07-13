@@ -5561,17 +5561,7 @@ namespace TaamerProject.Service.Services
                 }
             }
 
-            var codeExist = _ProjectPhasesTasksRepository.GetMatching(s => s.IsDeleted == false && s.TaskNo == ProjectPhasesTasks.TaskNo && s.PhaseTaskId != ProjectPhasesTasks.PhaseTaskId).FirstOrDefault();
-            if (codeExist != null)
-            {
 
-                //-----------------------------------------------------------------------------------------------------------------
-                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                string ActionNote = "فشل في حفظ المهمة الكود موجود مسبقا";
-                _SystemAction.SaveAction("SaveNewProjectPhasesTasks_E", "ProjectPhasesTasksService", 1, "رقم المهمة موجود من قبل", "", "", ActionDate, UserId, BranchId, ActionNote, 0);
-                //-----------------------------------------------------------------------------------------------------------------
-                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "رقم المهمة موجود من قبل" };
-            }
 
 
             if ((ProjectPhasesTasks.ExcpectedStartDate == null || ProjectPhasesTasks.ExcpectedEndDate == null) && ProjectPhasesTasks.TimeType == 2)
@@ -5604,6 +5594,20 @@ namespace TaamerProject.Service.Services
                     {
                         BranchIdOfUserOrDepartment = project.BranchId;
                     }
+
+                    var codeExist = _ProjectPhasesTasksRepository.GetMatching(s => s.IsDeleted == false && s.BranchId == BranchId && s.TaskNo == ProjectPhasesTasks.TaskNo && s.PhaseTaskId != ProjectPhasesTasks.PhaseTaskId).FirstOrDefault();
+                    if (codeExist != null)
+                    {
+
+                        //-----------------------------------------------------------------------------------------------------------------
+                        string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                        string ActionNote2 = "فشل في حفظ المهمة الكود موجود مسبقا";
+                        _SystemAction.SaveAction("SaveNewProjectPhasesTasks_E", "ProjectPhasesTasksService", 1, "رقم المهمة موجود من قبل", "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                        //-----------------------------------------------------------------------------------------------------------------
+                        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "رقم المهمة موجود من قبل" };
+                    }
+
+
                     if (project != null)
                     {
                         project.MotionProject = 1;
