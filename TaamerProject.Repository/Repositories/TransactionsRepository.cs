@@ -773,7 +773,7 @@ namespace TaamerProject.Repository.Repositories
             try
             {
 
-                var details = _TaamerProContext.Transactions.Where(s => s.IsDeleted == false && (YearId==0 ||  s.YearId == YearId) && s.Type != 12 
+                var details = _TaamerProContext.Transactions.Where(s => s.IsDeleted == false && (YearId==0 ||  s.YearId == YearId) && s.Type != 12  && s.Type !=35
                 && ((isCheckedBranch==false && BranchId ==1) || s.BranchId == BranchId) && s.IsPost == true &&
                 (AccountId == null||s.AccountId == AccountId) 
                 && (CostCenterId == null || s.CostCenterId == CostCenterId || CostCenterId==0)
@@ -1000,7 +1000,7 @@ namespace TaamerProject.Repository.Repositories
             try
             {
                
-                var details = _TaamerProContext.Transactions.Where(s => s.IsDeleted == false && (YearId == 0 || s.YearId == YearId) && s.Type != 12 && ((isCheckedBranch == false && BranchId == 1) || s.BranchId == BranchId)
+                var details = _TaamerProContext.Transactions.Where(s => s.IsDeleted == false && (YearId == 0 || s.YearId == YearId) && s.Type != 12 && s.Type !=35 && ((isCheckedBranch == false && BranchId == 1) || s.BranchId == BranchId)
                 && s.IsPost == true && ((s.AccountId == AccountId) || s.Accounts.ParentId == AccountId ||
                 s.Accounts.ParentAccount.ParentId == AccountId || s.Accounts.ParentAccount.ParentAccount.ParentId == AccountId ||
                 s.Accounts.ParentAccount.ParentAccount.ParentAccount.ParentId == AccountId ||
