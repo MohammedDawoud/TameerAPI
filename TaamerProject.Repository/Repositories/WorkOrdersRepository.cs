@@ -268,7 +268,7 @@ namespace TaamerProject.Repository.Repositories
             var workorders =  _TaamerProContext.WorkOrders.Where(s => s.IsDeleted == false && s.ProjectId == ProjectId).Select(x => new WorkOrdersVM
             {
                 WorkOrderId = x.WorkOrderId,
-                OrderNo = x.WorkOrderId.ToString(),
+                OrderNo = x.OrderNo,
                 UserId = x.UserId,
                 OrderDate = x.OrderDate,
                 OrderHijriDate = x.OrderHijriDate,
@@ -329,7 +329,7 @@ namespace TaamerProject.Repository.Repositories
             var workorders =  _TaamerProContext.WorkOrders.Where(s => s.IsDeleted == false && s.BranchId==BranchId).Select(x => new WorkOrdersVM
             {
                 WorkOrderId = x.WorkOrderId,
-                OrderNo = x.WorkOrderId.ToString(),
+                OrderNo = x.OrderNo,
                 UserId = x.UserId,
                 OrderDate = x.OrderDate,
                 OrderHijriDate = x.OrderHijriDate,
@@ -394,7 +394,7 @@ namespace TaamerProject.Repository.Repositories
             && (CustomerId ==null || CustomerId==0 || s.CustomerId== CustomerId)).Select(x => new WorkOrdersVM
             {
                 WorkOrderId = x.WorkOrderId,
-                OrderNo = x.WorkOrderId.ToString(),
+                OrderNo = x.OrderNo,
                 UserId = x.UserId,
                 OrderDate = x.OrderDate,
                 OrderHijriDate = x.OrderHijriDate,
