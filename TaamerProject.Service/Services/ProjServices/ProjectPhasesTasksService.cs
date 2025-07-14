@@ -6799,52 +6799,82 @@ namespace TaamerProject.Service.Services
                         var projectData = _ProjectRepository.GetProjectByIdSome("rtl", ProTaskUpdated.ProjectId ?? 0).Result;
                         if (projectData != null && projectData.CustomerId > 0)
                         {
+                            var (usersList, descriptionFromConfig) = _projectService.GetNotificationRecipients(NotificationCode.Task_Completed, ProTaskUpdated.ProjectId.Value);
+                            var description = "انهاء المهمة";
 
-                            //var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(projectData.MangerId ?? 0).Result;
-                            //if (UserNotifPriv.Count() != 0)
-                            //{
-                            //    if (UserNotifPriv.Contains(3202))
-                            //    {
-                            var UserNotification = new Notification();
-                            UserNotification.ReceiveUserId = ProTaskUpdated.UserId;
-                            UserNotification.Name = " انهاء مهمة";
-                            UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
-                            UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")); ;
-                            UserNotification.SendUserId = UserId;
-                            UserNotification.Type = 1; // notification
-                            UserNotification.Description = "تم انهاء المهمة  : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName ?? "";
-                            UserNotification.AllUsers = false;
-                            UserNotification.SendDate = DateTime.Now;
-                            UserNotification.ProjectId = ProTaskUpdated.ProjectId;
-                            UserNotification.TaskId = ProTaskUpdated.PhaseTaskId;
-                            UserNotification.AddUser = UserId;
-                            UserNotification.IsHidden = false;
-                            UserNotification.NextTime = null;
-                            UserNotification.AddDate = DateTime.Now;
-                            _TaamerProContext.Notification.Add(UserNotification);
-                            _TaamerProContext.SaveChanges();
-                            if(projectData.MangerId != null)
+                            if (descriptionFromConfig != null && descriptionFromConfig != "")
+                                description = descriptionFromConfig;
+
+                            if (usersList == null || usersList.Count == 0)
                             {
-                                var managernot = new Notification();
-                                managernot = UserNotification;
-                                managernot.ReceiveUserId = projectData.MangerId;
-                                managernot.NotificationId = 0;
-                                _TaamerProContext.Add(managernot);
+
+                                var UserNotification = new Notification();
+                                UserNotification.ReceiveUserId = ProTaskUpdated.UserId;
+                                UserNotification.Name = description;
+                                UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                                UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")); ;
+                                UserNotification.SendUserId = UserId;
+                                UserNotification.Type = 1; // notification
+                                UserNotification.Description = "تم انهاء المهمة  : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName ?? "";
+                                UserNotification.AllUsers = false;
+                                UserNotification.SendDate = DateTime.Now;
+                                UserNotification.ProjectId = ProTaskUpdated.ProjectId;
+                                UserNotification.TaskId = ProTaskUpdated.PhaseTaskId;
+                                UserNotification.AddUser = UserId;
+                                UserNotification.IsHidden = false;
+                                UserNotification.NextTime = null;
+                                UserNotification.AddDate = DateTime.Now;
+                                _TaamerProContext.Notification.Add(UserNotification);
                                 _TaamerProContext.SaveChanges();
-                                _notificationService.sendmobilenotification(projectData.MangerId ?? 0, " انهاء المهمة ", "  تم انهاء المهمة : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + "");
+                                if (projectData.MangerId != null)
+                                {
+                                    var managernot = new Notification();
+                                    managernot = UserNotification;
+                                    managernot.ReceiveUserId = projectData.MangerId;
+                                    managernot.NotificationId = 0;
+                                    _TaamerProContext.Add(managernot);
+                                    _TaamerProContext.SaveChanges();
+                                    _notificationService.sendmobilenotification(projectData.MangerId ?? 0, " انهاء المهمة ", "  تم انهاء المهمة : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + "");
+
+                                }
+
+                                _notificationService.sendmobilenotification(ProTaskUpdated.UserId ?? 0, " انهاء المهمة ", "  تم انهاء المهمة : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + "");
+
+
+                                var Desc = formattedDate + " بتاريخ " + ProTaskUpdated.TaskNo + " رقم " + ProTaskUpdated.DescriptionAr + "  انهاء المهمة ";
+
+                                SendMailFinishTask2(ProTaskUpdated, description, BranchId, UserId, URL, ImgUrl, 1, 0, projectData.CustomerName ?? "", projectData.ProjectNo ?? "", projectData.MangerId ?? 0, projectData.ProjectMangerName ?? "");
 
                             }
+                            else
+                            {
+                                foreach (var user in usersList)
+                                {
+                                    var UserNotification = new Notification();
+                                    UserNotification.ReceiveUserId = user;
+                                    UserNotification.Name = description;
+                                    UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                                    UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")); ;
+                                    UserNotification.SendUserId = UserId;
+                                    UserNotification.Type = 1; // notification
+                                    UserNotification.Description = "تم انهاء المهمة  : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName ?? "";
+                                    UserNotification.AllUsers = false;
+                                    UserNotification.SendDate = DateTime.Now;
+                                    UserNotification.ProjectId = ProTaskUpdated.ProjectId;
+                                    UserNotification.TaskId = ProTaskUpdated.PhaseTaskId;
+                                    UserNotification.AddUser = UserId;
+                                    UserNotification.IsHidden = false;
+                                    UserNotification.NextTime = null;
+                                    UserNotification.AddDate = DateTime.Now;
+                                    _TaamerProContext.Notification.Add(UserNotification);
+                                    _TaamerProContext.SaveChanges();
+                                    _notificationService.sendmobilenotification(user , description, "  تم انهاء المهمة : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + "");
+                                    var Desc = formattedDate + " بتاريخ " + ProTaskUpdated.TaskNo + " رقم " + ProTaskUpdated.DescriptionAr + "  انهاء المهمة ";
 
-                            _notificationService.sendmobilenotification(ProTaskUpdated.UserId ?? 0, " انهاء المهمة ", "  تم انهاء المهمة : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + "");
+                                    SendMailFinishTask2(ProTaskUpdated, description, BranchId, user, URL, ImgUrl, 1, 0, projectData.CustomerName ?? "", projectData.ProjectNo ?? "", projectData.MangerId ?? 0, projectData.ProjectMangerName ?? "");
 
-                            //}
-                            //if (UserNotifPriv.Contains(3201))
-                            //{
-                            var Desc = formattedDate + " بتاريخ " +ProTaskUpdated.TaskNo +" رقم "+ ProTaskUpdated.DescriptionAr + "  انهاء المهمة ";
-
-                            SendMailFinishTask2(ProTaskUpdated, "  انهاء المهمة", BranchId, UserId, URL, ImgUrl, 1, 0, projectData.CustomerName ?? "", projectData.ProjectNo ?? "", projectData.MangerId ?? 0, projectData.ProjectMangerName ?? "");
-
-                          
+                                }
+                            }
                         }
 
                     }
@@ -7487,42 +7517,85 @@ namespace TaamerProject.Service.Services
                 _SystemAction.SaveTaskOperations(Pro_TaskOperation, UserId, BranchId);
                 #endregion
 
-
-                #region Notifications
-                var UserNotification = new Notification();
-                UserNotification.ReceiveUserId = ProTaskUpdated.UserId;
-                UserNotification.Name = "تمديد مهمة";
-                UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
-                UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")); ;
-                UserNotification.SendUserId = UserId;
-                UserNotification.Type = 1; // notification
-                UserNotification.Description = " تم تمديد المهمة : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + " السبب :  " + ProjectPhasesTasks.PlusTimeReason_admin;
-                UserNotification.AllUsers = false;
-                UserNotification.SendDate = DateTime.Now;
-                UserNotification.ProjectId = ProTaskUpdated.ProjectId;
-                UserNotification.TaskId = ProTaskUpdated.PhaseTaskId;
-                UserNotification.AddUser = UserId;
-                UserNotification.IsHidden = false;
-                UserNotification.NextTime = null;
-                UserNotification.AddDate = DateTime.Now;
-                _TaamerProContext.Notification.Add(UserNotification);
-                _TaamerProContext.SaveChanges();
-                if (projectData != null && projectData.MangerId != null && projectData.MangerId != 0)
+                try
                 {
-                    var managernot = new Notification();
-                    managernot = UserNotification;
-                    managernot.ReceiveUserId = projectData.UserId;
-                    managernot.NotificationId = 0;
-                    _TaamerProContext.Notification.Add(managernot);
-                    _TaamerProContext.SaveChanges();
-                    _notificationService.sendmobilenotification(projectData.MangerId ?? 0, "  تمديد المهمة ", "تم تمديد المهمة : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + "   السبب   " + ProjectPhasesTasks.PlusTimeReason_admin);
+                    #region Notifications
+                    var (usersList, descriptionFromConfig) = _projectService.GetNotificationRecipients(NotificationCode.Task_ExtensionAccepted, ProTaskUpdated.ProjectId.Value);
+                    var description = "تمديد مهمة";
+
+                    if (descriptionFromConfig != null && descriptionFromConfig != "")
+                        description = descriptionFromConfig;
+
+                    if (usersList == null || usersList.Count == 0)
+                    {
+                        var UserNotification = new Notification();
+                        UserNotification.ReceiveUserId = ProTaskUpdated.UserId;
+                        UserNotification.Name = description;
+                        UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                        UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")); ;
+                        UserNotification.SendUserId = UserId;
+                        UserNotification.Type = 1; // notification
+                        UserNotification.Description = " تم تمديد المهمة : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + " السبب :  " + ProjectPhasesTasks.PlusTimeReason_admin;
+                        UserNotification.AllUsers = false;
+                        UserNotification.SendDate = DateTime.Now;
+                        UserNotification.ProjectId = ProTaskUpdated.ProjectId;
+                        UserNotification.TaskId = ProTaskUpdated.PhaseTaskId;
+                        UserNotification.AddUser = UserId;
+                        UserNotification.IsHidden = false;
+                        UserNotification.NextTime = null;
+                        UserNotification.AddDate = DateTime.Now;
+                        _TaamerProContext.Notification.Add(UserNotification);
+                        _TaamerProContext.SaveChanges();
+                        if (projectData != null && projectData.MangerId != null && projectData.MangerId != 0)
+                        {
+                            var managernot = new Notification();
+                            managernot = UserNotification;
+                            managernot.ReceiveUserId = projectData.UserId;
+                            managernot.NotificationId = 0;
+                            _TaamerProContext.Notification.Add(managernot);
+                            _TaamerProContext.SaveChanges();
+                            _notificationService.sendmobilenotification(projectData.MangerId ?? 0, description, "تم تمديد المهمة : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + "   السبب   " + ProjectPhasesTasks.PlusTimeReason_admin);
+
+                        }
+
+                        _notificationService.sendmobilenotification(ProTaskUpdated.UserId ?? 0, description, "تم تمديد المهمة : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + "   السبب   " + ProjectPhasesTasks.PlusTimeReason_admin);
+
+                        SendMailFinishTask2(ProTaskUpdated, description, BranchId, ProTaskUpdated.UserId ??0, Url, ImgUrl, 4, 0, projectData.CustomerName ?? "", projectData.ProjectNo ?? "", projectData.MangerId ?? 0, projectData.ProjectMangerName ?? "");
+
+                    }
+                    else
+                    {
+                        foreach (var user in usersList)
+                        {
+                            var UserNotification = new Notification();
+                            UserNotification.ReceiveUserId = ProTaskUpdated.UserId;
+                            UserNotification.Name = "تمديد مهمة";
+                            UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                            UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")); ;
+                            UserNotification.SendUserId = UserId;
+                            UserNotification.Type = 1; // notification
+                            UserNotification.Description = " تم تمديد المهمة : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + " السبب :  " + ProjectPhasesTasks.PlusTimeReason_admin;
+                            UserNotification.AllUsers = false;
+                            UserNotification.SendDate = DateTime.Now;
+                            UserNotification.ProjectId = ProTaskUpdated.ProjectId;
+                            UserNotification.TaskId = ProTaskUpdated.PhaseTaskId;
+                            UserNotification.AddUser = UserId;
+                            UserNotification.IsHidden = false;
+                            UserNotification.NextTime = null;
+                            UserNotification.AddDate = DateTime.Now;
+                            _TaamerProContext.Notification.Add(UserNotification);
+                            _TaamerProContext.SaveChanges();
+                            _notificationService.sendmobilenotification(user , "  تمديد المهمة ", "تم تمديد المهمة : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + "   السبب   " + ProjectPhasesTasks.PlusTimeReason_admin);
+
+                            SendMailFinishTask2(ProTaskUpdated, description, BranchId, user, Url, ImgUrl, 4, 0, projectData.CustomerName ?? "", projectData.ProjectNo ?? "", projectData.MangerId ?? 0, projectData.ProjectMangerName ?? "");
+
+                        }
+                    }
+                        #endregion
+                }catch(Exception ex)
+                {
 
                 }
-
-                _notificationService.sendmobilenotification(ProTaskUpdated.UserId ?? 0, "  تمديد المهمة ", "تم تمديد المهمة : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + "   السبب   " + ProjectPhasesTasks.PlusTimeReason_admin);
-
-                SendMailFinishTask2(ProTaskUpdated, "تمديد مهمة", BranchId, UserId, Url, ImgUrl, 4, 0, projectData.CustomerName??"", projectData.ProjectNo ?? "", projectData.MangerId ?? 0, projectData.ProjectMangerName ?? "");
-                #endregion
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.Pro_taskPluseTime };
             }
             catch (Exception ex)
@@ -7558,22 +7631,76 @@ namespace TaamerProject.Service.Services
                         var projectData = _ProjectRepository.GetProjectByIdSome("rtl", ProTaskUpdated.ProjectId ?? 0).Result;
                         if (projectData != null && projectData.CustomerId > 0)
                         {
-                            //var cust = _CustomerRepository.GetById((int)projectData.CustomerId);
+                            //get notification configuration users and description
+                            var (usersList, descriptionFromConfig) = _projectService.GetNotificationRecipients(NotificationCode.Task_ExtensionRequested, ProTaskUpdated.ProjectId.Value);
+                            var description = "لديك طلب تمديد المهمة";
 
-                            //var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(projectData.MangerId ?? 0).Result;
+                            if (descriptionFromConfig != null && descriptionFromConfig != "")
+                                description = descriptionFromConfig;
 
-                            //if (UserNotifPriv.Count() != 0)
-                            //{
-                            //    if (UserNotifPriv.Contains(3192))
-                            //    {
+                            //if no configuration send to emp and manager
+                            if (usersList == null || usersList.Count == 0)
+                            {
+                                var UserNotification = new Notification();
+                                UserNotification.ReceiveUserId = ProTaskUpdated.UserId;
+                                UserNotification.Name = description;
+                                UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                                UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")); ;
+                                UserNotification.SendUserId = UserId;
+                                UserNotification.Type = 1; // notification
+                                UserNotification.Description = "طلب تمديد : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + " السبب :  " + ProjectPhasesTasks.PlusTimeReason;
+                                UserNotification.AllUsers = false;
+                                UserNotification.SendDate = DateTime.Now;
+                                UserNotification.ProjectId = ProTaskUpdated.ProjectId;
+                                UserNotification.TaskId = ProTaskUpdated.PhaseTaskId;
+                                UserNotification.AddUser = UserId;
+                                UserNotification.IsHidden = false;
+                                UserNotification.NextTime = null;
+                                UserNotification.AddDate = DateTime.Now;
+                                _TaamerProContext.Notification.Add(UserNotification);
+                                _TaamerProContext.SaveChanges();
+                                if (projectData != null && projectData.MangerId != null && projectData.MangerId != 0)
+                                {
+                                    var managernot = new Notification();
+                                    managernot = UserNotification;
+                                    managernot.ReceiveUserId = projectData.MangerId;
+                                    managernot.NotificationId = 0;
+                                    _TaamerProContext.Notification.Add(managernot);
+                                    _TaamerProContext.SaveChanges();
+                                    _notificationService.sendmobilenotification(projectData.MangerId ?? 0, description, "طلب تمديد المهمة : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + "   السبب   " + ProjectPhasesTasks.PlusTimeReason);
+
+                                }
+                                _notificationService.sendmobilenotification(ProTaskUpdated.UserId ?? 0, description, "طلب تمديد المهمة : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + "   السبب   " + ProjectPhasesTasks.PlusTimeReason);
+
+                                SendMailFinishTask2(ProTaskUpdated, description, BranchId, UserId, Url, ImgUrl, 2, 0, projectData.CustomerName ?? "", projectData.ProjectNo ?? "", projectData.MangerId ?? 0, projectData.ProjectMangerName ?? "");
+                                var userObj = _UsersRepository.GetById(projectData.MangerId ?? 0);
+                                var NotStr = formattedDate + " بتاريخ " + ProTaskUpdated.TaskNo + " رقم " + ProTaskUpdated.DescriptionAr + " طلب تمديد المهمة ";
+                                if (userObj.Mobile != null && userObj.Mobile != "")
+                                {
+                                    var result = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
+                                }
+
+                                var userObj2 = _UsersRepository.GetById(ProTaskUpdated.UserId ?? 0);
+                                if (userObj2.Mobile != null && userObj2.Mobile != "")
+                                {
+                                    var result = _userNotificationPrivilegesService.SendSMS(userObj2.Mobile, NotStr, UserId, BranchId);
+                                }
+                            }
+                            else
+                            {
+                                foreach (var user in usersList)
+                                {
+
+
+
                                     var UserNotification = new Notification();
-                                    UserNotification.ReceiveUserId = ProTaskUpdated.UserId;
-                                    UserNotification.Name = "تمديد مهمة";
+                                    UserNotification.ReceiveUserId = user;
+                                    UserNotification.Name = description;
                                     UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
                                     UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")); ;
                                     UserNotification.SendUserId = UserId;
                                     UserNotification.Type = 1; // notification
-                                    UserNotification.Description = "طلب تمديد : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName +" السبب :  " + ProjectPhasesTasks.PlusTimeReason;
+                                    UserNotification.Description = "طلب تمديد : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + " السبب :  " + ProjectPhasesTasks.PlusTimeReason;
                                     UserNotification.AllUsers = false;
                                     UserNotification.SendDate = DateTime.Now;
                                     UserNotification.ProjectId = ProTaskUpdated.ProjectId;
@@ -7583,46 +7710,17 @@ namespace TaamerProject.Service.Services
                                     UserNotification.NextTime = null;
                                     UserNotification.AddDate = DateTime.Now;
                                     _TaamerProContext.Notification.Add(UserNotification);
-                            _TaamerProContext.SaveChanges();
-                            if (projectData != null && projectData.MangerId != null && projectData.MangerId != 0)
-                            {
-                                var managernot = new Notification();
-                                managernot = UserNotification;
-                                managernot.ReceiveUserId = projectData.MangerId;
-                                managernot.NotificationId = 0;
-                                _TaamerProContext.Notification.Add(managernot);
-                                _TaamerProContext.SaveChanges();
-                                _notificationService.sendmobilenotification(projectData.MangerId ?? 0, " طلب تمديد المهمة ", "طلب تمديد المهمة : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + "   السبب   " + ProjectPhasesTasks.PlusTimeReason);
-
-                            }
-
-                              _notificationService.sendmobilenotification(ProTaskUpdated.UserId??0, " طلب تمديد المهمة ", "طلب تمديد المهمة : " + ProTaskUpdated.DescriptionAr + " رقم " + ProTaskUpdated.TaskNo + ":" + ProTaskUpdated.Notes + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + projectData.CustomerName + "   السبب   " + ProjectPhasesTasks.PlusTimeReason);
-                            //}
-                            //if (UserNotifPriv.Contains(3191))
-                            //{
-                            //    var Desc = formattedDate + " بتاريخ " + ProTaskUpdated.DescriptionAr + " طلب تمديد المهمة ";
-
-
-                            SendMailFinishTask2(ProTaskUpdated, "لديك طلب تمديد المهمة", BranchId, UserId, Url, ImgUrl, 2, 0, projectData.CustomerName??"", projectData.ProjectNo ?? "", projectData.MangerId ?? 0, projectData.ProjectMangerName ?? "");
-
-                                //}
-                                //if (UserNotifPriv.Contains(3193))
-                                //{
-                                    var userObj = _UsersRepository.GetById(projectData.MangerId ?? 0);
-                                    var NotStr = formattedDate + " بتاريخ " +ProTaskUpdated.TaskNo +" رقم "+ ProTaskUpdated.DescriptionAr + " طلب تمديد المهمة ";
+                                    _TaamerProContext.SaveChanges();
+                                    SendMailFinishTask2(ProTaskUpdated, description, BranchId, user, Url, ImgUrl, 2, 0, projectData.CustomerName ?? "", projectData.ProjectNo ?? "", projectData.MangerId ?? 0, projectData.ProjectMangerName ?? "");
+                                    var userObj = _UsersRepository.GetById(user);
+                                    var NotStr = formattedDate + " بتاريخ " + ProTaskUpdated.TaskNo + " رقم " + ProTaskUpdated.DescriptionAr + " طلب تمديد المهمة ";
                                     if (userObj.Mobile != null && userObj.Mobile != "")
                                     {
                                         var result = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
                                     }
+                                }
 
-                                    var userObj2 = _UsersRepository.GetById(ProTaskUpdated.UserId ?? 0);
-                                    if (userObj2.Mobile != null && userObj2.Mobile != "")
-                                    {
-                                        var result = _userNotificationPrivilegesService.SendSMS(userObj2.Mobile, NotStr, UserId, BranchId);
-                                    }
-
-                            //}
-                            //    }
+                            }
                         }
                         }
                 }
@@ -8917,21 +9015,9 @@ namespace TaamerProject.Service.Services
                 DateTime date = new DateTime();
                 var branch = _BranchesRepository.GetById(BranchId).OrganizationId;
                 var org = _OrganizationsRepository.GetById(branch);
-                //var DateOfTask = ProjectPhasesTasks.AddDate.Value.ToString("yyyy-MM-dd HH:MM");
                 var DateOfTask = ProjectPhasesTasks.UpdateDate.Value.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
                 var EndOfTask = ProjectPhasesTasks.UpdateDate.Value.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
 
-                //var str = date.Date.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
-                //var project = _ProjectRepository.GetProjectByIdSome("rtl",ProjectPhasesTasks.ProjectId??0).Result;
-                //var Status = "";
-                //if (DateTime.ParseExact(ProjectPhasesTasks.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(EndOfTask, "yyyy-MM-dd", CultureInfo.InvariantCulture))
-                //{
-                //    Status = "On Time";
-                //}
-                //else
-                //{
-                //    Status = "Delay";
-                //}
                 var timeType = "يوم";
                 if (ProjectPhasesTasks.TimeType == 1)
                 {
@@ -9018,18 +9104,24 @@ namespace TaamerProject.Service.Services
                 mail.AlternateViews.Add(av1);
                 if (type == 4  || type == 6)
                 {
-                    mail.To.Add(new MailAddress(_UsersRepository.GetById(ProjectPhasesTasks!.UserId??0).Email));
+                    mail.To.Add(new MailAddress(_UsersRepository.GetById(UserId).Email));
 
                 }
                 else if (type == 1 || type == 2 || type == 3 ||type==5 || type==4 || type==7 || type==8)
                 {
-                    mail.To.Add(new MailAddress(_UsersRepository.GetById(ProjectPhasesTasks!.UserId ?? 0).Email));
-                    mail.To.Add(new MailAddress(_UsersRepository.GetById(MangerId).Email));
+                    mail.To.Add(new MailAddress(_UsersRepository.GetById(UserId).Email));
+                    if (MangerId != null && MangerId > 0)
+                    {
+                        mail.To.Add(new MailAddress(_UsersRepository.GetById(MangerId).Email));
+                    }
 
                 }
                 else
                 {
-                    mail.To.Add(new MailAddress(_UsersRepository.GetById(MangerId).Email));
+                    if (MangerId != null && MangerId > 0)
+                    {
+                        mail.To.Add(new MailAddress(_UsersRepository.GetById(MangerId).Email));
+                    }
                 }
                 mail.Subject = subject;
                 try
