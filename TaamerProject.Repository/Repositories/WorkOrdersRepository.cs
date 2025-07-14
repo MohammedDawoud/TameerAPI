@@ -2400,7 +2400,7 @@ namespace TaamerProject.Repository.Repositories
         {
             if (_TaamerProContext.ProjectPhasesTasks != null)
             {
-                var lastRow = _TaamerProContext.WorkOrders.Where(s => s.IsDeleted == false && s.OrderNoType == 1 && s.OrderNo!.Contains(codePrefix)).OrderByDescending(u => u.WorkOrderId).Take(1).FirstOrDefault();
+                var lastRow = _TaamerProContext.WorkOrders.Where(s => s.IsDeleted == false /*&& s.BranchId == BranchId*/ && s.OrderNoType == 1 && s.OrderNo!.Contains(codePrefix)).OrderByDescending(u => u.WorkOrderId).Take(1).FirstOrDefault();
                 if (lastRow != null)
                 {
                     try

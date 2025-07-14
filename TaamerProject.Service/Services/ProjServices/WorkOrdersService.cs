@@ -1251,19 +1251,23 @@ namespace TaamerProject.Service.Services
 
         public async Task<string> GenerateNextOrderNumber(int BranchId, int? ProjectId)
         {
-            var codePrefix = "";
-            var prostartcode = _BranchesRepository.GetById(BranchId).OrderStartCode;
-            if (prostartcode != null && prostartcode != "")
-            {
-                codePrefix = prostartcode;
-            }
+            var codePrefix = "MGT#";
+            //var prostartcode = _BranchesRepository.GetById(BranchId).OrderStartCode;
+            //if (prostartcode != null && prostartcode != "")
+            //{
+            //    codePrefix = prostartcode;
+            //}
+
+            //var Value = _workordersRepository.GenerateNextOrderNumber(BranchId, codePrefix, 0).Result;
+            //var NewValue = string.Format("{0:000000}", Value);
+            //if (codePrefix != "")
+            //{
+            //    NewValue = codePrefix + NewValue;
+            //}
 
             var Value = _workordersRepository.GenerateNextOrderNumber(BranchId, codePrefix, 0).Result;
             var NewValue = string.Format("{0:000000}", Value);
-            if (codePrefix != "")
-            {
-                NewValue = codePrefix + NewValue;
-            }
+            NewValue = codePrefix + NewValue;
             return (NewValue);
         }
 
