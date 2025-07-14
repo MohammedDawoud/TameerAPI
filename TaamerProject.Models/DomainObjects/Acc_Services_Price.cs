@@ -22,7 +22,6 @@ namespace TaamerProject.Models
         public int? PackageId { get; set; }
         public string? ServiceName_EN { get; set; }
         public int? ServiceType { get; set; }
-
         public virtual Acc_Packages? Package { get; set; }
 
         public virtual Accounts? AccountParentId { get; set; }

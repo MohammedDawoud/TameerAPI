@@ -14,7 +14,11 @@ namespace TaamerProject.Models
 
         public decimal? Serviceamountval { get; set; }
         public int? LineNumber { get; set; }
-
+        public decimal? Amount { get; set; }
+        public decimal? TaxAmount { get; set; }
+        public decimal? TotalAmount { get; set; }
+        public decimal? DiscountPercentage_Det { get; set; }
+        public decimal? DiscountValue_Det { get; set; }
         public virtual OffersPrices? OffersPrices { get; set; }
         public virtual Acc_Services_Price?  serviceprice  { get; set; }
 

@@ -21,9 +21,12 @@ namespace TaamerProject.Models
 
         public string? ServicesName { get; set; }
         public string? ServicesNameEN { get; set; }
-
-        public decimal? Amount { get; set; }
         public int? ServicesId { get; set; }
+        public decimal? Amount { get; set; }
+        public decimal? TaxAmount { get; set; }
+        public decimal? TotalAmount { get; set; }
+        public decimal? DiscountPercentage_Det { get; set; }
+        public decimal? DiscountValue_Det { get; set; }
         public List<AccServicesPricesOfferVM>? ServicesPricesOffer { get; set; }
 
 
