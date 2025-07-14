@@ -46,7 +46,7 @@ namespace TaamerProject.Repository.Repositories
         //        return Tas;
         //    }
         //}
-        public async Task< IEnumerable<WorkOrdersVM>> GetAllWorkOrdersForAdmin(int BranchId)
+        public async Task< IEnumerable<WorkOrdersVM>> GetAllWorkOrdersForAdmin(int BranchId) 
         {
             IEnumerable<WorkOrdersVM> wo = new List<WorkOrdersVM>();
             try { 
