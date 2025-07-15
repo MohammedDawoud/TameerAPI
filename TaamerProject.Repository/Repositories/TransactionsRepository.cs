@@ -11,6 +11,7 @@ using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using System.Data.SqlClient;
 using System.Data;
+using TaamerProject.Models.Enums;
 
 namespace TaamerProject.Repository.Repositories
 {
@@ -2174,7 +2175,7 @@ namespace TaamerProject.Repository.Repositories
 
         public async Task< IEnumerable<TransactionsVM>> GetAllJournals(int? FromJournal, int? ToJournal, string FromDate, string ToDate, int YearId, int BranchId)
         {
-            var Journals = _TaamerProContext.Transactions.Where(s => s.IsDeleted == false && s.Type!=12  /*&& s.BranchId == BranchId*/ && s.YearId== YearId && s.IsPost==true /*&& s.Invoices.Rad!=true*/).Select(tr => new TransactionsVM
+            var Journals = _TaamerProContext.Transactions.Where(s => s.IsDeleted == false && s.Type!=12 && s.Type !=(int)VoucherType.PurchesOrder /*&& s.BranchId == BranchId*/ && s.YearId== YearId && s.IsPost==true /*&& s.Invoices.Rad!=true*/).Select(tr => new TransactionsVM
             {
                 TransactionId = tr.TransactionId,
                 JournalNo = tr.JournalNo,
