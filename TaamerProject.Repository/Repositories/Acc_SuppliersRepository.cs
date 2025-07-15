@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using TaamerProject.Repository.Interfaces;
 using TaamerProject.Models.DBContext;
+using TaamerProject.Models.Enums;
 
 namespace TaamerProject.Repository.Repositories
 {
@@ -45,7 +46,7 @@ namespace TaamerProject.Repository.Repositories
                     BuildingNumber = x.BuildingNumber??"",
                     CityId = x.CityId??0,
                     CityName = x.city != null ? x.city.NameAr : "",
-                    TotalBalance = (_TaamerProContext.Transactions.Where(c => c.IsDeleted == false && c.AccountId==x.AccountId && c.YearId == YearId && c.IsPost == true && c.BranchId == BranchId && c.Type != 12).Sum(s => s.Depit)) - (_TaamerProContext.Transactions.Where(c => c.IsDeleted == false && c.AccountId == x.AccountId && c.YearId == YearId && c.IsPost == true && c.BranchId == BranchId && c.Type != 12).Sum(s => s.Credit)),
+                    TotalBalance = (_TaamerProContext.Transactions.Where(c => c.IsDeleted == false && c.AccountId==x.AccountId && c.YearId == YearId && c.IsPost == true && c.BranchId == BranchId && c.Type != 12 && c.Type !=(int)VoucherType.PurchesOrder).Sum(s => s.Depit)) - (_TaamerProContext.Transactions.Where(c => c.IsDeleted == false && c.AccountId == x.AccountId && c.YearId == YearId && c.IsPost == true && c.BranchId == BranchId && c.Type != 12).Sum(s => s.Credit)),
 
                 }).ToList();
                 return Suppliers;
