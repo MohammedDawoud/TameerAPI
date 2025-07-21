@@ -34,12 +34,12 @@ namespace TaamerProject.Service.Services
         private readonly IEmailSettingRepository _EmailSettingRepository;
         private readonly INotificationService _notificationService;
         private readonly ICustomerMailService _customerMailService;
-
-
+        private readonly IEmployeesService _employeesService;
 
         public CustodyService(TaamerProjectContext dataContext, ISystemAction systemAction, ICustodyRepository custodyRepository, IEmployeesRepository employeesRepository, IItemRepository itemRepository
             , IUsersRepository usersRepository, IUserNotificationPrivilegesService userNotificationPrivilegesService, IBranchesRepository branchesRepository, IOrganizationsRepository organizationsRepository
-            , IEmailSettingRepository emailSettingRepository, INotificationService notificationService, ICustomerMailService customerMailService)
+            , IEmailSettingRepository emailSettingRepository, INotificationService notificationService, ICustomerMailService customerMailService,
+            IEmployeesService employeesService)
         {
             _TaamerProContext = dataContext;
             _SystemAction = systemAction;
@@ -53,6 +53,7 @@ namespace TaamerProject.Service.Services
             _EmailSettingRepository = emailSettingRepository;
             _notificationService = notificationService;
             _customerMailService = customerMailService;
+            this._employeesService = employeesService;
         }
         public async Task<IEnumerable<CustodyVM>> GetAllCustody(int BranchId)
         {
@@ -441,10 +442,11 @@ namespace TaamerProject.Service.Services
                                     <h4> عزيزي الموظف " + Emp.EmployeeNameAr + "</h4> <h4> السلام عليكم ورحمة الله وبركاتة</h4> <h3 style = 'text-align:center;' > تم استلام العهدة المبين تفاصيلها في الجدول التالي</h3><table align = 'center' border = '1' ><tr> <td>  الموظف</td><td>" + Emp.EmployeeNameAr + @"</td> </tr> <tr> <td> العهدة </td> <td>" + CustodyTypeName + @"</td>
                                      </tr> <tr> <td>  الكمية</td> <td>" + custody.Quantity + @"</td> </tr><tr> <td>   السعر</td> <td>" + CustodyPrice + @"</td> </tr><tr> <td>   ميعاد استلام العهدة</td> <td>" + custody.Date + @"</td> </tr> </table> <p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
 
-                                    </div> </div></div></div></body></html> "
-                        ;
-
-
+                                    </div> </div></div></div></body></html> ";
+                        var subject = "";
+                        //var config = _employeesService.GetNotificationRecipients(Models.Enums.NotificationCode.HR_AssignAsset, custody.EmployeeId);
+                        
+                        //if()
                         if (Emp.Email != null)
                         {
                             _customerMailService.SendMail_SysNotification((int)Emp.BranchId, 0, 0, Resources.ResourceManager.GetString("Emp_ReceiveCustody", CultureInfo.CreateSpecificCulture("ar")), htmlBody, true, Emp.Email);
@@ -456,13 +458,8 @@ namespace TaamerProject.Service.Services
                         }
 
 
-                        var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(user).Result;
-                                ////Notification
-
                                 try
                                 {
-                                //    if (UserNotifPriv.Count() != 0 && UserNotifPriv.Contains(152))
-                                //    {
                                         UserNotification.ReceiveUserId = user;
                                         UserNotification.Name = Resources.ResourceManager.GetString("Emp_ReceiveCustody", CultureInfo.CreateSpecificCulture("ar"));
                                         UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
@@ -508,10 +505,8 @@ namespace TaamerProject.Service.Services
                                 //SMS
                                 try
                                 {
-                                    if (UserNotifPriv.Count() != 0 && UserNotifPriv.Contains(153))
-                                    {
                                         var res = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
-                                    }
+                                    
                                 }
                                 catch (Exception ex3)
                                 {

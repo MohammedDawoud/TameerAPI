@@ -1,4 +1,5 @@
-﻿using Microsoft.Graph.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Graph.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Models.DBContext;
+using TaamerProject.Models.Enums;
 using TaamerProject.Repository.Interfaces;
 using TaamerProject.Repository.Repositories;
 using TaamerProject.Service.IGeneric;
@@ -1573,51 +1575,85 @@ namespace TaamerProject.Service.Services
      </tr> <tr> <td>   الفرع</td> <td>" + NameAr + @"</td> </tr> <tr> <td>  تاريخ المباشرة  </td> <td>" + EmployeeUpdated.WorkStartDate + @"</td> </tr>  <tr> <td>   المدير المباشر  </td> <td>" + directmanagername + @"</td> </tr></table><h4>صورة مع التحية للمدير المباشر للموظف</h4> <p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
 	
     </div> </div></div></div></body></html> ";
+            var Note_Cinfig = GetNotificationRecipients(NotificationCode.HR_EmployeeStart, EmployeeUpdated.EmployeeId);
+            var desc = Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar"));
+            if (Note_Cinfig.Description != null && Note_Cinfig.Description != "")
+                desc = Note_Cinfig.Description;
 
-            //Mail
-            if (EmployeeUpdated.Email != null && EmployeeUpdated.Email != "")
+            if (Note_Cinfig.Users != null && Note_Cinfig.Users.Count() > 0)
             {
-                IsSent = _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, 0, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), htmlBody, true, EmployeeUpdated.Email);
-            }
-            if (directmanager != null)
-            {
-                _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, 0, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), htmlBody, true, directmanager.Email);
+                foreach (var usr in Note_Cinfig.Users)
+                {
+                    string NotStr = "تم انضمام الموظف " + EmployeeUpdated.EmployeeNameAr + " إلى فريق " + OrgName + ", الوظيفة: " + job.JobNameAr + " قسم : " + DepartmentNameAr + " فرع: " + NameAr;
+                    Notification UserNotification = new Notification();
+                    UserNotification.ReceiveUserId = usr;// EmployeeUpdated.UserId.Value;
+                    UserNotification.Name = desc;// Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar"));
+                    UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                    UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
+                    UserNotification.SendUserId = 1;
+                    UserNotification.Type = 1; // notification
+                    UserNotification.Description = NotStr;
+                    UserNotification.AllUsers = false;
+                    UserNotification.SendDate = DateTime.Now;
+                    UserNotification.ProjectId = 0;
+                    UserNotification.TaskId = 0;
+                    UserNotification.IsHidden = false;
+                    UserNotification.AddUser = EmployeeUpdated.UserId.Value;
+                    UserNotification.AddDate = DateTime.Now;
+                    UserNotification.IsRead = false;
+                    _TaamerProContext.Notification.Add(UserNotification);
+                    _TaamerProContext.SaveChanges();
+                    _notificationService.sendmobilenotification(usr, desc, NotStr);
+                    IsSent = _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, usr, desc, htmlBody, true);
 
+                }
             }
-            string NotStr = "تم انضمام الموظف " + EmployeeUpdated.EmployeeNameAr + " إلى فريق " + OrgName + ", الوظيفة: " + job.JobNameAr + " قسم : " + DepartmentNameAr + " فرع: " + NameAr;
-            Notification UserNotification = new Notification();
-            UserNotification.ReceiveUserId = EmployeeUpdated.UserId.Value;
-            UserNotification.Name = Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar"));
-            UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
-            UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
-            UserNotification.SendUserId = 1;
-            UserNotification.Type = 1; // notification
-            UserNotification.Description = NotStr;
-            UserNotification.AllUsers = false;
-            UserNotification.SendDate = DateTime.Now;
-            UserNotification.ProjectId = 0;
-            UserNotification.TaskId = 0;
-            UserNotification.IsHidden = false;
-            UserNotification.AddUser = EmployeeUpdated.UserId.Value;
-            UserNotification.AddDate = DateTime.Now;
-            UserNotification.IsRead = false;
-            _TaamerProContext.Notification.Add(UserNotification);
-            _TaamerProContext.SaveChanges();
-            if (directmanager != null)
+            else
             {
-                var Not_directmanager = new Notification();
-                Not_directmanager = UserNotification;
-                Not_directmanager.ReceiveUserId = directmanager.UserId.Value;
-                Not_directmanager.NotificationId = 0;
-                _TaamerProContext.Notification.Add(Not_directmanager);
+                //Mail
+                if (EmployeeUpdated.Email != null && EmployeeUpdated.Email != "")
+                {
+                    IsSent = _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, 0, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), htmlBody, true, EmployeeUpdated.Email);
+                }
+                if (directmanager != null)
+                {
+                    _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, 0, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), htmlBody, true, directmanager.Email);
+
+                }
+                string NotStr = "تم انضمام الموظف " + EmployeeUpdated.EmployeeNameAr + " إلى فريق " + OrgName + ", الوظيفة: " + job.JobNameAr + " قسم : " + DepartmentNameAr + " فرع: " + NameAr;
+                Notification UserNotification = new Notification();
+                UserNotification.ReceiveUserId = EmployeeUpdated.UserId.Value;
+                UserNotification.Name = Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar"));
+                UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
+                UserNotification.SendUserId = 1;
+                UserNotification.Type = 1; // notification
+                UserNotification.Description = NotStr;
+                UserNotification.AllUsers = false;
+                UserNotification.SendDate = DateTime.Now;
+                UserNotification.ProjectId = 0;
+                UserNotification.TaskId = 0;
+                UserNotification.IsHidden = false;
+                UserNotification.AddUser = EmployeeUpdated.UserId.Value;
+                UserNotification.AddDate = DateTime.Now;
+                UserNotification.IsRead = false;
+                _TaamerProContext.Notification.Add(UserNotification);
                 _TaamerProContext.SaveChanges();
+                if (directmanager != null)
+                {
+                    var Not_directmanager = new Notification();
+                    Not_directmanager = UserNotification;
+                    Not_directmanager.ReceiveUserId = directmanager.UserId.Value;
+                    Not_directmanager.NotificationId = 0;
+                    _TaamerProContext.Notification.Add(Not_directmanager);
+                    _TaamerProContext.SaveChanges();
+                }
+                _notificationService.sendmobilenotification(EmployeeUpdated.UserId.Value, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), NotStr);
+                if (directmanager != null)
+                {
+                    _notificationService.sendmobilenotification(directmanager.UserId.Value, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), NotStr);
+                }
             }
-            _notificationService.sendmobilenotification(EmployeeUpdated.UserId.Value, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), NotStr);
-            if (directmanager != null)
-            {
-                _notificationService.sendmobilenotification(directmanager.UserId.Value, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), NotStr);
-            }
-
             return IsSent;
         }
 
@@ -2750,6 +2786,172 @@ namespace TaamerProject.Service.Services
         }
 
 
+
+        public (List<int> Users, string Description) GetNotificationRecipients(NotificationCode code, int? EmpId )
+        {
+            var usersnote = new List<int>();
+
+            var config = _TaamerProContext.NotificationConfigurations
+                .Include(x => x.NotificationConfigurationsAssines)
+                .FirstOrDefault(x => x.ConfigurationId == (int)code);
+
+            if (config == null)
+                return (usersnote, ""); // default empty if config is null
+
+            string description =  string.IsNullOrEmpty(config.Description) ?"" : config.Description;
+
+            
+
+            var to = (Beneficiary_type)(config.To ?? 0);
+
+            switch (to)
+            {
+                case Beneficiary_type.مستخدمين:
+                    if (config.NotificationConfigurationsAssines != null)
+                        usersnote.AddRange((List<int>)config.NotificationConfigurationsAssines.Select(x => x.UserId));
+                    break;
+
+                
+                case Beneficiary_type.المدير_المباشر:
+                    if (EmpId.HasValue)
+                    {
+                        var emp3 = _TaamerProContext.Employees.FirstOrDefault(e => e.EmployeeId == EmpId.Value);
+                        if (emp3?.DirectManager != null)
+                        {
+                            var mgrUserId = _TaamerProContext.Employees
+                                .Where(e => e.EmployeeId == emp3.DirectManager && e.UserId.HasValue)
+                                .Select(e => e.UserId.Value).FirstOrDefault();
+                            if (mgrUserId > 0)
+                                usersnote.Add(mgrUserId);
+                        }
+                    }
+                    break;
+
+                case Beneficiary_type.المدير_المباشر_و_الموظف:
+                    if (EmpId.HasValue)
+                    {
+                        var emp2 = _TaamerProContext.Employees.FirstOrDefault(e => e.EmployeeId == EmpId.Value);
+                        if (emp2.UserId.HasValue)
+                            usersnote.Add(emp2.UserId.Value);
+                        if (emp2?.DirectManager != null)
+                        {
+                            var mgrUserId = _TaamerProContext.Employees
+                                .Where(e => e.EmployeeId == emp2.DirectManager && e.UserId.HasValue)
+                                .Select(e => e.UserId.Value).FirstOrDefault();
+                            if (mgrUserId > 0)
+                                usersnote.Add(mgrUserId);
+                        }
+                    }
+                    break;
+
+                case Beneficiary_type.الموظف_و_المدير_المباشر_و_المحاسب:
+                    
+                    if (EmpId.HasValue)
+                    {
+                        var emp1 = _TaamerProContext.Employees.FirstOrDefault(e => e.EmployeeId == EmpId.Value);
+                        if (emp1.UserId.HasValue)
+                            usersnote.Add(emp1.UserId.Value);
+                        if (emp1?.DirectManager != null)
+                        {
+                            var mgrUserId = _TaamerProContext.Employees
+                                .Where(e => e.EmployeeId == emp1.DirectManager && e.UserId.HasValue)
+                                .Select(e => e.UserId.Value).FirstOrDefault();
+                            if (mgrUserId > 0)
+                                usersnote.Add(mgrUserId);
+                        }
+                    }
+                    break;
+
+                case Beneficiary_type.الموظف:
+                    var emp = _TaamerProContext.Employees.FirstOrDefault(e => e.EmployeeId == EmpId.Value);
+                    if (emp.UserId.HasValue)
+                        usersnote.Add(emp.UserId.Value);
+                    break;
+
+            }
+
+            return (usersnote.Distinct().ToList(), description);
+        }
+
+        //public (List<int> Users, string Description) GetNotificationRecipients(NotificationCode code, int? EmpId, int? UserId)
+        //{
+        //    var usersnote = new List<int>();
+
+        //    var config = _TaamerProContext.NotificationConfigurations
+        //        .Include(x => x.NotificationConfigurationsAssines)
+        //        .FirstOrDefault(x => x.ConfigurationId == (int)code);
+
+        //    if (config == null)
+        //        return (usersnote, ""); // default if config not found
+
+        //    string description = string.IsNullOrEmpty(config.Description) ? "" : config.Description;
+
+        //    var to = (Beneficiary_type)(config.To ?? 0);
+
+        //    switch (to)
+        //    {
+        //        case Beneficiary_type.مستخدمين:
+        //            if (config.NotificationConfigurationsAssines != null)
+        //                usersnote.AddRange((List<int>)config.NotificationConfigurationsAssines.Select(x => x.UserId));
+        //            break;
+
+        //        case Beneficiary_type.الموظف:
+        //            if (EmpId.HasValue)
+        //            {
+        //                var emp = _TaamerProContext.Employees.FirstOrDefault(e => e.EmployeeId == EmpId.Value);
+        //                if (emp?.UserId != null)
+        //                    usersnote.Add(emp.UserId.Value);
+        //            }
+        //            else if (UserId.HasValue)
+        //            {
+        //                usersnote.Add(UserId.Value);
+        //            }
+        //            break;
+
+        //        case Beneficiary_type.المدير_المباشر:
+        //            if (EmpId.HasValue)
+        //            {
+        //                var emp = _TaamerProContext.Employees.FirstOrDefault(e => e.EmployeeId == EmpId.Value);
+        //                if (emp?.DirectManager != null)
+        //                {
+        //                    var mgrUserId = _TaamerProContext.Employees
+        //                        .Where(e => e.EmployeeId == emp.DirectManager && e.UserId.HasValue)
+        //                        .Select(e => e.UserId.Value).FirstOrDefault();
+        //                    if (mgrUserId > 0)
+        //                        usersnote.Add(mgrUserId);
+        //                }
+        //            }
+        //            break;
+
+        //        case Beneficiary_type.المدير_المباشر_و_المحاسب:
+        //        case Beneficiary_type.الموظف_و_المدير_المباشر_و_المحاسب:
+        //            if (EmpId.HasValue)
+        //            {
+        //                var emp = _TaamerProContext.Employees.FirstOrDefault(e => e.EmployeeId == EmpId.Value);
+
+        //                // Add employee user
+        //                if (to == Beneficiary_type.الموظف_و_المدير_المباشر_و_المحاسب && emp?.UserId.HasValue == true)
+        //                    usersnote.Add(emp.UserId.Value);
+
+        //                // Add direct manager user
+        //                if (emp?.DirectManager != null)
+        //                {
+        //                    var mgrUserId = _TaamerProContext.Employees
+        //                        .Where(e => e.EmployeeId == emp.DirectManager && e.UserId.HasValue)
+        //                        .Select(e => e.UserId.Value).FirstOrDefault();
+        //                    if (mgrUserId > 0)
+        //                        usersnote.Add(mgrUserId);
+        //                }
+        //            }
+        //            else if (UserId.HasValue && to == Beneficiary_type.الموظف_و_المدير_المباشر_و_المحاسب)
+        //            {
+        //                usersnote.Add(UserId.Value);
+        //            }
+        //            break;
+        //    }
+
+        //    return (usersnote.Distinct().ToList(), description);
+        //}
 
     }
 }

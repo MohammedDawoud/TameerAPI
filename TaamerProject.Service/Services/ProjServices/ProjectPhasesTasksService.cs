@@ -7158,7 +7158,27 @@ namespace TaamerProject.Service.Services
                                     {
                                         try
                                         {
-                                            SendMailNoti(ActiveSubPhaseProject.ProjectId, desc, "انتهاء مرحلة فرعية", BranchId, UserId, userId);
+                                            var UserNotification = new Notification();
+                                            UserNotification.ReceiveUserId = userId;
+                                            UserNotification.Name = desc;// "انتهاء مهمة";
+                                            UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                                            UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")); ;
+                                            UserNotification.SendUserId = 1;
+                                            UserNotification.Type = 1; // notification
+                                            UserNotification.Description = "تم انتهاء : " + ProTaskUpdated.DescriptionAr + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + (projectData?.CustomerName ?? "") + " " + " فرع " + _BranchesRepository.GetById(BranchId).NameAr + "";
+                                            UserNotification.AllUsers = false;
+                                            UserNotification.SendDate = DateTime.Now;
+                                            UserNotification.ProjectId = ProTaskUpdated.ProjectId;
+                                            UserNotification.TaskId = ProTaskUpdated.PhaseTaskId;
+                                            UserNotification.AddUser = UserId;
+                                            UserNotification.AddDate = DateTime.Now;
+                                            UserNotification.BranchId = BranchId;
+                                            UserNotification.IsHidden = false;
+                                            UserNotification.NextTime = null;
+                                            _TaamerProContext.Notification.Add(UserNotification);
+                                            _notificationService.sendmobilenotification(userId , Resources.finishTask, "تم انتهاء المهمة : " + ProTaskUpdated.DescriptionAr + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + (projectData?.ContractorName ?? "") + " " + " فرع " + _BranchesRepository.GetById(BranchId).NameAr + "");
+
+                                            SendMailNoti(ActiveSubPhaseProject.ProjectId, desc, desc, BranchId, UserId, userId);
                                         }
                                         catch (Exception ex)
                                         {
@@ -7213,6 +7233,26 @@ namespace TaamerProject.Service.Services
                                             {
                                                 try
                                                 {
+                                                    var UserNotification = new Notification();
+                                                    UserNotification.ReceiveUserId = userId;
+                                                    UserNotification.Name = desc2;
+                                                    UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                                                    UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")); ;
+                                                    UserNotification.SendUserId = 1;
+                                                    UserNotification.Type = 1; // notification
+                                                    UserNotification.Description = desc2;// "تم انتهاء : " + ProTaskUpdated.DescriptionAr + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + (projectData?.CustomerName ?? "") + " " + " فرع " + _BranchesRepository.GetById(BranchId).NameAr + "";
+                                                    UserNotification.AllUsers = false;
+                                                    UserNotification.SendDate = DateTime.Now;
+                                                    UserNotification.ProjectId = ProTaskUpdated.ProjectId;
+                                                    UserNotification.TaskId = ProTaskUpdated.PhaseTaskId;
+                                                    UserNotification.AddUser = UserId;
+                                                    UserNotification.AddDate = DateTime.Now;
+                                                    UserNotification.BranchId = BranchId;
+                                                    UserNotification.IsHidden = false;
+                                                    UserNotification.NextTime = null;
+                                                    _TaamerProContext.Notification.Add(UserNotification);
+                                                    _notificationService.sendmobilenotification(userId , Resources.finishTask, "تم انتهاء المهمة : " + ProTaskUpdated.DescriptionAr + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + (projectData?.ContractorName ?? "") + " " + " فرع " + _BranchesRepository.GetById(BranchId).NameAr + "");
+
                                                     SendMailNoti(ActiveSubPhaseProject.ProjectId, desc2, "انتهاء مرحلة رئيسية", BranchId, UserId, userId);
                                                 }
                                                 catch (Exception ex)
@@ -7273,7 +7313,27 @@ namespace TaamerProject.Service.Services
                                         {
                                             try
                                             {
-                                                SendMailNoti(ActiveSubPhaseProject.ProjectId, desc2, "انتهاء مرحلة رئيسية", BranchId, UserId, userId);
+                                                var UserNotification = new Notification();
+                                                UserNotification.ReceiveUserId = userId;
+                                                UserNotification.Name = desc2;
+                                                UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                                                UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")); ;
+                                                UserNotification.SendUserId = 1;
+                                                UserNotification.Type = 1; // notification
+                                                UserNotification.Description = "تم انتهاء : " + ProTaskUpdated.DescriptionAr + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + (projectData?.CustomerName ?? "") + " " + " فرع " + _BranchesRepository.GetById(BranchId).NameAr + "";
+                                                UserNotification.AllUsers = false;
+                                                UserNotification.SendDate = DateTime.Now;
+                                                UserNotification.ProjectId = ProTaskUpdated.ProjectId;
+                                                UserNotification.TaskId = ProTaskUpdated.PhaseTaskId;
+                                                UserNotification.AddUser = UserId;
+                                                UserNotification.AddDate = DateTime.Now;
+                                                UserNotification.BranchId = BranchId;
+                                                UserNotification.IsHidden = false;
+                                                UserNotification.NextTime = null;
+                                                _TaamerProContext.Notification.Add(UserNotification);
+                                                _notificationService.sendmobilenotification(userId , desc2, "تم انتهاء المهمة : " + ProTaskUpdated.DescriptionAr + " علي مشروع رقم " + projectData.ProjectNo + " للعميل " + (projectData?.ContractorName ?? "") + " " + " فرع " + _BranchesRepository.GetById(BranchId).NameAr + "");
+
+                                                SendMailNoti(ActiveSubPhaseProject.ProjectId, desc2, desc2, BranchId, UserId, userId);
                                             }
                                             catch (Exception ex)
                                             {
@@ -9192,7 +9252,7 @@ namespace TaamerProject.Service.Services
                 }
                 else if (type == 5)
                 {
-                    title = " لديك مهمة جديدة تم تحوبلها من   / " + _UsersRepository.GetById(from).FullNameAr ?? _UsersRepository.GetById(from).FullName; ;
+                    title = " لديك مهمة جديدة تم تحويلها من   / " + _UsersRepository.GetById(from).FullNameAr ?? _UsersRepository.GetById(from).FullName; ;
                     body = PopulateBody(ProjectPhasesTasks, _UsersRepository.GetById(ProjectPhasesTasks!.UserId ?? 0)!.FullName ?? "", adduser??"", DateOfTask, ProjectPhasesTasks.TimeMinutes + " " + timeType, DateOfTask, URL, title??"", org!.NameAr??"", CustomerName ?? "", ProjectNo ?? "",5);
 
                 }

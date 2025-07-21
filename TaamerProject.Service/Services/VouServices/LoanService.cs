@@ -37,12 +37,14 @@ namespace TaamerProject.Service.Services
         private readonly INotificationService _notificationService;
         private readonly TaamerProjectContext _TaamerProContext;
         private readonly ISystemAction _SystemAction;
+        private readonly IEmployeesService _employeesService;
         public LoanService(ILoanRepository loanRepository, ILoanDetailsRepository loanDetailsRepository, IEmployeesRepository employeesRepository
             , ITransactionsRepository transactionsRepository, IAccountsRepository accountsRepository, INotificationRepository notificationRepository,
             IBranchesRepository branchesRepository, ISys_SystemActionsRepository sys_SystemActionsRepository, ICustomerMailService customerMailService,
             IUserNotificationPrivilegesService userNotificationPrivilegesService, IPayrollMarchesRepository payrollMarchesRepository,
             IUsersRepository usersRepository, IEmailSettingRepository emailSettingRepository, IOrganizationsRepository organizationsRepository,
-            INotificationService notificationService, TaamerProjectContext dataContext, ISystemAction systemAction)
+            INotificationService notificationService, TaamerProjectContext dataContext, ISystemAction systemAction,
+            IEmployeesService employeesService)
         {
             _LoanRepository = loanRepository;
             _LoanDetailsRepository = loanDetailsRepository;
@@ -61,6 +63,7 @@ namespace TaamerProject.Service.Services
             _notificationService = notificationService;
             _TaamerProContext = dataContext;
             _SystemAction = systemAction;
+            _employeesService = employeesService;
         }
         public async Task< IEnumerable<LoanVM>> GetAllLoans(int? EmpId, string SearchText)
         {
@@ -728,32 +731,6 @@ namespace TaamerProject.Service.Services
                 if (ImprestUpdated != null)
                 {
 
-                    //if (AccountID_OF_Emp != null)
-                    //{
-                    //    var userLoan = _LoanRepository.GetMatching(s => s.IsDeleted == false && s.EmployeeId == AccountID_OF_Emp.EmployeeId && s.LoanId != ImprestId);
-                    //    var userLoanDatails = 0;
-                    //    if (userLoan != null)
-                    //    {
-                    //        foreach (var item in userLoan)
-                    //        {
-                    //            userLoanDatails = _LoanDetailsRepository.GetMatching(s => s.IsDeleted == false && s.LoanId == item.LoanId &&
-                    //            s.Date.Value >= DateTime.Now).Count();
-                    //        }
-                    //    }
-                    //    if (userLoanDatails > 0 && Type == 2)
-                    //    {
-                    //        var massage1 = "";
-                    //        if (Lang == "rtl")
-                    //        {
-                    //            massage1 = " الموظف عليه سلف لابد من تسويتها اولا ";
-                    //        }
-                    //        else
-                    //        {
-                    //            massage1 = "An employee with ancestor who must be settled first";
-                    //        }
-                    //        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = massage1 };
-                    //    }
-                    //}
 
                     if (ImprestUpdated.Status == 2)
 
@@ -805,53 +782,7 @@ namespace TaamerProject.Service.Services
                         }
 
                         var Depit = ImprestUpdated.Amount;
-                        //var transactions = new Transactions();
-                        //transactions.TransactionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                        //transactions.TransactionHijriDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("ar"));
-                        //transactions.AccountId = AccountID_OF_Emp.AccountIDs;
-                        //transactions.CostCenterId = null;
-                        //transactions.AccountType = _AccountsRepository.GetById(AccountID_OF_Emp.AccountIDs).Type;
-                        //transactions.Type = 22;
-                        //transactions.LineNumber = 1;
-                        //transactions.Depit = Depit;
-                        //transactions.Credit = 0;
-                        //transactions.YearId = YearId;
-                        //transactions.Notes = " سلفة للموظف  " + AccountID_OF_Emp.EmployeeName + "";
-                        //transactions.Details = " سلفة للموظف  " + AccountID_OF_Emp.EmployeeName + "";
-                        //transactions.InvoiceReference = "0";
-                        //transactions.InvoiceId = 0;
-                        //transactions.IsPost = false;
-                        //transactions.BranchId = BranchId;
-                        //transactions.AddDate = DateTime.Now;
-                        //transactions.AddUser = UserId;
-                        //transactions.IsDeleted = false;
-                        //transactions.IsPost = true;
-
-                        //_TransactionsRepository.Add(transactions);
-
-                        //var transactions2 = new Transactions();
-
-                        //transactions2.TransactionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                        //transactions2.TransactionHijriDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("ar"));
-                        //transactions2.AccountId = Branch.LoanAccId;
-                        //transactions2.CostCenterId = null;
-                        //transactions2.AccountType = _AccountsRepository.GetById(AccountID_OF_Emp.AccountIDs).Type;
-                        //transactions2.Type = 22;
-                        //transactions2.LineNumber = 2;
-                        //transactions2.Credit = Depit;
-                        //transactions2.Depit = 0;
-                        //transactions2.YearId = YearId;
-                        //transactions2.Notes = " سلفة للموظف  " + AccountID_OF_Emp.EmployeeName + "";
-                        //transactions2.Details = " سلفة للموظف  " + AccountID_OF_Emp.EmployeeName + "";
-                        //transactions2.InvoiceReference = "0";
-                        //transactions2.InvoiceId = 0;
-                        //transactions2.IsPost = false;
-                        //transactions2.BranchId = BranchId;
-                        //transactions2.AddDate = DateTime.Now;
-                        //transactions2.AddUser = UserId;
-                        //transactions2.IsDeleted = false;
-                        //transactions2.IsPost = true;
-                        //_TransactionsRepository.Add(transactions2);
+                       
                     }
 
                     string Subject =
@@ -872,102 +803,137 @@ namespace TaamerProject.Service.Services
 
                     if (ImprestUpdated.UserId != null && ImprestUpdated.UserId != 0)
                     {
+                        #region Notifications
+                        string htmlBody = "";
 
-
-                        try
+                        if (Type == 2 || Type == 3)
                         {
-                            //var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(ImprestUpdated.UserId.Value).Result;
-
-                            ////Notification
-                            //if (UserNotifPriv.Count() > 0 && UserNotifPriv.Contains(142))
-                            //{
+                            var code = Type == 2 ? Models.Enums.NotificationCode.HR_AdvanceAccepted : Models.Enums.NotificationCode.HR_AdvanceRejected;
+                            var config = _employeesService.GetNotificationRecipients(code, ImprestUpdated.EmployeeId);
+                            try
+                            {
+                                if (config.Description != null && config.Description != "")
+                                    Subject = config.Description;
                                 //Notification
                                 var branch = _BranchesRepository.GetById(BranchId);
-                                var UserNotification = new Notification();
-                                UserNotification.ReceiveUserId = AccountID_OF_Emp.UserId;
-                                UserNotification.Name = Subject;
-                                UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
-                                UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
-                                UserNotification.SendUserId = 1;
-                                UserNotification.Type = 1; // notification
-                                UserNotification.Description = NotStr;
-                                UserNotification.AllUsers = false;
-                                UserNotification.SendDate = DateTime.Now;
-                                UserNotification.ProjectId = 0;
-                                UserNotification.TaskId = 0;
-                                UserNotification.IsHidden = false;
-                                UserNotification.NextTime = null;
-                                UserNotification.AddUser = UserId;
-                                UserNotification.AddDate = DateTime.Now;
-                                UserNotification.NextTime = null;
-
-                                _TaamerProContext.Notification.Add(UserNotification);
-                            _TaamerProContext.SaveChanges();
-                            if (directmanager != null)
-                            {
-                                var notdirectmanager = new Notification();
-                                notdirectmanager = UserNotification;
-                                notdirectmanager.ReceiveUserId = directmanager.UserId ?? 0;
-                                notdirectmanager.NotificationId = 0;
-                                _TaamerProContext.Notification.Add(notdirectmanager);
-                                _TaamerProContext.SaveChanges();
-                            }
-
-
-                            _notificationService.sendmobilenotification((int)AccountID_OF_Emp.UserId, Subject, NotStr);
-                            if(directmanager != null) { 
-                                _notificationService.sendmobilenotification((int)directmanager?.UserId, Subject, NotStr);
-
-                            }
-                            if (Type == 2 || Type == 3)
-                            {
-                                //Mail
                                 var rejectreason = "";
-                                if (Type == 3 && Reason !=null && Reason !="") 
+                                if (Type == 3 && Reason != null && Reason != "")
                                 {
-                                    rejectreason = " <tr> <td> السبب</td> <td>" +Reason+ @"</td> </tr>";
+                                    rejectreason = " <tr> <td> السبب</td> <td>" + Reason + @"</td> </tr>";
 
 
 
                                 }
-                            
-                                string htmlBody = "";
 
                                 htmlBody = @"<!DOCTYPE html><html lang = ''><head><meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'><meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta charset = 'utf-8><meta name = 'description' content = ''><meta name = 'keywords' content = ''><meta name = 'csrf-token' content = ''><title></title><link rel = 'icon' type = 'image/x-icon' href = ''></head>
     <body style = 'background:#f9f9f9;direction:rtl'><div class='container' style='max-width:630px;padding-right: var(--bs-gutter-x, .75rem); padding-left: var(--bs-gutter-x, .75rem); margin-right: auto;  margin-left: auto;'>
     <style> .bordered {width: 550px; height: 700px; padding: 20px;border: 3px solid yellowgreen; background-color:lightgray;} </style>
     <div class= 'row' style = 'font-family: Cairo, sans-serif'>  <div class= 'card' style = 'padding: 2rem;background:#fff'> <div style = 'width: 550px; height: 700px; padding: 20px; border: 3px solid yellowgreen; background-color: lightgray;'> <p style='text-align:center'></p>
-    <h4> عزيزي الموظف " + AccountID_OF_Emp.EmployeeNameAr + "</h4> <h4> السلام عليكم ورحمة الله وبركاتة</h4> <h3 style = 'text-align:center;' > "+ NotStr + @"  </h3><table align = 'center' border = '1' ><tr> <td>  المبلغ</td><td>" + ImprestUpdated.Amount + @"</td> </tr> <tr> <td>   ت. بداية الاستقطاع  </td> <td>" + FirstTerm.ToString("yyyy-MM-dd", new CultureInfo("en-US")) + @"</td>
-     </tr> <tr> <td>   مبلغ الاستقطاع</td> <td>" + termAmount.ToString("N2") + @"</td> </tr> "+ rejectreason + @" </table> <p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
+    <h4> عزيزي الموظف " + AccountID_OF_Emp.EmployeeNameAr + "</h4> <h4> السلام عليكم ورحمة الله وبركاتة</h4> <h3 style = 'text-align:center;' > " + NotStr + @"  </h3><table align = 'center' border = '1' ><tr> <td>  المبلغ</td><td>" + ImprestUpdated.Amount + @"</td> </tr> <tr> <td>   ت. بداية الاستقطاع  </td> <td>" + FirstTerm.ToString("yyyy-MM-dd", new CultureInfo("en-US")) + @"</td>
+     </tr> <tr> <td>   مبلغ الاستقطاع</td> <td>" + termAmount.ToString("N2") + @"</td> </tr> " + rejectreason + @" </table> <p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
 	
     </div> </div></div></div></body></html> ";
-
-                                if (AccountID_OF_Emp.Email != null)
+                                if (config.Users != null && config.Users.Count() > 0)
                                 {
-                                    _customerMailService.SendMail_SysNotification((int)BranchId, 0, 0, Subject, htmlBody, true, AccountID_OF_Emp.Email);
+                                    foreach (var usr in config.Users)
+                                    {
 
+
+                                        var UserNotification = new Notification();
+                                        UserNotification.ReceiveUserId = usr;
+                                        UserNotification.Name = Subject;
+                                        UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                                        UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
+                                        UserNotification.SendUserId = 1;
+                                        UserNotification.Type = 1; // notification
+                                        UserNotification.Description = NotStr;
+                                        UserNotification.AllUsers = false;
+                                        UserNotification.SendDate = DateTime.Now;
+                                        UserNotification.ProjectId = 0;
+                                        UserNotification.TaskId = 0;
+                                        UserNotification.IsHidden = false;
+                                        UserNotification.NextTime = null;
+                                        UserNotification.AddUser = UserId;
+                                        UserNotification.AddDate = DateTime.Now;
+                                        UserNotification.NextTime = null;
+
+                                        _TaamerProContext.Notification.Add(UserNotification);
+                                        _TaamerProContext.SaveChanges();
+                                        _notificationService.sendmobilenotification(usr, Subject, NotStr);
+                                        _customerMailService.SendMail_SysNotification((int)BranchId, usr, usr, Subject, htmlBody, true);
+                                        var userObj = _usersRepository.GetById((int)usr);
+                                        var res = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
+                                    }
                                 }
-                                if (directmanager !=null && directmanager?.Email != null)
+                                else
                                 {
-                                    _customerMailService.SendMail_SysNotification((int)BranchId, 0, 0, Subject, htmlBody, true, directmanager?.Email);
-                                }
-                              
-                                //}
-                                //SMS
-                                //if (UserNotifPriv.Count() > 0 && UserNotifPriv.Contains(143))
-                                //{
+
+
+                                    var UserNotification = new Notification();
+                                    UserNotification.ReceiveUserId = AccountID_OF_Emp.UserId;
+                                    UserNotification.Name = Subject;
+                                    UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                                    UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
+                                    UserNotification.SendUserId = 1;
+                                    UserNotification.Type = 1; // notification
+                                    UserNotification.Description = NotStr;
+                                    UserNotification.AllUsers = false;
+                                    UserNotification.SendDate = DateTime.Now;
+                                    UserNotification.ProjectId = 0;
+                                    UserNotification.TaskId = 0;
+                                    UserNotification.IsHidden = false;
+                                    UserNotification.NextTime = null;
+                                    UserNotification.AddUser = UserId;
+                                    UserNotification.AddDate = DateTime.Now;
+                                    UserNotification.NextTime = null;
+
+                                    _TaamerProContext.Notification.Add(UserNotification);
+                                    _TaamerProContext.SaveChanges();
+                                    if (directmanager != null)
+                                    {
+                                        var notdirectmanager = new Notification();
+                                        notdirectmanager = UserNotification;
+                                        notdirectmanager.ReceiveUserId = directmanager.UserId ?? 0;
+                                        notdirectmanager.NotificationId = 0;
+                                        _TaamerProContext.Notification.Add(notdirectmanager);
+                                        _TaamerProContext.SaveChanges();
+                                    }
+
+
+                                    _notificationService.sendmobilenotification((int)AccountID_OF_Emp.UserId, Subject, NotStr);
+                                    if (directmanager != null)
+                                    {
+                                        _notificationService.sendmobilenotification((int)directmanager?.UserId, Subject, NotStr);
+
+                                    }
+
+                                    //Mail
+                                    
+
+
+                                    if (AccountID_OF_Emp.Email != null)
+                                    {
+                                        _customerMailService.SendMail_SysNotification((int)BranchId, 0, 0, Subject, htmlBody, true, AccountID_OF_Emp.Email);
+
+                                    }
+                                    if (directmanager != null && directmanager?.Email != null)
+                                    {
+                                        _customerMailService.SendMail_SysNotification((int)BranchId, 0, 0, Subject, htmlBody, true, directmanager?.Email);
+                                    }
+
                                     var userObj = _usersRepository.GetById((int)ImprestUpdated.UserId);
                                     var res = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
-                                //}
+                                }
+                                
+                            }
+                            catch (Exception)
+                            {
+
+                                throw;
                             }
                         }
-                        catch (Exception)
-                        {
-
-                            throw;
-                        }
-
+                        #endregion
 
                     }
                     else
@@ -975,110 +941,7 @@ namespace TaamerProject.Service.Services
 
 
 
-                        //try
-                        //{
-                        //    var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(ImprestUpdated.AddUser.Value).Result;
-
-                        //    //Notification
-                        //    if (UserNotifPriv.Count() > 0 && UserNotifPriv.Contains(142))
-                        //    {
-                        //        //Notification
-                        //        var branch = _BranchesRepository.GetById(BranchId);
-                        //        var UserNotification = new Notification();
-                        //        UserNotification.ReceiveUserId = ImprestUpdated.UserId;
-                        //        UserNotification.Name = Subject;
-                        //        UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
-                        //        UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
-                        //        UserNotification.SendUserId = 1;
-                        //        UserNotification.Type = 1; // notification
-                        //        UserNotification.Description = NotStr;
-                        //        UserNotification.AllUsers = false;
-                        //        UserNotification.SendDate = DateTime.Now;
-                        //        UserNotification.ProjectId = 0;
-                        //        UserNotification.TaskId = 0;
-                        //        UserNotification.IsHidden = false;
-                        //        UserNotification.NextTime = null;
-                        //        UserNotification.AddUser = UserId;
-                        //        UserNotification.AddDate = DateTime.Now;
-                        //        UserNotification.NextTime = null;
-
-                        //        _TaamerProContext.Notification.Add(UserNotification);
-                        //        _notificationService.sendmobilenotification((int)ImprestUpdated.UserId, Subject, NotStr);
-
-                        //    }
-                        //    if (Type == 2 || Type == 3)
-                        //    {
-                        //        //Mail
-                        //        //if (UserNotifPriv.Count() > 0 && UserNotifPriv.Contains(141))
-                        //        //{
-                        //            string htmlBody = "";
-                        //            if (Lang == "rtl")
-                        //            {
-                        //                htmlBody = @"<!DOCTYPE html>
-                        //                    <html>
-                        //                     <head></head>
-                        //                    <body  style='direction: rtl;'>
-                                                
-                        //                        <table style=' border: 1px solid black; border-collapse: collapse;'>
-                        //                            <thead>
-                        //                            <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>المبلغ</th>
-                        //                            <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>ت. بداية الاستقطاع</th>
-                        //                            <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>مبلغ الاستقطاع</th>
-                        //                          </thead>
-                        //                          <tbody>
-                        //                            <tr>
-                        //                              <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + @ImprestUpdated.Amount + @"</td>
-                        //                              <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + FirstTerm.ToString("yyyy-MM-dd", new CultureInfo("en-US")) + @"</td>
-                        //                              <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + termAmount.ToString("N2") + @"</td>
-                        //                            </tr>
-                        //                          </tbody>
-                        //                        </table>
-                        //                    </body>
-                        //                    </html>";
-                        //            }
-                        //            else
-                        //            {
-                        //                htmlBody = @"<!DOCTYPE html>
-                        //                    <html>
-                        //                     <head></head>
-                        //                        <body>
-                                        
-                        //                        <table style=' border: 1px solid black; border-collapse: collapse;'>
-                        //                            <thead>
-                        //                            <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>Amount</th>
-                        //                            <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>The start date of the deduction</th>
-                        //                            <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>Deduction Amount</th>
-                        //                          </thead>
-                        //                          <tbody>
-                        //                            <tr>
-                        //                              <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + @ImprestUpdated.Amount + @"</td>
-                        //                              <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + FirstTerm.ToString("yyyy-MM-dd", new CultureInfo("en-US")) + @"</td>
-                        //                              <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + termAmount.ToString("N2") + @"</td>
-                        //                            </tr>
-                        //                          </tbody>
-                        //                        </table>
-                        //                    </body>
-                        //                    </html>";
-                        //            }
-                        //        //_customerMailService.SendMail_SysNotification(BranchId, UserId, ImprestUpdated.UserId.Value, Subject, htmlBody, true);
-                        //        if (AccountID_OF_Emp.Email != null)
-                        //        {
-                        //            SendMail_Loan(BranchId, UserId, AccountID_OF_Emp.EmployeeId, Subject, htmlBody, Url, ImgUrl, Type, true, AccountID_OF_Emp.Email);
-                        //        }
-                        //       // }
-                        //        //SMS
-                        //        if (UserNotifPriv.Count() > 0 && UserNotifPriv.Contains(143))
-                        //        {
-                        //            var userObj = _usersRepository.GetById((int)ImprestUpdated.UserId);
-                        //            var res = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
-                        //        }
-                        //    }
-                        //}
-                        //catch (Exception)
-                        //{
-
-                        //    throw;
-                        //}
+                        
 
                     }
 
@@ -1086,19 +949,7 @@ namespace TaamerProject.Service.Services
                 }
                 ImprestUpdated.Note = Reason;
                 _TaamerProContext.SaveChanges();
-                //if (Type == 2)
-                //{
-                //    ///---------Payroll Marches----------
-                //    var EmpLoan = _EmployeesRepository.GetById(ImprestUpdated.EmployeeId.Value);
-                //    var TotalLoansOfMonth = (EmpLoan.Loans.Where(s => s.IsDeleted == false && s.Status == 2).FirstOrDefault()
-                //                .LoanDetails.Where(y => y.Date.Value.Month == DateTime.Now.Month)).Sum(s => s.Amount) ?? 0;
-
-                //    if (payroll.TotalLoans != TotalLoansOfMonth)
-                //    {
-                //        payroll.TotalLoans = TotalLoansOfMonth;
-                //        _TaamerProContext.SaveChanges();
-                //    }
-                //}
+              
                 ////-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = "تعديل سلفة ";
@@ -1254,36 +1105,11 @@ namespace TaamerProject.Service.Services
             string NotStr = string.Format(" تم تقديم طلب سلفة خاصة بالموظف {0} بمبلغ {1} - تاريخ بداية الاستقطاع {2}", emp.EmployeeName, loan.Amount, FirstTerm.ToString("yyyy-MM-dd", new CultureInfo("en-US")));
             if (loan.UserId != null)
             {
-                // var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(loan.UserId.Value);
-                //Notification
-                var UserNotifPriv = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(192).Result;
-                var UsermailfPriv = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(191).Result;
-                var UsersmsPriv = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(193).Result;
-
+             
                 if (loan.UserId.Value > 0)
                 {
                     var branch = _BranchesRepository.GetById(BranchId);
-                    var UserNotification = new Notification();
-                    UserNotification.ReceiveUserId = loan.UserId.Value;
-                    UserNotification.Name = Subject;
-                    UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
-                    UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
-                    UserNotification.SendUserId = 1;
-                    UserNotification.Type = 1; // notification
-                    UserNotification.Description = NotStr;
-                    UserNotification.AllUsers = false;
-                    UserNotification.SendDate = DateTime.Now;
-                    UserNotification.ProjectId = 0;
-                    UserNotification.TaskId = 0;
-                    UserNotification.IsHidden = false;
-                    UserNotification.NextTime = null;
-                    UserNotification.AddUser = UserId;
-                    UserNotification.AddDate = DateTime.Now;
-
-                    _TaamerProContext.Notification.Add(UserNotification);
-                    _TaamerProContext.SaveChanges();
-                    _notificationService.sendmobilenotification((int)loan.UserId.Value, Subject, NotStr);
-
+                   
                     string DepartmentNameAr = "";
                     Department? DepName = _TaamerProContext.Department.Where(s => s.DepartmentId == emp.DepartmentId).FirstOrDefault();
                     if (DepName != null)
@@ -1310,43 +1136,72 @@ namespace TaamerProject.Service.Services
      </tr> <tr> <td>   الفرع</td> <td>" + NameAr + @"</td> </tr><tr> <td>   تاريخ الطلب</td> <td>" + ldate + @"</td> </tr> </table> <p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
 	
     </div> </div></div></div></body></html> ";
+                    var config = _employeesService.GetNotificationRecipients(Models.Enums.NotificationCode.HR_AdvanceRequest, emp.EmployeeId);
+                    if ( config.Description != null && config.Description != "")
+                        Subject = config.Description;
+
+                    if (config.Users != null && config.Users.Count() > 0)
+                    {
+                        foreach (var usr in config.Users)
+                        {
+                            var UserNotification = new Notification();
+                            UserNotification.ReceiveUserId = usr;
+                            UserNotification.Name = Subject;
+                            UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                            UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
+                            UserNotification.SendUserId = 1;
+                            UserNotification.Type = 1; // notification
+                            UserNotification.Description = NotStr;
+                            UserNotification.AllUsers = false;
+                            UserNotification.SendDate = DateTime.Now;
+                            UserNotification.ProjectId = 0;
+                            UserNotification.TaskId = 0;
+                            UserNotification.IsHidden = false;
+                            UserNotification.NextTime = null;
+                            UserNotification.AddUser = UserId;
+                            UserNotification.AddDate = DateTime.Now;
+
+                            _TaamerProContext.Notification.Add(UserNotification);
+                            _TaamerProContext.SaveChanges();
+                            _notificationService.sendmobilenotification(usr, Subject, NotStr);
+
+                            _customerMailService.SendMail_SysNotification((int)emp.BranchId, usr, usr, Subject, htmlBody, true);
+
+                            var userObj = _usersRepository.GetById(usr);
+                            var res = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, usr, BranchId);
 
 
-                      _customerMailService.SendMail_SysNotification((int)emp.BranchId, 0, 0, Subject, htmlBody, true, emp.Email);
+                        }
+                    }
+                    else
+                    {
+                        var UserNotification = new Notification();
+                        UserNotification.ReceiveUserId = loan.UserId.Value;
+                        UserNotification.Name = Subject;
+                        UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                        UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
+                        UserNotification.SendUserId = 1;
+                        UserNotification.Type = 1; // notification
+                        UserNotification.Description = NotStr;
+                        UserNotification.AllUsers = false;
+                        UserNotification.SendDate = DateTime.Now;
+                        UserNotification.ProjectId = 0;
+                        UserNotification.TaskId = 0;
+                        UserNotification.IsHidden = false;
+                        UserNotification.NextTime = null;
+                        UserNotification.AddUser = UserId;
+                        UserNotification.AddDate = DateTime.Now;
 
+                        _TaamerProContext.Notification.Add(UserNotification);
+                        _TaamerProContext.SaveChanges();
+                        _notificationService.sendmobilenotification((int)loan.UserId.Value, Subject, NotStr);
 
-                    var userObj = _usersRepository.GetById(loan.UserId.Value);
-                    var res = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
+                        _customerMailService.SendMail_SysNotification((int)emp.BranchId, 0, 0, Subject, htmlBody, true, emp.Email);
+
+                        var userObj = _usersRepository.GetById(loan.UserId.Value);
+                        var res = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
+                    }
                 }
-
-
-
-
-                ////sms
-                //if (UsersmsPriv.Count() != 0)
-                //{
-                //    //_userPrivilegesRepository.GetMatching(s => s.IsDeleted == false && s.PrivilegeId == 131001).Where(w => w.Users.IsDeleted == false)
-                //    foreach (var userCounter in UsersmsPriv)
-                //    {
-                //        if (userCounter.UserId != loan.UserId.Value)
-                //        {
-                //            try
-                //            {
-                //                var userObj = _usersRepository.GetById((int)userCounter.UserId);
-                //                var res = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
-                //            }
-                //            catch (Exception ex)
-                //            {
-                //                //-----------------------------------------------------------------------------------------------------------------
-                //                string ActionDate4 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                //                string ActionNote4 = "فشل في رسالة اشعار لمن لدية صلاحية رسائل";
-                //                _SystemAction.SaveAction("saveloan", "loanservice", 1, Resources.General_SavedFailed, "", "", ActionDate4, UserId, BranchId, ActionNote4, 0);
-                //                //-----------------------------------------------------------------------------------------------------------------
-                //            }
-                //        }
-                //    }
-                //}
-
             }
         }
 

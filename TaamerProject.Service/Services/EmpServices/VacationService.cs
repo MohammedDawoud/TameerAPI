@@ -34,6 +34,7 @@ namespace TaamerProject.Service.Services
         private readonly IEmailSettingRepository _EmailSettingRepository;
         private readonly IOrganizationsRepository _organizationsRepository;
         private readonly INotificationService _notificationService;
+        private readonly IEmployeesService _employeesService;
         private readonly TaamerProjectContext _TaamerProContext;
         private readonly ISystemAction _SystemAction;
         public VacationService(TaamerProjectContext dataContext, ISystemAction systemAction,
@@ -43,7 +44,8 @@ namespace TaamerProject.Service.Services
             ICustomerMailService customerMailService, IVacationTypeRepository vacationTypeRepository,
             IUserNotificationPrivilegesService userNotificationPrivilegesService, IUsersRepository usersRepository,
             IProjectRepository projectRepository, IBranchesRepository BranchesRepository, IEmailSettingRepository EmailSettingRepository,
-            IOrganizationsRepository organizationsRepository, INotificationService notificationService
+            IOrganizationsRepository organizationsRepository, INotificationService notificationService,
+            IEmployeesService employeesService
             )
         {
             _VacationRepository = VacationRepository;
@@ -62,6 +64,7 @@ namespace TaamerProject.Service.Services
             _EmailSettingRepository = EmailSettingRepository;
             _organizationsRepository = organizationsRepository;
             _notificationService = notificationService;
+            this._employeesService = employeesService;
             _TaamerProContext = dataContext;
             _SystemAction = systemAction;
         }
@@ -991,218 +994,85 @@ namespace TaamerProject.Service.Services
 
                 //Notification
                 int ResponSibleUser = vac.UserId.HasValue ? vac.UserId.Value : vac.AddUser.Value;
-                //var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(ResponSibleUser);
+                string DepartmentNameAr = "";
+                Department? DepName = _TaamerProContext.Department.Where(s => s.DepartmentId == emp.DepartmentId).FirstOrDefault();
+                if (DepName != null)
+                {
+                    DepartmentNameAr = DepName.DepartmentNameAr;
+                }
+                string NameAr = "";
+                Branch? BranchName = _TaamerProContext.Branch.Where(s => s.BranchId == emp.BranchId).FirstOrDefault();
+                var job = _TaamerProContext.Job.FirstOrDefault(x => x.JobId == emp.JobId);
+                string OrgName = _organizationsRepository.GetBranchOrganization().Result.NameAr;
 
-                var UserNotifPriv = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(182);
-                var UsermailfPriv = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(181);
-                var UsersmsPriv = _userNotificationPrivilegesService.GetUsersByPrivilegesIds(183);
+                if (BranchName != null)
+                {
+                    NameAr = BranchName.NameAr;
+                }
+                string htmlBody = "";
+                List<int> recept = new List<int>();
 
+                htmlBody = @"<!DOCTYPE html><html lang = ''><head><meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'><meta http-equiv='X-UA-Compatible' content='IE=edge'>
+                            <meta charset = 'utf-8><meta name = 'description' content = ''><meta name = 'keywords' content = ''><meta name = 'csrf-token' content = ''><title></title><link rel = 'icon' type = 'image/x-icon' href = ''></head>
+                            <body style = 'background:#f9f9f9;direction:rtl'><div class='container' style='max-width:630px;padding-right: var(--bs-gutter-x, .75rem); padding-left: var(--bs-gutter-x, .75rem); margin-right: auto;  margin-left: auto;'>
+                            <style> .bordered {width: 550px; height: 700px; padding: 20px;border: 3px solid yellowgreen; background-color:lightgray;} </style>
+                            <div class= 'row' style = 'font-family: Cairo, sans-serif'>  <div class= 'card' style = 'padding: 2rem;background:#fff'> <div style = 'width: 550px; height: 700px; padding: 20px; border: 3px solid yellowgreen; background-color: lightgray;'> <p style='text-align:center'></p>
+                            <h4> عزيزي الموظف " + emp.EmployeeNameAr + "</h4> <h4> السلام عليكم ورحمة الله وبركاتة</h4> <h3 style = 'text-align:center;' > تم تقديم طلب الاجازة الخاصه بكم</h3><table align = 'center' border = '1' ><tr> <td>  الموظف</td><td>" + emp.EmployeeNameAr + @"</td> </tr> <tr> <td>   نوع الإجازة  </td> <td>" + VactionTypeName + @"</td>
+                             </tr> <tr> <td>   من</td> <td>" + vac.StartDate + @"</td> </tr><tr> <td>   إلى</td> <td>" + vac.EndDate + @"</td> </tr> </table> <p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
+	
+                            </div> </div></div></div></body></html> ";
 
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+                var config = _employeesService.GetNotificationRecipients(Models.Enums.NotificationCode.HR_LeaveRequest, emp.EmployeeId);
+                if (config.Description != null && config.Description != "")
+                    Subject = config.Description;
 
-                if(ResponSibleUser > 0) {
-                    // Notification
-
-                    var UserNotification = new Notification();
-                    UserNotification.ReceiveUserId = ResponSibleUser;
-                    UserNotification.Name = "لديك اشعار تقديم طلب اجازة";
-                    UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
-                    UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
-                    UserNotification.SendUserId = 1;
-                    UserNotification.Type = 1; // notification
-                    UserNotification.Description = NotStr;
-                    UserNotification.AllUsers = false;
-                    UserNotification.SendDate = DateTime.Now;
-                    UserNotification.ProjectId = 0;
-                    UserNotification.TaskId = 0;
-                    UserNotification.IsHidden = false;
-                    UserNotification.AddUser = UserId;
-                    UserNotification.AddDate = DateTime.Now;
-                    _TaamerProContext.Notification.Add(UserNotification);
-                    _TaamerProContext.SaveChanges();
-                    _notificationService.sendmobilenotification(ResponSibleUser, Subject, NotStr);
-
-                    //mail
-                    string DepartmentNameAr = "";
-                    Department? DepName = _TaamerProContext.Department.Where(s => s.DepartmentId == emp.DepartmentId).FirstOrDefault();
-                    if (DepName != null)
-                    {
-                        DepartmentNameAr = DepName.DepartmentNameAr;
-                    }
-                    string NameAr = "";
-                    Branch? BranchName = _TaamerProContext.Branch.Where(s => s.BranchId == emp.BranchId).FirstOrDefault();
-                    var job = _TaamerProContext.Job.FirstOrDefault(x => x.JobId == emp.JobId);
-                    string OrgName = _organizationsRepository.GetBranchOrganization().Result.NameAr;
-
-                    if (BranchName != null)
-                    {
-                        NameAr = BranchName.NameAr;
-                    }
-                    string htmlBody = "";
-
-                    htmlBody = @"<!DOCTYPE html><html lang = ''><head><meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'><meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <meta charset = 'utf-8><meta name = 'description' content = ''><meta name = 'keywords' content = ''><meta name = 'csrf-token' content = ''><title></title><link rel = 'icon' type = 'image/x-icon' href = ''></head>
-    <body style = 'background:#f9f9f9;direction:rtl'><div class='container' style='max-width:630px;padding-right: var(--bs-gutter-x, .75rem); padding-left: var(--bs-gutter-x, .75rem); margin-right: auto;  margin-left: auto;'>
-    <style> .bordered {width: 550px; height: 700px; padding: 20px;border: 3px solid yellowgreen; background-color:lightgray;} </style>
-    <div class= 'row' style = 'font-family: Cairo, sans-serif'>  <div class= 'card' style = 'padding: 2rem;background:#fff'> <div style = 'width: 550px; height: 700px; padding: 20px; border: 3px solid yellowgreen; background-color: lightgray;'> <p style='text-align:center'></p>
-    <h4> عزيزي الموظف " + emp.EmployeeNameAr + "</h4> <h4> السلام عليكم ورحمة الله وبركاتة</h4> <h3 style = 'text-align:center;' > تم تقديم طلب الاجازة الخاصه بكم</h3><table align = 'center' border = '1' ><tr> <td>  الموظف</td><td>" + emp.EmployeeNameAr + @"</td> </tr> <tr> <td>   نوع الإجازة  </td> <td>" + VactionTypeName + @"</td>
-     </tr> <tr> <td>   من</td> <td>" + vac.StartDate + @"</td> </tr><tr> <td>   إلى</td> <td>" + vac.EndDate + @"</td> </tr> </table> <p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
-	
-    </div> </div></div></div></body></html> ";
-
-
-                    _customerMailService.SendMail_SysNotification((int)emp.BranchId, 0, 0, Subject, htmlBody, true, emp.Email);
-
-
-
-                    //string htmlBody = "";
-                    //if (Lang == "rtl")
-                    //{
-                    //    htmlBody = @"<!DOCTYPE html>
-                    //                <html>
-                    //                    <head></head>
-                    //                <body  style='direction: rtl;'>
-
-                    //                    <table style=' border: 1px solid black; border-collapse: collapse;'>
-                    //                        <thead>
-                    //                        <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>نوع الإجازة</th>
-                    //                        <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>من</th>
-                    //                        <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>إلى</th>
-                    //                        </thead>
-                    //                        <tbody>
-                    //                        <tr>
-                    //                            <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + VactionTypeName + @"</td>
-                    //                            <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + vac.StartDate + @"</td>
-                    //                            <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + vac.EndDate + @"</td>
-                    //                        </tr>
-                    //                        </tbody>
-                    //                    </table>
-
-                    //                </body>
-                    //                </html>";
-                    //}
-                    //else
-                    //{
-                    //    htmlBody = @"<!DOCTYPE html>
-                    //                <html>
-                    //                    <head></head>
-                    //                    <body>
-
-                    //                    < table style=' border: 1px solid black; border-collapse: collapse;'>
-                    //                        <thead>
-                    //                        <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>Vacation Type</th>
-                    //                        <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>Start Date</th>
-                    //                        <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>End Date</th>
-                    //                        </thead>
-                    //                        <tbody>
-                    //                        <tr>
-                    //                            <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + VactionTypeName + @"</td>
-                    //                            <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + vac.StartDate + @"</td>
-                    //                            <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + vac.EndDate + @"</td>
-                    //                        </tr>
-                    //                        </tbody>
-                    //                    </table>
-                    //                </body>
-                    //                </html>";
-                    //}
-
-                    ////_customerMailService.SendMail_SysNotification(BranchId, UserId, ResponSibleUser, Subject, htmlBody, true);
-                    //SendMail_Vacation(BranchId, UserId, ResponSibleUser, Subject, htmlBody, Url, ImgUrl,1, true);
-
-                    // SMS
-
-                    //var userObj = _usersRepository.GetById(ResponSibleUser);
-                    Users? userObj = _TaamerProContext.Users.Where(s => s.UserId == ResponSibleUser).FirstOrDefault();
-
-                    var res = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
+                if (config.Users != null && config.Users.Count() > 0)
+                {
+                    recept = config.Users;
                 }
+                else
+                {
+                    if (ResponSibleUser > 0)
+                    {
+                        recept.Add(ResponSibleUser);
+                    }
+                }
+                foreach (var usr in recept)
+                {
+                    
+              
+                        // Notification
+
+                        var UserNotification = new Notification();
+                        UserNotification.ReceiveUserId = usr;
+                        UserNotification.Name = Subject;
+                        UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                        UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
+                        UserNotification.SendUserId = 1;
+                        UserNotification.Type = 1; // notification
+                        UserNotification.Description = NotStr;
+                        UserNotification.AllUsers = false;
+                        UserNotification.SendDate = DateTime.Now;
+                        UserNotification.ProjectId = 0;
+                        UserNotification.TaskId = 0;
+                        UserNotification.IsHidden = false;
+                        UserNotification.AddUser = UserId;
+                        UserNotification.AddDate = DateTime.Now;
+                        _TaamerProContext.Notification.Add(UserNotification);
+                        _TaamerProContext.SaveChanges();
+                        _notificationService.sendmobilenotification(usr, Subject, NotStr);
+
+                        //mail
+                        _customerMailService.SendMail_SysNotification((int)emp.BranchId, usr, usr, Subject, htmlBody, true);
 
 
-                ///////////////////////////////////////////////////////////////////////////////////////////////////
+                        Users? userObj = _TaamerProContext.Users.Where(s => s.UserId == ResponSibleUser).FirstOrDefault();
 
-
-
-                
-                //if (UsermailfPriv.Count() != 0)
-                //{
-                //    //_userPrivilegesRepository.GetMatching(s => s.IsDeleted == false && s.PrivilegeId == 131001).Where(w => w.Users.IsDeleted == false)
-                //    foreach (var userCounter in UsermailfPriv)
-                //    {
-                //        if (userCounter.UserId != ResponSibleUser)
-                //        {
-                //            try
-                //            {
-                //                string htmlBody = "";
-                //                if (Lang == "rtl")
-                //                {
-                //                    htmlBody = @"<!DOCTYPE html>
-                //                    <html>
-                //                        <head></head>
-                //                    <body  style='direction: rtl;'>
-                              
-                //                        <table style=' border: 1px solid black; border-collapse: collapse;'>
-                //                            <thead>
-                //                            <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>نوع الإجازة</th>
-                //                            <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>من</th>
-                //                            <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>إلى</th>
-                //                            </thead>
-                //                            <tbody>
-                //                            <tr>
-                //                                <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + VactionTypeName + @"</td>
-                //                                <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + vac.StartDate + @"</td>
-                //                                <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + vac.EndDate + @"</td>
-                //                            </tr>
-                //                            </tbody>
-                //                        </table>
-
-                //                    </body>
-                //                    </html>";
-                //                }
-                //                else
-                //                {
-                //                    htmlBody = @"<!DOCTYPE html>
-                //                    <html>
-                //                        <head></head>
-                //                        <body>
-                          
-                //                        < table style=' border: 1px solid black; border-collapse: collapse;'>
-                //                            <thead>
-                //                            <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>Vacation Type</th>
-                //                            <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>Start Date</th>
-                //                            <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>End Date</th>
-                //                            </thead>
-                //                            <tbody>
-                //                            <tr>
-                //                                <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + VactionTypeName + @"</td>
-                //                                <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + vac.StartDate + @"</td>
-                //                                <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + vac.EndDate + @"</td>
-                //                            </tr>
-                //                            </tbody>
-                //                        </table>
-                //                    </body>
-                //                    </html>";
-                //                }
-
-                //               // _customerMailService.SendMail_SysNotification(BranchId, UserId, (int)userCounter.UserId, Subject, htmlBody, true);
-                //                SendMail_Vacation(BranchId, UserId, ResponSibleUser, Subject, htmlBody, Url, ImgUrl, 1, true);
-
-                //            }
-                //            catch (Exception ex)
-                //            {
-                //                //-----------------------------------------------------------------------------------------------------------------
-                //                string ActionDate4 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                //                string ActionNote4 = "فشل في ارسال ميل لمن لدية صلاحية ";
-                //                _SystemAction.SaveAction("savevacation", "vacationservice", 1, Resources.General_SavedFailed, "", "", ActionDate4, UserId, BranchId, ActionNote4, 0);
-                //                //-----------------------------------------------------------------------------------------------------------------
-                //            }
-                //        }
-                //    }
-                //}
-
-             
-
-
+                        var res = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
+                    
+                }
             }
             catch(Exception ex)
             { 
@@ -1441,52 +1311,12 @@ namespace TaamerProject.Service.Services
                     
                     //Notification
                     int ResponSibleUser = VacationUpdated.UserId.HasValue ? VacationUpdated.UserId.Value : VacationUpdated.AddUser.Value;
-                    var UserNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(ResponSibleUser);
                     var directmanager = _TaamerProContext.Employees.Where(x => x.EmployeeId == emp.DirectManager).FirstOrDefault();
 
                     try
                     { 
-                    //Notification
-                    //if (UserNotifPriv.Result.Count() != 0 && UserNotifPriv.Result.Contains(132))
-                    //{
-                        var UserNotification = new Notification();
-                        UserNotification.ReceiveUserId = emp.UserId??0;
-                        UserNotification.Name = Subject;
-                        UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
-                        UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
-                        UserNotification.SendUserId = 1;
-                        UserNotification.Type = 1; // notification
-                        UserNotification.Description = NotStr;
-                        UserNotification.AllUsers = false;
-                        UserNotification.SendDate = DateTime.Now;
-                        UserNotification.ProjectId = 0;
-                        UserNotification.TaskId = 0;
-                        UserNotification.IsHidden = false;
-                        UserNotification.AddUser = UserId;
-                        UserNotification.AddDate = DateTime.Now;
-                        _TaamerProContext.Notification.Add(UserNotification);
-                        _TaamerProContext.SaveChanges();
-                        if (directmanager.UserId.Value != null && directmanager.UserId.Value != 0)
-                        {
-                            var managernot = new Notification();
-                            managernot = UserNotification;
-                            managernot.ReceiveUserId = directmanager.UserId.Value;
-                            managernot.NotificationId = 0;
-                            _TaamerProContext.Notification.Add(managernot);
-                            _TaamerProContext.SaveChanges();
-                        }
+                        if(Type==2 || Type == 3) {
 
-
-                        _notificationService.sendmobilenotification(emp.UserId.Value, Subject, NotStr);
-                        _notificationService.sendmobilenotification(directmanager.UserId.Value, Subject, NotStr);
-
-                        //}
-
-                        if ((Type == 2 || Type == 3))
-                    {   //mail
-                        //if (UserNotifPriv.Result.Count() != 0  && UserNotifPriv.Result.Contains(131))
-                        //{
-                        //mail
                             string DepartmentNameAr = "";
                             Department? DepName = _TaamerProContext.Department.Where(s => s.DepartmentId == emp.DepartmentId).FirstOrDefault();
                             if (DepName != null)
@@ -1502,45 +1332,74 @@ namespace TaamerProject.Service.Services
                                 NameAr = BranchName.NameAr;
                             }
                             var refusereason = "";
-                            if (Type == 3 && reason !=null && reason !="" && reason != "undefined")
+                            if (Type == 3 && reason != null && reason != "" && reason != "undefined")
                             {
-                                refusereason = "<tr><td>السبب</td><td>"+reason+@"</td></tr>";
+                                refusereason = "<tr><td>السبب</td><td>" + reason + @"</td></tr>";
 
                             }
                             string htmlBody = "";
 
                             htmlBody = @"<!DOCTYPE html><html lang = ''><head><meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'><meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <meta charset = 'utf-8><meta name = 'description' content = ''><meta name = 'keywords' content = ''><meta name = 'csrf-token' content = ''><title></title><link rel = 'icon' type = 'image/x-icon' href = ''></head>
-    <body style = 'background:#f9f9f9;direction:rtl'><div class='container' style='max-width:630px;padding-right: var(--bs-gutter-x, .75rem); padding-left: var(--bs-gutter-x, .75rem); margin-right: auto;  margin-left: auto;'>
-    <style> .bordered {width: 550px; height: 700px; padding: 20px;border: 3px solid yellowgreen; background-color:lightgray;} </style>
-    <div class= 'row' style = 'font-family: Cairo, sans-serif'>  <div class= 'card' style = 'padding: 2rem;background:#fff'> <div style = 'width: 550px; height: 700px; padding: 20px; border: 3px solid yellowgreen; background-color: lightgray;'> <p style='text-align:center'></p>
-    <h4> عزيزي الموظف " + emp.EmployeeNameAr + "</h4> <h4> السلام عليكم ورحمة الله وبركاتة</h4> <h3 style = 'text-align:center;' > تم تقديم طلب الاجازة الخاصه بكم</h3><table align = 'center' border = '1' ><tr> <td>  الموظف</td><td>" + emp.EmployeeNameAr + @"</td> </tr> <tr> <td>   نوع الإجازة  </td> <td>" + VactionType.NameAr + @"</td>
-     </tr> <tr> <td>   من</td> <td>" + VacationUpdated.StartDate + @"</td> </tr><tr> <td>   إلى</td> <td>" + VacationUpdated.EndDate + @"</td> </tr> "+ refusereason + @"</table> <p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
+                                        <meta charset = 'utf-8><meta name = 'description' content = ''><meta name = 'keywords' content = ''><meta name = 'csrf-token' content = ''><title></title><link rel = 'icon' type = 'image/x-icon' href = ''></head>
+                                        <body style = 'background:#f9f9f9;direction:rtl'><div class='container' style='max-width:630px;padding-right: var(--bs-gutter-x, .75rem); padding-left: var(--bs-gutter-x, .75rem); margin-right: auto;  margin-left: auto;'>
+                                        <style> .bordered {width: 550px; height: 700px; padding: 20px;border: 3px solid yellowgreen; background-color:lightgray;} </style>
+                                        <div class= 'row' style = 'font-family: Cairo, sans-serif'>  <div class= 'card' style = 'padding: 2rem;background:#fff'> <div style = 'width: 550px; height: 700px; padding: 20px; border: 3px solid yellowgreen; background-color: lightgray;'> <p style='text-align:center'></p>
+                                        <h4> عزيزي الموظف " + emp.EmployeeNameAr + "</h4> <h4> السلام عليكم ورحمة الله وبركاتة</h4> <h3 style = 'text-align:center;' > تم تقديم طلب الاجازة الخاصه بكم</h3><table align = 'center' border = '1' ><tr> <td>  الموظف</td><td>" + emp.EmployeeNameAr + @"</td> </tr> <tr> <td>   نوع الإجازة  </td> <td>" + VactionType.NameAr + @"</td>
+                                         </tr> <tr> <td>   من</td> <td>" + VacationUpdated.StartDate + @"</td> </tr><tr> <td>   إلى</td> <td>" + VacationUpdated.EndDate + @"</td> </tr> " + refusereason + @"</table> <p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
 	
-    </div> </div></div></div></body></html> ";
+                                        </div> </div></div></div></body></html> ";
+                            List<int> recept = new List<int>();
+                            var code = Type == 2 ? Models.Enums.NotificationCode.HR_LeaveAccepted : Models.Enums.NotificationCode.HR_LeaveRejected;
+                            var config = _employeesService.GetNotificationRecipients(code, VacationUpdated.EmployeeId);
+                          
+                                if (config.Description != null && config.Description != "")
+                                    Subject = config.Description;
 
-
-
-
-                            // _customerMailService.SendMail_SysNotification(BranchId, UserId, ResponSibleUser, Subject, htmlBody, true);
-                            if (emp.Email != null) 
+                                if(config.Users!=null && config.Users.Count() > 0)
                             {
-                                _customerMailService.SendMail_SysNotification((int)emp.BranchId, 0, 0, Subject, htmlBody, true, emp.Email);
+                                recept = config.Users;
                             }
-                            if (directmanager.Email != null)
+                            else
                             {
-                                _customerMailService.SendMail_SysNotification((int)directmanager.BranchId, 0, 0, Subject, htmlBody, true, directmanager.Email);
+                                recept.Add(emp.UserId.Value);
+                                if(directmanager.UserId.Value >0)
+                                recept.Add(directmanager.UserId.Value);
 
                             }
-                            //}
-                            //SMS
-                            //    if (UserNotifPriv.Result.Count() != 0 && UserNotifPriv.Result.Contains(133))
-                            //{
-                            //var userObj = _usersRepository.GetById(ResponSibleUser);
-                            Users? userObj = _TaamerProContext.Users.Where(s => s.UserId == ResponSibleUser).FirstOrDefault();
+                            foreach (var usr in recept.Distinct())
+                            {
+
+
+
+                                var UserNotification = new Notification();
+                                UserNotification.ReceiveUserId =usr;
+                                UserNotification.Name = Subject;
+                                UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                                UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
+                                UserNotification.SendUserId = 1;
+                                UserNotification.Type = 1; // notification
+                                UserNotification.Description = NotStr;
+                                UserNotification.AllUsers = false;
+                                UserNotification.SendDate = DateTime.Now;
+                                UserNotification.ProjectId = 0;
+                                UserNotification.TaskId = 0;
+                                UserNotification.IsHidden = false;
+                                UserNotification.AddUser = UserId;
+                                UserNotification.AddDate = DateTime.Now;
+                                _TaamerProContext.Notification.Add(UserNotification);
+                                _TaamerProContext.SaveChanges();
+                              
+
+                                _notificationService.sendmobilenotification(usr, Subject, NotStr);
+
+                                
+                                    _customerMailService.SendMail_SysNotification((int)emp.BranchId, usr, usr, Subject, htmlBody, true);
+                                
+                                Users? userObj = _TaamerProContext.Users.Where(s => s.UserId == usr).FirstOrDefault();
 
                                 var res = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
-                        //}
+                                //}
+                            }
                     }
                     }
                     catch

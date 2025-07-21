@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaamerProject.Models.Common;
 using TaamerProject.Models;
+using TaamerProject.Models.Enums;
 
 namespace TaamerProject.Service.Interfaces
 {
@@ -72,5 +73,6 @@ namespace TaamerProject.Service.Interfaces
         Task<IEnumerable<EmployeesVM>> GetEmployeeWithoutContract(int? DepartmectId, string lang, string? Searchtext);
         GeneralMessage DeleteQuacontractDetails(int EmployeeId);
         GeneralMessage RemoveEmployee(int EmpId, int UserId, int BranchId);
+        (List<int> Users, string Description) GetNotificationRecipients(NotificationCode code, int? EmpId); 
     }
 }

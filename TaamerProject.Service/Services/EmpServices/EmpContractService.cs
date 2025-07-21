@@ -21,6 +21,7 @@ using TaamerProject.Service.LocalResources;
 using static Dropbox.Api.Files.PathOrLink;
 using static Dropbox.Api.Files.SearchMatchType;
 using Twilio.TwiML.Messaging;
+using TaamerProject.Models.Enums;
 
 namespace TaamerProject.Service.Services
 {
@@ -418,15 +419,12 @@ namespace TaamerProject.Service.Services
 
                 _TaamerProContext.SaveChanges();
 
-                if (EmployeeUpdated.Email !=null)
+                #region Notifications
+
+                if (EmployeeUpdated.Email != null)
                 {
                     var NewUser = EmployeeUpdated.UserId.Value;
 
-                    //var UsersWithPriv = _UserPrivilegesRepository.GetMatching(x => x.IsDeleted == false && (x.PrivilegeId == 1419)).Select(x => x.UserId.Value).ToList();
-                    //if (EmployeeUpdated.UserId.HasValue)
-                    //    UsersWithPriv.Add(EmployeeUpdated.UserId.Value);
-
-                    //UsersWithPriv = UsersWithPriv.Distinct().ToList();
 
                     string OrgName = _organizationsService.GetBranchOrganization().Result.NameAr;
                     string DepartmentNameAr = "";
@@ -447,109 +445,105 @@ namespace TaamerProject.Service.Services
                     var directmanager = _TaamerProContext.Employees.Where(x => x.EmployeeId == EmployeeUpdated.DirectManager).FirstOrDefault();
 
                     var htmlBody = @"<!DOCTYPE html><html lang = ''><head><meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'><meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <meta charset = 'utf-8><meta name = 'description' content = ''><meta name = 'keywords' content = ''><meta name = 'csrf-token' content = ''><title></title><link rel = 'icon' type = 'image/x-icon' href = ''></head>
-    <body style = 'background:#f9f9f9;direction:rtl'><div class='container' style='max-width:630px;padding-right: var(--bs-gutter-x, .75rem); padding-left: var(--bs-gutter-x, .75rem); margin-right: auto;  margin-left: auto;'>
-    <style> .bordered {width: 550px; height: 700px; padding: 20px;border: 3px solid yellowgreen; background-color:lightgray;} </style>
-    <div class= 'row' style = 'font-family: Cairo, sans-serif'>  <div class= 'card' style = 'padding: 2rem;background:#fff'> <div style = 'width: 550px; height: 700px; padding: 20px; border: 3px solid yellowgreen; background-color: lightgray;'> <p style='text-align:center'></p>
-    <h4> عزيزي الموظف "+ EmployeeUpdated.EmployeeNameAr+"</h4> <h4> السلام عليكم ورحمة الله وبركاتة</h4> <h3 style = 'text-align:center;' > يسر " + OrgName + "  ان يعبر عن سعادته بانضمامكم اليه ونسال الله لك التوفيق</h3><table align = 'center' border = '1' ><tr> <td>  الموظف</td><td>" + EmployeeUpdated.EmployeeNameAr + @"</td> </tr> <tr> <td>   الوظيفه</td><td>" + job.JobNameAr + @"</td> </tr><tr> <td>   القسم  </td> <td>" + DepartmentNameAr + @"</td>
-     </tr> <tr> <td>   الفرع</td> <td>" + NameAr + @"</td> </tr> <tr> <td>  تاريخ المباشرة  </td> <td>" + EmpContract.StartWorkDate + @"</td> </tr> <tr> <td>   المدير المباشر  </td> <td>"+ directmanager?.EmployeeNameAr + @"</td> </tr></table><h4>صورة مع التحية للمدير المباشر للموظف</h4> <p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
+                        <meta charset = 'utf-8><meta name = 'description' content = ''><meta name = 'keywords' content = ''><meta name = 'csrf-token' content = ''><title></title><link rel = 'icon' type = 'image/x-icon' href = ''></head>
+                        <body style = 'background:#f9f9f9;direction:rtl'><div class='container' style='max-width:630px;padding-right: var(--bs-gutter-x, .75rem); padding-left: var(--bs-gutter-x, .75rem); margin-right: auto;  margin-left: auto;'>
+                        <style> .bordered {width: 550px; height: 700px; padding: 20px;border: 3px solid yellowgreen; background-color:lightgray;} </style>
+                        <div class= 'row' style = 'font-family: Cairo, sans-serif'>  <div class= 'card' style = 'padding: 2rem;background:#fff'> <div style = 'width: 550px; height: 700px; padding: 20px; border: 3px solid yellowgreen; background-color: lightgray;'> <p style='text-align:center'></p>
+                        <h4> عزيزي الموظف "+ EmployeeUpdated.EmployeeNameAr+"</h4> <h4> السلام عليكم ورحمة الله وبركاتة</h4> <h3 style = 'text-align:center;' > يسر " + OrgName + "  ان يعبر عن سعادته بانضمامكم اليه ونسال الله لك التوفيق</h3><table align = 'center' border = '1' ><tr> <td>  الموظف</td><td>" + EmployeeUpdated.EmployeeNameAr + @"</td> </tr> <tr> <td>   الوظيفه</td><td>" + job.JobNameAr + @"</td> </tr><tr> <td>   القسم  </td> <td>" + DepartmentNameAr + @"</td>
+                         </tr> <tr> <td>   الفرع</td> <td>" + NameAr + @"</td> </tr> <tr> <td>  تاريخ المباشرة  </td> <td>" + EmpContract.StartWorkDate + @"</td> </tr> <tr> <td>   المدير المباشر  </td> <td>"+ directmanager?.EmployeeNameAr + @"</td> </tr></table><h4>صورة مع التحية للمدير المباشر للموظف</h4> <p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
 	
-    </div> </div></div></div></body></html> ";
+                        </div> </div></div></div></body></html> ";
 
-                    //string htmlBody = @"<!DOCTYPE html>
-                    //                <html>
-
-                    //                <head></head>
-
-                    //                <body style='direction: rtl;'>
-                    //                    <p> السيد /ة " +
-                    //                    EmployeeUpdated.EmployeeNameAr
-                    //                    +
-                    //                    @" المحترم</p>
-                    //                    <p>السلام عليكم ورحمة الله وبركاته</p>
-                    //                    <p>
-                    //                        يسر " +
-                    //                        OrgName
-                    //                        +
-                    //                        @" أن يعبر عن سعادته بانضمامكم إليه ، ونسال
-                    //                        الله لك التوفيق والنجاح
-                    //                    </p> 
-                    //                    <table style=' border: 1px solid black; border-collapse: collapse;font-size: 11px;'>
-                    //                        <thead>
-                    //                        <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>الموظف</th>
-                    //                        <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>الوظيفة</th>
-                    //                        <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>القسم</th>
-                    //                        <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>الفرع</th>
-                    //                        <th  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>تاريخ المباشرة</th>
-                    //                      </thead>
-                    //                      <tbody>
-                    //                        <tr>
-                    //                          <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + EmployeeUpdated.EmployeeNameAr + @"</td>
-                    //                          <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + job.JobNameAr + @"</td>
-                    //                          <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + DepartmentNameAr + @"</td>
-                    //                          <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + NameAr + @"</td>
-                    //                          <td  style=' border: 1px solid black; border-collapse: collapse;width: 150px;'>" + EmpContract.StartWorkDate + @"</td>
-                    //                        </tr>
-                    //                      </tbody>
-                    //                    </table>
-
-                    //                    <p>
-                    //                        مع تحيات قسم الموارد البشرية
-                    //                    </p>
-                    //                </body>
-                    //                </html>";
-                    //foreach (var user in UsersWithPriv)
+                    
                     {
                         var user = (NewUser==null ||NewUser ==0) ?User : NewUser;
                        // var userObj = _usersRepository.GetById(user);
                         Users? userObj = _TaamerProContext.Users.Where(s => s.UserId == user).FirstOrDefault();
                         //Mail
-                        if (EmployeeUpdated.Email != null && EmployeeUpdated.Email != "")
+
+                        // Get Configurations for employee  
+                        var Note_Cinfig = _employeesService.GetNotificationRecipients(NotificationCode.HR_EmployeeStart, EmployeeUpdated.EmployeeId);
+                        var desc = Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar"));
+                        if (Note_Cinfig.Description != null && Note_Cinfig.Description != "")
+                            desc = Note_Cinfig.Description;
+                        if (Note_Cinfig.Users != null && Note_Cinfig.Users.Count() > 0)
                         {
-                            bool mail = _customerMailService.SendMail_SysNotification((int)EmpContract?.BranchId, User, user, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), htmlBody, true,EmployeeUpdated.Email);
-                        if(directmanager != null)
+                            foreach (var usr in Note_Cinfig.Users)
                             {
-                               _customerMailService.SendMail_SysNotification((int)EmpContract.BranchId, User, user, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), htmlBody, true, directmanager?.Email);
+                                string NotStr = "تم انضمام الموظف " + EmployeeUpdated.EmployeeNameAr + " إلى فريق " + OrgName + ", الوظيفة: " + EmpContract.PerSe + " قسم : " + DepartmentNameAr + " فرع: " + NameAr;
+                                //Notifications
+                                var UserNotification = new Notification();
+                                UserNotification.ReceiveUserId = usr;
+                                UserNotification.Name = desc;// Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar"));
+                                UserNotification.Date = EmpContract.StartWorkDate;
+                                UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
+                                UserNotification.SendUserId = 1;
+                                UserNotification.Type = 1; // notification
+                                UserNotification.Description = NotStr;
+                                UserNotification.AllUsers = false;
+                                UserNotification.SendDate = DateTime.Now;
+                                UserNotification.ProjectId = 0;
+                                UserNotification.TaskId = 0;
+                                UserNotification.IsHidden = false;
+                                UserNotification.AddUser = User;
+                                UserNotification.AddDate = DateTime.Now;
+                                _TaamerProContext.Notification.Add(UserNotification);
+                                _TaamerProContext.SaveChanges();
+                                _notificationService.sendmobilenotification(usr,desc, NotStr);
+                                bool mail = _customerMailService.SendMail_SysNotification((int)EmpContract?.BranchId, User, usr, desc, htmlBody, true);
 
                             }
                         }
-                        string NotStr = "تم انضمام الموظف " + EmployeeUpdated.EmployeeNameAr + " إلى فريق " + OrgName + ", الوظيفة: " + EmpContract.PerSe + " قسم : " + DepartmentNameAr + " فرع: " + NameAr;
-                        //Notifications
-                        var UserNotification = new Notification();
-                        UserNotification.ReceiveUserId = user;
-                        UserNotification.Name = Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar"));
-                        UserNotification.Date = EmpContract.StartWorkDate;
-                        UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
-                        UserNotification.SendUserId = 1;
-                        UserNotification.Type = 1; // notification
-                        UserNotification.Description = NotStr;
-                        UserNotification.AllUsers = false;
-                        UserNotification.SendDate = DateTime.Now;
-                        UserNotification.ProjectId = 0;
-                        UserNotification.TaskId = 0;
-                        UserNotification.IsHidden = false;
-                        UserNotification.AddUser = User;
-                        UserNotification.AddDate = DateTime.Now;
-                        _TaamerProContext.Notification.Add(UserNotification);
-                        if(directmanager != null)
+                        else
                         {
-                            var directmngernot = new Notification();
-                            directmngernot = UserNotification;
-                            directmngernot.ReceiveUserId = directmanager.UserId;
-                            _TaamerProContext.Notification.Add(directmngernot);
+                            if (EmployeeUpdated.Email != null && EmployeeUpdated.Email != "")
+                            {
+                                bool mail = _customerMailService.SendMail_SysNotification((int)EmpContract?.BranchId, User, user, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), htmlBody, true, EmployeeUpdated.Email);
+                                if (directmanager != null)
+                                {
+                                    _customerMailService.SendMail_SysNotification((int)EmpContract.BranchId, User, user, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), htmlBody, true, directmanager?.Email);
 
-                        }
-                        _TaamerProContext.SaveChanges();
-                        _notificationService.sendmobilenotification(user,Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), NotStr);
-                        if (directmanager != null)
-                        {
-                            _notificationService.sendmobilenotification(directmanager.UserId.Value, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), NotStr);
-                        }
-                        //SMS
-                        var res = _userNotificationPrivilegesService.SendSMS(EmployeeUpdated.Mobile, NotStr, User, BranchId);
+                                }
+                            }
+                            string NotStr = "تم انضمام الموظف " + EmployeeUpdated.EmployeeNameAr + " إلى فريق " + OrgName + ", الوظيفة: " + EmpContract.PerSe + " قسم : " + DepartmentNameAr + " فرع: " + NameAr;
+                            //Notifications
+                            var UserNotification = new Notification();
+                            UserNotification.ReceiveUserId = user;
+                            UserNotification.Name = Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar"));
+                            UserNotification.Date = EmpContract.StartWorkDate;
+                            UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
+                            UserNotification.SendUserId = 1;
+                            UserNotification.Type = 1; // notification
+                            UserNotification.Description = NotStr;
+                            UserNotification.AllUsers = false;
+                            UserNotification.SendDate = DateTime.Now;
+                            UserNotification.ProjectId = 0;
+                            UserNotification.TaskId = 0;
+                            UserNotification.IsHidden = false;
+                            UserNotification.AddUser = User;
+                            UserNotification.AddDate = DateTime.Now;
+                            _TaamerProContext.Notification.Add(UserNotification);
+                            if (directmanager != null)
+                            {
+                                var directmngernot = new Notification();
+                                directmngernot = UserNotification;
+                                directmngernot.ReceiveUserId = directmanager.UserId;
+                                _TaamerProContext.Notification.Add(directmngernot);
 
+                            }
+                            _TaamerProContext.SaveChanges();
+                            _notificationService.sendmobilenotification(user, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), NotStr);
+                            if (directmanager != null)
+                            {
+                                _notificationService.sendmobilenotification(directmanager.UserId.Value, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), NotStr);
+                            }
+                            //SMS
+                            var res = _userNotificationPrivilegesService.SendSMS(EmployeeUpdated.Mobile, NotStr, User, BranchId);
+                        }
                     }
                 }
+
+                #endregion
                 //-----------------------------------------------------------------------------------------------------------------
                 string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
                 string ActionNote = "مباشرة عمل ";
