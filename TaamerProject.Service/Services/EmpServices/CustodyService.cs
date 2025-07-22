@@ -170,62 +170,96 @@ namespace TaamerProject.Service.Services
 
                                     </div> </div></div></div></body></html> ";
 
-                            if (Emp.Email != null)
-                            {
-                                _customerMailService.SendMail_SysNotification((int)Emp.BranchId, 0, 0, "فك العهدة", htmlBody, true, Emp.Email);
-                            }
+                            var subject = "فك العهدة";// Resources.ResourceManager.GetString("Emp_ReceiveCustody", CultureInfo.CreateSpecificCulture("ar"));
+                            var config = _employeesService.GetNotificationRecipients(Models.Enums.NotificationCode.HR_UnassignAsset, Emp.EmployeeId);
 
-                            //Notification
-                            try
-                            {
-                                //if (UserNotifPriv.Count() != 0 && UserNotifPriv.Contains(162))
-                                //{
-                                UserNotification.ReceiveUserId = user;
-                                UserNotification.Name = Resources.ResourceManager.GetString("Notice_CustodyFinish", CultureInfo.CreateSpecificCulture("ar"));
-                                UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
-                                UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
-                                UserNotification.SendUserId = 1;
-                                UserNotification.Type = 1; // notification
-                                UserNotification.Description = NotStr;
-                                UserNotification.AllUsers = false;
-                                UserNotification.SendDate = DateTime.Now;
-                                UserNotification.ProjectId = 0;
-                                UserNotification.TaskId = 0;
-                                UserNotification.IsHidden = false;
-                                UserNotification.AddUser = UserId;
-                                UserNotification.AddDate = DateTime.Now;
-                                _TaamerProContext.Notification.Add(UserNotification);
-                                _TaamerProContext.SaveChanges();
+                            if (config.Description != null && config.Description != "")
+                                subject = config.Description;
 
-                                if (Emp.DirectManager != null && Emp.DirectManager != 0)
+                            if (config.Users != null && config.Users.Count() > 0)
+                            {
+                                foreach (var usr in config.Users)
                                 {
-                                    var direectmanager = _TaamerProContext.Employees.Where(x => x.EmployeeId == Emp.DirectManager).FirstOrDefault();
+                                    _customerMailService.SendMail_SysNotification((int)Emp.BranchId, usr, usr, subject, htmlBody, true);
+                                    UserNotification.ReceiveUserId = usr;
+                                    UserNotification.Name = subject;// Resources.ResourceManager.GetString("Notice_CustodyFinish", CultureInfo.CreateSpecificCulture("ar"));
+                                    UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                                    UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
+                                    UserNotification.SendUserId = 1;
+                                    UserNotification.Type = 1; // notification
+                                    UserNotification.Description = NotStr;
+                                    UserNotification.AllUsers = false;
+                                    UserNotification.SendDate = DateTime.Now;
+                                    UserNotification.ProjectId = 0;
+                                    UserNotification.TaskId = 0;
+                                    UserNotification.IsHidden = false;
+                                    UserNotification.AddUser = UserId;
+                                    UserNotification.AddDate = DateTime.Now;
+                                    _TaamerProContext.Notification.Add(UserNotification);
+                                    _TaamerProContext.SaveChanges();
+                                    _notificationService.sendmobilenotification(usr,subject, NotStr);
 
-                                    if (direectmanager.Email != null)
-                                    {
-                                        _customerMailService.SendMail_SysNotification((int)direectmanager.BranchId, 0, 0, "فك العهده", htmlBody, true, direectmanager.Email);
-                                    }
-
-                                    if (direectmanager != null)
-                                    {
-                                        var Not_directmanager = new Notification();
-                                        Not_directmanager = UserNotification;
-                                        Not_directmanager.ReceiveUserId = direectmanager.UserId??0;
-                                        Not_directmanager.NotificationId = 0;
-                                        _TaamerProContext.Notification.Add(Not_directmanager);
-                                        _TaamerProContext.SaveChanges();
-
-                                    }
-                                _notificationService.sendmobilenotification(direectmanager.UserId.Value, "فك العهدة", NotStr);
                                 }
-                                _notificationService.sendmobilenotification(user, "فك العهدة", NotStr);
-
                             }
-                            catch (Exception ex)
+                            else
                             {
+                                if (Emp.Email != null)
 
+                                {
+                                    _customerMailService.SendMail_SysNotification((int)Emp.BranchId, 0, 0, subject, htmlBody, true, Emp.Email);
+                                }
+
+                                //Notification
+                                try
+                                {
+                                    //if (UserNotifPriv.Count() != 0 && UserNotifPriv.Contains(162))
+                                    //{
+                                    UserNotification.ReceiveUserId = user;
+                                    UserNotification.Name = subject;// Resources.ResourceManager.GetString("Notice_CustodyFinish", CultureInfo.CreateSpecificCulture("ar"));
+                                    UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                                    UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
+                                    UserNotification.SendUserId = 1;
+                                    UserNotification.Type = 1; // notification
+                                    UserNotification.Description = NotStr;
+                                    UserNotification.AllUsers = false;
+                                    UserNotification.SendDate = DateTime.Now;
+                                    UserNotification.ProjectId = 0;
+                                    UserNotification.TaskId = 0;
+                                    UserNotification.IsHidden = false;
+                                    UserNotification.AddUser = UserId;
+                                    UserNotification.AddDate = DateTime.Now;
+                                    _TaamerProContext.Notification.Add(UserNotification);
+                                    _TaamerProContext.SaveChanges();
+
+                                    if (Emp.DirectManager != null && Emp.DirectManager != 0)
+                                    {
+                                        var direectmanager = _TaamerProContext.Employees.Where(x => x.EmployeeId == Emp.DirectManager).FirstOrDefault();
+
+                                        if (direectmanager.Email != null)
+                                        {
+                                            _customerMailService.SendMail_SysNotification((int)direectmanager.BranchId, 0, 0, subject, htmlBody, true, direectmanager.Email);
+                                        }
+
+                                        if (direectmanager != null)
+                                        {
+                                            var Not_directmanager = new Notification();
+                                            Not_directmanager = UserNotification;
+                                            Not_directmanager.ReceiveUserId = direectmanager.UserId ?? 0;
+                                            Not_directmanager.NotificationId = 0;
+                                            _TaamerProContext.Notification.Add(Not_directmanager);
+                                            _TaamerProContext.SaveChanges();
+
+                                        }
+                                        _notificationService.sendmobilenotification(direectmanager.UserId.Value, subject, NotStr);
+                                    }
+                                    _notificationService.sendmobilenotification(user, subject, NotStr);
+
+                                }
+                                catch (Exception ex)
+                                {
+
+                                }
                             }
-                          
                         }
 
                         }
@@ -443,76 +477,109 @@ namespace TaamerProject.Service.Services
                                      </tr> <tr> <td>  الكمية</td> <td>" + custody.Quantity + @"</td> </tr><tr> <td>   السعر</td> <td>" + CustodyPrice + @"</td> </tr><tr> <td>   ميعاد استلام العهدة</td> <td>" + custody.Date + @"</td> </tr> </table> <p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
 
                                     </div> </div></div></div></body></html> ";
-                        var subject = "";
-                        //var config = _employeesService.GetNotificationRecipients(Models.Enums.NotificationCode.HR_AssignAsset, custody.EmployeeId);
-                        
-                        //if()
-                        if (Emp.Email != null)
+                        var subject = Resources.ResourceManager.GetString("Emp_ReceiveCustody", CultureInfo.CreateSpecificCulture("ar"));
+                        var config = _employeesService.GetNotificationRecipients(Models.Enums.NotificationCode.HR_AssignAsset, custody.EmployeeId);
+
+                        if (config.Description != null && config.Description != "")
+                            subject = config.Description;
+
+                        if (config.Users != null && config.Users.Count() > 0)
                         {
-                            _customerMailService.SendMail_SysNotification((int)Emp.BranchId, 0, 0, Resources.ResourceManager.GetString("Emp_ReceiveCustody", CultureInfo.CreateSpecificCulture("ar")), htmlBody, true, Emp.Email);
-                        }
-
-                        if (direectmanager !=null && direectmanager?.Email != null)
-                        {
-                            _customerMailService.SendMail_SysNotification((int)direectmanager.BranchId, 0, 0, Resources.ResourceManager.GetString("Emp_ReceiveCustody", CultureInfo.CreateSpecificCulture("ar")), htmlBody, true, direectmanager.Email);
-                        }
-
-
-                                try
-                                {
-                                        UserNotification.ReceiveUserId = user;
-                                        UserNotification.Name = Resources.ResourceManager.GetString("Emp_ReceiveCustody", CultureInfo.CreateSpecificCulture("ar"));
-                                        UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
-                                        UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
-                                        UserNotification.SendUserId = 1;
-                                        UserNotification.Type = 1; // notification
-                                        UserNotification.Description = NotStr;
-                                        UserNotification.AllUsers = false;
-                                        UserNotification.SendDate = DateTime.Now;
-                                        UserNotification.ProjectId = 0;
-                                        UserNotification.TaskId = 0;
-                                        UserNotification.IsHidden = false;
-                                        UserNotification.AddUser = UserId;
-                                        UserNotification.AddDate = DateTime.Now;
-                                        _TaamerProContext.Notification.Add(UserNotification);
-                            _TaamerProContext.SaveChanges();
-
-                            if (direectmanager != null)
+                            foreach (var usr in config.Users)
                             {
-                                var Not_directmanager = new Notification();
-                                Not_directmanager = UserNotification;
-                                Not_directmanager.ReceiveUserId = direectmanager.UserId;
-                                Not_directmanager.AddDate = DateTime.Now.AddMinutes(1);
-                                Not_directmanager.NotificationId = 0;
-                                _TaamerProContext.Notification.Add(Not_directmanager);
+                                _customerMailService.SendMail_SysNotification((int)Emp.BranchId, usr, usr, subject, htmlBody, true);
+                                var not = new Notification();
+                                not.ReceiveUserId = usr;
+                                not.Name = subject;// Resources.ResourceManager.GetString("Emp_ReceiveCustody", CultureInfo.CreateSpecificCulture("ar"));
+                                not.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                                not.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
+                                not.SendUserId = 1;
+                                not.Type = 1; // notification
+                                not.Description = NotStr;
+                                not.AllUsers = false;
+                                not.SendDate = DateTime.Now;
+                                not.ProjectId = 0;
+                                not.TaskId = 0;
+                                not.IsHidden = false;
+                                not.AddUser = UserId;
+                                not.AddDate = DateTime.Now;
+                                _TaamerProContext.Notification.Add(not);
+                                _TaamerProContext.SaveChanges();
+                                _notificationService.sendmobilenotification(usr, subject, NotStr);
+
+                            }
+                        }
+                        else
+                        {
+
+
+
+                            if (Emp.Email != null)
+                            {
+                                _customerMailService.SendMail_SysNotification((int)Emp.BranchId, 0, 0, subject, htmlBody, true, Emp.Email);
+                            }
+
+                            if (direectmanager != null && direectmanager?.Email != null)
+                            {
+                                _customerMailService.SendMail_SysNotification((int)direectmanager.BranchId, 0, 0, subject, htmlBody, true, direectmanager.Email);
+                            }
+
+
+                            try
+                            {
+                                UserNotification.ReceiveUserId = user;
+                                UserNotification.Name = Resources.ResourceManager.GetString("Emp_ReceiveCustody", CultureInfo.CreateSpecificCulture("ar"));
+                                UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+                                UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
+                                UserNotification.SendUserId = 1;
+                                UserNotification.Type = 1; // notification
+                                UserNotification.Description = NotStr;
+                                UserNotification.AllUsers = false;
+                                UserNotification.SendDate = DateTime.Now;
+                                UserNotification.ProjectId = 0;
+                                UserNotification.TaskId = 0;
+                                UserNotification.IsHidden = false;
+                                UserNotification.AddUser = UserId;
+                                UserNotification.AddDate = DateTime.Now;
+                                _TaamerProContext.Notification.Add(UserNotification);
                                 _TaamerProContext.SaveChanges();
 
+                                if (direectmanager != null)
+                                {
+                                    var Not_directmanager = new Notification();
+                                    Not_directmanager = UserNotification;
+                                    Not_directmanager.ReceiveUserId = direectmanager.UserId;
+                                    Not_directmanager.AddDate = DateTime.Now.AddMinutes(1);
+                                    Not_directmanager.NotificationId = 0;
+                                    _TaamerProContext.Notification.Add(Not_directmanager);
+                                    _TaamerProContext.SaveChanges();
+
+                                }
+                                _TaamerProContext.SaveChanges();
+                                _notificationService.sendmobilenotification(user, Resources.ResourceManager.GetString("Emp_ReceiveCustody", CultureInfo.CreateSpecificCulture("ar")), NotStr);
+                                if (direectmanager != null)
+                                {
+                                    _notificationService.sendmobilenotification(direectmanager.UserId.Value, Resources.ResourceManager.GetString("Emp_ReceiveCustody", CultureInfo.CreateSpecificCulture("ar")), NotStr);
+                                }
+
                             }
-                            _TaamerProContext.SaveChanges();
-                                        _notificationService.sendmobilenotification(user, Resources.ResourceManager.GetString("Emp_ReceiveCustody", CultureInfo.CreateSpecificCulture("ar")), NotStr);
-                            if (direectmanager != null)
+                            catch (Exception ex)
                             {
-                                _notificationService.sendmobilenotification(direectmanager.UserId.Value, Resources.ResourceManager.GetString("Emp_ReceiveCustody", CultureInfo.CreateSpecificCulture("ar")), NotStr);
                             }
 
-                                }
-                                catch (Exception ex)
-                                {
-                                }
 
-                                
 
-                                //SMS
-                                try
-                                {
-                                        var res = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
-                                    
-                                }
-                                catch (Exception ex3)
-                                {
+                            //SMS
+                            try
+                            {
+                                var res = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
 
-                                }
+                            }
+                            catch (Exception ex3)
+                            {
 
+                            }
+                        }
                             }
                     //    }
                     //}
