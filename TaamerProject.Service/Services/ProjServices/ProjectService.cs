@@ -320,7 +320,7 @@ namespace TaamerProject.Service.Services
                                                 </table>
                                             </body>
                                             </html>";
-                            SendMail_ProjectStamp(BranchId, UserId, usr ,string.IsNullOrWhiteSpace(beneficiary.Description) ? "صدور فاتورة جديدة علي مشروع" : beneficiary.Description, htmlBody, Url, ImgUrl, 6, true);
+                            SendMail_ProjectStamp(BranchId, usr, usr ,string.IsNullOrWhiteSpace(beneficiary.Description) ? "صدور فاتورة جديدة علي مشروع" : beneficiary.Description, htmlBody, Url, ImgUrl, 6, true);
 
                         }
                             }
@@ -3892,7 +3892,12 @@ namespace TaamerProject.Service.Services
             {
                 case Beneficiary_type.مستخدمين:
                     if(config.NotificationConfigurationsAssines !=null && config.NotificationConfigurationsAssines.Count()>0)
-                    usersnote.AddRange((List<int>)config.NotificationConfigurationsAssines.Select(x=>x.UserId));
+                        usersnote.AddRange(
+                       config.NotificationConfigurationsAssines
+                           .Where(x => x.UserId.HasValue)
+                           .Select(x => x.UserId.Value)
+                           .ToList()
+                   );
                     break;
 
                 case Beneficiary_type.مدير_المشروع:

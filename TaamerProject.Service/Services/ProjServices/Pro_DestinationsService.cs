@@ -372,7 +372,7 @@ namespace TaamerProject.Service.Services
                     {
                         try
                         {
-                            var issent =  SendMail_Destination(Organization, branch, UserId, userId, subject, strbody, Url, ImgUrl, 1, true);
+                            var issent =  SendMail_Destination(Organization, branch, userId, userId, subject, strbody, Url, ImgUrl, 1, true);
                         }
                         catch (Exception ex)
                         {
