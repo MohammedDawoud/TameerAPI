@@ -3130,7 +3130,7 @@ namespace TaamerProject.Service.Services
                     var projectWorkersPriv = new List<UserPrivileges>();
                     var ListOfTaskNotify = new List<Notification>();
 
-                    //////////////////////////////////////// project workers ///////////////////////////////////////////////////////////////////////////////
+                    //////////////////////////////////////// project workers ////////////////////////////////////////
                     projectWorkers.Add(new ProjectWorkers //// add current user as asenior project
                     {
                         ProjectId = Project.ProjectId,
