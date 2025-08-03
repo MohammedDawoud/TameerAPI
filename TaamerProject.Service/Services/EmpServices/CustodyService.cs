@@ -178,6 +178,11 @@ namespace TaamerProject.Service.Services
 
                             if (config.Users != null && config.Users.Count() > 0)
                             {
+                                if ((Emp.UserId == null || Emp.UserId == 0) && Emp.Email !=null)
+                                {
+                                    _customerMailService.SendMail_SysNotification((int)Emp.BranchId, 0, 0, subject, htmlBody, true, Emp.Email);
+
+                                }
                                 foreach (var usr in config.Users)
                                 {
                                     _customerMailService.SendMail_SysNotification((int)Emp.BranchId, usr, usr, subject, htmlBody, true);
@@ -485,6 +490,11 @@ namespace TaamerProject.Service.Services
 
                         if (config.Users != null && config.Users.Count() > 0)
                         {
+                            if ((Emp.UserId == null || Emp.UserId == 0) && Emp.Email !=null)
+                            {
+                                _customerMailService.SendMail_SysNotification((int)Emp.BranchId, 0, 0, subject, htmlBody, true, Emp.Email);
+
+                            }
                             foreach (var usr in config.Users)
                             {
                                 _customerMailService.SendMail_SysNotification((int)Emp.BranchId, usr, usr, subject, htmlBody, true);

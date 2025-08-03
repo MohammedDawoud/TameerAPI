@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
@@ -1030,6 +1031,7 @@ namespace TaamerProject.Service.Services
 
                 if (config.Users != null && config.Users.Count() > 0)
                 {
+
                     recept = config.Users;
                 }
                 else
@@ -1038,6 +1040,11 @@ namespace TaamerProject.Service.Services
                     {
                         recept.Add(ResponSibleUser);
                     }
+                }
+                if ((emp.UserId == null || emp.UserId == 0) && emp.Email !=null)
+                {
+                    _customerMailService.SendMail_SysNotification((int)emp.BranchId, 0, 0, Subject, htmlBody, true, emp.Email);
+
                 }
                 foreach (var usr in recept)
                 {
@@ -1364,6 +1371,11 @@ namespace TaamerProject.Service.Services
                                 recept.Add(emp.UserId.Value);
                                 if(directmanager.UserId.Value >0)
                                 recept.Add(directmanager.UserId.Value);
+
+                            }
+                            if ((emp.UserId == null || emp.UserId == 0) && emp.Email !=null)
+                            {
+                                _customerMailService.SendMail_SysNotification((int)emp.BranchId, 0, 0, Subject, htmlBody, true, emp.Email);
 
                             }
                             foreach (var usr in recept.Distinct())

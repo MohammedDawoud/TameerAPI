@@ -468,6 +468,11 @@ namespace TaamerProject.Service.Services
                             desc = Note_Cinfig.Description;
                         if (Note_Cinfig.Users != null && Note_Cinfig.Users.Count() > 0)
                         {
+                            if (EmployeeUpdated.UserId == null || EmployeeUpdated.UserId == 0)
+                            {
+                                 _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, 0, desc, htmlBody, true, EmployeeUpdated.Email);
+
+                            }
                             foreach (var usr in Note_Cinfig.Users)
                             {
                                 string NotStr = "تم انضمام الموظف " + EmployeeUpdated.EmployeeNameAr + " إلى فريق " + OrgName + ", الوظيفة: " + EmpContract.PerSe + " قسم : " + DepartmentNameAr + " فرع: " + NameAr;

@@ -1579,9 +1579,14 @@ namespace TaamerProject.Service.Services
             var desc = Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar"));
             if (Note_Cinfig.Description != null && Note_Cinfig.Description != "")
                 desc = Note_Cinfig.Description;
-
+          
             if (Note_Cinfig.Users != null && Note_Cinfig.Users.Count() > 0)
             {
+                if (EmployeeUpdated.UserId == null || EmployeeUpdated.UserId == 0)
+                {
+                    IsSent = _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, 0, desc, htmlBody, true, EmployeeUpdated.Email);
+
+                }
                 foreach (var usr in Note_Cinfig.Users)
                 {
                     string NotStr = "تم انضمام الموظف " + EmployeeUpdated.EmployeeNameAr + " إلى فريق " + OrgName + ", الوظيفة: " + job.JobNameAr + " قسم : " + DepartmentNameAr + " فرع: " + NameAr;
@@ -1605,7 +1610,7 @@ namespace TaamerProject.Service.Services
                     _TaamerProContext.SaveChanges();
                     _notificationService.sendmobilenotification(usr, desc, NotStr);
                     IsSent = _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, usr, desc, htmlBody, true);
-
+                   
                 }
             }
             else
@@ -1709,6 +1714,11 @@ namespace TaamerProject.Service.Services
 
             if (config.Users != null && config.Users.Count() > 0)
             {
+                if (EmployeeUpdated.UserId == null || EmployeeUpdated.UserId == 0)
+                {
+                    IsSent = _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, 0, title, htmlBody, true, EmployeeUpdated.Email);
+
+                }
                 foreach (var usr in config.Users)
                 {
                     try
