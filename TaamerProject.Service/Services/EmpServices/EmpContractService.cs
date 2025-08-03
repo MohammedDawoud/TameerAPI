@@ -490,7 +490,7 @@ namespace TaamerProject.Service.Services
                                 _TaamerProContext.Notification.Add(UserNotification);
                                 _TaamerProContext.SaveChanges();
                                 _notificationService.sendmobilenotification(usr,desc, NotStr);
-                                bool mail = _customerMailService.SendMail_SysNotification((int)EmpContract?.BranchId, User, usr, desc, htmlBody, true);
+                                bool mail = _customerMailService.SendMail_SysNotification((int)EmpContract?.BranchId, usr, usr, desc, htmlBody, true);
 
                             }
                         }
