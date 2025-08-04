@@ -9304,18 +9304,20 @@ namespace TaamerProject.Service.Services
                 else if (type == 1 || type == 2 || type == 3 ||type==5 || type==4 || type==7 || type==8)
                 {
                     mail.To.Add(new MailAddress(_UsersRepository.GetById(UserId).Email));
-                    if (MangerId != null && MangerId > 0)
-                    {
-                        mail.To.Add(new MailAddress(_UsersRepository.GetById(MangerId).Email));
-                    }
+                    //if (MangerId != null && MangerId > 0)
+                    //{
+                    //    mail.To.Add(new MailAddress(_UsersRepository.GetById(MangerId).Email));
+                    //}
 
                 }
                 else
                 {
-                    if (MangerId != null && MangerId > 0)
-                    {
-                        mail.To.Add(new MailAddress(_UsersRepository.GetById(MangerId).Email));
-                    }
+                    mail.To.Add(new MailAddress(_UsersRepository.GetById(UserId).Email));
+
+                    //if (MangerId != null && MangerId > 0)
+                    //{
+                    //    mail.To.Add(new MailAddress(_UsersRepository.GetById(MangerId).Email));
+                    //}
                 }
                 mail.Subject = subject;
                 try
