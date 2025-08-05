@@ -152,11 +152,8 @@ namespace TaamerProject.Service.Services
                         NotStr = NotStr + string.Format(" الكمية {0}, السعر {1}, ميعاد استلام العهدة {2}", CustodyUpdated.Quantity, CustodyPrice, CustodyUpdated.Date);
                       
                         var UserNotification = new Notification();
-                        if (Emp.UserId != null && Emp.UserId > 0)
-                        {
-                            var user = Emp.UserId.Value;
+                      
                             string htmlBody = "";
-                            var userObj = _usersRepository.GetById(user);
                             //mail
                             string OrgName = _OrganizationsRepository.GetBranchOrganization().Result.NameAr;
 
@@ -178,7 +175,7 @@ namespace TaamerProject.Service.Services
 
                             if (config.Users != null && config.Users.Count() > 0)
                             {
-                                if ((Emp.UserId == null || Emp.UserId == 0) && Emp.Email !=null)
+                                if ((Emp.UserId == null || Emp.UserId == 0) && config.mail != null && config.mail != "")
                                 {
                                     _customerMailService.SendMail_SysNotification((int)Emp.BranchId, 0, 0, subject, htmlBody, true, Emp.Email);
 
@@ -219,6 +216,8 @@ namespace TaamerProject.Service.Services
                                 {
                                     //if (UserNotifPriv.Count() != 0 && UserNotifPriv.Contains(162))
                                     //{
+                                    var user = Emp.UserId.Value;
+                                    var userObj = _usersRepository.GetById(user);
                                     UserNotification.ReceiveUserId = user;
                                     UserNotification.Name = subject;// Resources.ResourceManager.GetString("Notice_CustodyFinish", CultureInfo.CreateSpecificCulture("ar"));
                                     UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
@@ -271,7 +270,7 @@ namespace TaamerProject.Service.Services
                     //}
 
 
-                }
+                
 
                 _TaamerProContext.SaveChanges();
                 //-----------------------------------------------------------------------------------------------------------------
@@ -490,7 +489,7 @@ namespace TaamerProject.Service.Services
 
                         if (config.Users != null && config.Users.Count() > 0)
                         {
-                            if ((Emp.UserId == null || Emp.UserId == 0) && Emp.Email !=null)
+                            if ((Emp.UserId == null || Emp.UserId == 0) && config.mail != null && config.mail != "")
                             {
                                 _customerMailService.SendMail_SysNotification((int)Emp.BranchId, 0, 0, subject, htmlBody, true, Emp.Email);
 

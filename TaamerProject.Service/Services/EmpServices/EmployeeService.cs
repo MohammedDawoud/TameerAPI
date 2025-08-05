@@ -1582,7 +1582,7 @@ namespace TaamerProject.Service.Services
           
             if (Note_Cinfig.Users != null && Note_Cinfig.Users.Count() > 0)
             {
-                if (EmployeeUpdated.UserId == null || EmployeeUpdated.UserId == 0)
+                if ((EmployeeUpdated.UserId == null || EmployeeUpdated.UserId == 0) && Note_Cinfig.mail !=null && Note_Cinfig.mail !="")
                 {
                     IsSent = _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, 0, desc, htmlBody, true, EmployeeUpdated.Email);
 
@@ -1714,7 +1714,7 @@ namespace TaamerProject.Service.Services
 
             if (config.Users != null && config.Users.Count() > 0)
             {
-                if (EmployeeUpdated.UserId == null || EmployeeUpdated.UserId == 0)
+                if ((EmployeeUpdated.UserId == null || EmployeeUpdated.UserId == 0) && config.mail !=null  && config.mail !="")
                 {
                     IsSent = _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, 0, title, htmlBody, true, EmployeeUpdated.Email);
 
@@ -2845,10 +2845,10 @@ namespace TaamerProject.Service.Services
 
 
 
-        public (List<int> Users, string Description) GetNotificationRecipients(NotificationCode code, int? EmpId)
+        public (List<int> Users, string Description,string mail) GetNotificationRecipients(NotificationCode code, int? EmpId)
         {
             var usersnote = new List<int>();
-
+            string Email = "";
             var config = _TaamerProContext.NotificationConfigurations
                 .Include(x => x.NotificationConfigurationsAssines)
                 .FirstOrDefault(x => x.ConfigurationId == (int)code);
@@ -2896,7 +2896,13 @@ namespace TaamerProject.Service.Services
                         if (emp != null)
                         {
                             if (emp.UserId.HasValue && emp.UserId.Value > 0)
+                            {
                                 usersnote.Add(emp.UserId.Value);
+                            }
+                            else
+                            {
+                                Email = emp.Email;
+                            }
 
                             if (emp.DirectManager != null)
                             {
@@ -2918,7 +2924,13 @@ namespace TaamerProject.Service.Services
                         if (emp != null)
                         {
                             if (emp.UserId.HasValue && emp.UserId.Value > 0)
+                            {
                                 usersnote.Add(emp.UserId.Value);
+                            }
+                            else
+                            {
+                                Email = emp.Email;
+                            }
 
                             if (emp.DirectManager != null)
                             {
@@ -2939,8 +2951,13 @@ namespace TaamerProject.Service.Services
                     if (EmpId.HasValue)
                     {
                         var emp = _TaamerProContext.Employees.FirstOrDefault(e => e.EmployeeId == EmpId.Value);
-                        if (emp?.UserId.HasValue == true && emp.UserId.Value > 0)
+                        if (emp?.UserId.HasValue == true && emp.UserId.Value > 0) { 
                             usersnote.Add(emp.UserId.Value);
+                        }
+                        else
+                        {
+                            Email = emp.Email;
+                        }
                     }
                     break;
             }
@@ -2957,7 +2974,7 @@ namespace TaamerProject.Service.Services
                 usersnote.Add(1); // default fallback user
             }
 
-            return (usersnote, description);
+            return (usersnote, description, Email);
         }
 
         //public (List<int> Users, string Description) GetNotificationRecipients(NotificationCode code, int? EmpId, int? UserId)

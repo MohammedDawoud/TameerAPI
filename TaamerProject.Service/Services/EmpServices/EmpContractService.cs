@@ -468,7 +468,7 @@ namespace TaamerProject.Service.Services
                             desc = Note_Cinfig.Description;
                         if (Note_Cinfig.Users != null && Note_Cinfig.Users.Count() > 0)
                         {
-                            if (EmployeeUpdated.UserId == null || EmployeeUpdated.UserId == 0)
+                            if ((EmployeeUpdated.UserId == null || EmployeeUpdated.UserId == 0) && Note_Cinfig.mail != null && Note_Cinfig.mail != "")
                             {
                                  _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, 0, desc, htmlBody, true, EmployeeUpdated.Email);
 

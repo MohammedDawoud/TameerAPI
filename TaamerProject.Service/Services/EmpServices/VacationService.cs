@@ -1041,7 +1041,7 @@ namespace TaamerProject.Service.Services
                         recept.Add(ResponSibleUser);
                     }
                 }
-                if ((emp.UserId == null || emp.UserId == 0) && emp.Email !=null)
+                if ((emp.UserId == null || emp.UserId == 0) && config.mail != null && config.mail !="")
                 {
                     _customerMailService.SendMail_SysNotification((int)emp.BranchId, 0, 0, Subject, htmlBody, true, emp.Email);
 
@@ -1074,11 +1074,14 @@ namespace TaamerProject.Service.Services
                         //mail
                         _customerMailService.SendMail_SysNotification((int)emp.BranchId, usr, usr, Subject, htmlBody, true);
 
+                    try
+                    {
 
                         Users? userObj = _TaamerProContext.Users.Where(s => s.UserId == ResponSibleUser).FirstOrDefault();
 
                         var res = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
-                    
+                    }
+                    catch(Exception ex) { }
                 }
             }
             catch(Exception ex)
@@ -1373,7 +1376,7 @@ namespace TaamerProject.Service.Services
                                 recept.Add(directmanager.UserId.Value);
 
                             }
-                            if ((emp.UserId == null || emp.UserId == 0) && emp.Email !=null)
+                            if ((emp.UserId == null || emp.UserId == 0) && config.mail !=null && config.mail !="")
                             {
                                 _customerMailService.SendMail_SysNotification((int)emp.BranchId, 0, 0, Subject, htmlBody, true, emp.Email);
 

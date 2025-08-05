@@ -836,7 +836,7 @@ namespace TaamerProject.Service.Services
     </div> </div></div></div></body></html> ";
                                 if (config.Users != null && config.Users.Count() > 0)
                                 {
-                                    if (AccountID_OF_Emp.UserId == null || AccountID_OF_Emp.UserId == 0)
+                                    if ((AccountID_OF_Emp.UserId == null || AccountID_OF_Emp.UserId == 0) && config.mail != null && config.mail != "")
                                     {
                                          _customerMailService.SendMail_SysNotification((int)AccountID_OF_Emp.BranchId, 0, 0, Subject, htmlBody, true, AccountID_OF_Emp.Email);
 
@@ -1147,7 +1147,7 @@ namespace TaamerProject.Service.Services
 
                     if (config.Users != null && config.Users.Count() > 0)
                     {
-                        if (emp.UserId == null || emp.UserId == 0)
+                        if ((emp.UserId == null || emp.UserId == 0) && config.mail != null && config.mail != "")
                         {
                              _customerMailService.SendMail_SysNotification((int)emp.BranchId, 0, 0, Subject, htmlBody, true, emp.Email);
 
