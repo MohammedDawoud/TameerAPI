@@ -14,6 +14,8 @@ using TaamerProject.Service.Interfaces;
 using TaamerProject.Service.Generic;
 using TaamerProject.Repository.Repositories;
 using TaamerProject.Service.LocalResources;
+using Microsoft.EntityFrameworkCore;
+using TaamerProject.Models.ViewModels;
 
 namespace TaamerProject.Service.Services
 {
@@ -144,7 +146,173 @@ namespace TaamerProject.Service.Services
             var resonLeave = _reasonLeaveRepository.GetAllreasons(SearchText);
             return resonLeave;
         }
-        
+
+        public EmployeeEndWork GetEmployeeWithWorkPeriods(int empId, int reasonLeave)
+        {
+            var today = DateTime.Today;
+
+            var employee = _TaamerProContext.Employees
+                .Include(x => x.Nationality)
+                .FirstOrDefault(e => e.EmployeeId == empId);
+
+            if (employee == null) return null;
+
+            var firstContractDate = _TaamerProContext.EmpContract
+                .Where(c => c.EmpId == empId && !c.IsDeleted)
+                .AsEnumerable()
+                .OrderBy(c => DateTime.Parse(c.StartWorkDate))
+                .Select(c => DateTime.Parse(c.StartWorkDate))
+                .FirstOrDefault();
+
+            var latestContract = _TaamerProContext.EmpContract
+                .Where(c => c.EmpId == empId && !c.IsDeleted)
+                .AsEnumerable()
+                .OrderByDescending(c => DateTime.Parse(c.EndWorkDate ?? today.ToString("yyyy-MM-dd")))
+                .FirstOrDefault();
+
+            var latestContractEndDate = latestContract?.EndWorkDate != null
+                ? DateTime.Parse(latestContract.EndWorkDate)
+                : DateTime.Now;
+
+            var empDto = new EmployeeEndWork
+            {
+                EmpId = employee.EmployeeId,
+                EmpName = employee.EmployeeNameAr,
+                Nationality = employee.Nationality.NameAr,
+                BirthDate = employee.BirthDate,
+                Age = employee.Age,
+                IdNumber = employee.NationalityId,
+                IdExpiryDate = employee.NationalIdEndDate,
+                HireDate = firstContractDate,
+                CurrentContractEndDate = latestContractEndDate,
+                LastBasicSalary = employee.Salary + employee.Allowances,
+            };
+
+            // حساب الفترات
+            empDto.WorkPeriods = _TaamerProContext.EmpContract
+                .Where(c => c.EmpId == empId && !c.IsDeleted)
+                .Select(c => new
+                {
+                    StartDate = c.StartWorkDate != null ? DateTime.Parse(c.StartWorkDate) : (DateTime?)null,
+                    EndDate = c.EndWorkDate != null ? DateTime.Parse(c.EndWorkDate) : (DateTime?)null,
+                    Salary = c.FreelanceAmount,
+                    Allowances = employee.Allowances,
+                    WorkingDaysPerWeek = c.Workingdaysperweek ?? 6,
+                    EndType = reasonLeave
+                })
+                .AsEnumerable()
+                .Select(c =>
+                {
+                    var start = c.StartDate ?? today;
+                    var end = c.EndDate ?? today;
+
+                    int totalDays = (end - start).Days + 1;
+                    double ratio = c.WorkingDaysPerWeek / 7.0;
+                    int actualWorkDays = (int)Math.Round(totalDays * ratio);
+
+                    int years = actualWorkDays / 365;
+                    int months = (actualWorkDays % 365) / 30;
+                    int days = (actualWorkDays % 365) % 30;
+
+                    decimal totalMonthly = (c.Salary ?? 0) + (c.Allowances ?? 0);
+                    decimal firstFiveReward = 0;
+                    decimal afterFiveReward = 0;
+
+                    // حساب المكافآت حسب نوع إنهاء الخدمة
+                    if (c.EndType == 1) // استقالة
+                    {
+                        if (years < 2)
+                        {
+                            firstFiveReward = 0;
+                            afterFiveReward = 0;
+                        }
+                        else if (years <= 5)
+                        {
+                            firstFiveReward = ((years * (totalMonthly / 2)) / 3);
+                        }
+                        else if (years <= 10)
+                        {
+                            firstFiveReward = (5 * (totalMonthly / 2)) * (2m / 3m);
+                            afterFiveReward = ((years - 5) * totalMonthly) * (2m / 3m);
+                        }
+                        else
+                        {
+                            firstFiveReward = (5 * (totalMonthly / 2));
+                            afterFiveReward = ((years - 5) * totalMonthly);
+                        }
+                    }
+                    else // نهاية خدمة عادية
+                    {
+                        if (years <= 5)
+                        {
+                            firstFiveReward = years * (totalMonthly / 2);
+                        }
+                        else
+                        {
+                            firstFiveReward = 5 * (totalMonthly / 2);
+                            afterFiveReward = (years - 5) * totalMonthly;
+                        }
+                    }
+
+                    decimal totalReward = firstFiveReward + afterFiveReward;
+
+                    return new WorkPeriodVM
+                    {
+                        StartDate = start,
+                        EndDate = end,
+                        Years = years,
+                        Months = months,
+                        Days = days,
+                        Salary = c.Salary,
+                        Allowances = c.Allowances,
+                        WorkingDaysPerWeek = c.WorkingDaysPerWeek,
+                        EndType = c.EndType,
+                        FirstFiveYearsReward = Math.Round(firstFiveReward, 2),
+                        AfterFiveYearsReward = Math.Round(afterFiveReward, 2),
+                        EndOfServiceReward = Math.Round(totalReward, 2)
+                    };
+                })
+                .ToList();
+
+            // مجموع مكافأة نهاية الخدمة
+            empDto.TotalEndOfServiceReward = empDto.WorkPeriods.Sum(p => p.EndOfServiceReward);
+
+            // راتب مستحق للشهر الأخير
+            if (latestContractEndDate != null)
+            {
+                var monthDays = DateTime.DaysInMonth(latestContractEndDate.Year, latestContractEndDate.Month);
+                var workedDaysInLastMonth = latestContractEndDate.Day;
+                var dailyRate = (employee.Salary ?? 0) / monthDays;
+                var dailyAllowance = (employee.Allowances ?? 0) / monthDays;
+                empDto.LastMonthDueSalary = Math.Round((dailyRate + dailyAllowance) * workedDaysInLastMonth, 2);
+            }
+
+            // بدل الإجازات
+            empDto.TotalDue = (employee.VacationEndCount ?? 0) * ((employee.Salary ?? 0) + (employee.Allowances ?? 0)) / 30;
+            empDto.VacationEncashment = empDto.TotalDue;
+            // مجموع المستحقات
+            empDto.TotalDue = empDto.TotalEndOfServiceReward + empDto.LastMonthDueSalary + empDto.TotalDue;
+            // طرح السلف المستحقة في الشهر الأخير
+            var month = latestContractEndDate.Month;
+            var year = latestContractEndDate.Year;
+
+            var loans = (from loan in _TaamerProContext.Loan
+                         join details in _TaamerProContext.LoanDetails
+                         on loan.LoanId equals details.LoanId
+                         where loan.EmployeeId == empId
+                               && !loan.IsDeleted
+                               && !details.IsDeleted
+                               && details.Date != null
+                               && details.Date.Value.Month == month
+                               && details.Date.Value.Year == year
+                         select details.Amount ?? 0).Sum();
+
+            empDto.LastMonthLoans = loans;
+            empDto.NetPayable = empDto.TotalDue - loans;
+
+            return empDto;
+        }
+
 
     }
 }
