@@ -18,8 +18,7 @@ namespace TaamerProject.Service.Interfaces
         Task<IEnumerable<ReasonLeaveVM>> FillReasonSelect(string SearchText = "");
 
         Task<ReasonLeaveVM> Getreasonbyid(int ReasonId);
-        EmployeeEndWork GetEmployeeWithWorkPeriods(int empId, int reasonLeave);
-
+        EmployeeEndWork GetEmployeeWithWorkPeriods(int empId, int reasonLeave, string date);
 
     }
 }

@@ -147,9 +147,12 @@ namespace TaamerProject.Service.Services
             return resonLeave;
         }
 
-        public EmployeeEndWork GetEmployeeWithWorkPeriods(int empId, int reasonLeave)
+        public EmployeeEndWork GetEmployeeWithWorkPeriods(int empId, int reasonLeave,string date)
         {
             var today = DateTime.Today;
+            var enddate = today;
+            if (!string.IsNullOrEmpty(date))
+                enddate = DateTime.ParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
 
             var employee = _TaamerProContext.Employees
                 .Include(x => x.Nationality)
@@ -170,9 +173,7 @@ namespace TaamerProject.Service.Services
                 .OrderByDescending(c => DateTime.Parse(c.EndWorkDate ?? today.ToString("yyyy-MM-dd")))
                 .FirstOrDefault();
 
-            var latestContractEndDate = latestContract?.EndWorkDate != null
-                ? DateTime.Parse(latestContract.EndWorkDate)
-                : DateTime.Now;
+            var latestContractEndDate = enddate;
 
             var empDto = new EmployeeEndWork
             {
@@ -185,7 +186,7 @@ namespace TaamerProject.Service.Services
                 IdExpiryDate = employee.NationalIdEndDate,
                 HireDate = firstContractDate,
                 CurrentContractEndDate = latestContractEndDate,
-                LastBasicSalary = employee.Salary + employee.Allowances,
+                LastBasicSalary = employee.Salary + employee.Allowances + employee.OtherAllownces,
             };
 
             // حساب الفترات
@@ -194,9 +195,9 @@ namespace TaamerProject.Service.Services
                 .Select(c => new
                 {
                     StartDate = c.StartWorkDate != null ? DateTime.Parse(c.StartWorkDate) : (DateTime?)null,
-                    EndDate = c.EndWorkDate != null ? DateTime.Parse(c.EndWorkDate) : (DateTime?)null,
+                    EndDate = c.EndWorkDate != null ? DateTime.Parse(c.EndWorkDate) : enddate,
                     Salary = c.FreelanceAmount,
-                    Allowances = employee.Allowances,
+                    Allowances = employee.Allowances + employee.OtherAllownces,
                     WorkingDaysPerWeek = c.Workingdaysperweek ?? 6,
                     EndType = reasonLeave
                 })
@@ -204,7 +205,7 @@ namespace TaamerProject.Service.Services
                 .Select(c =>
                 {
                     var start = c.StartDate ?? today;
-                    var end = c.EndDate ?? today;
+                    var end = c.EndDate ;
 
                     int totalDays = (end - start).Days + 1;
                     double ratio = c.WorkingDaysPerWeek / 7.0;
@@ -214,7 +215,7 @@ namespace TaamerProject.Service.Services
                     int months = (actualWorkDays % 365) / 30;
                     int days = (actualWorkDays % 365) % 30;
 
-                    decimal totalMonthly = (c.Salary ?? 0) + (c.Allowances ?? 0);
+                    decimal totalMonthly = (c.Salary ?? 0) + (c.Allowances ?? 0) ;
                     decimal firstFiveReward = 0;
                     decimal afterFiveReward = 0;
 
@@ -283,12 +284,12 @@ namespace TaamerProject.Service.Services
                 var monthDays = DateTime.DaysInMonth(latestContractEndDate.Year, latestContractEndDate.Month);
                 var workedDaysInLastMonth = latestContractEndDate.Day;
                 var dailyRate = (employee.Salary ?? 0) / monthDays;
-                var dailyAllowance = (employee.Allowances ?? 0) / monthDays;
+                var dailyAllowance = (employee.Allowances ?? 0) + (employee.OtherAllownces??0) / monthDays;
                 empDto.LastMonthDueSalary = Math.Round((dailyRate + dailyAllowance) * workedDaysInLastMonth, 2);
             }
 
             // بدل الإجازات
-            empDto.TotalDue = (employee.VacationEndCount ?? 0) * ((employee.Salary ?? 0) + (employee.Allowances ?? 0)) / 30;
+            empDto.TotalDue = (employee.VacationEndCount ?? 0) * ((employee.Salary ?? 0) + (employee.Allowances ?? 0) + (employee.OtherAllownces ?? 0)) / 30;
             empDto.VacationEncashment = empDto.TotalDue;
             // مجموع المستحقات
             empDto.TotalDue = empDto.TotalEndOfServiceReward + empDto.LastMonthDueSalary + empDto.TotalDue;
