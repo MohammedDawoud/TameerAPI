@@ -198,7 +198,7 @@ namespace TaamerProject.Service.Services
                     EndDate = c.EndWorkDate != null ? DateTime.Parse(c.EndWorkDate) : enddate,
                     Salary = c.FreelanceAmount,
                     Allowances = employee.Allowances + employee.OtherAllownces,
-                    WorkingDaysPerWeek = c.Workingdaysperweek ?? 6,
+                    WorkingDaysPerWeek = 7,
                     EndType = reasonLeave
                 })
                 .AsEnumerable()
