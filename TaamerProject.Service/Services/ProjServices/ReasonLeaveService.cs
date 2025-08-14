@@ -255,9 +255,14 @@ namespace TaamerProject.Service.Services
                                 afterFiveReward = (afterYears + afterMonths + afterDays) * (2m / 3m);
                             }
                             else {
-                                firstFiveReward = ((years * (totalMonthly / 2)) +
-                                               (months * ((totalMonthly / 2 / 12) / 1)) +
-                                               (days * (totalMonthly / 2 / 12 / 30)));
+                                firstFiveReward = 5 * (totalMonthly / 2);
+
+                                int extraYears = years - 5;
+                                decimal afterYears = extraYears * totalMonthly;
+                                decimal afterMonths = months * (totalMonthly / 12);
+                                decimal afterDays = days * (totalMonthly / 12 / 30);
+                                afterFiveReward = afterYears + afterMonths + afterDays;
+
 
                             }
                         }
