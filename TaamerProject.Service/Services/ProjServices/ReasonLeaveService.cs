@@ -307,7 +307,7 @@ namespace TaamerProject.Service.Services
                 })
                 .ToList();
 
-            empDto.TotalEndOfServiceReward = empDto.WorkPeriods.Sum(p => p.EndOfServiceReward);
+            empDto.TotalEndOfServiceReward =Math.Round(empDto.WorkPeriods.Sum(p => p.EndOfServiceReward),2);
 
             if (latestContractEndDate != null)
             {
@@ -320,9 +320,9 @@ namespace TaamerProject.Service.Services
 
             empDto.TotalDue = (employee.VacationEndCount ?? 0) *
                               ((employee.Salary ?? 0) + (employee.Allowances ?? 0) + (employee.OtherAllownces ?? 0)) / 30;
-            empDto.VacationEncashment = empDto.TotalDue;
+            empDto.VacationEncashment =Math.Round(empDto.TotalDue,2);
 
-            empDto.TotalDue = empDto.TotalEndOfServiceReward  + empDto.TotalDue;
+            empDto.TotalDue = Math.Round(empDto.TotalEndOfServiceReward  + empDto.TotalDue,2);
            // empDto.TotalDue = empDto.TotalEndOfServiceReward + empDto.LastMonthDueSalary + empDto.TotalDue;
 
             var monthLoans = latestContractEndDate.Month;
@@ -335,12 +335,12 @@ namespace TaamerProject.Service.Services
                                && !loan.IsDeleted
                                && !details.IsDeleted
                                && details.Date != null
-                               && details.Date.Value.Month == monthLoans
+                               && details.Date.Value.Month >= monthLoans
                                && details.Date.Value.Year == yearLoans
                          select details.Amount ?? 0).Sum();
 
             empDto.LastMonthLoans = loans;
-            empDto.NetPayable = empDto.TotalDue - loans;
+            empDto.NetPayable =Math.Round(empDto.TotalDue - loans,2);
 
             return empDto;
         }
