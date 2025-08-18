@@ -1253,8 +1253,17 @@ namespace TaamerProject.Service.Services
                         //if (VacationUpdated.DiscountAmount != null || vactionNetDays > emp.VacationEndCount)//الخصم من الرصيد < أيام الإجازة 
                         if (vactionNetDays > emp.VacationEndCount && (VacationUpdated.DiscountAmount != null && VacationUpdated.DiscountAmount > 0 ))//الخصم من الرصيد < أيام الإجازة 
                         {
-                            VacationUpdated.DiscountAmount = (vactionNetDays - emp.VacationEndCount) * (emp.Salary / 30);
-                            emp.VacationEndCount = 0;
+                            if (VacationUpdated.IsDiscount == true && VacationUpdated.DiscountAmount == 0) {
+                                VacationUpdated.DiscountAmount = 0;
+
+                            }
+                            else
+                            {
+
+
+                                VacationUpdated.DiscountAmount = (vactionNetDays - emp.VacationEndCount) * (emp.Salary / 30);
+                            }
+                                emp.VacationEndCount = 0;
                         }
                         else  //الخصم من الرصيد إختياري و يكفي أيام الإجازة 
                         {
@@ -1276,8 +1285,15 @@ namespace TaamerProject.Service.Services
                     }
                     else //الخصم من المرتب إختياري 
                     {
-                        VacationUpdated.DiscountAmount = vactionNetDays * (emp.Salary / 30);
-                        VacationUpdated.IsDiscount = true;
+                        if (VacationUpdated.IsDiscount == true && VacationUpdated.DiscountAmount == 0)
+                        {
+                            VacationUpdated.DiscountAmount = 0;
+                        }
+                        else
+                        {
+                            VacationUpdated.DiscountAmount = vactionNetDays * (emp.Salary / 30);
+                        }
+                            VacationUpdated.IsDiscount = true;
                     }
                 }
                 #endregion
