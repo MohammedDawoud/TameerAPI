@@ -1119,6 +1119,41 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
+
+
+
+        public GeneralMessage ChangeUserSignature(Users users, int UserId, int BranchId)
+        {
+            try
+            {
+                var UsersUpdated = _UsersRepository.GetById(users.UserId);
+                if (!string.IsNullOrEmpty(users.Signature))
+                    UsersUpdated.Signature = EncryptValue(users.Signature);
+                else
+                    UsersUpdated.Signature = users.Signature;
+                UsersUpdated.UpdateUser = UserId;
+                UsersUpdated.UpdateDate = DateTime.Now;
+                _TaamerProContext.SaveChanges();
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = " تغيير توقيع المستخدم  " + users.FullNameAr;
+                _SystemAction.SaveAction("ChangeUserSignature", "UsersService", 2, "Resources.userHave + userWorkOrder + Resources.userWorkOrder", "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                //-----------------------------------------------------------------------------------------------------------------
+
+                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
+            }
+            catch (Exception)
+            {
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = " فشل في تغيير ختم المستخدم  " + users.FullNameAr; ;
+                _SystemAction.SaveAction("ChangeUserSignature", "UsersService", 2, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                //-----------------------------------------------------------------------------------------------------------------
+
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
+            }
+        }
+
         public GeneralMessage SaveUserPrivilegesUsers(int AssignedUserId, List<int> Privs, int UserId, int BranchId, string Con)
         {
             try
@@ -1785,6 +1820,18 @@ namespace TaamerProject.Service.Services
                     try
                     {
                         result.StampUrl = DecryptValue1(result.StampUrl);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                    //string ImageIn = Server.Map
+                }
+                if (!string.IsNullOrEmpty(result.Signature))
+                {
+                    try
+                    {
+                        result.Signature = DecryptValue1(result.Signature);
                     }
                     catch (Exception ex)
                     {

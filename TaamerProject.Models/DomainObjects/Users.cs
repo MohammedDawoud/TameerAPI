@@ -70,6 +70,9 @@ namespace TaamerProject.Models
         public string? DeviceTokenId { get; set; }
         public string? DeviceId { get; set; }
 
+        public string? Signature { get; set; }
+        public string? Seal { get; set; }
+
 
     }
 }

@@ -532,7 +532,7 @@ namespace TaamerProject.API.Controllers
                 return Ok(result );
             }
         [HttpPost("ChangeStampImage")]
-        public ActionResult ChangeStampImage(IFormFile? UploadedFile, [FromForm] Users users)
+        public ActionResult ChangeStampImage([FromForm] IFormFile? UploadedFile, [FromForm] Users users)
             {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             //HttpPostedFileBase file = Request.Files["UploadedFile2"];
@@ -579,6 +579,8 @@ namespace TaamerProject.API.Controllers
                     System.IO.Directory.CreateDirectory(path);
                 }
 
+             
+
                 List<string> uploadedFiles = new List<string>();
                 string pathes = "";
                 //foreach (IFormFile postedFile in postedFiles)
@@ -604,7 +606,7 @@ namespace TaamerProject.API.Controllers
                 }
                 if (pathes != null)
                 {
-                    users.StampUrl = "/Uploads/Users/Encrypted/" + fileName;
+                    users.StampUrl = "/Uploads/Users/" + fileName;
                 }
                 bool flag = RijndaelHelper.EncryptFile(path2, fileLocationOut);
                 if (System.IO.File.Exists(path2))
@@ -612,7 +614,7 @@ namespace TaamerProject.API.Controllers
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
 
-                    System.IO.File.Delete(path2);
+                    //System.IO.File.Delete(path2);
                 }
                
             }
@@ -624,6 +626,74 @@ namespace TaamerProject.API.Controllers
                 //}
                 return Ok(result );
             }
+
+
+
+
+        [HttpPost("ChangeSignatureImage")]
+        public ActionResult ChangeSignatureImage([FromForm] IFormFile? UploadedFile, [FromForm] Users users)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+       
+            if (UploadedFile != null)
+            {
+                System.Net.Http.HttpResponseMessage response = new System.Net.Http.HttpResponseMessage();
+
+
+                string path = System.IO.Path.Combine("Uploads/", "Users/");
+                string pathW = System.IO.Path.Combine("/Uploads/", "Users/");
+                string pathencrypt = System.IO.Path.Combine("/Uploads/", "Users/Encrypted/");
+                if (!System.IO.Directory.Exists(path))
+                {
+                    System.IO.Directory.CreateDirectory(path);
+                }
+
+            
+
+                List<string> uploadedFiles = new List<string>();
+                string pathes = "";
+                //foreach (IFormFile postedFile in postedFiles)
+                //{
+                string fileName = System.IO.Path.GetFileName(Guid.NewGuid() + UploadedFile.FileName);
+                string fileLocationOut = Path.Combine(pathencrypt, fileName);
+                //string fileName = System.IO.Path.GetFileName(postedFiles.FileName);
+
+                var path2 = Path.Combine(path, fileName);
+                if (System.IO.File.Exists(path2))
+                {
+                    System.IO.File.Delete(path2);
+                }
+                using (System.IO.FileStream stream = new System.IO.FileStream(System.IO.Path.Combine(path, fileName), System.IO.FileMode.Create))
+                {
+
+
+                    UploadedFile.CopyTo(stream);
+                    uploadedFiles.Add(fileName);
+                    pathes = pathW + fileName;
+                }
+                if (pathes != null)
+                {
+                    users.Signature = "/Uploads/Users/" + fileName;
+                }
+                bool flag = RijndaelHelper.EncryptFile(path2, fileLocationOut);
+                if (System.IO.File.Exists(path2))
+                {
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+
+                    //System.IO.File.Delete(path2);
+                }
+
+            }
+
+            var result = _usersservice.ChangeUserSignature(users, _globalshared.UserId_G, _globalshared.BranchId_G);
+    
+            return Ok(result);
+        }
+
+
+
+
         [HttpPost("DeleteUsers")]
         public ActionResult DeleteUsers(int userId)
             {
