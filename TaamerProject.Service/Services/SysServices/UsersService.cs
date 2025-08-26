@@ -1122,6 +1122,69 @@ namespace TaamerProject.Service.Services
 
 
 
+        public GeneralMessage DeleteUserStamp(int UserId, int BranchId)
+        {
+            try
+            {
+                var UsersUpdated = _UsersRepository.GetById(UserId);
+                    UsersUpdated.StampUrl = null;
+
+                UsersUpdated.UpdateUser = UserId;
+                UsersUpdated.UpdateDate = DateTime.Now;
+                _TaamerProContext.SaveChanges();
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = " حذف ختم المستخدم  " + UsersUpdated.FullNameAr;
+                _SystemAction.SaveAction("DeleteUserStamp", "UsersService", 2, "Resources.userHave + userWorkOrder + Resources.userWorkOrder", "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                //-----------------------------------------------------------------------------------------------------------------
+
+                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
+            }
+            catch (Exception)
+            {
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = " فشل في حذف ختم المستخدم  "  ;
+                _SystemAction.SaveAction("DeleteUserStamp", "UsersService", 2, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                //-----------------------------------------------------------------------------------------------------------------
+
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
+            }
+        }
+
+
+        public GeneralMessage DeleteUserSignature(int UserId, int BranchId)
+        {
+            try
+            {
+                var UsersUpdated = _UsersRepository.GetById(UserId);
+                UsersUpdated.Signature = null;
+
+                UsersUpdated.UpdateUser = UserId;
+                UsersUpdated.UpdateDate = DateTime.Now;
+                _TaamerProContext.SaveChanges();
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = " حذف توقيع المستخدم  " + UsersUpdated.FullNameAr;
+                _SystemAction.SaveAction("DeleteUserSignature", "UsersService", 2, "Resources.userHave + userWorkOrder + Resources.userWorkOrder", "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                //-----------------------------------------------------------------------------------------------------------------
+
+                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
+            }
+            catch (Exception)
+            {
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = " فشل في حذف توقيع المستخدم  ";
+                _SystemAction.SaveAction("DeleteUserSignature", "UsersService", 2, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                //-----------------------------------------------------------------------------------------------------------------
+
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
+            }
+        }
+
+
+
         public GeneralMessage ChangeUserSignature(Users users, int UserId, int BranchId)
         {
             try

@@ -694,6 +694,24 @@ namespace TaamerProject.API.Controllers
 
 
 
+        [HttpPost("DeleteUserStamp")]
+        public ActionResult DeleteUserStamp(int userId)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var result = _usersservice.DeleteUserStamp(userId, _globalshared.BranchId_G);
+            return Ok(result);
+        }
+
+        [HttpPost("DeleteUserSignature")]
+        public ActionResult DeleteUserSignature(int userId)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var result = _usersservice.DeleteUserSignature(userId, _globalshared.BranchId_G);
+            return Ok(result);
+        }
+
+
+
         [HttpPost("DeleteUsers")]
         public ActionResult DeleteUsers(int userId)
             {

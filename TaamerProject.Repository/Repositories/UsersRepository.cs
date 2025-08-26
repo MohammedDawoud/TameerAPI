@@ -623,7 +623,8 @@ namespace TaamerProject.Repository.Repositories
                     x.AppearInInvoicePrint,
                     x.DeviceId,
                     x.DeviceType,
-                    x.DeviceTokenId
+                    x.DeviceTokenId,
+                    x.Signature
                 }).ToList().Select(s => new UsersVM
                 {
                     UserId = s.UserId,
@@ -666,6 +667,7 @@ namespace TaamerProject.Repository.Repositories
                     DeviceId = s.DeviceId,
                     DeviceTokenId = s.DeviceTokenId,
                     DeviceType = s.DeviceType,
+                    Signature=s.Signature,
                 }).FirstOrDefault();
                 return user;
             }
