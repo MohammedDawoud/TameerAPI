@@ -19,6 +19,7 @@ namespace TaamerProject.Models.ViewModels
         public int? To { get; set; }
 
         public int? BranchId { get; set; }
+        public int? Remember { get; set; }
 
         public List<int?>? Assignees { get; set; }
 

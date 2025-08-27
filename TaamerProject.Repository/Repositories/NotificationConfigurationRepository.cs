@@ -33,6 +33,8 @@ namespace TaamerProject.Repository.Repositories
                     Title = x.Title,
                     To = x.To,
                     BranchId = x.BranchId,
+                    Remember=x.Remember,
+                    
                     Assignees = x.NotificationConfigurationsAssines != null
     ? x.NotificationConfigurationsAssines
         .Where(a => !a.IsDeleted)
