@@ -1751,8 +1751,7 @@ namespace TaamerProject.API.Controllers
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
             //dawoud
-            int orgId = _branchesService.GetOrganizationId(_globalshared.BranchId_G).Result;
-            string TaxCode = _OrganizationService.GetBranchOrganizationData(orgId).Result.TaxCode;
+            string TaxCode = _OrganizationService.GetBranchOrganization().Result.TaxCode;
 
             //_CustomerService.GetCustomersByCustomerId(1, "ar");
 
@@ -1790,9 +1789,7 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
-            //dawoud
-            int orgId = _branchesService.GetOrganizationId(_globalshared.BranchId_G).Result;
-            string TaxCode = _OrganizationService.GetBranchOrganizationData(orgId).Result.TaxCode;
+            string TaxCode = _OrganizationService.GetBranchOrganization().Result.TaxCode;
 
             //_CustomerService.GetCustomersByCustomerId(1, "ar");
 
@@ -1803,9 +1800,7 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
-            //dawoud
-            int orgId = _branchesService.GetOrganizationId(_globalshared.BranchId_G).Result;
-            string TaxCode = _OrganizationService.GetBranchOrganizationData(orgId).Result.TaxCode;
+            string TaxCode = _OrganizationService.GetBranchOrganization().Result.TaxCode;
 
             //_CustomerService.GetCustomersByCustomerId(1, "ar");
 
@@ -1818,7 +1813,7 @@ namespace TaamerProject.API.Controllers
 
             //dawoud
             int orgId = _branchesService.GetOrganizationId(_globalshared.BranchId_G).Result;
-            string Name = _OrganizationService.GetBranchOrganizationData(orgId).Result.NameAr;
+            string Name = _OrganizationService.GetBranchOrganization().Result.NameAr;
             return Ok(Name);
         }
 
@@ -1851,8 +1846,7 @@ namespace TaamerProject.API.Controllers
                 {
                     var FormData = _servicesPricingFormService.GetServicesPricingFormById(result.ReturnedParm ?? 0, _globalshared.BranchId_G).Result;
 
-                    int orgId = _branchesService.GetOrganizationId(_globalshared.BranchId_G).Result;
-                    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId).Result;
+                    var objOrganization = _organizationsservice.GetBranchOrganization().Result;
                     string[] infoDoneTasksReport = { _globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email,
                 objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
                     ReportPDF = ReportsOf7sabat.PrintServPriceForm(FormData, infoDoneTasksReport, "", "");
