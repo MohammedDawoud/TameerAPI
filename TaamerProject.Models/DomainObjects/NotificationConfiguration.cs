@@ -20,6 +20,7 @@ namespace TaamerProject.Models.DomainObjects
         public int? To { get; set; }
 
         public int? BranchId { get; set; }
+        public int? Remember { get; set; }
         public virtual List<NotificationConfigurationsAssines>? NotificationConfigurationsAssines { get; set; }
         [NotMapped]
         public List<int>? Assignees { get; set; }

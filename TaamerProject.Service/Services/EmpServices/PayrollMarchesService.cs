@@ -13,6 +13,7 @@ using System.Net;
 using TaamerProject.Service.Interfaces;
 using TaamerProject.Service.Generic;
 using TaamerProject.Service.LocalResources;
+using Microsoft.EntityFrameworkCore;
 
 namespace TaamerProject.Service.Services
 {
@@ -527,7 +528,7 @@ namespace TaamerProject.Service.Services
         {
             bool IsSent = false;
             string OrgName = _organizationsService.GetBranchOrganization().Result.NameAr;
-            var EmployeeUpdated = _TaamerProContext.Employees.Where(x => x.EmployeeId == payroll.EmpId).FirstOrDefault();
+            var EmployeeUpdated = _TaamerProContext.Employees.Include(x=>x.Bank).Where(x => x.EmployeeId == payroll.EmpId).FirstOrDefault();
             string DepartmentNameAr = "";
             Department? DepName = _TaamerProContext.Department.Where(s => s.DepartmentId == EmployeeUpdated.DepartmentId).FirstOrDefault();
             if (DepName != null)
@@ -546,16 +547,161 @@ namespace TaamerProject.Service.Services
             var directmanager = _TaamerProContext.Employees.Where(x => x.EmployeeId == EmployeeUpdated.DirectManager).FirstOrDefault();
 
             var directmanagername = directmanager == null ? "" : directmanager.EmployeeNameAr;
-            var htmlBody = @"<!DOCTYPE html><html lang = ''><head><meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'><meta http-equiv='X-UA-Compatible' content='IE=edge'>
-                            <meta charset = 'utf-8><meta name = 'description' content = ''><meta name = 'keywords' content = ''><meta name = 'csrf-token' content = ''><title></title><link rel = 'icon' type = 'image/x-icon' href = ''></head>
-                            <body style = 'background:#f9f9f9;direction:rtl'><div class='container' style='max-width:630px;padding-right: var(--bs-gutter-x, .75rem); padding-left: var(--bs-gutter-x, .75rem); margin-right: auto;  margin-left: auto;'>
-                            <style> .bordered {width: 550px; height: 700px; padding: 20px;border: 3px solid yellowgreen; background-color:lightgray;} </style>
-                            <div class= 'row' style = 'font-family: Cairo, sans-serif'>  <div class= 'card' style = 'padding: 2rem;background:#fff'> <div style = 'width: 550px; height: 700px; padding: 20px; border: 3px solid yellowgreen; background-color: lightgray;'> <p style='text-align:center'></p>
-                            <h4>  اسم الموظف :  " + EmployeeUpdated.EmployeeNameAr + "</h4> <h4>  رقم الموظف :   "+EmployeeUpdated.EmployeeNo+" </h4> <h4 >   المسمي الوظيفي :   " + job .JobNameAr+ " </h4><h3 align = 'center'> تفاصيل الراتب</h3><h3 align = 'center'>" + GetArabicMonthName(payroll.MonthNo)+ "  " +DateTime.Now.Year+ "</h3><table align = 'center' border = '1' > <tr> <td colspan='2'> الايرادات</td><td colspan='2'>الخصومات</td> </tr> <tr> <td> الراتب</td> <td>" + payroll.SalaryOfThisMonth + @"</td><td> السلف  </td> <td>" + payroll.TotalLoans + @"</td></tr><tr><td>   بدل السكن  </td> <td>" + payroll.HousingAllowance + @"</td>
-                            <td> خصومات  </td> <td>" + payroll.TotalDiscounts + @"</td></tr><tr><td>البدلات</td><td>"+payroll.MonthlyAllowances+"</td><td>تأمينات</td><td>"+payroll.Taamen+"</td></tr><tr><td>علاوات</td><td>"+payroll.Bonus+"</td><td>أيام غياب</td><td>"+payroll.TotalAbsDays+"</td></tr><tr><td>مكافئات</td><td>"+payroll.TotalRewards+"</td><td>إجازات مخصومة من الراتب</td><td>"+payroll.TotalVacations+ "</td></tr>" +
-                            "<tr><td></td><td></td><td>التاخير</td><td>"+payroll.TotalLateDiscount+"</td></tr><tr><td></td><td></td><td>الغياب</td><td>"+payroll.TotalAbsenceDiscount+ "</td></tr><tr><td colspan='2'>الصافي</td><td colspan='2'>"+payroll.TotalSalaryOfThisMonth+"</td></tr></table><p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
-	
-                            </div> </div></div></div></body></html> ";
+            //var htmlBody = @"<!DOCTYPE html><html lang = ''><head><meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'><meta http-equiv='X-UA-Compatible' content='IE=edge'>
+            //                <meta charset = 'utf-8><meta name = 'description' content = ''><meta name = 'keywords' content = ''><meta name = 'csrf-token' content = ''><title></title><link rel = 'icon' type = 'image/x-icon' href = ''></head>
+            //                <body style = 'background:#f9f9f9;direction:rtl'><div class='container' style='max-width:630px;padding-right: var(--bs-gutter-x, .75rem); padding-left: var(--bs-gutter-x, .75rem); margin-right: auto;  margin-left: auto;'>
+            //                <style> .bordered {width: 550px; height: 700px; padding: 20px;border: 3px solid yellowgreen; background-color:lightgray;} </style>
+            //                <div class= 'row' style = 'font-family: Cairo, sans-serif'>  <div class= 'card' style = 'padding: 2rem;background:#fff'> <div style = 'width: 550px; height: 700px; padding: 20px; border: 3px solid yellowgreen; background-color: lightgray;'> <p style='text-align:center'></p>
+            //                <h4>  اسم الموظف :  " + EmployeeUpdated.EmployeeNameAr + "</h4> <h4>  رقم الموظف :   "+EmployeeUpdated.EmployeeNo+" </h4> <h4 >   المسمي الوظيفي :   " + job .JobNameAr+ " </h4><h3 align = 'center'> تفاصيل الراتب</h3><h3 align = 'center'>" + GetArabicMonthName(payroll.MonthNo)+ "  " +DateTime.Now.Year+ "</h3><table align = 'center' border = '1' > <tr> <td colspan='2'> الايرادات</td><td colspan='2'>الخصومات</td> </tr> <tr> <td> الراتب</td> <td>" + payroll.SalaryOfThisMonth + @"</td><td> السلف  </td> <td>" + payroll.TotalLoans + @"</td></tr><tr><td>   بدل السكن  </td> <td>" + payroll.HousingAllowance + @"</td>
+            //                <td> خصومات  </td> <td>" + payroll.TotalDiscounts + @"</td></tr><tr><td>البدلات</td><td>"+payroll.MonthlyAllowances+"</td><td>تأمينات</td><td>"+payroll.Taamen+"</td></tr><tr><td>علاوات</td><td>"+payroll.Bonus+"</td><td>أيام غياب</td><td>"+payroll.TotalAbsDays+"</td></tr><tr><td>مكافئات</td><td>"+payroll.TotalRewards+"</td><td>إجازات مخصومة من الراتب</td><td>"+payroll.TotalVacations+ "</td></tr>" +
+            //                "<tr><td></td><td></td><td>التاخير</td><td>"+payroll.TotalLateDiscount+"</td></tr><tr><td></td><td></td><td>الغياب</td><td>"+payroll.TotalAbsenceDiscount+ "</td></tr><tr><td colspan='2'>الصافي</td><td colspan='2'>"+payroll.TotalSalaryOfThisMonth+"</td></tr></table><p style = 'text-align:center'> " + OrgName + @" </p> <h7> مع تحيات قسم ادارة الموارد البشرية</h7>
+
+            //                </div> </div></div></div></body></html> ";
+            var totalicom = (payroll.SalaryOfThisMonth + payroll.HousingAllowance + payroll.MonthlyAllowances + payroll.Bonus + payroll.TotalRewards);
+            var totaldisc=(payroll.TotalLoans + payroll.TotalDiscounts + Convert.ToDecimal(payroll.Taamen) + payroll.TotalVacations + payroll.TotalLateDiscount + payroll.TotalAbsenceDiscount);
+                                var htmlBody = @"
+                    <!DOCTYPE html>
+                    <html lang='ar' dir='rtl'>
+                    <head>
+                        <meta charset='utf-8'>
+                        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                        <title>تفاصيل الراتب</title>
+                        <style>
+                            body {
+                                font-family: 'Cairo', sans-serif;
+                                background: #f9f9f9;
+                                margin: 0;
+                                padding: 20px;
+                            }
+                            .container {
+                                max-width: 800px;
+                                margin: auto;
+                                background: #fff;
+                                padding: 30px;
+                                border: 1px solid #ddd;
+                            }
+                            h2, h3, h4 {
+                                margin: 5px 0;
+                                text-align: center;
+                            }
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-top: 15px;
+                            }
+                            th, td {
+                                border: 1px solid #999;
+                                padding: 8px;
+                                text-align: center;
+                                font-size: 14px;
+                            }
+                            th {
+                                background: #f0f0f0;
+                            }
+                            .section-title {
+                                margin-top: 20px;
+                                font-weight: bold;
+                            }
+                            .signature {
+                                margin-top: 30px;
+                                font-size: 14px;
+                            }
+                            .footer {
+                                margin-top: 25px;
+                                font-size: 13px;
+                                text-align: center;
+                                color: #555;
+                            }
+                        </style>
+                    </head>
+                    <body dir='rtl'>
+                        <div class='container'>
+                            <h3>تفصيل الراتب</h3>
+                            <h4>" + GetArabicMonthName(payroll.MonthNo) + " " + DateTime.Now.Year + @"</h4>
+
+                            <p><b>اسم الموظف:</b> " + EmployeeUpdated.EmployeeNameAr + @"</p>
+                            <p><b>رقم الموظف:</b> " + EmployeeUpdated.EmployeeNo + @"</p>
+                            <p><b>المسمى الوظيفي:</b> " + job.JobNameAr + @"</p>
+
+                            <table>
+                                <tr>
+                                    <th colspan='2'>الإيرادات</th>
+                                    <th colspan='2'>الخصومات</th>
+                                </tr>
+                                <tr>
+                                    <td>الراتب الأساسي</td>
+                                    <td>" + payroll.SalaryOfThisMonth + @"</td>
+                                    <td>السلف</td>
+                                    <td>" + payroll.TotalLoans + @"</td>
+                                </tr>
+                                <tr>
+                                    <td>بدل السكن</td>
+                                    <td>" + payroll.HousingAllowance + @"</td>
+                                    <td>خصومات أخرى</td>
+                                    <td>" + payroll.TotalDiscounts + @"</td>
+                                </tr>
+                                <tr>
+                                    <td>البدلات</td>
+                                    <td>" + payroll.MonthlyAllowances + @"</td>
+                                    <td>تأمينات</td>
+                                    <td>" + payroll.Taamen + @"</td>
+                                </tr>
+                                <tr>
+                                    <td>علاوات</td>
+                                    <td>" + payroll.Bonus + @"</td>
+                                    <td>أيام غياب</td>
+                                    <td>" + payroll.TotalAbsDays + @"</td>
+                                </tr>
+                                <tr>
+                                    <td>مكافآت</td>
+                                    <td>" + payroll.TotalRewards + @"</td>
+                                    <td>إجازات مخصومة</td>
+                                    <td>" + payroll.TotalVacations + @"</td>
+                                </tr>
+                                <tr>
+                                    <td></td><td></td>
+                                    <td>التأخير</td>
+                                    <td>" + payroll.TotalLateDiscount + @"</td>
+                                </tr>
+                                <tr>
+                                    <td></td><td></td>
+                                    <td>غياب</td>
+                                    <td>" + payroll.TotalAbsenceDiscount + @"</td>
+                                </tr>
+                                <tr>
+                                    <td>إجمالي الإيرادات:</td><td> " + Math.Round(totalicom.Value,2) + @"</td>
+                                    <td>إجمالي الخصومات: </td><td>" + Math.Round(totaldisc.Value,2) + @"</td>
+                                </tr>
+                                <tr>
+                                    <td colspan='2'>صافي الراتب: </td><td colspan='2'>" + (payroll.TotalSalaryOfThisMonth) + @"</td>
+                                </tr>
+                            </table>
+
+                             <table>
+                                <tr>
+                                    <td> طريقة الدفع : نقداً</td>
+                                    <td>اسم البنك :  " + EmployeeUpdated.Bank.NameAr + @"</td>
+                                </tr>
+                                <tr>
+                                    <td> التاريخ  :   "+DateTime.Now.ToString("yyyy-MM-dd")+ @"</td>
+                                    <td> آيبان :  " + EmployeeUpdated.BankCardNo + @"</td>
+                                </tr>
+
+   <tr>
+                                    <td> توقيع المستخدم : </td>
+                                    <td>توقيع المدير : </td>
+                                </tr>
+</table>
+
+
+                            
+                            <div class='footer'>
+                                مع تحيات قسم الموارد البشرية – " + OrgName + @"
+                            </div>
+                        </div>
+                    </body>
+                    </html>";
+
 
             //Mail
             if (EmployeeUpdated.Email != null && EmployeeUpdated.Email != "")

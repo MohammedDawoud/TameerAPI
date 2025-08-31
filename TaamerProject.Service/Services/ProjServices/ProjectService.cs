@@ -1235,8 +1235,10 @@ namespace TaamerProject.Service.Services
 
                 try
                 {
-
+                    var desc = "إيقاف المشروع";
                     var beneficiary = GetNotificationRecipients(NotificationCode.Project_Stopped, proj.ProjectId);
+                    if (!string.IsNullOrEmpty(beneficiary.Description))
+                        desc = beneficiary.Description;
                     if (beneficiary.Users.Count() > 0)
                     {
                         usersnote = beneficiary.Users;
@@ -1270,7 +1272,7 @@ namespace TaamerProject.Service.Services
                             var UserNotification = new Notification                           
                             {
                                 ReceiveUserId = usr,
-                                Name = "Resources.Pro_Projectmanagement",
+                                Name = desc,// "Resources.Pro_Projectmanagement",
                                 Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
                                 HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
                                 SendUserId = 1,
@@ -1495,7 +1497,7 @@ namespace TaamerProject.Service.Services
                             var UserNotification = new Notification
                             {
                                 ReceiveUserId = usr,
-                                Name = "Resources.Pro_Projectmanagement",
+                                Name = string.IsNullOrWhiteSpace(beneficiary.Description) ? "اعادة تشغيل مشروع" : beneficiary.Description,//"Resources.Pro_Projectmanagement",
                                 Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en")),
                                 HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")),
                                 SendUserId = 1,

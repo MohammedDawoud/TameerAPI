@@ -468,6 +468,11 @@ namespace TaamerProject.Service.Services
                             desc = Note_Cinfig.Description;
                         if (Note_Cinfig.Users != null && Note_Cinfig.Users.Count() > 0)
                         {
+                            if ((EmployeeUpdated.UserId == null || EmployeeUpdated.UserId == 0) && Note_Cinfig.mail != null && Note_Cinfig.mail != "")
+                            {
+                                 _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, 0, desc, htmlBody, true, EmployeeUpdated.Email);
+
+                            }
                             foreach (var usr in Note_Cinfig.Users)
                             {
                                 string NotStr = "تم انضمام الموظف " + EmployeeUpdated.EmployeeNameAr + " إلى فريق " + OrgName + ", الوظيفة: " + EmpContract.PerSe + " قسم : " + DepartmentNameAr + " فرع: " + NameAr;
@@ -490,7 +495,7 @@ namespace TaamerProject.Service.Services
                                 _TaamerProContext.Notification.Add(UserNotification);
                                 _TaamerProContext.SaveChanges();
                                 _notificationService.sendmobilenotification(usr,desc, NotStr);
-                                bool mail = _customerMailService.SendMail_SysNotification((int)EmpContract?.BranchId, User, usr, desc, htmlBody, true);
+                                bool mail = _customerMailService.SendMail_SysNotification((int)EmpContract?.BranchId, usr, usr, desc, htmlBody, true);
 
                             }
                         }

@@ -81,5 +81,8 @@ namespace TaamerProject.Service.Interfaces
 
         int UpdateQrCodeUser(int UserId, string Qrcodeurl);
         GeneralMessage DeleteDeviceId(int user, int UserId, int BranchId);
+        GeneralMessage ChangeUserSignature(Users users, int UserId, int BranchId);
+        GeneralMessage DeleteUserStamp(int UserId, int BranchId);
+        GeneralMessage DeleteUserSignature(int UserId, int BranchId);
     }
 }

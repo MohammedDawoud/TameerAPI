@@ -63,6 +63,7 @@ namespace TaamerProject.Service.Services
                         existing.Description = config.Description;
                         existing.Title = config.Title;
                         existing.To = config.To;
+                        existing.Remember = config.Remember;
                         existing.BranchId = config.BranchId;
                         existing.UpdateUser = userId;
                         existing.UpdateDate = DateTime.Now;

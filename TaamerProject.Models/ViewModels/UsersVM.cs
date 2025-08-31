@@ -114,5 +114,7 @@ namespace TaamerProject.Models
 
         public int? AppearInInvoicePrint { get; set; }
 
+        public string? Signature { get; set; }
+        public string? Seal { get; set; }
     }
 }

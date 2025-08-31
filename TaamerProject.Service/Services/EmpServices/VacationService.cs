@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
@@ -1030,6 +1031,7 @@ namespace TaamerProject.Service.Services
 
                 if (config.Users != null && config.Users.Count() > 0)
                 {
+
                     recept = config.Users;
                 }
                 else
@@ -1038,6 +1040,11 @@ namespace TaamerProject.Service.Services
                     {
                         recept.Add(ResponSibleUser);
                     }
+                }
+                if ((emp.UserId == null || emp.UserId == 0) && config.mail != null && config.mail !="")
+                {
+                    _customerMailService.SendMail_SysNotification((int)emp.BranchId, 0, 0, Subject, htmlBody, true, emp.Email);
+
                 }
                 foreach (var usr in recept)
                 {
@@ -1067,11 +1074,14 @@ namespace TaamerProject.Service.Services
                         //mail
                         _customerMailService.SendMail_SysNotification((int)emp.BranchId, usr, usr, Subject, htmlBody, true);
 
+                    try
+                    {
 
                         Users? userObj = _TaamerProContext.Users.Where(s => s.UserId == ResponSibleUser).FirstOrDefault();
 
                         var res = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
-                    
+                    }
+                    catch(Exception ex) { }
                 }
             }
             catch(Exception ex)
@@ -1243,8 +1253,17 @@ namespace TaamerProject.Service.Services
                         //if (VacationUpdated.DiscountAmount != null || vactionNetDays > emp.VacationEndCount)//الخصم من الرصيد < أيام الإجازة 
                         if (vactionNetDays > emp.VacationEndCount && (VacationUpdated.DiscountAmount != null && VacationUpdated.DiscountAmount > 0 ))//الخصم من الرصيد < أيام الإجازة 
                         {
-                            VacationUpdated.DiscountAmount = (vactionNetDays - emp.VacationEndCount) * (emp.Salary / 30);
-                            emp.VacationEndCount = 0;
+                            if (VacationUpdated.IsDiscount == true && VacationUpdated.DiscountAmount == 0) {
+                                VacationUpdated.DiscountAmount = 0;
+
+                            }
+                            else
+                            {
+
+
+                                VacationUpdated.DiscountAmount = (vactionNetDays - emp.VacationEndCount) * (emp.Salary / 30);
+                            }
+                                emp.VacationEndCount = 0;
                         }
                         else  //الخصم من الرصيد إختياري و يكفي أيام الإجازة 
                         {
@@ -1266,8 +1285,15 @@ namespace TaamerProject.Service.Services
                     }
                     else //الخصم من المرتب إختياري 
                     {
-                        VacationUpdated.DiscountAmount = vactionNetDays * (emp.Salary / 30);
-                        VacationUpdated.IsDiscount = true;
+                        if (VacationUpdated.IsDiscount == true && VacationUpdated.DiscountAmount == 0)
+                        {
+                            VacationUpdated.DiscountAmount = 0;
+                        }
+                        else
+                        {
+                            VacationUpdated.DiscountAmount = vactionNetDays * (emp.Salary / 30);
+                        }
+                            VacationUpdated.IsDiscount = true;
                     }
                 }
                 #endregion
@@ -1364,6 +1390,11 @@ namespace TaamerProject.Service.Services
                                 recept.Add(emp.UserId.Value);
                                 if(directmanager.UserId.Value >0)
                                 recept.Add(directmanager.UserId.Value);
+
+                            }
+                            if ((emp.UserId == null || emp.UserId == 0) && config.mail !=null && config.mail !="")
+                            {
+                                _customerMailService.SendMail_SysNotification((int)emp.BranchId, 0, 0, Subject, htmlBody, true, emp.Email);
 
                             }
                             foreach (var usr in recept.Distinct())
