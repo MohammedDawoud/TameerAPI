@@ -89,426 +89,426 @@ namespace TaamerProject.Service.Services
             var AllDBackup = _DatabaseBackupRepository.GetDBackupByIDWithDetails(backupid, lang);
             return AllDBackup;
         }
-        //public GeneralMessage SaveDBackup(DatabaseBackup info, int UserId, string path, int BranchId, string remote, string Con)
-        //{
-        //    SqlConnection con = new SqlConnection(Con);
-        //    SqlCommand sqlcmd = new SqlCommand();
-
-        //    SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(Con);
-
-
-        //    var local = path;
-        //    //Create all the directories.
-        //    string[] _bakfiles = Directory.GetFiles(path);
-        //    foreach (string s in _bakfiles)
-        //    {
-        //        File.Delete(s);
-        //    }
-        //    var uploadfolder = remote + "Uploads";
-        //    var filefolders = remote + "Files";
-        //    var tempfiles = remote + "TempFiles";
-        //    var npath = "_" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss", CultureInfo.CreateSpecificCulture("en"));
-        //    var zipFile = path + info.SavedName + npath + @".zip";
-        //    var uploadfiles = Directory.GetFiles(uploadfolder);
-        //    var filefiles = Directory.GetFiles(filefolders);
-        //    var tempfilesfiles = Directory.GetFiles(tempfiles);
-
-
-
-
-
-        //    string dirRoot = uploadfolder;
-        //    //var filefolders = remote + "Files";
-        //    //var tempfiles = remote + "TempFiles";
-        //    //get a list of files
-        //    string[] filesToZip = Directory.GetFiles(dirRoot, "*.*", SearchOption.AllDirectories);
-
-        //    //final archive name (I use date / time)
-        //    string zipFileName = path + "Backup" + npath + @".zip";
-        //    string zipFilebackName = path + "DBBackup" + npath + @".zip";
-        //    string zipFileDbbackName = path + "DBBackup" + npath + @".zip";
-        //    string zipuploadfolder = path + "upload" + @".zip";
-
-        //    var nfilepath = path + "Files";
-        //    Directory.CreateDirectory(path + "Files");
-        //    CopyFilesRecursively(filefolders, nfilepath);
-        //    var directories = Directory.GetDirectories(nfilepath + "/ProjectFiles");
-        //    Directory.CreateDirectory(nfilepath + "/ArchiveProjects");
-        //    var archivepath = nfilepath + "/ArchiveProjects";
-        //    var message = "";
-        //    try
-        //    {
-
-        //        if (directories.Length > 0)
-        //        {
-        //            foreach (var item in directories)
-        //            {
-        //                message=item.ToString();
-        //                string directoryName = Path.GetFileName(item);
-        //                message = directoryName;
-
-        //                var project = _projectRepository.GetProjectByNUmber("", directoryName);
-
-        //                if (project.Result != null)
-        //                {
-        //                    message = project.Result.CustomerName_W + directoryName;
-        //                    if (project.Result.Status == 1)
-        //                    {        //archive
-        //                             //Directory.Move(item, archivepath + "\\" + directoryName + project.CustomerName_W);
-        //                             //var CNwithoutspecialcharacters = Regex.Replace(project.CustomerName_W, @"[^0-9a-zA-Z]+", "");
-        //                        var CNwithoutspecialcharacters = ExtensionMethod.RemoveSpecialChars(project.Result.CustomerName_W);
-        //                        Directory.Move(item, archivepath + "\\" + directoryName + CNwithoutspecialcharacters);
-        //                    }
-        //                    else
-        //                    {
-        //                        var CNwithoutspecialcharacters = ExtensionMethod.RemoveSpecialChars(project.Result.CustomerName_W);
-        //                        Directory.Move(item, item + "-" + CNwithoutspecialcharacters);
-        //                    }
-
-
-
-        //                }
-
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //-----------------------------------------------------------------------------------------------------------------
-        //        string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-        //        string ActionNote2 = "فشل في حفظ Backup Database";
-        //         _SystemAction.SaveAction("SaveDBackup", "DatabaseBackupService", 1,Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
-        //        //-----------------------------------------------------------------------------------------------------------------
-
-        //        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReturnedStr = ex.Message.ToString() + message, ReasonPhrase = Resources.General_SavedFailed };
-        //    }
-
-        //    try
-        //    {
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.WriteLine(ex.Message);
-
-        //        //-----------------------------------------------------------------------------------------------------------------
-        //        string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-        //        string ActionNote2 = "فشل في حفظ Backup Database";
-        //         _SystemAction.SaveAction("SaveDBackup", "DatabaseBackupService", 1,Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
-        //        //-----------------------------------------------------------------------------------------------------------------
-
-        //        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReturnedStr = ex.Message.ToString(),ReasonPhrase = Resources.General_SavedFailed };
-        //    }
-
-        //    try
-        //    {
-
-        //        if (info.BackupId == 0)
-        //        {
-        //            info.AddUser = UserId;
-        //            info.AddDate = DateTime.Now;
-        //            try
-        //            {
-        //                info.UserId = UserId;
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                //-----------------------------------------------------------------------------------------------------------------
-        //                string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-        //                string ActionNote2 = "فشل في حفظ Backup Database";
-        //                 _SystemAction.SaveAction("SaveDBackup", "DatabaseBackupService", 1,Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
-        //                //-----------------------------------------------------------------------------------------------------------------
-
-        //                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReturnedStr = ex.Message.ToString(),ReasonPhrase = Resources.General_SavedFailed };
-        //            }
-        //            info.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
-
-
-        //            var fulpath = System.IO.Path.Combine(remote,path);
-        //            info.LocalSavedPath = path;
-        //            string BackUpName = "Backup" + "_" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss", CultureInfo.CreateSpecificCulture("en"));
-
-        //            try
-        //            {
-        //                con.Open();
-        //                string pathDB = "BACKUP DATABASE " +"["+ builder.InitialCatalog+"]" + " TO DISK='" + fulpath /*+ "\\"*/ + BackUpName + ".Bak'" + "WITH FORMAT, INIT, MEDIANAME = N'Backup',  NAME = N'TameerProDB-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10";
-
-
-
-
-        //                sqlcmd = new SqlCommand(pathDB, con);
-        //                sqlcmd.ExecuteNonQuery();
-        //                con.Close();
-        //                var dbpat = path + BackUpName + @".Bak";
-
-
-
-        //                using (ZipArchive zipArchive = System.IO.Compression.ZipFile.Open(zipFilebackName, ZipArchiveMode.Create, Encoding.UTF8))
-        //                {
-        //                    zipArchive.CreateEntryFromFile(dbpat, Path.GetFileName(dbpat));
-
-        //                }
-
-        //                var name = Path.GetFileName(dbpat);
-        //                using (Ionic.Zip.ZipFile zip = new Ionic.Zip.ZipFile())
-        //                {
-
-        //                    zip.Password = "T134711";
-        //                    zip.AddFile(zipFilebackName, "");
-        //                    zip.Save(zipFileDbbackName);
-        //                }
-
-        //                using (Ionic.Zip.ZipFile zip = new Ionic.Zip.ZipFile())
-        //                {
-        //                    zip.UseUnicodeAsNecessary = true;
-
-        //                    zip.AddDirectory(tempfiles, "tempFile");
-        //                    zip.AddDirectory(nfilepath, "Files");
-        //                    zip.AddDirectory(dirRoot, "Upload");
-
-        //                    zip.AddFile(zipFileDbbackName, "");
-        //                    zip.UseZip64WhenSaving = Zip64Option.Always;
-        //                    // zip.CompressionMethod = CompressionMethod.BZip2;
-        //                    zip.Save(zipFileName);
-        //                }
-
-
-        //                var filename = Path.GetFileName(zipFilebackName);
-
-        //                string[] files = Directory.GetFiles(path, filename);
-
-        //                //loop through all files and delete
-        //                foreach (string s in files)
-        //                {
-        //                    File.Delete(s);
-        //                }
-
-        //                var file2name = Path.GetFileName(zipFileDbbackName);
-
-        //                string[] files2 = Directory.GetFiles(path, file2name);
-
-        //                //loop through all files and delete
-        //                foreach (string s in files2)
-        //                {
-        //                    File.Delete(s);
-        //                }
-        //                Directory.Delete(nfilepath, true);
-
-
-        //                string[] bakfiles = Directory.GetFiles(path, "*.Bak");
-        //                foreach (string s in bakfiles)
-        //                {
-        //                    File.Delete(s);
-        //                }
-
-        //                FileInfo f = new FileInfo(zipFileName);
-        //                long filesize = f.Length; // file size in bytes
-        //                var bytes = BytesToString(filesize);
-        //                info.FileSize = bytes.ToString();
-
-        //                info.SavedName = "Backup" + npath + ".zip";
-
-        //                _TaamerProContext.DatabaseBackup.Add(info);
-
-
-
-        //               // var unReadNotify = _NotificationRepository.GetMatching(s => s.IsDeleted == false && s.Type == 9 && (s.IsRead == false || s.IsRead == null));
-        //                var unReadNotify = _TaamerProContext.Notification.Where(s => s.IsDeleted == false && s.Type == 9 && (s.IsRead == false || s.IsRead == null));
-
-
-        //                if (unReadNotify != null)
-        //                {
-        //                    foreach (var item in unReadNotify)
-        //                    {
-        //                        item.IsRead = true;
-        //                        item.ReadingDate = DateTime.Now;
-        //                    }
-        //                }
-
-        //                _TaamerProContext.SaveChanges();
-        //                int id = (int)info.BackupId;
-        //                //-----------------------------------------------------------------------------------------------------------------
-        //                string ActionDate3 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-        //                string ActionNote3 = "حفظ Backup Database";
-        //                 _SystemAction.SaveAction("SaveDBackup", "DatabaseBackupService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate3, UserId, BranchId, ActionNote3, 1);
-        //                //-----------------------------------------------------------------------------------------------------------------
-        //                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReturnedParm = id,ReasonPhrase = Resources.MDa_BackupSuccess};
-
-        //                }
-        //            catch (Exception ex)
-        //            {
-        //                //-----------------------------------------------------------------------------------------------------------------
-        //                string ActionDate4 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-        //                string ActionNote4 = "فشل في حفظ Backup Database";
-        //                 _SystemAction.SaveAction("SaveDBackup", "DatabaseBackupService", 1,Resources.General_SavedFailed, "", "", ActionDate4, UserId, BranchId, ActionNote4, 0);
-        //                //-----------------------------------------------------------------------------------------------------------------
-
-
-        //                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReturnedStr = ex.Message.ToString(),ReasonPhrase = Resources.General_SavedFailed };
-        //            }
-
-
-        //        }
-        //        //-----------------------------------------------------------------------------------------------------------------
-        //        string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-        //        string ActionNote = "اضافة بند جديد";
-        //         _SystemAction.SaveAction("SaveDBackup", "DatabaseBackupService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
-        //        //-----------------------------------------------------------------------------------------------------------------
-
-        //        return new GeneralMessage { StatusCode = HttpStatusCode.OK,ReasonPhrase = Resources.MDa_BackupSuccess };
-        //        }
-        //    catch (Exception ex)
-        //    {
-        //        //-----------------------------------------------------------------------------------------------------------------
-        //        string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-        //        string ActionNote = "فشل في حفظ Backup Database";
-        //         _SystemAction.SaveAction("SaveDBackup", "DatabaseBackupService", 1,Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
-        //        //-----------------------------------------------------------------------------------------------------------------
-
-        //        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReturnedStr = ex.Message.ToString(),ReasonPhrase = Resources.General_SavedFailed };
-        //    }
-        //}
-
-
         public GeneralMessage SaveDBackup(DatabaseBackup info, int UserId, string path, int BranchId, string remote, string Con)
         {
             SqlConnection con = new SqlConnection(Con);
             SqlCommand sqlcmd = new SqlCommand();
+
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(Con);
 
+
+            var local = path;
+            //Create all the directories.
+            string[] _bakfiles = Directory.GetFiles(path);
+            foreach (string s in _bakfiles)
+            {
+                File.Delete(s);
+            }
+            var uploadfolder = remote + "Uploads";
+            var filefolders = remote + "Files";
+            var tempfiles = remote + "TempFiles";
+            var npath = "_" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss", CultureInfo.CreateSpecificCulture("en"));
+            var zipFile = path + info.SavedName + npath + @".zip";
+            var uploadfiles = Directory.GetFiles(uploadfolder);
+            var filefiles = Directory.GetFiles(filefolders);
+            var tempfilesfiles = Directory.GetFiles(tempfiles);
+
+
+
+
+
+            string dirRoot = uploadfolder;
+            //var filefolders = remote + "Files";
+            //var tempfiles = remote + "TempFiles";
+            //get a list of files
+            string[] filesToZip = Directory.GetFiles(dirRoot, "*.*", SearchOption.AllDirectories);
+
+            //final archive name (I use date / time)
+            string zipFileName = path + "Backup" + npath + @".zip";
+            string zipFilebackName = path + "DBBackup" + npath + @".zip";
+            string zipFileDbbackName = path + "DBBackup" + npath + @".zip";
+            string zipuploadfolder = path + "upload" + @".zip";
+
+            var nfilepath = path + "Files";
+            Directory.CreateDirectory(path + "Files");
+            CopyFilesRecursively(filefolders, nfilepath);
+            var directories = Directory.GetDirectories(nfilepath + "/ProjectFiles");
+            Directory.CreateDirectory(nfilepath + "/ArchiveProjects");
+            var archivepath = nfilepath + "/ArchiveProjects";
+            var message = "";
             try
             {
-                // 1. تنظيف المجلد المؤقت
-                Array.ForEach(Directory.GetFiles(path), File.Delete);
 
-                var uploadfolder = Path.Combine(remote, "Uploads");
-                var filefolders = Path.Combine(remote, "Files");
-                var tempfiles = Path.Combine(remote, "TempFiles");
-
-                var npath = "_" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss", CultureInfo.CreateSpecificCulture("en"));
-                var zipFileName = Path.Combine(path, "Backup" + npath + ".zip");
-
-                // 2. إنشاء نسخة من Files في مجلد جديد
-                var nfilepath = Path.Combine(path, "Files");
-                if (Directory.Exists(nfilepath))
-                    Directory.Delete(nfilepath, true);
-
-                Directory.CreateDirectory(nfilepath);
-
-                // نسخ الملفات باستخدام Parallel (أسرع من حلقة تقليدية)
-                Parallel.ForEach(Directory.EnumerateFiles(filefolders, "*.*", SearchOption.AllDirectories),
-                    file =>
-                    {
-                        string targetPath = file.Replace(filefolders, nfilepath);
-                        Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
-                        File.Copy(file, targetPath, true);
-                    });
-
-                // 3. أرشفة المشاريع (معالجة حسب الحالة)
-                var directories = Directory.GetDirectories(Path.Combine(nfilepath, "ProjectFiles"));
-                var archivepath = Path.Combine(nfilepath, "ArchiveProjects");
-                Directory.CreateDirectory(archivepath);
-
-                foreach (var item in directories)
+                if (directories.Length > 0)
                 {
-                    string directoryName = Path.GetFileName(item);
-                    var project = _projectRepository.GetProjectByNUmber("", directoryName).Result;
-
-                    if (project != null)
+                    foreach (var item in directories)
                     {
-                        var cleanName = ExtensionMethod.RemoveSpecialChars(project.CustomerName_W);
+                        message = item.ToString();
+                        string directoryName = Path.GetFileName(item);
+                        message = directoryName;
 
-                        if (project.Status == 1)
+                        var project = _projectRepository.GetProjectByNUmber("", directoryName);
+
+                        if (project.Result != null)
                         {
-                            Directory.Move(item, Path.Combine(archivepath, directoryName + cleanName));
+                            message = project.Result.CustomerName_W + directoryName;
+                            if (project.Result.Status == 1)
+                            {        //archive
+                                     //Directory.Move(item, archivepath + "\\" + directoryName + project.CustomerName_W);
+                                     //var CNwithoutspecialcharacters = Regex.Replace(project.CustomerName_W, @"[^0-9a-zA-Z]+", "");
+                                var CNwithoutspecialcharacters = ExtensionMethod.RemoveSpecialChars(project.Result.CustomerName_W);
+                                Directory.Move(item, archivepath + "\\" + directoryName + CNwithoutspecialcharacters);
+                            }
+                            else
+                            {
+                                var CNwithoutspecialcharacters = ExtensionMethod.RemoveSpecialChars(project.Result.CustomerName_W);
+                                Directory.Move(item, item + "-" + CNwithoutspecialcharacters);
+                            }
+
+
+
                         }
-                        else
-                        {
-                            Directory.Move(item, item + "-" + cleanName);
-                        }
+
                     }
                 }
-
-                // 4. تنفيذ أمر النسخ الاحتياطي لقاعدة البيانات
-                string BackUpName = "Backup" + "_" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss", CultureInfo.CreateSpecificCulture("en"));
-                string dbBackupFile = Path.Combine(path, BackUpName + ".bak");
-                var fulpath = System.IO.Path.Combine(remote, path);
-                info.LocalSavedPath = path;
-                con.Open();
-                 string pathDB = "BACKUP DATABASE " +"["+ builder.InitialCatalog+"]" + " TO DISK='" + fulpath /*+ "\\"*/ + BackUpName + ".Bak'" + "WITH FORMAT, INIT, MEDIANAME = N'Backup',  NAME = N'TameerProDB-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10";
-
-                sqlcmd = new SqlCommand(pathDB, con);
-                sqlcmd.ExecuteNonQuery();
-                con.Close();
-                var dbpat = path + BackUpName + @".Bak";
-                // 5. إنشاء ملف Zip واحد فقط (بسرعة)
-                using (Ionic.Zip.ZipFile zip = new Ionic.Zip.ZipFile())
-                {
-                    zip.Password = "T134711";
-                    zip.UseUnicodeAsNecessary = true;
-                    zip.CompressionLevel = Ionic.Zlib.CompressionLevel.BestSpeed;
-                    zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
-
-                    zip.AddFile(dbpat, "");
-                    zip.AddDirectory(tempfiles, "TempFiles");
-                    zip.AddDirectory(nfilepath, "Files");
-                    zip.AddDirectory(uploadfolder, "Uploads");
-
-                    zip.Save(zipFileName);
-                }
-
-                // 6. تنظيف الملفات المؤقتة
-                if (File.Exists(dbBackupFile)) File.Delete(dbBackupFile);
-                if (Directory.Exists(nfilepath)) Directory.Delete(nfilepath, true);
-
-                // 7. حساب حجم الملف
-                FileInfo f = new FileInfo(zipFileName);
-                long filesize = f.Length;
-                info.FileSize = BytesToString(filesize);
-                info.SavedName = Path.GetFileName(zipFileName);
-                info.LocalSavedPath = path;
-                info.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
-                info.AddUser = UserId;
-                info.AddDate = DateTime.Now;
-
-                _TaamerProContext.DatabaseBackup.Add(info);
-
-                // تحديث التنبيهات الغير مقروءة
-                var unReadNotify = _TaamerProContext.Notification
-                    .Where(s => s.IsDeleted == false && s.Type == 9 && (s.IsRead == false || s.IsRead == null));
-                foreach (var item in unReadNotify) { item.IsRead = true; item.ReadingDate = DateTime.Now; }
-
-                _TaamerProContext.SaveChanges();
-
-                int id = (int)info.BackupId;
-
-                // Log نجاح العملية
-                _SystemAction.SaveAction("SaveDBackup", "DatabaseBackupService", 1,
-                    Resources.General_SavedSuccessfully, "", "", DateTime.Now.ToString("yyyy-MM-dd"), UserId, BranchId,
-                    "حفظ Backup Database", 1);
-
-                return new GeneralMessage
-                {
-                    StatusCode = HttpStatusCode.OK,
-                    ReturnedParm = id,
-                    ReasonPhrase = Resources.MDa_BackupSuccess
-                };
             }
             catch (Exception ex)
             {
-                // Log الفشل
-                _SystemAction.SaveAction("SaveDBackup", "DatabaseBackupService", 1,
-                    Resources.General_SavedFailed, "", "", DateTime.Now.ToString("yyyy-MM-dd"), UserId, BranchId,
-                    "فشل في حفظ Backup Database", 0);
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote2 = "فشل في حفظ Backup Database";
+                _SystemAction.SaveAction("SaveDBackup", "DatabaseBackupService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                //-----------------------------------------------------------------------------------------------------------------
 
-                return new GeneralMessage
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReturnedStr = ex.Message.ToString() + message, ReasonPhrase = Resources.General_SavedFailed };
+            }
+
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote2 = "فشل في حفظ Backup Database";
+                _SystemAction.SaveAction("SaveDBackup", "DatabaseBackupService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                //-----------------------------------------------------------------------------------------------------------------
+
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReturnedStr = ex.Message.ToString(), ReasonPhrase = Resources.General_SavedFailed };
+            }
+
+            try
+            {
+
+                if (info.BackupId == 0)
                 {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    ReturnedStr = ex.Message,
-                    ReasonPhrase = Resources.General_SavedFailed
-                };
+                    info.AddUser = UserId;
+                    info.AddDate = DateTime.Now;
+                    try
+                    {
+                        info.UserId = UserId;
+                    }
+                    catch (Exception ex)
+                    {
+                        //-----------------------------------------------------------------------------------------------------------------
+                        string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                        string ActionNote2 = "فشل في حفظ Backup Database";
+                        _SystemAction.SaveAction("SaveDBackup", "DatabaseBackupService", 1, Resources.General_SavedFailed, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
+                        //-----------------------------------------------------------------------------------------------------------------
+
+                        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReturnedStr = ex.Message.ToString(), ReasonPhrase = Resources.General_SavedFailed };
+                    }
+                    info.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+
+
+                    var fulpath = System.IO.Path.Combine(remote, path);
+                    info.LocalSavedPath = path;
+                    string BackUpName = "Backup" + "_" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss", CultureInfo.CreateSpecificCulture("en"));
+
+                    try
+                    {
+                        con.Open();
+                        string pathDB = "BACKUP DATABASE " + "[" + builder.InitialCatalog + "]" + " TO DISK='" + fulpath /*+ "\\"*/ + BackUpName + ".Bak'" + "WITH FORMAT, INIT, MEDIANAME = N'Backup',  NAME = N'TameerProDB-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10";
+
+
+
+
+                        sqlcmd = new SqlCommand(pathDB, con);
+                        sqlcmd.ExecuteNonQuery();
+                        con.Close();
+                        var dbpat = path + BackUpName + @".Bak";
+
+
+
+                        using (ZipArchive zipArchive = System.IO.Compression.ZipFile.Open(zipFilebackName, ZipArchiveMode.Create, Encoding.UTF8))
+                        {
+                            zipArchive.CreateEntryFromFile(dbpat, Path.GetFileName(dbpat));
+
+                        }
+
+                        var name = Path.GetFileName(dbpat);
+                        using (Ionic.Zip.ZipFile zip = new Ionic.Zip.ZipFile())
+                        {
+
+                            zip.Password = "T134711";
+                            zip.AddFile(zipFilebackName, "");
+                            zip.Save(zipFileDbbackName);
+                        }
+
+                        using (Ionic.Zip.ZipFile zip = new Ionic.Zip.ZipFile())
+                        {
+                            zip.UseUnicodeAsNecessary = true;
+
+                            zip.AddDirectory(tempfiles, "tempFile");
+                            zip.AddDirectory(nfilepath, "Files");
+                            zip.AddDirectory(dirRoot, "Upload");
+
+                            zip.AddFile(zipFileDbbackName, "");
+                            zip.UseZip64WhenSaving = Zip64Option.Always;
+                            // zip.CompressionMethod = CompressionMethod.BZip2;
+                            zip.Save(zipFileName);
+                        }
+
+
+                        var filename = Path.GetFileName(zipFilebackName);
+
+                        string[] files = Directory.GetFiles(path, filename);
+
+                        //loop through all files and delete
+                        foreach (string s in files)
+                        {
+                            File.Delete(s);
+                        }
+
+                        var file2name = Path.GetFileName(zipFileDbbackName);
+
+                        string[] files2 = Directory.GetFiles(path, file2name);
+
+                        //loop through all files and delete
+                        foreach (string s in files2)
+                        {
+                            File.Delete(s);
+                        }
+                        Directory.Delete(nfilepath, true);
+
+
+                        string[] bakfiles = Directory.GetFiles(path, "*.Bak");
+                        foreach (string s in bakfiles)
+                        {
+                            File.Delete(s);
+                        }
+
+                        FileInfo f = new FileInfo(zipFileName);
+                        long filesize = f.Length; // file size in bytes
+                        var bytes = BytesToString(filesize);
+                        info.FileSize = bytes.ToString();
+
+                        info.SavedName = "Backup" + npath + ".zip";
+
+                        _TaamerProContext.DatabaseBackup.Add(info);
+
+
+
+                        // var unReadNotify = _NotificationRepository.GetMatching(s => s.IsDeleted == false && s.Type == 9 && (s.IsRead == false || s.IsRead == null));
+                        var unReadNotify = _TaamerProContext.Notification.Where(s => s.IsDeleted == false && s.Type == 9 && (s.IsRead == false || s.IsRead == null));
+
+
+                        if (unReadNotify != null)
+                        {
+                            foreach (var item in unReadNotify)
+                            {
+                                item.IsRead = true;
+                                item.ReadingDate = DateTime.Now;
+                            }
+                        }
+
+                        _TaamerProContext.SaveChanges();
+                        int id = (int)info.BackupId;
+                        //-----------------------------------------------------------------------------------------------------------------
+                        string ActionDate3 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                        string ActionNote3 = "حفظ Backup Database";
+                        _SystemAction.SaveAction("SaveDBackup", "DatabaseBackupService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate3, UserId, BranchId, ActionNote3, 1);
+                        //-----------------------------------------------------------------------------------------------------------------
+                        return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReturnedParm = id, ReasonPhrase = Resources.MDa_BackupSuccess };
+
+                    }
+                    catch (Exception ex)
+                    {
+                        //-----------------------------------------------------------------------------------------------------------------
+                        string ActionDate4 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                        string ActionNote4 = "فشل في حفظ Backup Database";
+                        _SystemAction.SaveAction("SaveDBackup", "DatabaseBackupService", 1, Resources.General_SavedFailed, "", "", ActionDate4, UserId, BranchId, ActionNote4, 0);
+                        //-----------------------------------------------------------------------------------------------------------------
+
+
+                        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReturnedStr = ex.Message.ToString(), ReasonPhrase = Resources.General_SavedFailed };
+                    }
+
+
+                }
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = "اضافة بند جديد";
+                _SystemAction.SaveAction("SaveDBackup", "DatabaseBackupService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                //-----------------------------------------------------------------------------------------------------------------
+
+                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.MDa_BackupSuccess };
+            }
+            catch (Exception ex)
+            {
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = "فشل في حفظ Backup Database";
+                _SystemAction.SaveAction("SaveDBackup", "DatabaseBackupService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                //-----------------------------------------------------------------------------------------------------------------
+
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReturnedStr = ex.Message.ToString(), ReasonPhrase = Resources.General_SavedFailed };
             }
         }
+
+
+        //public GeneralMessage SaveDBackup(DatabaseBackup info, int UserId, string path, int BranchId, string remote, string Con)
+        //{
+        //    SqlConnection con = new SqlConnection(Con);
+        //    SqlCommand sqlcmd = new SqlCommand();
+        //    SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(Con);
+
+        //    try
+        //    {
+        //        // 1. تنظيف المجلد المؤقت
+        //        Array.ForEach(Directory.GetFiles(path), File.Delete);
+
+        //        var uploadfolder = Path.Combine(remote, "Uploads");
+        //        var filefolders = Path.Combine(remote, "Files");
+        //        var tempfiles = Path.Combine(remote, "TempFiles");
+
+        //        var npath = "_" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss", CultureInfo.CreateSpecificCulture("en"));
+        //        var zipFileName = Path.Combine(path, "Backup" + npath + ".zip");
+
+        //        // 2. إنشاء نسخة من Files في مجلد جديد
+        //        var nfilepath = Path.Combine(path, "Files");
+        //        if (Directory.Exists(nfilepath))
+        //            Directory.Delete(nfilepath, true);
+
+        //        Directory.CreateDirectory(nfilepath);
+
+        //        // نسخ الملفات باستخدام Parallel (أسرع من حلقة تقليدية)
+        //        Parallel.ForEach(Directory.EnumerateFiles(filefolders, "*.*", SearchOption.AllDirectories),
+        //            file =>
+        //            {
+        //                string targetPath = file.Replace(filefolders, nfilepath);
+        //                Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
+        //                File.Copy(file, targetPath, true);
+        //            });
+
+        //        // 3. أرشفة المشاريع (معالجة حسب الحالة)
+        //        var directories = Directory.GetDirectories(Path.Combine(nfilepath, "ProjectFiles"));
+        //        var archivepath = Path.Combine(nfilepath, "ArchiveProjects");
+        //        Directory.CreateDirectory(archivepath);
+
+        //        foreach (var item in directories)
+        //        {
+        //            string directoryName = Path.GetFileName(item);
+        //            var project = _projectRepository.GetProjectByNUmber("", directoryName).Result;
+
+        //            if (project != null)
+        //            {
+        //                var cleanName = ExtensionMethod.RemoveSpecialChars(project.CustomerName_W);
+
+        //                if (project.Status == 1)
+        //                {
+        //                    Directory.Move(item, Path.Combine(archivepath, directoryName + cleanName));
+        //                }
+        //                else
+        //                {
+        //                    Directory.Move(item, item + "-" + cleanName);
+        //                }
+        //            }
+        //        }
+
+        //        // 4. تنفيذ أمر النسخ الاحتياطي لقاعدة البيانات
+        //        string BackUpName = "Backup" + "_" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss", CultureInfo.CreateSpecificCulture("en"));
+        //        string dbBackupFile = Path.Combine(path, BackUpName + ".bak");
+        //        var fulpath = System.IO.Path.Combine(remote, path);
+        //        info.LocalSavedPath = path;
+        //        con.Open();
+        //         string pathDB = "BACKUP DATABASE " +"["+ builder.InitialCatalog+"]" + " TO DISK='" + fulpath /*+ "\\"*/ + BackUpName + ".Bak'" + "WITH FORMAT, INIT, MEDIANAME = N'Backup',  NAME = N'TameerProDB-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10";
+
+        //        sqlcmd = new SqlCommand(pathDB, con);
+        //        sqlcmd.ExecuteNonQuery();
+        //        con.Close();
+        //        var dbpat = path + BackUpName + @".Bak";
+        //        // 5. إنشاء ملف Zip واحد فقط (بسرعة)
+        //        using (Ionic.Zip.ZipFile zip = new Ionic.Zip.ZipFile())
+        //        {
+        //            zip.Password = "T134711";
+        //            zip.UseUnicodeAsNecessary = true;
+        //            zip.CompressionLevel = Ionic.Zlib.CompressionLevel.BestSpeed;
+        //            zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
+
+        //            zip.AddFile(dbpat, "");
+        //            zip.AddDirectory(tempfiles, "TempFiles");
+        //            zip.AddDirectory(nfilepath, "Files");
+        //            zip.AddDirectory(uploadfolder, "Uploads");
+
+        //            zip.Save(zipFileName);
+        //        }
+
+        //        // 6. تنظيف الملفات المؤقتة
+        //        if (File.Exists(dbBackupFile)) File.Delete(dbBackupFile);
+        //        if (Directory.Exists(nfilepath)) Directory.Delete(nfilepath, true);
+
+        //        // 7. حساب حجم الملف
+        //        FileInfo f = new FileInfo(zipFileName);
+        //        long filesize = f.Length;
+        //        info.FileSize = BytesToString(filesize);
+        //        info.SavedName = Path.GetFileName(zipFileName);
+        //        info.LocalSavedPath = path;
+        //        info.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
+        //        info.AddUser = UserId;
+        //        info.AddDate = DateTime.Now;
+
+        //        _TaamerProContext.DatabaseBackup.Add(info);
+
+        //        // تحديث التنبيهات الغير مقروءة
+        //        var unReadNotify = _TaamerProContext.Notification
+        //            .Where(s => s.IsDeleted == false && s.Type == 9 && (s.IsRead == false || s.IsRead == null));
+        //        foreach (var item in unReadNotify) { item.IsRead = true; item.ReadingDate = DateTime.Now; }
+
+        //        _TaamerProContext.SaveChanges();
+
+        //        int id = (int)info.BackupId;
+
+        //        // Log نجاح العملية
+        //        _SystemAction.SaveAction("SaveDBackup", "DatabaseBackupService", 1,
+        //            Resources.General_SavedSuccessfully, "", "", DateTime.Now.ToString("yyyy-MM-dd"), UserId, BranchId,
+        //            "حفظ Backup Database", 1);
+
+        //        return new GeneralMessage
+        //        {
+        //            StatusCode = HttpStatusCode.OK,
+        //            ReturnedParm = id,
+        //            ReasonPhrase = Resources.MDa_BackupSuccess
+        //        };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log الفشل
+        //        _SystemAction.SaveAction("SaveDBackup", "DatabaseBackupService", 1,
+        //            Resources.General_SavedFailed, "", "", DateTime.Now.ToString("yyyy-MM-dd"), UserId, BranchId,
+        //            "فشل في حفظ Backup Database", 0);
+
+        //        return new GeneralMessage
+        //        {
+        //            StatusCode = HttpStatusCode.BadRequest,
+        //            ReturnedStr = ex.Message,
+        //            ReasonPhrase = Resources.General_SavedFailed
+        //        };
+        //    }
+        //}
 
         public GeneralMessage SaveDBackup_ActiveYear(DatabaseBackup info, int UserId, string path, int BranchId, string remote,int yearid, string Con)
         {
