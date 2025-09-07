@@ -432,14 +432,15 @@ namespace TaamerProject.Service.Services
                 // 4. تنفيذ أمر النسخ الاحتياطي لقاعدة البيانات
                 string BackUpName = "Backup" + "_" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss", CultureInfo.CreateSpecificCulture("en"));
                 string dbBackupFile = Path.Combine(path, BackUpName + ".bak");
-
+                var fulpath = System.IO.Path.Combine(remote, path);
+                info.LocalSavedPath = path;
                 con.Open();
-                string pathDB = $"BACKUP DATABASE [{builder.InitialCatalog}] TO DISK='{dbBackupFile}' " +
-                                "WITH FORMAT, INIT, NAME='DB-Full Backup', SKIP, NOREWIND, NOUNLOAD, STATS = 10";
+                 string pathDB = "BACKUP DATABASE " +"["+ builder.InitialCatalog+"]" + " TO DISK='" + fulpath /*+ "\\"*/ + BackUpName + ".Bak'" + "WITH FORMAT, INIT, MEDIANAME = N'Backup',  NAME = N'TameerProDB-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10";
+
                 sqlcmd = new SqlCommand(pathDB, con);
                 sqlcmd.ExecuteNonQuery();
                 con.Close();
-
+                var dbpat = path + BackUpName + @".Bak";
                 // 5. إنشاء ملف Zip واحد فقط (بسرعة)
                 using (Ionic.Zip.ZipFile zip = new Ionic.Zip.ZipFile())
                 {
@@ -448,7 +449,7 @@ namespace TaamerProject.Service.Services
                     zip.CompressionLevel = Ionic.Zlib.CompressionLevel.BestSpeed;
                     zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
 
-                    zip.AddFile(dbBackupFile, "");
+                    zip.AddFile(dbpat, "");
                     zip.AddDirectory(tempfiles, "TempFiles");
                     zip.AddDirectory(nfilepath, "Files");
                     zip.AddDirectory(uploadfolder, "Uploads");
