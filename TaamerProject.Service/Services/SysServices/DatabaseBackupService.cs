@@ -443,12 +443,19 @@ namespace TaamerProject.Service.Services
                         if (item.Status == 1)
                         {        //archive
                             var CNwithoutspecialcharacters = ExtensionMethod.RemoveSpecialChars(item.CustomerName ?? "");
-                            Directory.Move(sourcepathForFolder, archivepath + "\\" + item.ProjectNo + CNwithoutspecialcharacters);
+                            if (File.Exists(sourcepathForFolder + "-" + CNwithoutspecialcharacters))
+                            {
+                                Directory.Move(sourcepathForFolder, archivepath + "\\" + item.ProjectNo + CNwithoutspecialcharacters);
+                            }
                         }
                         else
                         {
                             var CNwithoutspecialcharacters = ExtensionMethod.RemoveSpecialChars(item.CustomerName ?? "");
-                            Directory.Move(sourcepathForFolder, sourcepathForFolder + "-" + CNwithoutspecialcharacters);
+                            if (File.Exists(sourcepathForFolder + "-" + CNwithoutspecialcharacters))
+                            {
+                                Directory.Move(sourcepathForFolder, sourcepathForFolder + "-" + CNwithoutspecialcharacters);
+
+                            }
                         }
 
                     }
