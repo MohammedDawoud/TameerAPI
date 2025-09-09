@@ -435,7 +435,7 @@ namespace TaamerProject.Service.Services
                 string dbBackupFile = Path.Combine(path, BackUpName + ".bak");
 
                 info.LocalSavedPath = path;
-                      var fulpath = System.IO.Path.Combine(remote, path);
+                var fulpath = System.IO.Path.Combine(remote, path);
 
 
                 con.Open();
