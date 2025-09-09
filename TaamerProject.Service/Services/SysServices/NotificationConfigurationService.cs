@@ -63,12 +63,20 @@ namespace TaamerProject.Service.Services
                         existing.Description = config.Description;
                         existing.Title = config.Title;
                         existing.To = config.To;
-                        existing.Remember = config.Remember;
                         existing.BranchId = config.BranchId;
                         existing.UpdateUser = userId;
                         existing.UpdateDate = DateTime.Now;
+                        if(existing.Remember != config.Remember)
+                        {
+                         
+                                    existing.RememberDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+                            
+                        }
+                        existing.Remember = config.Remember;
+
                         // إزالة المعينين القدامى
-                        if(existing.NotificationConfigurationsAssines !=null && existing.NotificationConfigurationsAssines.Count()>0)
+                        if (existing.NotificationConfigurationsAssines !=null && existing.NotificationConfigurationsAssines.Count()>0)
                         _context.NotificationConfigurationsAssines
                             .RemoveRange(existing.NotificationConfigurationsAssines);
 
