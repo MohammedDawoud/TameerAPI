@@ -380,9 +380,13 @@ namespace TaamerProject.Service.Services
             var local = path;
             //Create all the directories.
             string[] _bakfiles = Directory.GetFiles(path);
-            foreach (string s in _bakfiles)
+            //foreach (string s in _bakfiles)
+            //{
+            //    File.Delete(s);
+            //}
+            if (Directory.Exists(local))
             {
-                File.Delete(s);
+                Directory.Delete(local, true); // true = recursive delete
             }
             var uploadfolder = remote + "Uploads";
             var filefolders = remote + "Files";
@@ -411,12 +415,14 @@ namespace TaamerProject.Service.Services
 
             var nfilepath = path + "Files";
             Directory.CreateDirectory(path + "Files");
-            CopyFilesRecursively(filefolders, nfilepath);
+            CopyFilesRecursivelyNew(filefolders, nfilepath);
             var directories = Directory.GetDirectories(nfilepath + "/ProjectFiles");
             Directory.CreateDirectory(nfilepath + "/ArchiveProjects");
             var archivepath = nfilepath + "/ArchiveProjects";
             var sourcepath = nfilepath + "/ProjectFiles";
             var sourcepathForFolder = "";
+            var sourcepathForFolderTrim = "";
+            string ProjectNo_result = "";
             var message = "";
             try
             {
@@ -438,24 +444,36 @@ namespace TaamerProject.Service.Services
 
                     foreach (var item in project)
                     {
-                        message = item.CustomerName + item.ProjectNo;
+                        ProjectNo_result = (item.ProjectNo ?? "").Trim();
+                        ProjectNo_result = ProjectNo_result.Replace(" ", "");
                         sourcepathForFolder = sourcepath + "\\" + item.ProjectNo;
+                        sourcepathForFolderTrim = sourcepath + "\\" + ProjectNo_result;
+
+
                         if (item.Status == 1)
                         {        //archive
                             var CNwithoutspecialcharacters = ExtensionMethod.RemoveSpecialChars(item.CustomerName ?? "");
-                            if (File.Exists(sourcepathForFolder + "-" + CNwithoutspecialcharacters))
-                            {
-                                Directory.Move(sourcepathForFolder, archivepath + "\\" + item.ProjectNo + CNwithoutspecialcharacters);
-                            }
+                            CNwithoutspecialcharacters = CNwithoutspecialcharacters.Trim();
+                            CNwithoutspecialcharacters = CNwithoutspecialcharacters.Replace(" ", "");
+                            //if (File.Exists(sourcepathForFolder + "-" + CNwithoutspecialcharacters))
+                            //{
+                            //    Directory.Move(sourcepathForFolder, archivepath + "\\" + item.ProjectNo + CNwithoutspecialcharacters);
+                            //}
+                            Directory.Move(sourcepathForFolder, archivepath + "\\" + ProjectNo_result + CNwithoutspecialcharacters);
+
                         }
                         else
                         {
                             var CNwithoutspecialcharacters = ExtensionMethod.RemoveSpecialChars(item.CustomerName ?? "");
-                            if (File.Exists(sourcepathForFolder + "-" + CNwithoutspecialcharacters))
-                            {
-                                Directory.Move(sourcepathForFolder, sourcepathForFolder + "-" + CNwithoutspecialcharacters);
+                            CNwithoutspecialcharacters = CNwithoutspecialcharacters.Trim();
+                            CNwithoutspecialcharacters = CNwithoutspecialcharacters.Replace(" ", "");
+                            //if (File.Exists(sourcepathForFolder + "-" + CNwithoutspecialcharacters))
+                            //{
+                            //    Directory.Move(sourcepathForFolder, sourcepathForFolder + "-" + CNwithoutspecialcharacters);
 
-                            }
+                            //}
+                            Directory.Move(sourcepathForFolder, sourcepathForFolderTrim + "-" + CNwithoutspecialcharacters);
+
                         }
 
                     }
@@ -551,7 +569,7 @@ namespace TaamerProject.Service.Services
                         using (Ionic.Zip.ZipFile zip = new Ionic.Zip.ZipFile())
                         {
                             zip.UseUnicodeAsNecessary = true;
-
+                            zip.CompressionLevel = Ionic.Zlib.CompressionLevel.BestSpeed; // or None
                             zip.AddDirectory(tempfiles, "tempFile");
                             zip.AddDirectory(nfilepath, "Files");
                             zip.AddDirectory(dirRoot, "Upload");
@@ -561,6 +579,27 @@ namespace TaamerProject.Service.Services
                             // zip.CompressionMethod = CompressionMethod.BZip2;
                             zip.Save(zipFileName);
                         }
+
+                        //using (Ionic.Zip.ZipFile zip = new Ionic.Zip.ZipFile())
+                        //{
+                        //    zip.UseZip64WhenSaving = Zip64Option.Always;
+                        //    int fileCount = 0;
+                        //    foreach (var file in Directory.GetFiles(nfilepath, "*", SearchOption.AllDirectories))
+                        //    {
+                        //        zip.AddFile(file);
+                        //        fileCount++;
+
+                        //        if (fileCount % 1000 == 0) // every 1000 files save a part
+                        //        {
+                        //            zip.Save($@"C:\output_part{fileCount / 1000}.zip");
+                        //            zip.Dispose();
+                        //            zip = new Ionic.Zip.ZipFile();
+                        //        }
+                        //    }
+                        //    zip.Save(@"C:\output_last.zip");
+                        //}
+
+
 
 
                         var filename = Path.GetFileName(zipFilebackName);
@@ -1589,7 +1628,25 @@ namespace TaamerProject.Service.Services
             }
         }
 
+        static void CopyFilesRecursivelyNew(string sourcePath, string destinationPath)
+        {
+            // Create target directory if not exists
+            Directory.CreateDirectory(destinationPath);
 
+            // Copy all files
+            foreach (string file in Directory.GetFiles(sourcePath))
+            {
+                string destFile = Path.Combine(destinationPath, Path.GetFileName(file));
+                File.Copy(file, destFile, overwrite: true);
+            }
+
+            // Copy all subdirectories recursively
+            foreach (string directory in Directory.GetDirectories(sourcePath))
+            {
+                string destDir = Path.Combine(destinationPath, Path.GetFileName(directory));
+                CopyFilesRecursivelyNew(directory, destDir);
+            }
+        }
         private static void CopyFilesRecursively(string sourcePath, string targetPath)
         {
             //Now Create all of the directories
