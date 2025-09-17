@@ -142,6 +142,16 @@ namespace TaamerProject.Service.LocalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Object.
+        /// </summary>
+        public static object Acc_accountNumber {
+            get {
+                object obj = ResourceManager.GetObject("Acc_accountNumber", resourceCulture);
+                return ((object)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Account Rating.
         /// </summary>
         public static string Acc_accountrating {

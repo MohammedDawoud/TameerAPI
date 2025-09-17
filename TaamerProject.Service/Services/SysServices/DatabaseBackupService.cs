@@ -569,7 +569,7 @@ namespace TaamerProject.Service.Services
                         using (Ionic.Zip.ZipFile zip = new Ionic.Zip.ZipFile())
                         {
                             zip.UseUnicodeAsNecessary = true;
-                            zip.CompressionLevel = Ionic.Zlib.CompressionLevel.BestSpeed; // or None
+                            zip.CompressionLevel = Ionic.Zlib.CompressionLevel.None; // or None
                             zip.AddDirectory(tempfiles, "tempFile");
                             zip.AddDirectory(nfilepath, "Files");
                             zip.AddDirectory(dirRoot, "Upload");
