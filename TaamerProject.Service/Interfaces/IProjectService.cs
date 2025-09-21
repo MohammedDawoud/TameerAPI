@@ -157,5 +157,6 @@ namespace TaamerProject.Service.Interfaces
 
         rptProjectStatus_phases GetTaskData_phases(int projectId, string con);
         (List<int> Users, string Description) GetNotificationRecipients(NotificationCode code, int projectId);
+        byte[] ExportProjectAsZip(int projectId, string projectFilesPath);
     }
 }
