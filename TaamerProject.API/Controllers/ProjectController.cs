@@ -2414,6 +2414,16 @@ namespace TaamerProject.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("ExportProject")]
+        public IActionResult ExportProject(int projectId)
+        {
+            string projectFilesPath = System.IO.Path.Combine("Files/ProjectFiles");// @"D:\Files\ProjectFiles"; // فولدر الملفات
+            var zipBytes = _projectservice.ExportProjectAsZip(projectId, projectFilesPath);
+
+            return File(zipBytes, "application/zip", $"Project_{projectId}_Export.zip");
+        }
+
+
 
         //public IActionResult PrintProjDist(int ProjectId, decimal ContractValue, decimal CostE, decimal CostS, string ProjectNo, string TimeStr)
         //{HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);

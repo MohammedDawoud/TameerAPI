@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -22,6 +23,10 @@ using TaamerProject.Service.IGeneric;
 using TaamerProject.Service.Interfaces;
 using TaamerProject.Service.LocalResources;
 using static Dropbox.Api.UsersCommon.AccountType;
+using System.IO;
+using System.IO.Compression;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 
 namespace TaamerProject.Service.Services
 {
@@ -3953,6 +3958,224 @@ namespace TaamerProject.Service.Services
 
             return (usersnote.Distinct().ToList(), config.Description ); // remove duplicates
         }
+
+
+
+        //public string ProjectFIles(int ProjectID)
+        //{
+        //    var project = _TaamerProContext.Project.Include(x=>x.ProjectPhasesTasks).Where(x => x.ProjectId == ProjectID).FirstOrDefault();
+        //    var notifications = _TaamerProContext.Notification.Where(x => x.ProjectId == ProjectID).FirstOrDefault();
+        //    var contracts = _TaamerProContext.Contracts.Where(x => x.ProjectId == ProjectID).FirstOrDefault();
+        //    var invoices = _TaamerProContext.Invoices.Include(x=>x.VoucherDetails).Where(x => x.ProjectId == ProjectID).FirstOrDefault();
+        //    var offers = _TaamerProContext.OffersPrices.Where(x => x.ProjectId == ProjectID).FirstOrDefault();
+        //}
+
+
+
+
+        // ====== دالة رئيسية: تعمل ZIP لكل المشروع ======
+        public byte[] ExportProjectAsZip(int projectId, string projectFilesPath)
+        {
+            var project = _TaamerProContext.Project.Where(x => x.ProjectId == projectId).FirstOrDefault();
+
+            using (var zipStream = new MemoryStream())
+            {
+                using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
+                {
+                    // 1- مشروع + المهام
+                    var projectPdf = GenerateProjectPdf(projectId);
+                    AddToZip(archive, projectPdf, $"Project_{projectId}_Tasks.pdf");
+
+                    // 2- العقود
+                    var contractsPdf = GenerateContractsPdf(projectId);
+                    AddToZip(archive, contractsPdf, $"Project_{projectId}_Contracts.pdf");
+
+                    // 3- الفواتير
+                    var invoicesPdf = GenerateInvoicesPdf(projectId);
+                    AddToZip(archive, invoicesPdf, $"Project_{projectId}_Invoices.pdf");
+
+                    // 4- الإشعارات
+                    var notiPdf = GenerateNotificationsPdf(projectId);
+                    AddToZip(archive, notiPdf, $"Project_{projectId}_Notifications.pdf");
+
+                    // 5- عروض الأسعار
+                    var offersPdf = GenerateOffersPdf(projectId);
+                    AddToZip(archive, offersPdf, $"Project_{projectId}_Offers.pdf");
+
+                    // 6- ملفات المشروع كفولدر كامل
+                    if (Directory.Exists(Path.Combine(projectFilesPath, project.ProjectNo.ToString())))
+                    {
+                        string folder = Path.Combine(projectFilesPath, project.ProjectNo.ToString());
+                        foreach (var file in Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories))
+                        {
+                            string entryName = "ProjectFiles/" + Path.GetFileName(file);
+                            archive.CreateEntryFromFile(file, entryName);
+                        }
+                    }
+                }
+
+                return zipStream.ToArray(); // إرجاع ZIP كـ byte[]
+            }
+        }
+
+        private void AddToZip(ZipArchive archive, byte[] pdfBytes, string fileName)
+        {
+            var entry = archive.CreateEntry(fileName, CompressionLevel.Fastest);
+            using (var entryStream = entry.Open())
+            {
+                entryStream.Write(pdfBytes, 0, pdfBytes.Length);
+            }
+        }
+
+        // ====== إعداد الخط العربي ======
+        private Font GetArabicFont(float size = 12, int style = Font.NORMAL)
+        {
+            string fontPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), "arial.ttf");
+            var bf = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            return new Font(bf, size, style, BaseColor.BLACK);
+        }
+
+        // ====== دالة مساعدة لإنشاء جدول ======
+        private PdfPTable CreateTable(string[] headers, List<string[]> rows)
+        {
+            var font = GetArabicFont();
+            var table = new PdfPTable(headers.Length);
+            table.RunDirection = PdfWriter.RUN_DIRECTION_RTL;
+            table.WidthPercentage = 100;
+
+            // العناوين
+            foreach (var h in headers)
+            {
+                var cell = new PdfPCell(new Phrase(h, font))
+                {
+                    HorizontalAlignment = Element.ALIGN_CENTER,
+                    BackgroundColor = BaseColor.LIGHT_GRAY
+                };
+                table.AddCell(cell);
+            }
+
+            // البيانات
+            foreach (var row in rows)
+            {
+                foreach (var col in row)
+                {
+                    var cell = new PdfPCell(new Phrase(col, font))
+                    {
+                        HorizontalAlignment = Element.ALIGN_RIGHT
+                    };
+                    table.AddCell(cell);
+                }
+            }
+
+            return table;
+        }
+
+        // ====== توليد PDF المهام ======
+        private byte[] GenerateProjectPdf(int projectId)
+        {
+            var project = _TaamerProContext.Project.FirstOrDefault(p => p.ProjectId == projectId);
+            var tasks = _TaamerProContext.ProjectPhasesTasks.Where(t => t.ProjectId == projectId).ToList();
+
+            using (var ms = new MemoryStream())
+            {
+                var doc = new Document(PageSize.A4, 30, 30, 30, 30);
+                PdfWriter.GetInstance(doc, ms).RunDirection = PdfWriter.RUN_DIRECTION_RTL;
+                doc.Open();
+
+                var font = GetArabicFont(14, Font.BOLD);
+                doc.Add(new Paragraph($"المشروع: {project?.ProjectDescription}", font) { Alignment = Element.ALIGN_RIGHT });
+
+                var rows = tasks.Select(t => new string[] { t.DescriptionAr, t.Status.ToString() }).ToList();
+                var table = CreateTable(new[] { "الوصف", "الحالة" }, rows);
+
+                doc.Add(table);
+                doc.Close();
+                return ms.ToArray();
+            }
+        }
+
+        // ====== توليد PDF العقود ======
+        private byte[] GenerateContractsPdf(int projectId)
+        {
+            var contracts = _TaamerProContext.Contracts.Where(c => c.ProjectId == projectId).ToList();
+
+            using (var ms = new MemoryStream())
+            {
+                var doc = new Document(PageSize.A4, 30, 30, 30, 30);
+                PdfWriter.GetInstance(doc, ms).RunDirection = PdfWriter.RUN_DIRECTION_RTL;
+                doc.Open();
+
+                var rows = contracts.Select(c => new string[] { c.ContractNo, c.Value.ToString() }).ToList();
+                var table = CreateTable(new[] { "رقم العقد", "القيمة" }, rows);
+
+                doc.Add(table);
+                doc.Close();
+                return ms.ToArray();
+            }
+        }
+
+        // ====== توليد PDF الفواتير ======
+        private byte[] GenerateInvoicesPdf(int projectId)
+        {
+            var invoices = _TaamerProContext.Invoices.Where(i => i.ProjectId == projectId).ToList();
+
+            using (var ms = new MemoryStream())
+            {
+                var doc = new Document(PageSize.A4, 30, 30, 30, 30);
+                PdfWriter.GetInstance(doc, ms).RunDirection = PdfWriter.RUN_DIRECTION_RTL;
+                doc.Open();
+
+                var rows = invoices.Select(i => new string[] { i.InvoiceNumber, i.TotalValue.ToString() }).ToList();
+                var table = CreateTable(new[] { "رقم الفاتورة", "القيمة" }, rows);
+
+                doc.Add(table);
+                doc.Close();
+                return ms.ToArray();
+            }
+        }
+
+        // ====== توليد PDF الإشعارات ======
+        private byte[] GenerateNotificationsPdf(int projectId)
+        {
+            var noti = _TaamerProContext.Notification.Where(n => n.ProjectId == projectId).ToList();
+
+            using (var ms = new MemoryStream())
+            {
+                var doc = new Document(PageSize.A4, 30, 30, 30, 30);
+                PdfWriter.GetInstance(doc, ms).RunDirection = PdfWriter.RUN_DIRECTION_RTL;
+                doc.Open();
+
+                var rows = noti.Select(n => new string[] { n.Date, n.Title, n.Description }).ToList();
+                var table = CreateTable(new[] { "التاريخ", "العنوان", "الوصف" }, rows);
+
+                doc.Add(table);
+                doc.Close();
+                return ms.ToArray();
+            }
+        }
+
+        // ====== توليد PDF عروض الأسعار ======
+        private byte[] GenerateOffersPdf(int projectId)
+        {
+            var offers = _TaamerProContext.OffersPrices.Include(x => x.Customer).Where(o => o.ProjectId == projectId).ToList();
+
+            using (var ms = new MemoryStream())
+            {
+                var doc = new Document(PageSize.A4, 30, 30, 30, 30);
+                PdfWriter.GetInstance(doc, ms).RunDirection = PdfWriter.RUN_DIRECTION_RTL;
+                doc.Open();
+
+                var rows = offers.Select(o => new string[] { o.OfferNo, o.Customer.CustomerNameAr, o.OfferValue.ToString() }).ToList();
+                var table = CreateTable(new[] { "رقم العرض", "العميل", "القيمة" }, rows);
+
+                doc.Add(table);
+                doc.Close();
+                return ms.ToArray();
+            }
+        }
+
+
+
 
     }
 }
